@@ -1,6 +1,6 @@
 # Privacy Policy {#privacy-policy}
 
-Last updated: October 2024
+Last updated: November 2024
 
 Your privacy is important to us. It is our policy to respect your privacy and comply with any applicable law and regulation regarding any personal information we may collect about you, including across our website, [https://app.safe.global](https://app.safe.global), and other sites we own and operate as well as mobile applications we offer. Wherever possible, we have designed our website so that you may navigate and use our website without having to provide Personal Data.
 
@@ -366,6 +366,24 @@ For this processing, we rely on our legitimate interest (GDPR Art.6.1f) of facil
 
 To conduct this activity we rely on our legitimate interest (GDPR Art.6.1f) of ameliorating the onboarding process and the user experience through providing an easier option to customers to fund their account.
 
+3.5.8  Geofencing users in the US to prevent locking safe tokens, which may result in them being classified as securities. For this purpose, we process the following information relating to a user's device:
+
+1. operating system
+2. browser and browser configuration
+3. IP address
+4. approximate location
+
+We rely on our legitimate interest to ensure that our product or derivatives do not extend into sectors in which we are not licensed to operate in. Core Contributors is not licensed to provide or trade securities in the US and therefore cannot operate in the securities market.
+
+3.5.9 We process data to detect use of VPN aimed at circumventing the restriction in section 3.5.8 above and to prevent fraud. Data processed include:
+
+1. operating system
+2. browser and browser configuration
+3. IP address
+4. approximate location
+
+We rely on our legitimate interest to ensure the prevention of fraud. This also helps us detect users who may want to circumvent the restriction on US users by the use of VPN.
+
 ## 3.6 Other uses of your Personal Data {#3.6-other-uses-of-your-personal-data}
 
 We may process any of your Personal Data where it is necessary to establish, exercise, or defend legal claims. The legal basis for this is our legitimate interests, namely the protection and assertion of our legal rights, your legal rights and the legal rights of others.
@@ -446,6 +464,10 @@ We use MoonPay to offer on-ramp and off-ramp services. For that purpose personal
 
 We use [Spindl](https://www.spindl.xyz/), a measurement and attribution solution for web3 that assists us in comprehending how users interact with different decentralized applications and our app and to enhance your experience with Safe{Wallet}. For enhanced privacy, data is stored for a period of 7 days after which it is securely deleted.
 
+## 4.14 Fingerprint
+
+This tool enables the processing in sections 3.5.8 and 3.5.9.
+
 # 5\. Sharing Your Personal Data {#5.-sharing-your-personal-data}
 
 We may pass your information to our Business Partners, administration centers, third party service providers, agents, subcontractors and other associated organizations for the purposes of completing tasks and providing our services to you.  
@@ -464,14 +486,15 @@ Service providers in the US:
 * Joincube Inc. (Beamer)
 * Functional software Inc. (Sentry)
 * Notion Labs Inc.
+* Spindl Inc.
 * ConsenSys Software Inc.
 
 Service providers in other countries outside of the EU:
 
 * Tenderly d.o.o. is based in Serbia.
 * Node Real PTE Ltd. is based in Singapore.
-* Torus Labs PTE. Ltd. is based in Singapore.
 * Eighteenth September Limited (“MoonPay”) in the Seychelles
+* FingerprintJS Inc.
 
 HOWEVER, WHEN INTERACTING WITH THE BLOCKCHAIN, AS EXPLAINED ABOVE IN THIS POLICY, THE BLOCKCHAIN IS A GLOBAL DECENTRALIZED PUBLIC NETWORK AND ACCORDINGLY ANY PERSONAL DATA WRITTEN ONTO THE BLOCKCHAIN MAY BE TRANSFERRED AND STORED ACROSS THE GLOBE.
 
@@ -562,7 +585,7 @@ If you wish to raise a complaint on how we have handled your personal data, you 
 
 #### Right to lodge a complaint with a relevant supervisory authority {#right-to-lodge-a-complaint-with-a-relevant-supervisory-authority}
 
-We encourage you to contact us at privacy@cc0de.dev if you have any privacy related concerns. Should you disapprove of the response we have provided you, you have the right to lodge a complaint with our supervisory authority, or with the data protection authority of the European member state you live or work in. The details of the supervisory authority responsible for Berlin, Germany, are:
+We encourage you to contact us at privacy@cc0x.dev if you have any privacy related concerns. Should you disapprove of the response we have provided you, you have the right to lodge a complaint with our supervisory authority, or with the data protection authority of the European member state you live or work in. The details of the supervisory authority responsible for Berlin, Germany, are:
 
 Berliner Beauftragte für Datenschutz und Informationsfreiheit  
 Alt-Moabit 59-61  
