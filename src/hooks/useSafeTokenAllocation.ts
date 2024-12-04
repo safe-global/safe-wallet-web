@@ -186,10 +186,7 @@ export const useSafeVotingPower = (allocationData?: Vesting[]): AsyncResult<bigi
     }
 
     const tokensInVesting = allocationData.reduce(
-      (acc, data) =>
-        data.isExpired || data.startDate > Math.floor(Date.now() / 1000)
-          ? acc
-          : acc + BigInt(data.amount) - BigInt(data.amountClaimed),
+      (acc, data) => (data.isExpired ? acc : acc + BigInt(data.amount) - BigInt(data.amountClaimed)),
       BigInt(0),
     )
 
