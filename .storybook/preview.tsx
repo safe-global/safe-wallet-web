@@ -4,6 +4,7 @@ import { SafeThemeProvider } from '@/src/theme/provider/safeTheme'
 import { View } from 'react-native'
 import { SafeToastProvider } from '@/src/theme/provider/toastProvider'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { PortalProvider } from 'tamagui'
 
 const preview: Preview = {
   parameters: {
@@ -18,17 +19,19 @@ const preview: Preview = {
   decorators: [
     (Story) => {
       return (
-        <NavigationIndependentTree>
-          <SafeAreaProvider>
-            <SafeThemeProvider>
-              <SafeToastProvider>
-                <View style={{ padding: 16, flex: 1 }}>
-                  <Story />
-                </View>
-              </SafeToastProvider>
-            </SafeThemeProvider>
-          </SafeAreaProvider>
-        </NavigationIndependentTree>
+        <PortalProvider shouldAddRootHost>
+          <NavigationIndependentTree>
+            <SafeAreaProvider>
+              <SafeThemeProvider>
+                <SafeToastProvider>
+                  <View style={{ padding: 16, flex: 1 }}>
+                    <Story />
+                  </View>
+                </SafeToastProvider>
+              </SafeThemeProvider>
+            </SafeAreaProvider>
+          </NavigationIndependentTree>
+        </PortalProvider>
       )
     },
   ],
