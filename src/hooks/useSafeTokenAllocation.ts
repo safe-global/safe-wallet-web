@@ -186,7 +186,10 @@ export const useSafeVotingPower = (allocationData?: Vesting[]): AsyncResult<bigi
     }
 
     const tokensInVesting = allocationData.reduce(
-      (acc, data) => (data.isExpired ? acc : acc + BigInt(data.amount) - BigInt(data.amountClaimed)),
+      (acc, data) =>
+        data.isExpired || data.tag === 'sap_boosted' || data.tag === 'sap_unboosted' // Exclude the SAP Airdrops from voting power
+          ? acc
+          : acc + BigInt(data.amount) - BigInt(data.amountClaimed),
       BigInt(0),
     )
 
