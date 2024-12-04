@@ -1,5 +1,9 @@
 import type { ReactElement, ComponentType, SyntheticEvent } from 'react'
-import { Box, IconButton, SvgIcon, Tooltip, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
+import SvgIcon from '@mui/material/SvgIcon'
+import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
 import LinkIcon from '@/public/images/common/link.svg'
 import Link from 'next/link'
 

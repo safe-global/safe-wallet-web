@@ -1,5 +1,6 @@
 import { splitError } from '@/features/walletconnect/services/utils'
-import { Button, Typography } from '@mui/material'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
 import WcLogoHeader from '../WcLogoHeader'
 import css from './styles.module.css'
 

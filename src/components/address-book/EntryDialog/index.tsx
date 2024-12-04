@@ -1,5 +1,8 @@
 import type { ReactElement, BaseSyntheticEvent } from 'react'
-import { Box, Button, DialogActions, DialogContent } from '@mui/material'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import AddressInput from '@/components/common/AddressInput'

@@ -4,7 +4,8 @@ import { SafeCreationEvent } from '@/features/counterfactual/services/safeCreati
 import type { UndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getBlockExplorerLink } from '@/utils/chains'
-import { Box, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 import FailedIcon from '@/public/images/common/tx-failed.svg'
 
 const getStep = (status: SafeCreationEvent) => {

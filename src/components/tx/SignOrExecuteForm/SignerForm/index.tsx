@@ -1,14 +1,11 @@
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SvgIcon,
-  Tooltip,
-  Typography,
-  type SelectChangeEvent,
-} from '@mui/material'
+import Box from '@mui/material/Box'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import Select, { type SelectChangeEvent } from '@mui/material/Select'
+import SvgIcon from '@mui/material/SvgIcon'
+import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
 import { useNestedSafeOwners } from '@/hooks/useNestedSafeOwners'
 import { useWalletContext } from '@/hooks/wallets/useWallet'
 import EthHashInfo from '@/components/common/EthHashInfo'

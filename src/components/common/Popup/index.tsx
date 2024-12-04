@@ -1,5 +1,5 @@
-import { Paper, Popover } from '@mui/material'
-import type { PopoverProps } from '@mui/material'
+import Paper from '@mui/material/Paper'
+import Popover, { type PopoverProps } from '@mui/material/Popover'
 import type { ReactElement } from 'react'
 
 const Popup = ({ children, ...props }: PopoverProps): ReactElement => {

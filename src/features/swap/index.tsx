@@ -3,7 +3,8 @@ import { type CowSwapWidgetParams, TradeType } from '@cowprotocol/widget-lib'
 import type { OnTradeParamsPayload } from '@cowprotocol/events'
 import { type CowEventListeners, CowEvents } from '@cowprotocol/events'
 import { type MutableRefObject, useEffect, useMemo, useRef, useState } from 'react'
-import { Box, useTheme } from '@mui/material'
+import Box from '@mui/material/Box'
+import useTheme from '@mui/material/styles/useTheme'
 import {
   SafeAppAccessPolicyTypes,
   type SafeAppData,

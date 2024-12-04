@@ -1,5 +1,7 @@
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { FormControl, IconButton, Tooltip } from '@mui/material'
+import FormControl from '@mui/material/FormControl'
+import IconButton from '@mui/material/IconButton'
+import Tooltip from '@mui/material/Tooltip'
 import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import { useFormContext } from 'react-hook-form'
 import { BASE_TX_GAS } from '@/config/constants'

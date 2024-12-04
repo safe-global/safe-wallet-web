@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import css from '@/components/new-safe/create/steps/StatusStep/LoadingSpinner/styles.module.css'
 import classnames from 'classnames'
 import { useCallback, useEffect, useRef } from 'react'

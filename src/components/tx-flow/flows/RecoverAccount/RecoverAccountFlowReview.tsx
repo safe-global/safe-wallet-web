@@ -1,6 +1,11 @@
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
-import { CardActions, Button, Typography, Divider, Box, CircularProgress } from '@mui/material'
+import CardActions from '@mui/material/CardActions'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
+import Divider from '@mui/material/Divider'
+import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
 import { useContext, useEffect, useState } from 'react'
 import type { ReactElement } from 'react'
 

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Paper, ThemeProvider } from '@mui/material'
+import Paper from '@mui/material/Paper'
+import ThemeProvider from '@mui/material/styles/ThemeProvider'
 import { StoreDecorator } from '@/stories/storeDecorator'
 import BatchTransactions from './index'
 import { mockedDarftBatch } from './mockData'

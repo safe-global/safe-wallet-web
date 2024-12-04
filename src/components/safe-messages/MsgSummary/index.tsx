@@ -1,4 +1,7 @@
-import { Box, CircularProgress, type Palette, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
+import { type Palette } from '@mui/material/styles/createPalette'
+import Typography from '@mui/material/Typography'
 import type { ReactElement } from 'react'
 import { SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'

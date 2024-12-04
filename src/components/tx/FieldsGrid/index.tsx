@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react'
-import { Grid, Typography } from '@mui/material'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 
 const width = { xl: '25%', lg: '200px', xs: 'auto' }
 const minWidth = { xl: '25%', lg: '200px' }

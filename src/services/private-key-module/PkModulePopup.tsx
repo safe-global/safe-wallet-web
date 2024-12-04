@@ -1,5 +1,8 @@
 import type { FormEvent } from 'react'
-import { Button, TextField, Typography, Box } from '@mui/material'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
 import ModalDialog from '@/components/common/ModalDialog'
 import pkStore from './pk-popup-store'
 const { useStore, setStore } = pkStore

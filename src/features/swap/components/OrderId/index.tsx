@@ -1,6 +1,6 @@
 import CopyButton from '@/components/common/CopyButton'
 import ExplorerButton from '@/components/common/ExplorerButton'
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 
 const OrderId = ({

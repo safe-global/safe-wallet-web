@@ -1,4 +1,5 @@
-import { Box, SvgIcon } from '@mui/material'
+import Box from '@mui/material/Box'
+import SvgIcon from '@mui/material/SvgIcon'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import RequiredIcon from '@/public/images/messages/required.svg'
 import ImageFallback from '@/components/common/ImageFallback'

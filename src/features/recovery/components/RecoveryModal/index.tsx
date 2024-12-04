@@ -1,4 +1,5 @@
-import { Backdrop, Fade } from '@mui/material'
+import Backdrop from '@mui/material/Backdrop'
+import Fade from '@mui/material/Fade'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import type { ReactElement } from 'react'

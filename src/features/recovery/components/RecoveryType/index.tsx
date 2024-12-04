@@ -1,4 +1,6 @@
-import { Box, SvgIcon, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import SvgIcon from '@mui/material/SvgIcon'
+import Typography from '@mui/material/Typography'
 import type { ReactElement } from 'react'
 
 import RecoveryPlusIcon from '@/public/images/common/recovery-plus.svg'

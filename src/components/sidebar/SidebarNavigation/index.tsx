@@ -1,6 +1,6 @@
 import React, { useContext, useMemo, type ReactElement } from 'react'
 import { useRouter } from 'next/router'
-import { ListItemButton } from '@mui/material'
+import ListItemButton from '@mui/material/ListItemButton'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 
 import {
@@ -20,7 +20,7 @@ import { trackEvent } from '@/services/analytics'
 import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
 import { GeoblockingContext } from '@/components/common/GeoblockingProvider'
 import { STAKE_EVENTS, STAKE_LABELS } from '@/services/analytics/events/stake'
-import { Tooltip } from '@mui/material'
+import Tooltip from '@mui/material/Tooltip'
 import { BRIDGE_EVENTS, BRIDGE_LABELS } from '@/services/analytics/events/bridge'
 
 const getSubdirectory = (pathname: string): string => {

@@ -1,5 +1,6 @@
 import type { WalletKitTypes } from '@reown/walletkit'
-import { Alert, SvgIcon } from '@mui/material'
+import Alert from '@mui/material/Alert'
+import SvgIcon from '@mui/material/SvgIcon'
 import AlertIcon from '@/public/images/notifications/alert.svg'
 import type { ReactElement } from 'react'
 import { getPeerName } from '@/features/walletconnect/services/utils'

@@ -23,8 +23,7 @@ import {
 import useAddressBook from './useAddressBook'
 import type { AddressBook } from '@/store/addressBookSlice'
 import { TWAP_ORDER_TITLE } from '@/features/swap/constants'
-import { SvgIcon } from '@mui/material'
-
+import SvgIcon from '@mui/material/SvgIcon'
 const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | undefined => {
   switch (txInfo.type) {
     case TransactionInfoType.CREATION: {

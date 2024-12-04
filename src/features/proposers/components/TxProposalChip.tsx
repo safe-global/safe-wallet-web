@@ -1,4 +1,7 @@
-import { Chip, SvgIcon, Tooltip, Typography } from '@mui/material'
+import Chip from '@mui/material/Chip'
+import SvgIcon from '@mui/material/SvgIcon'
+import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
 import InfoIcon from '@/public/images/notifications/info.svg'
 
 const TxProposalChip = () => {

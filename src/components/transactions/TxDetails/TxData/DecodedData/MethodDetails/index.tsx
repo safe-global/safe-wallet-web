@@ -2,7 +2,8 @@ import type { ReactElement } from 'react'
 import { generateDataRowValue, TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { isAddress, isArrayParameter, isByte } from '@/utils/transaction-guards'
 import type { AddressEx, DataDecoded } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 import { Value } from '@/components/transactions/TxDetails/TxData/DecodedData/ValueArray'
 
 type MethodDetailsProps = {

@@ -1,7 +1,7 @@
 import ExternalLink from '@/components/common/ExternalLink'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import { useCallback, useEffect } from 'react'
 
 const SAMPLE_DAPPS = [

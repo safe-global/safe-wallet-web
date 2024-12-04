@@ -1,5 +1,5 @@
 import { formatVisualAmount } from '@/utils/formatters'
-import { Skeleton } from '@mui/material'
+import Skeleton from '@mui/material/Skeleton'
 import { useCurrentChain } from '@/hooks/useChains'
 
 const WalletBalance = ({ balance }: { balance: string | bigint | undefined }) => {

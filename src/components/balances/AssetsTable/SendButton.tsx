@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { Button } from '@mui/material'
+import Button from '@mui/material/Button'
 import ArrowIconNW from '@/public/images/common/arrow-top-right.svg'
 import CheckWallet from '@/components/common/CheckWallet'
 import useSpendingLimit from '@/hooks/useSpendingLimit'

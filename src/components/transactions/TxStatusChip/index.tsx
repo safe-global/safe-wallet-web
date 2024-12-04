@@ -1,5 +1,6 @@
 import type { ReactElement, ReactNode } from 'react'
-import { Typography, Chip } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import Chip from '@mui/material/Chip'
 
 export type TxStatusChipProps = {
   children: ReactNode

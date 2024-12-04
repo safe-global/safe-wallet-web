@@ -1,8 +1,7 @@
 import { orderTokenBuilder, swapOrderBuilder } from '@/features/swap/helpers/swapOrderBuilder'
 import type { Meta, StoryObj } from '@storybook/react'
 import SwapProgress from './index'
-import { Paper } from '@mui/material'
-
+import Paper from '@mui/material/Paper'
 const meta = {
   component: SwapProgress,
   parameters: {

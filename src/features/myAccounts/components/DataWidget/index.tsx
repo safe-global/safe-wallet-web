@@ -1,4 +1,10 @@
-import { Button, SvgIcon, Card, CardHeader, CardContent, Tooltip, Box } from '@mui/material'
+import Button from '@mui/material/Button'
+import SvgIcon from '@mui/material/SvgIcon'
+import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
+import CardContent from '@mui/material/CardContent'
+import Tooltip from '@mui/material/Tooltip'
+import Box from '@mui/material/Box'
 import { useState } from 'react'
 import type { ReactElement } from 'react'
 

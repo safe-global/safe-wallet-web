@@ -1,5 +1,6 @@
 import { type ReactElement, useEffect, useContext } from 'react'
-import { Grid, Typography } from '@mui/material'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 import SendToBlock from '@/components/tx/SendToBlock'
 import { createNftTransferParams } from '@/services/tx/tokenTransferParams'
 import type { NftTransferParams } from '.'

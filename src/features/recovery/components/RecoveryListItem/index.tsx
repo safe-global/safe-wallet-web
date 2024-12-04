@@ -1,4 +1,6 @@
-import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
+import Accordion from '@mui/material/Accordion'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import AccordionSummary from '@mui/material/AccordionSummary'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useContext, useState } from 'react'
 import type { ComponentProps, ReactElement } from 'react'

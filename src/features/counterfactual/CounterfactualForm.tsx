@@ -9,7 +9,12 @@ import { OVERVIEW_EVENTS, trackEvent, WALLET_EVENTS } from '@/services/analytics
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import madProps from '@/utils/mad-props'
 import React, { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { CircularProgress, Box, Button, CardActions, Divider, Alert } from '@mui/material'
+import CircularProgress from '@mui/material/CircularProgress'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import CardActions from '@mui/material/CardActions'
+import Divider from '@mui/material/Divider'
+import Alert from '@mui/material/Alert'
 import classNames from 'classnames'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'

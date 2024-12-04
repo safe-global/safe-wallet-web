@@ -1,6 +1,7 @@
 import NumberField from '@/components/common/NumberField'
 import { validateAmount, validateDecimalLength } from '@/utils/validation'
-import { Autocomplete, type MenuItemProps, MenuItem } from '@mui/material'
+import Autocomplete from '@mui/material/Autocomplete'
+import MenuItem, { type MenuItemProps } from '@mui/material/MenuItem'
 import { useController, useFormContext } from 'react-hook-form'
 import type { ApprovalInfo } from './hooks/useApprovalInfos'
 import css from './styles.module.css'

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { SellOrder as SellOrderComponent } from './index'
-import { Paper } from '@mui/material'
+import Paper from '@mui/material/Paper'
 import type { OrderStatuses } from '@safe-global/safe-gateway-typescript-sdk'
 import { appDataBuilder, orderTokenBuilder, swapOrderBuilder } from '@/features/swap/helpers/swapOrderBuilder'
 import { StoreDecorator } from '@/stories/storeDecorator'

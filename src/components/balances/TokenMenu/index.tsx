@@ -2,7 +2,9 @@ import { Sticky } from '@/components/common/Sticky'
 import Track from '@/components/common/Track'
 import { ASSETS_EVENTS } from '@/services/analytics'
 import { VisibilityOffOutlined } from '@mui/icons-material'
-import { Box, Typography, Button } from '@mui/material'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
 
 import css from './styles.module.css'
 

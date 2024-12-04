@@ -1,6 +1,6 @@
 import LoadingSpinner, { SpinnerStatus } from '@/components/new-safe/create/steps/StatusStep/LoadingSpinner'
 import TxCard from '@/components/tx-flow/common/TxCard'
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 
 const SignOrExecuteSkeleton = () => (
   <TxCard>

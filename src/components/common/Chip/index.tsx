@@ -1,4 +1,5 @@
-import { Typography, Chip as MuiChip, type ChipProps } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import { default as MuiChip, type ChipProps } from '@mui/material/Chip'
 
 type Props = {
   label?: string

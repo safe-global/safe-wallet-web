@@ -1,4 +1,7 @@
-import { Stack, Box, Typography, SvgIcon } from '@mui/material'
+import Stack from '@mui/material/Stack'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import SvgIcon from '@mui/material/SvgIcon'
 import EastRoundedIcon from '@mui/icons-material/EastRounded'
 import TokenIcon from '@/components/common/TokenIcon'
 import TokenAmount from '@/components/common/TokenAmount'

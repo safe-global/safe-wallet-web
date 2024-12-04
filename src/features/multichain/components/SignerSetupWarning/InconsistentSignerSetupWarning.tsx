@@ -8,7 +8,8 @@ import { useAllSafesGrouped } from '@/features/myAccounts/hooks/useAllSafesGroup
 import { sameAddress } from '@/utils/addresses'
 import { useMemo } from 'react'
 import { getDeviatingSetups, getSafeSetups } from '@/features/multichain/utils/utils'
-import { Box, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 import ChainIndicator from '@/components/common/ChainIndicator'
 
 const ChainIndicatorList = ({ chainIds }: { chainIds: string[] }) => {

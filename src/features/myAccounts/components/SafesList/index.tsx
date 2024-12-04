@@ -4,8 +4,7 @@ import type { MultiChainSafeItem } from '@/features/myAccounts/hooks/useAllSafes
 import MultiAccountItem from '@/features/myAccounts/components/AccountItems/MultiAccountItem'
 import { isMultiChainSafeItem } from '@/features/multichain/utils/utils'
 import { TransitionGroup } from 'react-transition-group'
-import { Collapse } from '@mui/material'
-
+import Collapse from '@mui/material/Collapse'
 type SafeListProps = {
   safes?: (SafeItem | MultiChainSafeItem)[]
   onLinkClick?: () => void

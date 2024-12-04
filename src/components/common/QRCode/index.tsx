@@ -1,5 +1,5 @@
 import QRCodeReact from 'qrcode.react'
-import { Skeleton } from '@mui/material'
+import Skeleton from '@mui/material/Skeleton'
 import { useTheme } from '@mui/material/styles'
 import type { ReactElement } from 'react'
 

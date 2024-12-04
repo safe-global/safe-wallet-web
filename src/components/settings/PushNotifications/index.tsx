@@ -1,17 +1,15 @@
-import {
-  Grid,
-  Paper,
-  Typography,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-  Alert,
-  Switch,
-  Divider,
-  Link as MuiLink,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material'
+import Grid from '@mui/material/Grid'
+import Paper from '@mui/material/Paper'
+import Typography from '@mui/material/Typography'
+import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import FormGroup from '@mui/material/FormGroup'
+import Alert from '@mui/material/Alert'
+import Switch from '@mui/material/Switch'
+import Divider from '@mui/material/Divider'
+import { default as MuiLink } from '@mui/material/Link'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import useTheme from '@mui/material/styles/useTheme'
 import Link from 'next/link'
 import { useState } from 'react'
 import type { ReactElement } from 'react'

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import EthHashInfo from './index'
-import { Paper } from '@mui/material'
+import Paper from '@mui/material/Paper'
 
 import { StoreDecorator } from '@/stories/storeDecorator'
 

@@ -1,5 +1,6 @@
 import { type ReactElement } from 'react'
-import { FormControlLabel, Switch } from '@mui/material'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Switch from '@mui/material/Switch'
 import { TX_LIST_EVENTS } from '@/services/analytics'
 import Track from '@/components/common/Track'
 

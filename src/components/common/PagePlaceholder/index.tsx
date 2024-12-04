@@ -1,5 +1,5 @@
 import type { ReactElement, ReactNode } from 'react'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import css from './styles.module.css'
 
 type PagePlaceholderProps = {

@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import SwapTokens from './index'
-import { Paper } from '@mui/material'
-
+import Paper from '@mui/material/Paper'
 const meta = {
   component: SwapTokens,
   parameters: {

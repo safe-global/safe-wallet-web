@@ -5,7 +5,8 @@ import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { COUNTERFACTUAL_EVENTS } from '@/services/analytics/events/counterfactual'
 import { getBlockExplorerLink } from '@/utils/chains'
-import { Alert, Typography } from '@mui/material'
+import Alert from '@mui/material/Alert'
+import Typography from '@mui/material/Typography'
 
 const CheckBalance = () => {
   const { safe, safeAddress } = useSafeInfo()

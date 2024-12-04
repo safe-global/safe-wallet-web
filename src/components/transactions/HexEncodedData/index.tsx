@@ -1,5 +1,7 @@
 import { shortenText } from '@/utils/formatters'
-import { Box, Link, Tooltip } from '@mui/material'
+import Box from '@mui/material/Box'
+import Link from '@mui/material/Link'
+import Tooltip from '@mui/material/Tooltip'
 import type { ReactElement } from 'react'
 import { useState } from 'react'
 import css from './styles.module.css'

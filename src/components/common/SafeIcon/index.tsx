@@ -1,5 +1,6 @@
 import type { ReactElement } from 'react'
-import { Box, Skeleton } from '@mui/material'
+import Box from '@mui/material/Box'
+import Skeleton from '@mui/material/Skeleton'
 
 import css from './styles.module.css'
 import Identicon, { type IdenticonProps } from '../Identicon'

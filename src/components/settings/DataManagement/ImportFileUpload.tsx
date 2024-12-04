@@ -1,5 +1,6 @@
 import { useDropzone } from 'react-dropzone'
-import { Typography, SvgIcon } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import SvgIcon from '@mui/material/SvgIcon'
 import { useCallback } from 'react'
 import type { Dispatch, SetStateAction } from 'react'
 

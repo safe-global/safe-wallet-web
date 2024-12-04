@@ -1,4 +1,8 @@
-import { Box, Button, IconButton, Stack, SvgIcon } from '@mui/material'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import Stack from '@mui/material/Stack'
+import SvgIcon from '@mui/material/SvgIcon'
 import css from '@/components/tx/ApprovalEditor/styles.module.css'
 import type { ApprovalInfo } from './hooks/useApprovalInfos'
 

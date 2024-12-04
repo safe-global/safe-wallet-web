@@ -1,4 +1,7 @@
-import { Button, CardActions, Divider, Typography } from '@mui/material'
+import Button from '@mui/material/Button'
+import CardActions from '@mui/material/CardActions'
+import Divider from '@mui/material/Divider'
+import Typography from '@mui/material/Typography'
 import type { ReactElement } from 'react'
 
 import EthHashInfo from '@/components/common/EthHashInfo'

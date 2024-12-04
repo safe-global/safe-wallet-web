@@ -1,7 +1,12 @@
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import madProps from '@/utils/mad-props'
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { CircularProgress, Box, Button, CardActions, Divider, Typography } from '@mui/material'
+import CircularProgress from '@mui/material/CircularProgress'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import CardActions from '@mui/material/CardActions'
+import Divider from '@mui/material/Divider'
+import Typography from '@mui/material/Typography'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { trackError, Errors } from '@/services/exceptions'

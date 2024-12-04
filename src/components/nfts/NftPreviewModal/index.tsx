@@ -4,7 +4,7 @@ import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
 import { nftPlatforms } from '../config'
 import useChainId from '@/hooks/useChainId'
-import { CircularProgress } from '@mui/material'
+import CircularProgress from '@mui/material/CircularProgress'
 
 const NftPreviewModal = ({ nft, onClose }: { nft?: SafeCollectibleResponse; onClose: () => void }) => {
   const chainId = useChainId()

@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { Errors, logError } from '@/services/exceptions'

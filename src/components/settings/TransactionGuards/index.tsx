@@ -1,6 +1,11 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { Paper, Grid, Typography, Box, IconButton, SvgIcon } from '@mui/material'
+import Paper from '@mui/material/Paper'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
+import SvgIcon from '@mui/material/SvgIcon'
 
 import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'

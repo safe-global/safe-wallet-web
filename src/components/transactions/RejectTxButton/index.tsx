@@ -1,5 +1,5 @@
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
-import { Button } from '@mui/material'
+import Button from '@mui/material/Button'
 
 import type { ReactElement } from 'react'
 import { useContext } from 'react'

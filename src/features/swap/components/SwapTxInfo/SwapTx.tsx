@@ -1,6 +1,6 @@
 import type { Order, OrderToken } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import TokenAmount from '@/components/common/TokenAmount'
 import TokenIcon from '@/components/common/TokenIcon'
 

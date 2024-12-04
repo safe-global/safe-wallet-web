@@ -1,4 +1,4 @@
-import { Button } from '@mui/material'
+import Button from '@mui/material/Button'
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 
 const ConnectWalletButton = ({

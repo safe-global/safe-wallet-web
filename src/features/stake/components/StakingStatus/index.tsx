@@ -1,5 +1,5 @@
 import { NativeStakingStatus } from '@safe-global/safe-gateway-typescript-sdk'
-import { SvgIcon } from '@mui/material'
+import SvgIcon from '@mui/material/SvgIcon'
 import CheckIcon from '@/public/images/common/circle-check.svg'
 import ClockIcon from '@/public/images/common/clock.svg'
 import SlashShield from '@/public/images/common/shield-off.svg'

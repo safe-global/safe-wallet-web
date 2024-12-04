@@ -17,19 +17,17 @@ import { shortenAddress } from '@/utils/formatters'
 import { addressIsNotCurrentSafe } from '@/utils/validation'
 import { isHardwareWallet } from '@/utils/wallets'
 import { Close } from '@mui/icons-material'
-import {
-  Alert,
-  Box,
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Divider,
-  IconButton,
-  Typography,
-} from '@mui/material'
+import Alert from '@mui/material/Alert'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import Divider from '@mui/material/Divider'
+import IconButton from '@mui/material/IconButton'
+import Typography from '@mui/material/Typography'
 import type { Delegate } from '@safe-global/safe-gateway-typescript-sdk/dist/types/delegates'
 import { type BaseSyntheticEvent, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'

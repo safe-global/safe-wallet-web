@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material'
+import Stack from '@mui/material/Stack'
 import Disclaimer from '@/components/common/Disclaimer'
 import WidgetDisclaimer from '@/components/common/WidgetDisclaimer'
 import useStakeConsent from '@/features/stake/useStakeConsent'

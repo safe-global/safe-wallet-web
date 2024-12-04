@@ -1,5 +1,7 @@
 import { type ChangeEvent, type ReactElement } from 'react'
-import { Box, FormControlLabel, Switch } from '@mui/material'
+import Box from '@mui/material/Box'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Switch from '@mui/material/Switch'
 import { localItem } from '@/services/local-storage/local'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { setDarkMode } from '@/store/settingsSlice'

@@ -1,5 +1,6 @@
 import { useMemo, type FC } from 'react'
-import { type PaletteMode, type Theme, ThemeProvider } from '@mui/material'
+import { type PaletteMode, type Theme } from '@mui/material/styles'
+import ThemeProvider from '@mui/material/styles/ThemeProvider'
 import createSafeTheme from './safeTheme'
 
 // This component is necessary to make the theme available in the library components

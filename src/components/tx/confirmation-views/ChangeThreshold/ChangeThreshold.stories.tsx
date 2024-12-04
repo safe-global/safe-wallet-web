@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Paper } from '@mui/material'
+import Paper from '@mui/material/Paper'
 import { StoreDecorator } from '@/stories/storeDecorator'
 import ChangeThreshold from './index'
 import { ChangeThresholdReviewContext } from '@/components/tx-flow/flows/ChangeThreshold/context'

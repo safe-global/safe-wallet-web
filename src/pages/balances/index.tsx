@@ -13,8 +13,7 @@ import CurrencySelect from '@/components/balances/CurrencySelect'
 import TokenListSelect from '@/components/balances/TokenListSelect'
 import StakingBanner from '@/components/dashboard/StakingBanner'
 import useIsStakingBannerEnabled from '@/features/stake/hooks/useIsStakingBannerEnabled'
-import { Box } from '@mui/material'
-
+import Box from '@mui/material/Box'
 const Balances: NextPage = () => {
   const { error } = useBalances()
   const [showHiddenAssets, setShowHiddenAssets] = useState(false)

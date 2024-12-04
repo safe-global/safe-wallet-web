@@ -1,16 +1,14 @@
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  IconButton,
-  SvgIcon,
-  Typography,
-} from '@mui/material'
-import type { AlertColor } from '@mui/material'
+import Accordion from '@mui/material/Accordion'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import IconButton from '@mui/material/IconButton'
+import SvgIcon from '@mui/material/SvgIcon'
+import Typography from '@mui/material/Typography'
+import type { AlertColor } from '@mui/material/Alert'
 import type { ReactElement } from 'react'
 import LightbulbIcon from '@/public/images/common/lightbulb.svg'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'

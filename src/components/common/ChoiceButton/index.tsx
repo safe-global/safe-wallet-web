@@ -1,5 +1,8 @@
 import { type ElementType } from 'react'
-import { Box, ButtonBase, SvgIcon, type SvgIconOwnProps, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import ButtonBase from '@mui/material/ButtonBase'
+import SvgIcon, { type SvgIconOwnProps } from '@mui/material/SvgIcon'
+import Typography from '@mui/material/Typography'
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded'
 import css from './styles.module.css'
 

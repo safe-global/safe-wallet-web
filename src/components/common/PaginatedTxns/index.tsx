@@ -1,5 +1,5 @@
 import { type ReactElement, useEffect, useState } from 'react'
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import TxList from '@/components/transactions/TxList'
 import { type TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
 import ErrorMessage from '@/components/tx/ErrorMessage'

@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import NamedAddressInfo from '@/components/common/NamedAddressInfo'
 import FieldsGrid from '../FieldsGrid'
 

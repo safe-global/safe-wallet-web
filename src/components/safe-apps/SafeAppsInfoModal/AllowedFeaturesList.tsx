@@ -1,4 +1,6 @@
-import { Box, Typography, SvgIcon } from '@mui/material'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import SvgIcon from '@mui/material/SvgIcon'
 import ShieldIcon from '@/public/images/settings/permissions/shield.svg'
 
 import { getBrowserPermissionDisplayValues } from '@/hooks/safe-apps/permissions'

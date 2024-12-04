@@ -7,7 +7,10 @@ import { trackEvent } from '@/services/analytics'
 import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
 import { asError } from '@/services/exceptions/utils'
 import { getClipboard, isClipboardSupported } from '@/utils/clipboard'
-import { Button, CircularProgress, InputAdornment, TextField } from '@mui/material'
+import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
+import InputAdornment from '@mui/material/InputAdornment'
+import TextField from '@mui/material/TextField'
 import { useCallback, useContext, useEffect, useState } from 'react'
 
 const PROPOSAL_TIMEOUT = 30_000

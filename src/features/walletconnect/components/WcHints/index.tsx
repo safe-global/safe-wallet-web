@@ -1,17 +1,15 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import {
-  Accordion,
-  AccordionSummary,
-  Avatar,
-  Box,
-  Typography,
-  AccordionDetails,
-  SvgIcon,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-} from '@mui/material'
+import Accordion from '@mui/material/Accordion'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import Avatar from '@mui/material/Avatar'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import SvgIcon from '@mui/material/SvgIcon'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import ListItemText from '@mui/material/ListItemText'
 import { useState } from 'react'
 import type { ReactElement } from 'react'
 import Question from '@/public/images/common/question.svg'

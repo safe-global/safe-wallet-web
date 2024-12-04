@@ -1,5 +1,6 @@
 import { type ReactElement } from 'react'
-import { Box, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 import SouthIcon from '@mui/icons-material/South'
 import css from './styles.module.css'
 import useSafeAddress from '@/hooks/useSafeAddress'

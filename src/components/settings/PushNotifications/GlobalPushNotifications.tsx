@@ -1,19 +1,17 @@
 import { selectUndeployedSafes, type UndeployedSafesState } from '@/features/counterfactual/store/undeployedSafesSlice'
-import {
-  Box,
-  Grid,
-  Paper,
-  Typography,
-  Checkbox,
-  Button,
-  Divider,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  CircularProgress,
-} from '@mui/material'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import Paper from '@mui/material/Paper'
+import Typography from '@mui/material/Typography'
+import Checkbox from '@mui/material/Checkbox'
+import Button from '@mui/material/Button'
+import Divider from '@mui/material/Divider'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import CircularProgress from '@mui/material/CircularProgress'
 import mapValues from 'lodash/mapValues'
 import difference from 'lodash/difference'
 import pickBy from 'lodash/pickBy'

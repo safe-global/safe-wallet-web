@@ -1,4 +1,4 @@
-import { Alert } from '@mui/material'
+import Alert from '@mui/material/Alert'
 import { useIsMultichainSafe } from '../../hooks/useIsMultichainSafe'
 import { useCurrentChain } from '@/hooks/useChains'
 

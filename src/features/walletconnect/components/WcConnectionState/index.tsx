@@ -1,4 +1,5 @@
-import { SvgIcon, Typography } from '@mui/material'
+import SvgIcon from '@mui/material/SvgIcon'
+import Typography from '@mui/material/Typography'
 import classNames from 'classnames'
 import type { CoreTypes } from '@walletconnect/types'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'

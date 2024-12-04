@@ -1,4 +1,8 @@
-import { Button, CardActions, Divider, Grid, Typography } from '@mui/material'
+import Button from '@mui/material/Button'
+import CardActions from '@mui/material/CardActions'
+import Divider from '@mui/material/Divider'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 import type { ReactElement } from 'react'
 
 import TxCard from '../../common/TxCard'

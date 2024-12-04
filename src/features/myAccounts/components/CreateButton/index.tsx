@@ -1,4 +1,4 @@
-import { Button } from '@mui/material'
+import Button from '@mui/material/Button'
 import Link from 'next/link'
 import { AppRoutes } from '@/config/routes'
 

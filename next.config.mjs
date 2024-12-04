@@ -77,6 +77,7 @@ const nextConfig = {
       ...config.resolve.alias,
       'bn.js': path.resolve('./node_modules/bn.js/lib/bn.js'),
       'mainnet.json': path.resolve('./node_modules/@ethereumjs/common/dist.browser/genesisStates/mainnet.json'),
+      '@mui/material$': path.resolve(''), // use granular imports instead! E.g. @mui/material/Button
     }
 
     if (dev) {

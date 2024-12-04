@@ -2,7 +2,7 @@ import { SecuritySeverity } from '@/services/security/modules/types'
 import CloseIcon from '@/public/images/common/close.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import type { ComponentType } from 'react'
-import type { AlertColor } from '@mui/material'
+import type { AlertColor } from '@mui/material/Alert'
 
 const ACTION_REJECT = 'Reject this transaction'
 const ACTION_REVIEW = 'Review before processing'

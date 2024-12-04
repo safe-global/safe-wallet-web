@@ -1,5 +1,5 @@
 import { useContext, useMemo, useState } from 'react'
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import EnhancedTable from '@/components/common/EnhancedTable'

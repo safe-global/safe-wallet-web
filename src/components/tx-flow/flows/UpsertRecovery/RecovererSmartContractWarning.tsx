@@ -1,4 +1,5 @@
-import { SvgIcon, Typography } from '@mui/material'
+import SvgIcon from '@mui/material/SvgIcon'
+import Typography from '@mui/material/Typography'
 import { getSafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useState, useEffect } from 'react'
 import { useWatch } from 'react-hook-form'

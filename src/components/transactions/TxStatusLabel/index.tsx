@@ -1,5 +1,7 @@
 import { isCancelledSwapOrder } from '@/utils/transaction-guards'
-import { CircularProgress, type Palette, Typography } from '@mui/material'
+import CircularProgress from '@mui/material/CircularProgress'
+import { type Palette } from '@mui/material/styles/createPalette'
+import Typography from '@mui/material/Typography'
 import { TransactionStatus, type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import useIsPending from '@/hooks/useIsPending'
 import useTransactionStatus from '@/hooks/useTransactionStatus'

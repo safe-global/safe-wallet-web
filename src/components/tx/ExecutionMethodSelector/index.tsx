@@ -1,4 +1,9 @@
-import { Box, FormControl, FormControlLabel, Radio, RadioGroup, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import FormControl from '@mui/material/FormControl'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Radio from '@mui/material/Radio'
+import RadioGroup from '@mui/material/RadioGroup'
+import Typography from '@mui/material/Typography'
 import type { Dispatch, SetStateAction, ReactElement, ChangeEvent } from 'react'
 
 import useWallet from '@/hooks/wallets/useWallet'

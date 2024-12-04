@@ -1,4 +1,6 @@
-import { Button, SvgIcon, Grid } from '@mui/material'
+import Button from '@mui/material/Button'
+import SvgIcon from '@mui/material/SvgIcon'
+import Grid from '@mui/material/Grid'
 import type { ReactElement, ElementType } from 'react'
 import InputAdornment from '@mui/material/InputAdornment'
 import SearchIcon from '@/public/images/common/search.svg'

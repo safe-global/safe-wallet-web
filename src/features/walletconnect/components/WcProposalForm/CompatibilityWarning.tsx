@@ -1,4 +1,5 @@
-import { Alert, Typography } from '@mui/material'
+import Alert from '@mui/material/Alert'
+import Typography from '@mui/material/Typography'
 import { useCallback } from 'react'
 import type { WalletKitTypes } from '@reown/walletkit'
 

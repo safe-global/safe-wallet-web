@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { createRejectTx } from '@/services/tx/tx-sender'
 import { useContext, useEffect } from 'react'

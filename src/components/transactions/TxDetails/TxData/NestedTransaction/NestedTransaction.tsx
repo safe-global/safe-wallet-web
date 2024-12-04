@@ -1,4 +1,6 @@
-import { Stack, SvgIcon, Typography } from '@mui/material'
+import Stack from '@mui/material/Stack'
+import SvgIcon from '@mui/material/SvgIcon'
+import Typography from '@mui/material/Typography'
 import { type TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { Divider } from '@/components/tx/DecodedTx'

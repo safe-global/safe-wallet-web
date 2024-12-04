@@ -1,6 +1,6 @@
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import { useContext } from 'react'
 import type { ReactElement } from 'react'
 

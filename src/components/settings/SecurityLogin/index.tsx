@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import dynamic from 'next/dynamic'
 import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
 import SecuritySettings from '../SecuritySettings'

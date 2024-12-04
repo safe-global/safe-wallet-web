@@ -1,5 +1,9 @@
 import { useContext, useEffect } from 'react'
-import { Typography, Divider, Box, Paper, SvgIcon } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import Divider from '@mui/material/Divider'
+import Box from '@mui/material/Box'
+import Paper from '@mui/material/Paper'
+import SvgIcon from '@mui/material/SvgIcon'
 import type { ReactElement } from 'react'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'

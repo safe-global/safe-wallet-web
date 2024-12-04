@@ -1,4 +1,5 @@
-import { SvgIcon, Typography } from '@mui/material'
+import SvgIcon from '@mui/material/SvgIcon'
+import Typography from '@mui/material/Typography'
 import type { ReactElement } from 'react'
 import WalletConnect from '@/public/images/common/walletconnect.svg'
 import Alert from '@/public/images/notifications/alert.svg'

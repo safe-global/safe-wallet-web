@@ -1,5 +1,7 @@
 import React, { type ReactElement } from 'react'
-import { Box, SvgIcon, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import SvgIcon from '@mui/material/SvgIcon'
+import Typography from '@mui/material/Typography'
 import SpeedIcon from '@/public/images/settings/spending-limit/speed.svg'
 import type { BoxProps } from '@mui/system'
 

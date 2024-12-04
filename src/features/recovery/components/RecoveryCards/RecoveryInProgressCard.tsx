@@ -1,6 +1,10 @@
 import Track from '@/components/common/Track'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
-import { Button, Card, Divider, Grid, Typography } from '@mui/material'
+import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
+import Divider from '@mui/material/Divider'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 import { useRouter } from 'next/dist/client/router'
 import type { ReactElement } from 'react'
 

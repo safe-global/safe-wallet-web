@@ -5,21 +5,19 @@ import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { type ChangeEvent, type ReactElement, useContext, useState, useCallback } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import Link from 'next/link'
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogContent,
-  DialogContentText,
-  FormControl,
-  FormControlLabel,
-  IconButton,
-  List,
-  ListItem,
-  Radio,
-  RadioGroup,
-  Typography,
-} from '@mui/material'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import FormControl from '@mui/material/FormControl'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import IconButton from '@mui/material/IconButton'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import Radio from '@mui/material/Radio'
+import RadioGroup from '@mui/material/RadioGroup'
+import Typography from '@mui/material/Typography'
 import CloseIcon from '@mui/icons-material/Close'
 
 import { UpsertRecoveryFlow } from '@/components/tx-flow/flows'

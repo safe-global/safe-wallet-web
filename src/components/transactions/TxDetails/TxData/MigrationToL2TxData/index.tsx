@@ -13,7 +13,7 @@ import DecodedData from '../DecodedData'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { MigrateToL2Information } from '@/components/tx/SignOrExecuteForm/MigrateToL2Information'
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 
 export const MigrationToL2TxData = ({ txDetails }: { txDetails: TransactionDetails }) => {

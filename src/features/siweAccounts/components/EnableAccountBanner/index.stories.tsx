@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import EnableAccountBanner from './index'
-import { Paper } from '@mui/material'
+import Paper from '@mui/material/Paper'
 import type { Eip1193Provider } from 'ethers'
 import { BrowserProvider } from 'ethers'
 

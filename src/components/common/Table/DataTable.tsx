@@ -1,5 +1,6 @@
 import type { ReactElement } from 'react'
-import { Stack, Typography } from '@mui/material'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import type { DataRow } from '@/components/common/Table/DataRow'
 
 type DataTableProps = {

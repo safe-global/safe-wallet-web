@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import { useMemo } from 'react'
 import type { ReactElement } from 'react'
 

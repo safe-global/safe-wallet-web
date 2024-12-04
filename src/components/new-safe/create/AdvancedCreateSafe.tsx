@@ -1,5 +1,7 @@
 import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
-import { Container, Typography, Grid } from '@mui/material'
+import Container from '@mui/material/Container'
+import Typography from '@mui/material/Typography'
+import Grid from '@mui/material/Grid'
 import { useRouter } from 'next/router'
 
 import useWallet from '@/hooks/wallets/useWallet'

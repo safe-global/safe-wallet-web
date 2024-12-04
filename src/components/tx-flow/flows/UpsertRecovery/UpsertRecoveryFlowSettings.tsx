@@ -1,20 +1,18 @@
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
-import {
-  Divider,
-  CardActions,
-  Button,
-  Typography,
-  SvgIcon,
-  MenuItem,
-  TextField,
-  Collapse,
-  Checkbox,
-  FormControlLabel,
-  Tooltip,
-  Alert,
-  Box,
-} from '@mui/material'
+import Divider from '@mui/material/Divider'
+import CardActions from '@mui/material/CardActions'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
+import SvgIcon from '@mui/material/SvgIcon'
+import MenuItem from '@mui/material/MenuItem'
+import TextField from '@mui/material/TextField'
+import Collapse from '@mui/material/Collapse'
+import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Tooltip from '@mui/material/Tooltip'
+import Alert from '@mui/material/Alert'
+import Box from '@mui/material/Box'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useForm, FormProvider, Controller } from 'react-hook-form'

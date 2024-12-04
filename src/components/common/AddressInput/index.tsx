@@ -2,15 +2,12 @@ import AddressInputReadOnly from '@/components/common/AddressInputReadOnly'
 import useAddressBook from '@/hooks/useAddressBook'
 import type { ReactElement } from 'react'
 import { useEffect, useCallback, useRef, useMemo } from 'react'
-import {
-  InputAdornment,
-  TextField,
-  type TextFieldProps,
-  CircularProgress,
-  IconButton,
-  SvgIcon,
-  Skeleton,
-} from '@mui/material'
+import InputAdornment from '@mui/material/InputAdornment'
+import TextField, { type TextFieldProps } from '@mui/material/TextField'
+import CircularProgress from '@mui/material/CircularProgress'
+import IconButton from '@mui/material/IconButton'
+import SvgIcon from '@mui/material/SvgIcon'
+import Skeleton from '@mui/material/Skeleton'
 import { useFormContext, useWatch, type Validate, get } from 'react-hook-form'
 import { validatePrefixedAddress } from '@/utils/validation'
 import { useCurrentChain } from '@/hooks/useChains'

@@ -1,4 +1,6 @@
-import { Alert, AlertTitle, Box } from '@mui/material'
+import Alert from '@mui/material/Alert'
+import AlertTitle from '@mui/material/AlertTitle'
+import Box from '@mui/material/Box'
 import { useCurrentChain } from '@/hooks/useChains'
 import ChainSwitcher from '@/components/common/ChainSwitcher'
 import useIsWrongChain from '@/hooks/useIsWrongChain'

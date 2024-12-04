@@ -1,4 +1,4 @@
-import { TextField } from '@mui/material'
+import TextField from '@mui/material/TextField'
 import { useMemo } from 'react'
 import type { ReactElement } from 'react'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'

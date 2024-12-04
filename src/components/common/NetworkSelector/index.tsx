@@ -5,19 +5,17 @@ import { useAppSelector } from '@/store'
 import { selectChains } from '@/store/chainsSlice'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
-import {
-  Box,
-  ButtonBase,
-  CircularProgress,
-  Collapse,
-  Divider,
-  MenuItem,
-  Select,
-  Skeleton,
-  Stack,
-  Tooltip,
-  Typography,
-} from '@mui/material'
+import Box from '@mui/material/Box'
+import ButtonBase from '@mui/material/ButtonBase'
+import CircularProgress from '@mui/material/CircularProgress'
+import Collapse from '@mui/material/Collapse'
+import Divider from '@mui/material/Divider'
+import MenuItem from '@mui/material/MenuItem'
+import Select from '@mui/material/Select'
+import Skeleton from '@mui/material/Skeleton'
+import Stack from '@mui/material/Stack'
+import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
 import partition from 'lodash/partition'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useChains, { useCurrentChain } from '@/hooks/useChains'

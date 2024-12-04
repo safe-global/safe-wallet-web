@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react'
 import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 import TokenIcon from '@/components/common/TokenIcon'
 import FieldsGrid from '@/components/tx/FieldsGrid'
 import { formatVisualAmount } from '@/utils/formatters'

@@ -1,4 +1,5 @@
-import { Button, Tooltip } from '@mui/material'
+import Button from '@mui/material/Button'
+import Tooltip from '@mui/material/Tooltip'
 import { useContext } from 'react'
 import type { SyntheticEvent, ReactElement } from 'react'
 

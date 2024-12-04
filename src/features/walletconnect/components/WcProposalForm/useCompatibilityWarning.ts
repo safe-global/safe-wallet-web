@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import type { AlertColor } from '@mui/material'
+import type { AlertColor } from '@mui/material/Alert'
 import type { WalletKitTypes } from '@reown/walletkit'
 import useChains from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'

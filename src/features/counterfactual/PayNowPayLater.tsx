@@ -2,16 +2,14 @@ import type { ChangeEvent, Dispatch, SetStateAction } from 'react'
 import classnames from 'classnames'
 import { useCurrentChain } from '@/hooks/useChains'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
-import {
-  FormControl,
-  FormControlLabel,
-  List,
-  ListItem,
-  ListItemIcon,
-  Radio,
-  RadioGroup,
-  Typography,
-} from '@mui/material'
+import FormControl from '@mui/material/FormControl'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import Radio from '@mui/material/Radio'
+import RadioGroup from '@mui/material/RadioGroup'
+import Typography from '@mui/material/Typography'
 
 import css from './styles.module.css'
 import ErrorMessage from '@/components/tx/ErrorMessage'

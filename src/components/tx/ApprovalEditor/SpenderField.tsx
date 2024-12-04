@@ -1,5 +1,8 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { Stack, Typography, useMediaQuery, useTheme } from '@mui/material'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import useTheme from '@mui/material/styles/useTheme'
 
 import css from './styles.module.css'
 import useAsync from '@/hooks/useAsync'

@@ -1,4 +1,6 @@
-import { SvgIcon, Tooltip, Typography } from '@mui/material'
+import SvgIcon from '@mui/material/SvgIcon'
+import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
 import { getSafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useContext, useEffect } from 'react'
 import type { ReactElement } from 'react'

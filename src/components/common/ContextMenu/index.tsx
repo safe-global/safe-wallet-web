@@ -1,5 +1,5 @@
 import React from 'react'
-import { Menu, type MenuProps } from '@mui/material'
+import Menu, { type MenuProps } from '@mui/material/Menu'
 
 import css from './styles.module.css'
 

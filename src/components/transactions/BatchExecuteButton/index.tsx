@@ -1,5 +1,6 @@
 import { useCallback, useContext } from 'react'
-import { Button, Tooltip } from '@mui/material'
+import Button from '@mui/material/Button'
+import Tooltip from '@mui/material/Tooltip'
 import { BatchExecuteHoverContext } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 import { useAppSelector } from '@/store'
 import { selectPendingTxs } from '@/store/pendingTxsSlice'

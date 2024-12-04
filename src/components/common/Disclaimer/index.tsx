@@ -1,5 +1,11 @@
 import type { ReactElement, ReactNode } from 'react'
-import { Box, Button, Divider, Paper, Stack, SvgIcon, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Divider from '@mui/material/Divider'
+import Paper from '@mui/material/Paper'
+import Stack from '@mui/material/Stack'
+import SvgIcon from '@mui/material/SvgIcon'
+import Typography from '@mui/material/Typography'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import css from './styles.module.css'
 

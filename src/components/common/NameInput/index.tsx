@@ -1,5 +1,4 @@
-import type { TextFieldProps } from '@mui/material'
-import { TextField } from '@mui/material'
+import TextField, { type TextFieldProps } from '@mui/material/TextField'
 import get from 'lodash/get'
 import { type FieldError, useFormContext } from 'react-hook-form'
 import inputCss from '@/styles/inputs.module.css'

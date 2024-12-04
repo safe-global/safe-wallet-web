@@ -1,6 +1,8 @@
 import { CookieAndTermBanner } from 'src/components/common/CookieAndTermBanner'
 import SettingsHeader from '@/components/settings/SettingsHeader'
-import { Grid, Paper, Typography } from '@mui/material'
+import Grid from '@mui/material/Grid'
+import Paper from '@mui/material/Paper'
+import Typography from '@mui/material/Typography'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 

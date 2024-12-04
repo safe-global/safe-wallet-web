@@ -1,4 +1,4 @@
-import { Button } from '@mui/material'
+import Button from '@mui/material/Button'
 import { useState, useCallback, useEffect, type ReactNode } from 'react'
 
 // TODO: Extract into a hook so it can be reused for links and not just buttons

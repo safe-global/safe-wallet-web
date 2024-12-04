@@ -1,4 +1,6 @@
-import { Box, Paper, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import Paper from '@mui/material/Paper'
+import Typography from '@mui/material/Typography'
 import WifiOffIcon from '@mui/icons-material/WifiOff'
 import type { NextPage } from 'next'
 import Head from 'next/head'

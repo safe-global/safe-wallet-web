@@ -1,5 +1,6 @@
 import Head from 'next/head'
-import { Box, CircularProgress } from '@mui/material'
+import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
 import { useSafeAppUrl } from '@/hooks/safe-apps/useSafeAppUrl'
 import { SafeAppLanding } from '@/components/safe-apps/SafeAppLandingPage'
 import { useCurrentChain } from '@/hooks/useChains'

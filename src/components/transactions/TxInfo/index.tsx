@@ -29,7 +29,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { SwapTx } from '@/features/swap/components/SwapTxInfo/SwapTx'
 import StakingTxExitInfo from '@/features/stake/components/StakingTxExitInfo'
 import StakingTxWithdrawInfo from '@/features/stake/components/StakingTxWithdrawInfo'
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import css from './styles.module.css'
 import StakingTxDepositInfo from '@/features/stake/components/StakingTxDepositInfo'
 

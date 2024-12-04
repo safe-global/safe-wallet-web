@@ -1,4 +1,6 @@
-import { Alert, AlertTitle, Box } from '@mui/material'
+import Alert from '@mui/material/Alert'
+import AlertTitle from '@mui/material/AlertTitle'
+import Box from '@mui/material/Box'
 import useWallet from '@/hooks/wallets/useWallet'
 import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
 

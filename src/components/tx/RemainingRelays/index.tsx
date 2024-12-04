@@ -1,4 +1,6 @@
-import { SvgIcon, Tooltip, Typography } from '@mui/material'
+import SvgIcon from '@mui/material/SvgIcon'
+import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { MAX_DAY_RELAYS } from '@/hooks/useRemainingRelays'
 import css from '../BalanceInfo/styles.module.css'

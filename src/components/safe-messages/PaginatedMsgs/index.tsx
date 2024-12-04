@@ -1,5 +1,7 @@
-import { Box } from '@mui/material'
-import { Typography, Link, SvgIcon } from '@mui/material'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import Link from '@mui/material/Link'
+import SvgIcon from '@mui/material/SvgIcon'
 import { useEffect, useState } from 'react'
 import type { ReactElement } from 'react'
 

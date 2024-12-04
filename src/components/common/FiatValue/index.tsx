@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactElement } from 'react'
 import { useMemo } from 'react'
-import { Tooltip, Typography } from '@mui/material'
+import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
 import { useAppSelector } from '@/store'
 import { selectCurrency } from '@/store/settingsSlice'
 import { formatCurrency, formatCurrencyPrecise } from '@/utils/formatNumber'

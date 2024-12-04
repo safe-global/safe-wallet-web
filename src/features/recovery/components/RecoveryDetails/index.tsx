@@ -1,4 +1,4 @@
-import { Link } from '@mui/material'
+import Link from '@mui/material/Link'
 import { useState } from 'react'
 import { Operation } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'

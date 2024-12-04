@@ -1,6 +1,6 @@
 import type { DraftBatchItem } from '@/store/batchSlice'
 import BatchTxItem from './BatchTxItem'
-import { List } from '@mui/material'
+import List from '@mui/material/List'
 
 const BatchTxList = ({ txItems, onDelete }: { txItems: DraftBatchItem[]; onDelete?: (id: string) => void }) => {
   return (

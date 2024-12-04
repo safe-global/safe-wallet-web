@@ -1,5 +1,6 @@
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import { Grid, Typography } from '@mui/material'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 import { useContext, useEffect } from 'react'
 import { Errors, logError } from '@/services/exceptions'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'

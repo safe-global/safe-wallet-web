@@ -1,5 +1,11 @@
 import { undeployedSafesSlice } from '@/features/counterfactual/store/undeployedSafesSlice'
-import { DialogContent, Alert, AlertTitle, DialogActions, Button, Box, SvgIcon } from '@mui/material'
+import DialogContent from '@mui/material/DialogContent'
+import Alert from '@mui/material/Alert'
+import AlertTitle from '@mui/material/AlertTitle'
+import DialogActions from '@mui/material/DialogActions'
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
+import SvgIcon from '@mui/material/SvgIcon'
 import type { ReactElement, Dispatch, SetStateAction } from 'react'
 
 import ModalDialog from '@/components/common/ModalDialog'

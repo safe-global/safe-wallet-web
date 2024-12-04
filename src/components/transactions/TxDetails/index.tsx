@@ -1,7 +1,9 @@
 import useIsExpiredSwap from '@/features/swap/hooks/useIsExpiredSwap'
 import React, { type ReactElement, useEffect } from 'react'
 import type { TransactionDetails, TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box, CircularProgress, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
+import Typography from '@mui/material/Typography'
 
 import TxSigners from '@/components/transactions/TxSigners'
 import Summary from '@/components/transactions/TxDetails/Summary'

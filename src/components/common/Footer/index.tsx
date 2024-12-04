@@ -1,5 +1,6 @@
 import type { ReactElement, ReactNode } from 'react'
-import { SvgIcon, Typography } from '@mui/material'
+import SvgIcon from '@mui/material/SvgIcon'
+import Typography from '@mui/material/Typography'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import Link from 'next/link'
 import { useRouter } from 'next/router'

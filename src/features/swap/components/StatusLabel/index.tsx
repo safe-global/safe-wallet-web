@@ -1,4 +1,4 @@
-import { SvgIcon } from '@mui/material'
+import SvgIcon from '@mui/material/SvgIcon'
 import type { OrderStatuses } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
 import CheckIcon from '@/public/images/common/circle-check.svg'

@@ -1,4 +1,5 @@
-import { Badge, SvgIcon, type BadgeProps } from '@mui/material'
+import Badge, { type BadgeProps } from '@mui/material/Badge'
+import SvgIcon from '@mui/material/SvgIcon'
 
 import Box from '@mui/material/Box'
 import css from './styles.module.css'

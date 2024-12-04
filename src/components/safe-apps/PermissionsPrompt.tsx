@@ -1,6 +1,11 @@
 import type { ReactElement } from 'react'
 import type { PermissionRequest } from '@safe-global/safe-apps-sdk/dist/types/types/permissions'
-import { Button, Dialog, DialogActions, DialogContent, Divider, Typography } from '@mui/material'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import Divider from '@mui/material/Divider'
+import Typography from '@mui/material/Typography'
 
 import { ModalDialogTitle } from '@/components/common/ModalDialog'
 import { getSafePermissionDisplayValues } from '@/hooks/safe-apps/permissions'

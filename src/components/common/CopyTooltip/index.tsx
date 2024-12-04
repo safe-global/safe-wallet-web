@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import React, { type ReactElement, type SyntheticEvent, useCallback, useState } from 'react'
-import { Tooltip } from '@mui/material'
+import Tooltip from '@mui/material/Tooltip'
 import ConfirmCopyModal from './ConfirmCopyModal'
 
 const spanStyle = { cursor: 'pointer' }

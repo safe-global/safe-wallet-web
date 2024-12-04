@@ -6,7 +6,11 @@ import {
   isNativeTokenTransfer,
   isTransferTxInfo,
 } from '@/utils/transaction-guards'
-import { Accordion, AccordionDetails, AccordionSummary, Box, Stack } from '@mui/material'
+import Accordion from '@mui/material/Accordion'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { DataDecoded, DecodedDataResponse, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { Operation } from '@safe-global/safe-gateway-typescript-sdk'

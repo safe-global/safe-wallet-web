@@ -1,6 +1,6 @@
 import GroupedTxListItems from '@/components/transactions/GroupedTxListItems'
 import { groupTxs } from '@/utils/tx-list'
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import type { Transaction, TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement, ReactNode } from 'react'
 import { useMemo } from 'react'

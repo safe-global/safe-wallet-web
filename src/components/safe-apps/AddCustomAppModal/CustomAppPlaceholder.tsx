@@ -1,4 +1,5 @@
-import { SvgIcon, Typography } from '@mui/material'
+import SvgIcon from '@mui/material/SvgIcon'
+import Typography from '@mui/material/Typography'
 import classNames from 'classnames'
 
 import SafeAppIcon from '@/public/images/apps/apps-icon.svg'

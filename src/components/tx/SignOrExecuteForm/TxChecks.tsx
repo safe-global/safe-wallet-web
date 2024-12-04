@@ -5,7 +5,8 @@ import { type ReactElement, useContext } from 'react'
 import { TxSimulation, TxSimulationMessage } from '@/components/tx/security/tenderly'
 import TxCard from '@/components/tx-flow/common/TxCard'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-import { Box, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 
 import css from './styles.module.css'
 

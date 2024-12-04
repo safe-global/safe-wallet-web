@@ -1,6 +1,7 @@
 import { type ReactElement, useState, useMemo } from 'react'
 import { Controller, useFormContext, useWatch } from 'react-hook-form'
-import { SvgIcon, Typography } from '@mui/material'
+import SvgIcon from '@mui/material/SvgIcon'
+import Typography from '@mui/material/Typography'
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
 import useAddressBook from '@/hooks/useAddressBook'
 import AddressInput, { type AddressInputProps } from '../AddressInput'

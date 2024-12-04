@@ -1,5 +1,6 @@
 import Identicon from '@/components/common/Identicon'
-import { Box, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 import { Suspense } from 'react'
 import type { ReactElement } from 'react'
 

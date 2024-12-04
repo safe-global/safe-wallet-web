@@ -1,6 +1,7 @@
 import css from '@/components/common/icons/CircularIcon/styles.module.css'
 import LockIcon from '@/public/images/common/lock.svg'
-import { Badge, SvgIcon } from '@mui/material'
+import Badge from '@mui/material/Badge'
+import SvgIcon from '@mui/material/SvgIcon'
 
 const KeyholeIcon = ({ size = 28 }: { size?: number }) => {
   return (

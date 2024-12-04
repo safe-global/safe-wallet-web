@@ -1,5 +1,5 @@
 import React from 'react'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import CheckIcon from '@mui/icons-material/Check'
 
 import styles from './styles.module.css'

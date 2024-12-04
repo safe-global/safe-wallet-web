@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { Grid } from '@mui/material'
+import Grid from '@mui/material/Grid'
 import SafeModules from '@/components/settings/SafeModules'
 import TransactionGuards from '@/components/settings/TransactionGuards'
 import SettingsHeader from '@/components/settings/SettingsHeader'

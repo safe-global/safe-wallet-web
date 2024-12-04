@@ -16,7 +16,7 @@ import { DataRow } from '@/components/common/Table/DataRow'
 import { DataTable } from '@/components/common/Table/DataTable'
 import { compareAsc } from 'date-fns'
 import css from './styles.module.css'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import { formatAmount } from '@/utils/formatNumber'
 import {
   getExecutionPrice,

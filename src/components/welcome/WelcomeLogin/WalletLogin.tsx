@@ -1,6 +1,8 @@
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import useWallet from '@/hooks/wallets/useWallet'
-import { Box, Button, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import WalletIcon from '@/components/common/WalletIcon'
 

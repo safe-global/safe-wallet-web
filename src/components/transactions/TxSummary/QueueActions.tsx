@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { isAwaitingExecution } from '@/utils/transaction-guards'
 import ExecuteTxButton from '../ExecuteTxButton'

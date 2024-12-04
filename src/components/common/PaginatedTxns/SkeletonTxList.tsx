@@ -1,4 +1,4 @@
-import { Skeleton } from '@mui/material'
+import Skeleton from '@mui/material/Skeleton'
 
 const SkeletonTxList = () => {
   const label = <Skeleton variant="text" width="10em" sx={{ mt: '20px', mb: 1 }} />

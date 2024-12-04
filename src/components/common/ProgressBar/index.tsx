@@ -1,5 +1,4 @@
-import { LinearProgress } from '@mui/material'
-import type { LinearProgressProps } from '@mui/material'
+import LinearProgress, { type LinearProgressProps } from '@mui/material/LinearProgress'
 
 import css from './styles.module.css'
 

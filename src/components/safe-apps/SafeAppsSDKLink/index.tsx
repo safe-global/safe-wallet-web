@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Fab, Typography } from '@mui/material'
+import Fab from '@mui/material/Fab'
+import Typography from '@mui/material/Typography'
 import KeyboardDoubleArrowUpRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowUpRounded'
 import classnames from 'classnames'
 import CodeIcon from '@/public/images/apps/code-icon.svg'

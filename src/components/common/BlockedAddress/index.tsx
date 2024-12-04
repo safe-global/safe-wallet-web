@@ -1,5 +1,6 @@
 import type { ReactElement } from 'react'
-import { useMediaQuery, useTheme } from '@mui/material'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import useTheme from '@mui/material/styles/useTheme'
 import { shortenAddress } from '@/utils/formatters'
 import { useRouter } from 'next/router'
 import Disclaimer from '@/components/common/Disclaimer'

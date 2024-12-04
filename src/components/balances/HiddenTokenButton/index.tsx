@@ -1,5 +1,6 @@
 import { type ReactElement } from 'react'
-import { Typography, Button } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
 import { ASSETS_EVENTS } from '@/services/analytics'
 import useHiddenTokens from '@/hooks/useHiddenTokens'
 import useBalances from '@/hooks/useBalances'

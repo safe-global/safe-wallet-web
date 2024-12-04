@@ -1,4 +1,7 @@
-import { Box, Button, Grid, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 import Track from '@/components/common/Track'
 import { SETTINGS_EVENTS } from '@/services/analytics'
 import { ChangeThresholdFlow } from '@/components/tx-flow/flows'

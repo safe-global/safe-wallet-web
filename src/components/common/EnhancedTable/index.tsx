@@ -15,7 +15,7 @@ import { visuallyHidden } from '@mui/utils'
 import classNames from 'classnames'
 
 import css from './styles.module.css'
-import { Collapse } from '@mui/material'
+import Collapse from '@mui/material/Collapse'
 
 type EnhancedCell = {
   content: ReactNode

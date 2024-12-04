@@ -1,5 +1,7 @@
 import { type ReactElement } from 'react'
-import { Badge, ButtonBase, SvgIcon } from '@mui/material'
+import Badge from '@mui/material/Badge'
+import ButtonBase from '@mui/material/ButtonBase'
+import SvgIcon from '@mui/material/SvgIcon'
 import WalletConnectIcon from '@/public/images/common/walletconnect.svg'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'

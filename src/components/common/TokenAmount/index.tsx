@@ -1,5 +1,5 @@
 import { type ReactElement } from 'react'
-import { Tooltip } from '@mui/material'
+import Tooltip from '@mui/material/Tooltip'
 import { TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
 import css from './styles.module.css'
 import { formatVisualAmount } from '@/utils/formatters'

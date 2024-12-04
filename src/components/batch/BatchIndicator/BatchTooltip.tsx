@@ -1,5 +1,6 @@
 import { type ReactElement, useEffect, useState } from 'react'
-import { Box, SvgIcon } from '@mui/material'
+import Box from '@mui/material/Box'
+import SvgIcon from '@mui/material/SvgIcon'
 
 import SuccessIcon from '@/public/images/common/success.svg'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'

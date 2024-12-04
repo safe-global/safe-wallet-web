@@ -2,7 +2,12 @@ import ExternalLink from '@/components/common/ExternalLink'
 import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectOnChainSigning, setOnChainSigning } from '@/store/settingsSlice'
-import { FormControlLabel, Checkbox, Paper, Typography, FormGroup, Grid } from '@mui/material'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
+import Paper from '@mui/material/Paper'
+import Typography from '@mui/material/Typography'
+import FormGroup from '@mui/material/FormGroup'
+import Grid from '@mui/material/Grid'
 import { HelpCenterArticle } from '@/config/constants'
 
 export const SafeAppsSigningMethod = () => {

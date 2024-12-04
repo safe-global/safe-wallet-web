@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import CowOrderConfirmationView from './index'
-import { Paper } from '@mui/material'
+import Paper from '@mui/material/Paper'
 import type { OrderStatuses } from '@safe-global/safe-gateway-typescript-sdk'
 import { orderTokenBuilder, swapOrderConfirmationViewBuilder } from '@/features/swap/helpers/swapOrderBuilder'
 import { faker } from '@faker-js/faker'

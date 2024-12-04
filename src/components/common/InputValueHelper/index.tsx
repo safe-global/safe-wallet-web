@@ -1,6 +1,6 @@
 import type { ReactNode, SyntheticEvent } from 'react'
-import { InputAdornment, Link } from '@mui/material'
-import type { InputAdornmentProps } from '@mui/material'
+import InputAdornment, { type InputAdornmentProps } from '@mui/material/InputAdornment'
+import Link from '@mui/material/Link'
 
 type InputValueHelperProps = {
   children: ReactNode

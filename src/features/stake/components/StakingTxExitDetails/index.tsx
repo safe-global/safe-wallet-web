@@ -1,4 +1,5 @@
-import { Box, Link } from '@mui/material'
+import Box from '@mui/material/Box'
+import Link from '@mui/material/Link'
 import type { StakingTxExitInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { NativeStakingStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import FieldsGrid from '@/components/tx/FieldsGrid'

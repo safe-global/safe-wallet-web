@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import type { StakingTxWithdrawInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import StakingConfirmationTxWithdraw from '@/features/stake/components/StakingConfirmationTx/Withdraw'
 

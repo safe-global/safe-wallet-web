@@ -1,6 +1,8 @@
 import Track from '@/components/common/Track'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
-import { IconButton, SvgIcon, Tooltip } from '@mui/material'
+import IconButton from '@mui/material/IconButton'
+import SvgIcon from '@mui/material/SvgIcon'
+import Tooltip from '@mui/material/Tooltip'
 import { useContext } from 'react'
 import type { ReactElement } from 'react'
 

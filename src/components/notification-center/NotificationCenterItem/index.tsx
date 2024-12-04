@@ -16,7 +16,7 @@ import { formatTimeInWords } from '@/utils/date'
 import css from './styles.module.css'
 import classnames from 'classnames'
 import SvgIcon from '@mui/material/SvgIcon'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 
 const VARIANT_ICONS = {
   error: ErrorIcon,

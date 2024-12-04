@@ -1,16 +1,13 @@
 import { useState, type ReactElement } from 'react'
-import {
-  Box,
-  Link,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  type Palette,
-  SvgIcon,
-  Typography,
-  type ListItemIconProps,
-} from '@mui/material'
+import Box from '@mui/material/Box'
+import Link from '@mui/material/Link'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemIcon, { type ListItemIconProps } from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import { type Palette } from '@mui/material/styles/createPalette'
+import SvgIcon from '@mui/material/SvgIcon'
+import Typography from '@mui/material/Typography'
 import type {
   AddressEx,
   DetailedExecutionInfo,

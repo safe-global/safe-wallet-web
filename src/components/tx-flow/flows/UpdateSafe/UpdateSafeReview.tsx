@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 
 import ExternalLink from '@/components/common/ExternalLink'
 import { useCurrentChain } from '@/hooks/useChains'

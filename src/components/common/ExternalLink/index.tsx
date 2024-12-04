@@ -1,6 +1,8 @@
 import type { ReactElement } from 'react'
 import { OpenInNewRounded } from '@mui/icons-material'
-import { Box, Button, Link, type LinkProps } from '@mui/material'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Link, { type LinkProps } from '@mui/material/Link'
 
 /**
  * Renders an external Link which always sets the noopener and noreferrer rel attribute and the target to _blank.

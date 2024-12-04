@@ -1,6 +1,7 @@
 import { memo, type ReactElement, useMemo, useState } from 'react'
 import { alpha, Box } from '@mui/system'
-import { Grid, LinearProgress } from '@mui/material'
+import Grid from '@mui/material/Grid'
+import LinearProgress from '@mui/material/LinearProgress'
 
 import type { BrowserPermission } from '@/hooks/safe-apps/permissions'
 import Slider from './Slider'

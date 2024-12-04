@@ -1,5 +1,6 @@
 // Extract status handling into separate components
-import { Box, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 import { SpeedUpMonitor } from '@/features/speedup/components/SpeedUpMonitor'
 import { PendingStatus, type PendingTx } from '@/store/pendingTxsSlice'
 

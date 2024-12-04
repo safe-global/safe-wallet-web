@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import css from './styles.module.css'
 import useWalletBalance from '@/hooks/wallets/useWalletBalance'
 import WalletBalance from '@/components/common/WalletBalance'

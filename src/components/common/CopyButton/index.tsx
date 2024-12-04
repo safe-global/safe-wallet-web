@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
 import React, { type ReactElement } from 'react'
 import CopyIcon from '@/public/images/common/copy.svg'
-import { IconButton, SvgIcon } from '@mui/material'
+import IconButton from '@mui/material/IconButton'
+import SvgIcon from '@mui/material/SvgIcon'
 import CopyTooltip from '../CopyTooltip'
 
 export interface ButtonProps {

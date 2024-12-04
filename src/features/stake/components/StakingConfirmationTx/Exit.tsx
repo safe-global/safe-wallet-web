@@ -1,4 +1,6 @@
-import { Alert, Stack, Typography } from '@mui/material'
+import Alert from '@mui/material/Alert'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import FieldsGrid from '@/components/tx/FieldsGrid'
 import { formatDurationFromMilliseconds } from '@/utils/formatters'
 import ConfirmationOrderHeader from '@/components/tx/ConfirmationOrder/ConfirmationOrderHeader'

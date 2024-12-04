@@ -1,5 +1,10 @@
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import { Alert, Button, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
+import Alert from '@mui/material/Alert'
+import Button from '@mui/material/Button'
+import Paper from '@mui/material/Paper'
+import SvgIcon from '@mui/material/SvgIcon'
+import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
 import { useContext, useEffect } from 'react'
 import type { ReactElement } from 'react'
 

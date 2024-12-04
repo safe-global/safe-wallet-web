@@ -10,7 +10,7 @@ import SettingsIcon from '@/public/images/sidebar/settings.svg'
 import BridgeIcon from '@/public/images/common/bridge.svg'
 import SwapIcon from '@/public/images/common/swap.svg'
 import StakeIcon from '@/public/images/common/stake.svg'
-import { SvgIcon } from '@mui/material'
+import SvgIcon from '@mui/material/SvgIcon'
 import { Chip } from '@/components/common/Chip'
 
 export type NavItem = {

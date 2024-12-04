@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { IS_OFFICIAL_HOST } from '@/config/constants'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import Link from 'next/link'
 import MUILink from '@mui/material/Link'
 

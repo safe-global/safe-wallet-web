@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import type { StakingTxDepositInfo, TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
 import FieldsGrid from '@/components/tx/FieldsGrid'
 import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'

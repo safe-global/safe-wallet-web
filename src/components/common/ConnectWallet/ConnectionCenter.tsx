@@ -1,5 +1,5 @@
 import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import { type ReactElement } from 'react'
 import css from '@/components/common/ConnectWallet/styles.module.css'
 

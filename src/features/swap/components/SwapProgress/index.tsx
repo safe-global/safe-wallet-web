@@ -1,6 +1,8 @@
 import { getFilledAmount, getFilledPercentage } from '@/features/swap/helpers/utils'
 import { formatAmount } from '@/utils/formatNumber'
-import { LinearProgress, Stack, Typography } from '@mui/material'
+import LinearProgress from '@mui/material/LinearProgress'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import type { Order } from '@safe-global/safe-gateway-typescript-sdk'
 
 const SwapProgress = ({ order }: { order: Order }) => {

@@ -1,4 +1,5 @@
-import { SvgIcon, Tooltip } from '@mui/material'
+import SvgIcon from '@mui/material/SvgIcon'
+import Tooltip from '@mui/material/Tooltip'
 import type { ReactElement } from 'react'
 
 import WarningIcon from '@/public/images/notifications/warning.svg'

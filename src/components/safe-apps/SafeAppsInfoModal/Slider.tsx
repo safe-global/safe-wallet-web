@@ -1,4 +1,5 @@
-import { Box, Button } from '@mui/material'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import React, { useState, useEffect, useMemo } from 'react'
 import css from './styles.module.css'
 

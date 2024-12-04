@@ -1,5 +1,6 @@
 import { checksumAddress } from '@/utils/addresses'
-import { Box, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 import type { ReactNode, ReactElement } from 'react'
 import CopyButton from '../CopyButton'
 import EthHashInfo from '../EthHashInfo'

@@ -1,17 +1,15 @@
 import { useCallback } from 'react'
 import type { SubmitHandler } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
-import {
-  DialogActions,
-  DialogContent,
-  Typography,
-  Button,
-  TextField,
-  FormControlLabel,
-  Checkbox,
-  Box,
-  FormHelperText,
-} from '@mui/material'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
+import Box from '@mui/material/Box'
+import FormHelperText from '@mui/material/FormHelperText'
 import CheckIcon from '@mui/icons-material/Check'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'

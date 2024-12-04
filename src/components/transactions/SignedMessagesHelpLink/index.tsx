@@ -1,4 +1,6 @@
-import { Box, SvgIcon, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import SvgIcon from '@mui/material/SvgIcon'
+import Typography from '@mui/material/Typography'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import { useAppSelector } from '@/store'

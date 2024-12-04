@@ -2,19 +2,17 @@ import { selectUndeployedSafes } from '@/features/counterfactual/store/undeploye
 import NetworkLogosList from '@/features/multichain/components/NetworkLogosList'
 import type { SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
 import { useCallback, useMemo, useState } from 'react'
-import {
-  ListItemButton,
-  Box,
-  Typography,
-  Skeleton,
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Divider,
-  Tooltip,
-  SvgIcon,
-  IconButton,
-} from '@mui/material'
+import ListItemButton from '@mui/material/ListItemButton'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import Skeleton from '@mui/material/Skeleton'
+import Accordion from '@mui/material/Accordion'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import Divider from '@mui/material/Divider'
+import Tooltip from '@mui/material/Tooltip'
+import SvgIcon from '@mui/material/SvgIcon'
+import IconButton from '@mui/material/IconButton'
 import SafeIcon from '@/components/common/SafeIcon'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS, PIN_SAFE_LABELS, trackEvent } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'

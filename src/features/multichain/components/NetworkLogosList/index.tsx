@@ -1,5 +1,5 @@
 import ChainIndicator from '@/components/common/ChainIndicator'
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import css from './styles.module.css'
 

@@ -4,7 +4,9 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'
 import AppsIcon from '@/public/images/apps/apps-icon.svg'
 import SettingsIcon from '@/public/images/sidebar/settings.svg'
-import { Box, SvgIcon, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import SvgIcon from '@mui/material/SvgIcon'
+import Typography from '@mui/material/Typography'
 
 const EmptyBatch = ({ children }: { children: ReactNode }) => (
   <Box

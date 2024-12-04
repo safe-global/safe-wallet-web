@@ -1,7 +1,7 @@
 import TxProposalChip from '@/features/proposers/components/TxProposalChip'
 import StatusLabel from '@/features/swap/components/StatusLabel'
 import useIsExpiredSwap from '@/features/swap/hooks/useIsExpiredSwap'
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import type { ReactElement } from 'react'
 import { type Transaction } from '@safe-global/safe-gateway-typescript-sdk'
 

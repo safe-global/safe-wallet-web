@@ -1,5 +1,7 @@
 import type { ReactElement } from 'react'
-import { IconButton, Link, SvgIcon } from '@mui/material'
+import IconButton from '@mui/material/IconButton'
+import Link from '@mui/material/Link'
+import SvgIcon from '@mui/material/SvgIcon'
 import ShareIcon from '@/public/images/common/share.svg'
 import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'

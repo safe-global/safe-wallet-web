@@ -1,6 +1,7 @@
 import { isTimeoutError } from '@/utils/ethers-utils'
 import classNames from 'classnames'
-import { Box, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 import LoadingSpinner, { SpinnerStatus } from '@/components/new-safe/create/steps/StatusStep/LoadingSpinner'
 import { PendingStatus } from '@/store/pendingTxsSlice'
 import css from './styles.module.css'

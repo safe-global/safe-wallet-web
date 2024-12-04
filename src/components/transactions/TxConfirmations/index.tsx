@@ -1,4 +1,5 @@
-import { SvgIcon, Typography } from '@mui/material'
+import SvgIcon from '@mui/material/SvgIcon'
+import Typography from '@mui/material/Typography'
 import type { ReactElement } from 'react'
 import CheckIcon from '@mui/icons-material/Check'
 import OwnersIcon from '@/public/images/common/owners.svg'

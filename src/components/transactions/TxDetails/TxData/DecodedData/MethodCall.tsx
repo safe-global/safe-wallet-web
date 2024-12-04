@@ -1,6 +1,6 @@
 import NamedAddressInfo from '@/components/common/NamedAddressInfo'
 import { Divider } from '@/components/tx/DecodedTx'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 
 const MethodCall = ({
   method,

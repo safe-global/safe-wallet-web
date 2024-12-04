@@ -1,6 +1,6 @@
 import { useTransactionType } from '@/hooks/useTransactionType'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import css from './styles.module.css'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import { isValidElement } from 'react'

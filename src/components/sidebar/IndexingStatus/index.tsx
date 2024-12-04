@@ -1,4 +1,7 @@
-import { Stack, Box, Typography, Tooltip } from '@mui/material'
+import Stack from '@mui/material/Stack'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import Tooltip from '@mui/material/Tooltip'
 import { formatDistanceToNow } from 'date-fns'
 import { getIndexingStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import useAsync from '@/hooks/useAsync'

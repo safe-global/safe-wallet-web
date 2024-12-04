@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import type { ReactElement } from 'react'
 
 const stickyTop = { xs: '103px', md: '111px' }

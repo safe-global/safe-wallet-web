@@ -1,4 +1,6 @@
-import { List, ListItem, Typography } from '@mui/material'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import Typography from '@mui/material/Typography'
 
 export const BlockaidHint = ({ warnings }: { warnings: string[] }) => {
   return (

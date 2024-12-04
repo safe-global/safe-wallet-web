@@ -1,4 +1,5 @@
-import { Tooltip, SvgIcon } from '@mui/material'
+import Tooltip from '@mui/material/Tooltip'
+import SvgIcon from '@mui/material/SvgIcon'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'

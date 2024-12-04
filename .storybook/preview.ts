@@ -1,6 +1,7 @@
 import type { Preview } from '@storybook/react'
 
-import { ThemeProvider, CssBaseline } from '@mui/material'
+import ThemeProvider from '@mui/material/styles/ThemeProvider'
+import CssBaseline from '@mui/material/CssBaseline'
 import { withThemeFromJSXProvider } from '@storybook/addon-themes'
 import createSafeTheme from '../src/components/theme/safeTheme'
 

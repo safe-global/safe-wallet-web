@@ -1,4 +1,6 @@
-import { Tooltip, SvgIcon, Box } from '@mui/material'
+import Tooltip from '@mui/material/Tooltip'
+import SvgIcon from '@mui/material/SvgIcon'
+import Box from '@mui/material/Box'
 import WarningIcon from '@/public/images/notifications/warning.svg'
 
 const MaliciousTxWarning = ({ withTooltip = true }: { withTooltip?: boolean }) => {

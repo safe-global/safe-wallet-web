@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { Button, type ButtonProps } from '@mui/material'
+import Button, { type ButtonProps } from '@mui/material/Button'
 
 import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
 import { AppRoutes } from '@/config/routes'

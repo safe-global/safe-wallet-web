@@ -1,4 +1,5 @@
-import { Typography, Box } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
 import type { ReactElement } from 'react'
 
 export function _getCountdown(seconds: number): { days: number; hours: number; minutes: number } {

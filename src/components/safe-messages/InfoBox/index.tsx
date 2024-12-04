@@ -1,6 +1,8 @@
 import type { ComponentType } from 'react'
 import { type ReactElement, type ReactNode } from 'react'
-import { Typography, SvgIcon, Divider } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import SvgIcon from '@mui/material/SvgIcon'
+import Divider from '@mui/material/Divider'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import css from './styles.module.css'
 

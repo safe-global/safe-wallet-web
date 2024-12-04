@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import { formatVisualAmount } from '@/utils/formatters'
 import { type TwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
 import { DataRow } from '@/components/common/Table/DataRow'

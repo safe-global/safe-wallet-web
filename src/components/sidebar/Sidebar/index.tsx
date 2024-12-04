@@ -1,5 +1,7 @@
 import { useCallback, useState, type ReactElement } from 'react'
-import { Box, Divider, Drawer } from '@mui/material'
+import Box from '@mui/material/Box'
+import Divider from '@mui/material/Divider'
+import Drawer from '@mui/material/Drawer'
 import ChevronRight from '@mui/icons-material/ChevronRight'
 
 import ChainIndicator from '@/components/common/ChainIndicator'

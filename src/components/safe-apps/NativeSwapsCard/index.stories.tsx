@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import NativeSwapsCard from './index'
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import { StoreDecorator } from '@/stories/storeDecorator'
 
 const meta = {

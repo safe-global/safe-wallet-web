@@ -1,4 +1,5 @@
-import { CircularProgress, SvgIcon } from '@mui/material'
+import CircularProgress from '@mui/material/CircularProgress'
+import SvgIcon from '@mui/material/SvgIcon'
 import type { ReactElement } from 'react'
 
 import ClockIcon from '@/public/images/common/clock.svg'

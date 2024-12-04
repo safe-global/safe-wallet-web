@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Paper, Grid, Typography, Button, SvgIcon, Box } from '@mui/material'
+import Paper from '@mui/material/Paper'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import SvgIcon from '@mui/material/SvgIcon'
+import Box from '@mui/material/Box'
 
 import FileIcon from '@/public/images/settings/data/file.svg'
 import ExportIcon from '@/public/images/common/export.svg'

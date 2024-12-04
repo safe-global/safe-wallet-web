@@ -1,5 +1,6 @@
-import { Paper, Typography, SvgIcon } from '@mui/material'
-import type { PaperProps } from '@mui/material'
+import Paper, { type PaperProps } from '@mui/material/Paper'
+import Typography from '@mui/material/Typography'
+import SvgIcon from '@mui/material/SvgIcon'
 import type { AddressEx } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
 

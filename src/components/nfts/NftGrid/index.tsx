@@ -2,24 +2,21 @@ import type { Dispatch, ReactNode, SetStateAction, SyntheticEvent } from 'react'
 import { useMemo, useState } from 'react'
 import { useCallback } from 'react'
 import { type ReactElement } from 'react'
-import {
-  Box,
-  Checkbox,
-  InputAdornment,
-  Paper,
-  Skeleton,
-  SvgIcon,
-  type SvgIconProps,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
-  Typography,
-  Tooltip,
-} from '@mui/material'
+import Box from '@mui/material/Box'
+import Checkbox from '@mui/material/Checkbox'
+import InputAdornment from '@mui/material/InputAdornment'
+import Paper from '@mui/material/Paper'
+import Skeleton from '@mui/material/Skeleton'
+import SvgIcon, { type SvgIconProps } from '@mui/material/SvgIcon'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
+import Tooltip from '@mui/material/Tooltip'
 import FilterAltIcon from '@mui/icons-material/FilterAlt'
 import NftIcon from '@/public/images/common/nft.svg'
 import type { SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'

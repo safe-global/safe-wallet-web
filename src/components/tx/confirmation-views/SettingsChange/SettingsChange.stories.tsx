@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Paper } from '@mui/material'
+import Paper from '@mui/material/Paper'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { SettingsInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import { StoreDecorator } from '@/stories/storeDecorator'

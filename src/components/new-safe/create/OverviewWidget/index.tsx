@@ -1,6 +1,9 @@
 import WalletOverview from 'src/components/common/WalletOverview'
 import useWallet from '@/hooks/wallets/useWallet'
-import { Box, Card, Grid, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 import type { ReactElement } from 'react'
 import SafeLogo from '@/public/images/logo-no-text.svg'
 

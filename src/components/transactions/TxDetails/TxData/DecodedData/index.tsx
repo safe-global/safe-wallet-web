@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import { Stack } from '@mui/material'
+import Stack from '@mui/material/Stack'
 import { type AddressEx, TokenType, type TransactionDetails, Operation } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'

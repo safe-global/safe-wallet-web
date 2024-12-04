@@ -1,7 +1,8 @@
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useCallback } from 'react'
-import { Box, CircularProgress } from '@mui/material'
+import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
 
 import { useSafeAppUrl } from '@/hooks/safe-apps/useSafeAppUrl'
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'

@@ -1,4 +1,5 @@
-import { Grid, Typography } from '@mui/material'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 
 import BeneficiaryIcon from '@/public/images/settings/spending-limit/beneficiary.svg'
 import AssetAmountIcon from '@/public/images/settings/spending-limit/asset-amount.svg'

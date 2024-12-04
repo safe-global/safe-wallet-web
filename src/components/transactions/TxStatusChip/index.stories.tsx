@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import StatusChip from './index'
-import { Paper } from '@mui/material'
+import Paper from '@mui/material/Paper'
 
 const meta = {
   component: StatusChip,

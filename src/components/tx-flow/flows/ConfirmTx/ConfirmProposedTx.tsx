@@ -1,5 +1,5 @@
 import { type ReactElement, useContext, useEffect } from 'react'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useChainId } from '@/hooks/useChainId'

@@ -1,5 +1,8 @@
 import * as React from 'react'
-import { DialogActions, DialogContent, Typography, Button } from '@mui/material'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import ModalDialog from '@/components/common/ModalDialog'
 

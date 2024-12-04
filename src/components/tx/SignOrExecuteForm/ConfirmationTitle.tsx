@@ -1,4 +1,5 @@
-import { SvgIcon, Typography } from '@mui/material'
+import SvgIcon from '@mui/material/SvgIcon'
+import Typography from '@mui/material/Typography'
 import EditIcon from '@/public/images/common/edit.svg'
 import css from './styles.module.css'
 

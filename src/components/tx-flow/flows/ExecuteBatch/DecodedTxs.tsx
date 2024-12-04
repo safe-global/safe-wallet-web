@@ -1,5 +1,5 @@
 import type { DataDecoded, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import extractTxInfo from '@/services/tx/extractTxInfo'
 import { isCustomTxInfo, isNativeTokenTransfer, isTransferTxInfo } from '@/utils/transaction-guards'

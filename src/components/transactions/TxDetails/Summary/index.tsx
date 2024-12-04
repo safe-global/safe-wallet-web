@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
 import React, { useMemo, useState } from 'react'
-import { Link, Box } from '@mui/material'
+import Link from '@mui/material/Link'
+import Box from '@mui/material/Box'
 import { generateDataRowValue, TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { isCustomTxInfo, isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'

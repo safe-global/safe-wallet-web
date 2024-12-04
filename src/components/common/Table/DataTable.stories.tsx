@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { DataTable } from './DataTable'
-import { Paper } from '@mui/material'
+import Paper from '@mui/material/Paper'
 import { DataRow } from '@/components/common/Table/DataRow'
 
 const meta = {

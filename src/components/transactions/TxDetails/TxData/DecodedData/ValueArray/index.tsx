@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import type { ReactElement } from 'react'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import { isAddress, isArrayParameter } from '@/utils/transaction-guards'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'

@@ -1,7 +1,9 @@
 import type { ReactElement } from 'react'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
-import type { TooltipProps } from '@mui/material'
-import { Box, Button, SvgIcon, Tooltip } from '@mui/material'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import SvgIcon from '@mui/material/SvgIcon'
+import Tooltip, { type TooltipProps } from '@mui/material/Tooltip'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { useDarkMode } from '@/hooks/useDarkMode'
 

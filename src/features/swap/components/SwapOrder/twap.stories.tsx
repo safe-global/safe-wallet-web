@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { TwapOrder as TwapOrderComponent } from './index'
-import { Paper } from '@mui/material'
+import Paper from '@mui/material/Paper'
 import { appDataBuilder, orderTokenBuilder, twapOrderBuilder } from '@/features/swap/helpers/swapOrderBuilder'
 import { StoreDecorator } from '@/stories/storeDecorator'
 

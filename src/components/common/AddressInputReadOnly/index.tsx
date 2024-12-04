@@ -1,5 +1,6 @@
 import { type ReactElement } from 'react'
-import { InputAdornment, Typography } from '@mui/material'
+import InputAdornment from '@mui/material/InputAdornment'
+import Typography from '@mui/material/Typography'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import css from './styles.module.css'
 

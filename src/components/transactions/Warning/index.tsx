@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
-import { Alert, SvgIcon, Tooltip } from '@mui/material'
-import type { AlertColor } from '@mui/material'
+import Alert, { type AlertColor } from '@mui/material/Alert'
+import SvgIcon from '@mui/material/SvgIcon'
+import Tooltip from '@mui/material/Tooltip'
 
 import InfoOutlinedIcon from '@/public/images/notifications/info.svg'
 import css from './styles.module.css'

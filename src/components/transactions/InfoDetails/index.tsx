@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import type { ReactElement, ReactNode } from 'react'
 import css from './styles.module.css'
 

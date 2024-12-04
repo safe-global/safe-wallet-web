@@ -1,7 +1,8 @@
 import ExternalLink from '@/components/common/ExternalLink'
 import { NOT_AVAILABLE } from '@/components/transactions/TxDetails'
 import type { MultisigExecutionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 import React from 'react'
 import { HelpCenterArticle } from '@/config/constants'
 
