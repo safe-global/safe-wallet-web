@@ -33,5 +33,5 @@ expo-env.d.ts
 /storybook-static
 
 # Android and iOS build files
-android/
-ios/
+/android/*
+/ios/*

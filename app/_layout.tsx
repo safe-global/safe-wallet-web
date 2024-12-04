@@ -7,7 +7,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { isStorybookEnv } from '@/src/config/constants'
 import { apiSliceWithChainsConfig } from '@/src/store/gateway/chains/index'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
-
+import { HeaderBackButton } from '@react-navigation/elements'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { PortalProvider } from '@tamagui/portal'
 import { SafeToastProvider } from '@/src/theme/provider/toastProvider'
@@ -30,10 +30,18 @@ function RootLayout() {
               <SafeThemeProvider>
                 <SafeToastProvider>
                   <Stack
-                    screenOptions={{
+                    screenOptions={({ navigation }) => ({
                       headerBackButtonDisplayMode: 'minimal',
                       headerShadowVisible: false,
-                    }}
+                      headerLeft: (props) => (
+                        <HeaderBackButton
+                          {...props}
+                          testID={'go-back'}
+                          onPress={navigation.goBack}
+                          displayMode={'minimal'}
+                        />
+                      ),
+                    })}
                   >
                     <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                     <Stack.Screen name="pending-transactions" options={{ headerShown: true, title: '' }} />
