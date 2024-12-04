@@ -33,8 +33,7 @@ const canRedeemSAPUnboostedAllocation = (allocation?: Vesting[]): boolean => {
   return !sapUnboostedAllocation.isRedeemed && !sapUnboostedAllocation.isExpired
 }
 
-// TODO: Replace with actual date once contracts are deployed
-const SAP_REDEEM_DEADLINE = '31.12.2025'
+const SAP_REDEEM_DEADLINE = '06.12.2025'
 
 export const getSafeTokenAddress = (chainId: string): string | undefined => {
   return SAFE_TOKEN_ADDRESSES[chainId]
