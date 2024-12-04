@@ -9,18 +9,23 @@ const withDrawableAssets = function (expoConfig, files) {
     'android',
     function (modConfig) {
       if (modConfig.modRequest.platform === 'android') {
-        const androidDwarablePath = path.join(modConfig.modRequest.platformProjectRoot, ...androidFolderPath)
+        const projectRoot = modConfig.modRequest.projectRoot
+        const androidDrawablePath = path.join(modConfig.modRequest.platformProjectRoot, ...androidFolderPath)
 
         if (!Array.isArray(files)) {
           files = [files]
         }
 
         files.forEach(function (file) {
+          if (!path.isAbsolute(file)) {
+            file = path.join(projectRoot, file)
+          }
+
           const isFile = fs.lstatSync(file).isFile()
           if (isFile) {
-            fs.copyFileSync(file, path.join(androidDwarablePath, path.basename(file)))
+            fs.copyFileSync(file, path.join(androidDrawablePath, path.basename(file)))
           } else {
-            copyFolderRecursiveSync(file, androidDwarablePath)
+            copyFolderRecursiveSync(file, androidDrawablePath)
           }
         })
       }
