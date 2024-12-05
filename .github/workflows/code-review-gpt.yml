@@ -10,7 +10,7 @@ on:
 
 jobs:
   review:
-    # if: ${{ github.event.pull_request.draft == false }}
+    if: ${{ github.event.pull_request.draft == false }}
     runs-on: ubuntu-latest
     steps:
       - uses: anc95/ChatGPT-CodeReview@main
@@ -18,4 +18,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           # Optional
-          MODEL: gpt-4o-mini # https://platform.openai.com/docs/models
+          MODEL: gpt-4o # https://platform.openai.com/docs/models
