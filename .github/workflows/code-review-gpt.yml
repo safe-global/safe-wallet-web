@@ -20,3 +20,9 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           # Optional
           MODEL: gpt-4o # https://platform.openai.com/docs/models
+          PROMPT: |
+            Review the code changes in this PR and provide feedback if something is off.
+            Skip politeness and get straight to the point.
+            Only point out potential issues, don't comment on the good parts.
+            Pay attention to the logic, structure, and the usage of best practices and design patterns.
+            Suggest refactoring if necessary.
