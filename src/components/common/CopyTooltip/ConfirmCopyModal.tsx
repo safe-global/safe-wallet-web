@@ -35,9 +35,22 @@ const ConfirmCopyModal = ({ open, onClose, onCopy, children }: ConfirmCopyModalP
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>
-        <Box data-testid="untrusted-token-warning" display="flex" flexDirection="row" alignItems="center" gap={1}>
+        <Box
+          data-testid="untrusted-token-warning"
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 1,
+          }}
+        >
           <SvgIcon component={WarningIcon} inheritViewBox color="warning" sx={{ mb: -0.4 }} />
-          <Typography variant="h6" fontWeight={700}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 700,
+            }}
+          >
             Before you copy
           </Typography>
           <IconButton aria-label="close" onClick={onClose} sx={{ marginLeft: 'auto' }}>
@@ -49,7 +62,12 @@ const ConfirmCopyModal = ({ open, onClose, onCopy, children }: ConfirmCopyModalP
       <DialogContent>{children}</DialogContent>
       <Divider />
       <DialogActions sx={{ padding: 3 }}>
-        <Box className={css.dialogActions} gap={1}>
+        <Box
+          className={css.dialogActions}
+          sx={{
+            gap: 1,
+          }}
+        >
           <Track {...TX_LIST_EVENTS.COPY_WARNING_PROCEED}>
             <Button size="small" variant="text" color="primary" onClick={onCopy} fullWidth>
               Proceed and copy

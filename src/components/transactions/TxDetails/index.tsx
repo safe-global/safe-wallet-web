@@ -121,7 +121,6 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           </div>
         )}
       </div>
-
       {/* Signers */}
       {(!isUnsigned || isTxFromProposer) && (
         <div className={css.txSigners}>
@@ -140,7 +139,12 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           )}
 
           {isQueue && expiredSwap && (
-            <Typography color="text.secondary" mt={2}>
+            <Typography
+              sx={{
+                color: 'text.secondary',
+                mt: 2,
+              }}
+            >
               This order has expired. Reject this transaction and try again.
             </Typography>
           )}

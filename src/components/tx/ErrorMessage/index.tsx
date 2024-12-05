@@ -41,7 +41,12 @@ const ErrorMessage = ({
           <Typography variant="body2" component="span">
             {title && (
               <AlertTitle>
-                <Typography fontWeight={700} variant="subtitle1">
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    fontWeight: 700,
+                  }}
+                >
                   {title}
                 </Typography>
               </AlertTitle>
@@ -49,7 +54,13 @@ const ErrorMessage = ({
             {children}
 
             {error && (
-              <Link component="button" onClick={onDetailsToggle} display="block">
+              <Link
+                component="button"
+                onClick={onDetailsToggle}
+                sx={{
+                  display: 'block',
+                }}
+              >
                 Details
               </Link>
             )}

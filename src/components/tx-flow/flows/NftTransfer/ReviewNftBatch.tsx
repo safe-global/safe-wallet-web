@@ -40,9 +40,20 @@ const ReviewNftBatch = ({ params, onSubmit, txNonce }: ReviewNftBatchProps): Rea
 
   return (
     <SignOrExecuteForm onSubmit={onSubmit}>
-      <Grid container gap={1} mb={2}>
+      <Grid
+        container
+        sx={{
+          gap: 1,
+          mb: 2,
+        }}
+      >
         <Grid item md>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary',
+            }}
+          >
             Send
           </Typography>
         </Grid>
@@ -51,7 +62,6 @@ const ReviewNftBatch = ({ params, onSubmit, txNonce }: ReviewNftBatchProps): Rea
           <NftItems tokens={tokens} />
         </Grid>
       </Grid>
-
       <SendToBlock address={params.recipient} />
     </SignOrExecuteForm>
   )

@@ -17,12 +17,14 @@ export function Chip({ sx, label = 'New' }: Props) {
       label={
         <Typography
           variant="caption"
-          fontWeight="bold"
-          display="flex"
-          alignItems="center"
-          gap={1}
-          letterSpacing="1px"
           component="span"
+          sx={{
+            fontWeight: 'bold',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            letterSpacing: '1px',
+          }}
         >
           {label}
         </Typography>

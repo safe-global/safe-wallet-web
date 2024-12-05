@@ -4,10 +4,20 @@ const connectedWalletExecutionMethod = '[data-testid="connected-wallet-execution
 const txStatus = '[data-testid="transaction-status"]'
 const finishTransactionBtn = '[data-testid="finish-transaction-btn"]'
 const executeFormBtn = '[data-testid="execute-form-btn"]'
+const signBtn = '[data-testid="sign-btn"]'
+const txConfirmBtn = '[data-track="tx-list: Confirm transaction"] > button'
 
 const executeBtnStr = 'Execute'
 const txCompletedStr = 'Transaction was successful'
 export const relayRemainingAttemptsStr = 'free transactions left today'
+
+export function verifyTxConfirmBtnDisabled() {
+  cy.get(txConfirmBtn).should('be.disabled')
+}
+
+export function verifySignBtnEnabled() {
+  cy.get(signBtn).should('be.enabled')
+}
 
 export function selectExecuteNow() {
   cy.get(executeNowOption).click()

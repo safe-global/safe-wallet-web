@@ -71,11 +71,14 @@ const DeleteTxButton = ({
       <Typography variant="overline" className={css.or}>
         or
       </Typography>
-
-      <Typography variant="body2" mb={0.5}>
+      <Typography
+        variant="body2"
+        sx={{
+          mb: 0.5,
+        }}
+      >
         Don’t want to have this transaction anymore? Remove it permanently from the queue.
       </Typography>
-
       <Tooltip
         arrow
         placement="top"
@@ -94,7 +97,6 @@ const DeleteTxButton = ({
           </Track>
         </span>
       </Tooltip>
-
       {safeTxHash && isDeleting && (
         <DeleteTxModal onSuccess={onDeleteSuccess} onClose={onDeleteClose} safeTxHash={safeTxHash} />
       )}
@@ -124,11 +126,22 @@ const ReplaceTxMenu = ({
   return (
     <TxLayout title={`Reject transaction #${txNonce}`} step={0} hideNonce isReplacement>
       <TxCard>
-        <Box mt={2} textAlign="center">
+        <Box
+          sx={{
+            mt: 2,
+            textAlign: 'center',
+          }}
+        >
           <ReplaceTxIcon />
         </Box>
 
-        <Typography variant="body2" mt={-1} mb={1}>
+        <Typography
+          variant="body2"
+          sx={{
+            mt: -1,
+            mb: 1,
+          }}
+        >
           You can replace or reject this transaction on-chain. It requires gas fees and your signature.{' '}
           <Track {...REJECT_TX_EVENTS.READ_MORE}>
             <ExternalLink href="https://help.safe.global/en/articles/40836-why-do-i-need-to-pay-for-cancelling-a-transaction">
@@ -137,7 +150,13 @@ const ReplaceTxMenu = ({
           </Track>
         </Typography>
 
-        <Box display="flex" flexDirection="column" gap={2}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+          }}
+        >
           <Track {...REJECT_TX_EVENTS.REPLACE_TX_BUTTON} as="div">
             <ChoiceButton
               icon={CachedIcon}

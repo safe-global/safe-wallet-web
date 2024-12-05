@@ -8,8 +8,6 @@ import ListItemText from '@mui/material/ListItemText'
 
 import EntryDialog from '@/components/address-book/EntryDialog'
 import SafeListRemoveDialog from '@/components/sidebar/SafeListRemoveDialog'
-import { useAppSelector } from '@/store'
-import { selectAddedSafes } from '@/store/addedSafesSlice'
 import EditIcon from '@/public/images/common/edit.svg'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import PlusIcon from '@/public/images/common/plus.svg'
@@ -35,15 +33,15 @@ const SafeListContextMenu = ({
   chainId,
   addNetwork,
   rename,
+  undeployedSafe,
 }: {
   name: string
   address: string
   chainId: string
   addNetwork: boolean
   rename: boolean
+  undeployedSafe: boolean
 }): ReactElement => {
-  const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
-  const isAdded = !!addedSafes?.[address]
   const addressBook = useAddressBook()
   const hasName = address in addressBook
 
@@ -89,7 +87,7 @@ const SafeListContextMenu = ({
           </MenuItem>
         )}
 
-        {isAdded && (
+        {undeployedSafe && (
           <MenuItem onClick={handleOpenModal(ModalType.REMOVE, OVERVIEW_EVENTS.REMOVE_FROM_WATCHLIST)}>
             <ListItemIcon>
               <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" color="error" />

@@ -47,13 +47,16 @@ export const SingleTxDecoded = ({ tx, txData, actionTitle, variant, expanded, on
         <div className={css.summary}>
           <CodeIcon color="border" fontSize="small" />
           <Typography>{actionTitle}</Typography>
-          <Typography ml="8px">
+          <Typography
+            sx={{
+              ml: '8px',
+            }}
+          >
             {name ? name + ': ' : ''}
             <b>{method}</b>
           </Typography>
         </div>
       </AccordionSummary>
-
       <AccordionDetails>
         <Stack spacing={1}>
           <DecodedData txData={singleTxData} toInfo={{ value: tx.to }} />

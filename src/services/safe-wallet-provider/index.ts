@@ -93,7 +93,8 @@ export class SafeWalletProvider {
         return this.wallet_switchEthereumChain(...(params as [{ chainId: string }]), appInfo)
       }
 
-      case 'eth_accounts': {
+      case 'eth_accounts':
+      case 'eth_requestAccounts': {
         return this.eth_accounts()
       }
 

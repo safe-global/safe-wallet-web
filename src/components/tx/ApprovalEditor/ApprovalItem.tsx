@@ -27,10 +27,22 @@ const ApprovalItem = ({
   method: Approval['method']
 }) => {
   return (
-    <Stack direction="row" alignItems="center" gap={2} className={css.approvalField}>
+    <Stack
+      direction="row"
+      className={css.approvalField}
+      sx={{
+        alignItems: 'center',
+        gap: 2,
+      }}
+    >
       <TokenIcon size={32} logoUri={tokenInfo?.logoUri} tokenSymbol={tokenInfo?.symbol} />
       <Box sx={{ overflowX: 'auto' }}>
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          sx={{
+            color: 'text.secondary',
+          }}
+        >
           {approvalMethodDescription[method](tokenInfo.symbol ?? '', tokenInfo.type)}
         </Typography>
         {amount === PSEUDO_APPROVAL_VALUES.UNLIMITED ? (

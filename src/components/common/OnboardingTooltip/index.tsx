@@ -39,7 +39,14 @@ export const OnboardingTooltip = ({
       placement={placement}
       arrow
       title={
-        <Box display="flex" alignItems="center" gap={1} padding={1}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            padding: 1,
+          }}
+        >
           <SvgIcon component={InfoIcon} inheritViewBox fontSize="small" />
           <div style={{ minWidth: '150px' }}>{text}</div>
           <Button

@@ -100,6 +100,7 @@ export const dummyTxStr = 'Trigger dummy tx (safe.txs.send)'
 export const signOnchainMsgStr = 'Sign message (on-chain)'
 export const pinWalletConnectStr = /pin walletconnect/i
 export const transactionBuilderStr = 'Transaction Builder'
+export const cowswapStr = 'CowSwap'
 export const testAddressValueStr = 'testAddressValue'
 export const logoWalletConnect = /logo.*walletconnect/i
 export const walletConnectHeadlinePreview = /walletconnect/i
@@ -117,6 +118,10 @@ export const linkNames = {
   wcLogo: /WalletConnect logo/i,
   txBuilderLogo: /Transaction Builder logo/i,
 }
+const featuredAppsStr = /featured apps/i
+const pinnedAppsStr = 'My pinned apps'
+const pinnedAppsStrR = /my pinned apps/i
+
 export const abi =
   '[{"inputs":[{"internalType":"address","name":"_singleton","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"stateMutability":"payable","type":"fallback"},{"inputs":[{"internalType":"address","name":"target","type":"address"}],"name":"AddressEmptyCode","type":"error"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}]'
 
@@ -197,7 +202,9 @@ export function verifyNoAppsTextPresent() {
 
 export function pinApp(index, app, pin = true) {
   const option = pin ? 'Pin' : 'Unpin'
+  const option_ = pin ? 'Unpin' : 'Pin'
   cy.get(`[aria-label="${option} ${app}"]`).eq(index).click()
+  cy.get(`[aria-label="${option_} ${app}"]`).should('exist')
 }
 
 export function clickOnBookmarkedAppsTab() {
@@ -213,7 +220,23 @@ export function verifyCustomAppCount(count) {
 }
 
 export function verifyPinnedAppCount(count) {
-  cy.findByText(`My pinned apps (${count})`).should(count ? 'be.visible' : 'not.exist')
+  cy.findByText(`${pinnedAppsStr} (${count})`).should(count ? 'be.visible' : 'not.exist')
+}
+
+export function verifyAppInFeaturedList(app) {
+  cy.findByText(featuredAppsStr)
+    .next('ul')
+    .within(() => {
+      cy.findByText(app).should('exist')
+    })
+}
+
+export function verifyAppInPinnedList(app) {
+  cy.findByText(pinnedAppsStrR)
+    .next('ul')
+    .within(() => {
+      cy.findByText(app).should('exist')
+    })
 }
 
 export function clickOnCustomAppsTab() {

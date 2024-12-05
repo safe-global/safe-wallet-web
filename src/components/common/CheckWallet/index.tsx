@@ -1,3 +1,4 @@
+import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { useIsWalletProposer } from '@/hooks/useProposers'
 import { useMemo, type ReactElement } from 'react'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
@@ -7,6 +8,7 @@ import useConnectWallet from '../ConnectWallet/useConnectWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { Tooltip } from '@mui/material'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { useIsNestedSafeOwner } from '@/hooks/useIsNestedSafeOwner'
 
 type CheckWalletProps = {
   children: (ok: boolean) => ReactElement
@@ -20,6 +22,7 @@ type CheckWalletProps = {
 
 enum Message {
   WalletNotConnected = 'Please connect your wallet',
+  SDKNotInitialized = 'SDK is not initialized yet',
   NotSafeOwner = 'Your connected wallet is not a signer of this Safe Account',
   SafeNotActivated = 'You need to activate the Safe before transacting',
 }
@@ -38,9 +41,12 @@ const CheckWallet = ({
   const isOnlySpendingLimit = useIsOnlySpendingLimitBeneficiary()
   const connectWallet = useConnectWallet()
   const isWrongChain = useIsWrongChain()
+  const sdk = useSafeSDK()
   const isProposer = useIsWalletProposer()
 
   const { safe } = useSafeInfo()
+
+  const isNestedSafeOwner = useIsNestedSafeOwner()
 
   const isUndeployedSafe = !safe.deployed
 
@@ -48,12 +54,21 @@ const CheckWallet = ({
     if (!wallet) {
       return Message.WalletNotConnected
     }
+    if (!sdk) {
+      return Message.SDKNotInitialized
+    }
 
     if (isUndeployedSafe && !allowUndeployedSafe) {
       return Message.SafeNotActivated
     }
 
-    if (!allowNonOwner && !isSafeOwner && !isProposer && (!isOnlySpendingLimit || !allowSpendingLimit)) {
+    if (
+      !allowNonOwner &&
+      !isSafeOwner &&
+      !isProposer &&
+      !isNestedSafeOwner &&
+      (!isOnlySpendingLimit || !allowSpendingLimit)
+    ) {
       return Message.NotSafeOwner
     }
 
@@ -66,9 +81,11 @@ const CheckWallet = ({
     allowSpendingLimit,
     allowUndeployedSafe,
     isProposer,
+    isNestedSafeOwner,
     isOnlySpendingLimit,
     isSafeOwner,
     isUndeployedSafe,
+    sdk,
     wallet,
   ])
 

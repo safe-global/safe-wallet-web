@@ -1,0 +1,32 @@
+name: AI code review
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  review:
+    # Don't run on draft PRs
+    if: ${{ github.event.pull_request.draft == false }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: anc95/ChatGPT-CodeReview@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          # Optional
+          MODEL: gpt-4o # https://platform.openai.com/docs/models
+          PROMPT: |
+            Review the code changes in this pull request with the following guidelines:
+            1.	Focus on Issues: Only highlight potential problems, such as logical errors, violations of best practices, or opportunities for improvement. Avoid commenting on existing code unless directly impacted by the changes.
+            2.	Skip Politeness: Provide feedback directly and concisely, without unnecessary niceties.
+            3.	No Praise: Avoid commenting on what’s done well or works correctly unless necessary for context.
+            4.	Actionable Suggestions: Offer specific, actionable recommendations for refactoring or fixes where applicable.
+            5.  Refactoring Ideas: Pay attention to the code structure and suggest improvements where necessary. Apply the DRY and SOLID principles. Prevent too complex components, inline functions, inline styles, and too much logic inside React components.
+            6.	Stay Brief: If no clear issues are identified or the concerns are minor, keep feedback minimal or state that no significant issues were found.
+
+            Output should be focused, practical, and devoid of redundant commentary.

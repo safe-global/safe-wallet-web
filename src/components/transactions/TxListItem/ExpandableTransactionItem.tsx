@@ -74,7 +74,12 @@ export const ExpandableTransactionItem = ({
 
 export const TransactionSkeleton = () => (
   <>
-    <Box pt="20px" pb="4px">
+    <Box
+      sx={{
+        pt: '20px',
+        pb: '4px',
+      }}
+    >
       <Skeleton variant="text" width="35px" />
     </Box>
 

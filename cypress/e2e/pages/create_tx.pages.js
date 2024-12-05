@@ -28,6 +28,8 @@ const advancedDetails = '[data-testid="tx-advanced-details"]'
 const baseGas = '[data-testid="tx-bas-gas"]'
 const requiredConfirmation = '[data-testid="required-confirmations"]'
 export const txDate = '[data-testid="tx-date"]'
+export const proposalStatus = '[data-testid="proposal-status"]'
+export const txSigner = '[data-testid="signer"]'
 const spamTokenWarningIcon = '[data-testid="warning"]'
 const untrustedTokenWarningModal = '[data-testid="untrusted-token-warning"]'
 const sendTokensBtn = '[data-testid="send-tokens-btn"]'
@@ -40,11 +42,13 @@ const filterTokenInput = '[data-testid="token-input"]'
 const filterNonceInput = '[data-testid="nonce-input"]'
 const filterApplyBtn = '[data-testid="apply-btn"]'
 const filterClearBtn = '[data-testid="clear-btn"]'
-const addressItem = '[data-testid="address-item"]'
+export const addressItem = '[data-testid="address-item"]'
 const radioSelector = 'div[role="radiogroup"]'
 const rejectTxBtn = '[data-testid="reject-btn"]'
 const deleteTxModalBtn = '[data-testid="delete-tx-btn"]'
 const toggleUntrustedBtn = '[data-testid="toggle-untrusted"]'
+const simulateTxBtn = '[data-testid="simulate-btn"]'
+const simulateSuccess = '[data-testid="simulation-success-msg"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
@@ -243,16 +247,17 @@ export function verifyNumberOfCopyIcons(number) {
 }
 
 export function verifyNumberOfExternalLinks(number) {
-  for (let i = 0; i <= number; i++) {
-    cy.get(copyIcon).parent().parent().next().should('be.visible')
-    cy.get(copyIcon)
-      .parent()
-      .parent()
-      .next()
-      .children()
-      .should('have.attr', 'href')
-      .and('include', constants.sepoliaEtherscanlLink)
-  }
+  cy.get(copyIcon)
+    .parent()
+    .parent()
+    .next()
+    .children('a')
+    .then(($links) => {
+      expect($links.length).to.be.at.least(number)
+      for (let i = 0; i < number; i++) {
+        cy.wrap($links[i]).should('have.attr', 'href').and('include', constants.etherscanlLink)
+      }
+    })
 }
 
 export function clickOnTransactionItemByName(name, token) {
@@ -342,29 +347,47 @@ export function verifySpamIconIsDisplayed(name, token) {
 }
 
 export function verifySummaryByName(name, token, data, alt, altToken) {
-  cy.get(transactionItem)
-    .filter(':contains("' + name + '")')
-    .then(($elements) => {
-      if (token) {
-        $elements = $elements.filter(':contains("' + token + '")')
-      }
+  if (!name) {
+    throw new Error('Name parameter is required for verification')
+  }
 
-      if ($elements.length > 0) {
-        cy.wrap($elements.first()).then(($element) => {
-          if (Array.isArray(data)) {
-            data.forEach((text) => {
-              cy.wrap($element).contains(text).should('be.visible')
-            })
-          } else {
-            cy.wrap($element).contains(data).should('be.visible')
-          }
-          if (alt) cy.wrap($element).find('img').eq(0).should('have.attr', 'alt', alt).should('be.visible')
-          if (altToken) cy.wrap($element).find('img').eq(1).should('have.attr', 'alt', alt).should('be.visible')
-        })
+  let selector = `${transactionItem}:contains("${name}")`
+  if (token) {
+    selector += `:contains("${token}")`
+  }
+
+  cy.get(selector).then(($elements) => {
+    expect($elements.length, `Transaction items found for name: ${name}`).to.be.greaterThan(0)
+
+    const $element = $elements.first()
+
+    if (Array.isArray(data)) {
+      data.forEach((text) => {
+        expect($element.text()).to.include(text)
+      })
+    } else if (data) {
+      expect($element.text()).to.include(data)
+    }
+
+    if (alt) {
+      const firstImg = $element.find('img')
+      const firstSvg = $element.find('svg')
+
+      if (firstImg.length > 0) {
+        const targetImg = firstImg.first()
+        expect(targetImg.attr('alt')).to.equal(alt)
+      } else if (firstSvg.length > 0) {
+        const targetSvg = firstSvg.first()
+        expect(targetSvg.attr('alt')).to.equal(alt)
       }
-    })
+    }
+
+    if (altToken) {
+      const secondImg = $element.find('img').eq(1)
+      expect(secondImg.attr('alt')).to.equal(altToken)
+    }
+  })
 }
-
 export function verifySummaryByIndex(index, data, alt) {
   cy.get(messageItem)
     .eq(index)
@@ -626,4 +649,12 @@ export function verifyBulkExecuteBtnIsDisabled() {
 
 export function toggleUntrustedTxs() {
   cy.get(toggleUntrustedBtn).click()
+}
+
+export function clickOnSimulateTxBtn() {
+  cy.get(simulateTxBtn).click()
+}
+
+export function verifySuccessfulSimulation() {
+  cy.get(simulateSuccess).should('exist')
 }

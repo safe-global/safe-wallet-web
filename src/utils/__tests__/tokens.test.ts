@@ -37,7 +37,7 @@ describe('tokens', () => {
             },
             _isProvider: true,
             resolveName: (name: string) => name,
-          } as any),
+          }) as any,
       )
 
       const result = await getERC20TokenInfoOnChain('0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984')
@@ -65,7 +65,7 @@ describe('tokens', () => {
             },
             _isProvider: true,
             resolveName: (name: string) => name,
-          } as any),
+          }) as any,
       )
 
       const result = await getERC20TokenInfoOnChain('0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984')

@@ -1,27 +1,23 @@
-import type { AnyStakingConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
-import { ConfirmationViewTypes, type StakingTxInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { StakingTxInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import StakingConfirmationTxDeposit from '@/features/stake/components/StakingConfirmationTx/Deposit'
 import StakingConfirmationTxExit from '@/features/stake/components/StakingConfirmationTx/Exit'
 import StakingConfirmationTxWithdraw from '@/features/stake/components/StakingConfirmationTx/Withdraw'
+import { isStakingTxDepositInfo, isStakingTxExitInfo, isStakingTxWithdrawInfo } from '@/utils/transaction-guards'
 
 type StakingOrderConfirmationViewProps = {
-  order: AnyStakingConfirmationView | StakingTxInfo
+  order: StakingTxInfo
 }
 
 const StrakingConfirmationTx = ({ order }: StakingOrderConfirmationViewProps) => {
-  const isDeposit = order.type === ConfirmationViewTypes.KILN_NATIVE_STAKING_DEPOSIT
-  const isExit = order.type === ConfirmationViewTypes.KILN_NATIVE_STAKING_VALIDATORS_EXIT
-  const isWithdraw = order.type === ConfirmationViewTypes.KILN_NATIVE_STAKING_WITHDRAW
-
-  if (isDeposit) {
+  if (isStakingTxDepositInfo(order)) {
     return <StakingConfirmationTxDeposit order={order} />
   }
 
-  if (isExit) {
+  if (isStakingTxExitInfo(order)) {
     return <StakingConfirmationTxExit order={order} />
   }
 
-  if (isWithdraw) {
+  if (isStakingTxWithdrawInfo(order)) {
     return <StakingConfirmationTxWithdraw order={order} />
   }
 

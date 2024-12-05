@@ -15,20 +15,17 @@ let iframeSelector
 
 const swapsHistory = swaps_data.type.history
 
-// Blocked by a bug on UI
-describe.skip('Twaps history tests', { defaultCommandTimeout: 30000 }, () => {
+describe('Twaps history tests', { defaultCommandTimeout: 30000 }, () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
 
-  beforeEach(() => {
+  // Blocked by bug on UI
+  it.skip('Verify order deails', () => {
     cy.visit(constants.swapUrl + staticSafes.SEP_STATIC_SAFE_27)
     main.waitForHistoryCallToComplete()
     wallet.connectSigner(signer)
     iframeSelector = `iframe[src*="${constants.swapWidget}"]`
-  })
-
-  it('Verify order deails', () => {
     swaps.acceptLegalDisclaimer()
     cy.wait(4000)
     main.getIframeBody(iframeSelector).within(() => {

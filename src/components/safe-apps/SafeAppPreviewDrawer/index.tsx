@@ -18,6 +18,7 @@ import SafeAppSocialLinksCard from '@/components/safe-apps/SafeAppSocialLinksCar
 import CloseIcon from '@/public/images/common/close.svg'
 import { useOpenedSafeApps } from '@/hooks/safe-apps/useOpenedSafeApps'
 import css from './styles.module.css'
+import { SAFE_APPS_EVENTS, SAFE_APPS_LABELS, trackSafeAppEvent } from '@/services/analytics'
 
 type SafeAppPreviewDrawerProps = {
   safeApp?: SafeAppData
@@ -35,6 +36,7 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
   const onOpenSafe = () => {
     if (safeApp) {
       markSafeAppOpened(safeApp.id)
+      trackSafeAppEvent({ ...SAFE_APPS_EVENTS.OPEN_APP, label: SAFE_APPS_LABELS.apps_sidebar }, safeApp.name)
     }
   }
 
@@ -44,7 +46,12 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
         {/* Toolbar */}
 
         {safeApp && (
-          <Box display="flex" justifyContent="right">
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'right',
+            }}
+          >
             <SafeAppActionButtons safeApp={safeApp} isBookmarked={isBookmarked} onBookmarkSafeApp={onBookmark} />
             <Tooltip title={`Close ${safeApp.name} preview`} placement="top">
               <IconButton
@@ -66,11 +73,23 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
           <SafeAppIconCard src={safeApp?.iconUrl || ''} alt={`${safeApp?.name} logo`} width={90} height={90} />
         </Box>
 
-        <Typography variant="h4" fontWeight={700} sx={{ mt: 2 }}>
+        <Typography
+          variant="h4"
+          sx={{
+            fontWeight: 700,
+            mt: 2,
+          }}
+        >
           {safeApp?.name}
         </Typography>
 
-        <Typography variant="body2" color="primary.light" sx={{ mt: 2 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: 'primary.light',
+            mt: 2,
+          }}
+        >
           {safeApp?.description}
         </Typography>
 
@@ -78,7 +97,13 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
         <SafeAppTags tags={safeApp?.tags || []} />
 
         {/* Networks */}
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: 'text.secondary',
+            mt: 2,
+          }}
+        >
           Available networks
         </Typography>
 

@@ -43,7 +43,7 @@ const WatchlistAddButton = () => {
             disableElevation
             sx={{ py: 1.3, px: 1 }}
           >
-            Remove from watchlist
+            Remove account
           </Button>
         </Track>
       ) : (
@@ -58,7 +58,7 @@ const WatchlistAddButton = () => {
             sx={{ py: 1.3 }}
             startIcon={<VisibilityOutlined sx={{ verticalAlign: 'middle', marginRight: 1 }} />}
           >
-            Add to watchlist
+            Add read-only
           </Button>
         </Track>
       )}

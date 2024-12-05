@@ -7,11 +7,33 @@ const wrap = { flexWrap: { xl: 'nowrap' } }
 
 const FieldsGrid = ({ title, children }: { title: string | ReactNode; children: ReactNode }) => {
   return (
-    <Grid container alignItems="center" gap={1} sx={wrap}>
-      <Grid item data-testid="tx-row-title" width={width} minWidth={minWidth} style={{ wordBreak: 'break-word' }}>
-        <Typography color="primary.light">{title}</Typography>
+    <Grid
+      container
+      sx={[
+        {
+          alignItems: 'center',
+          gap: 1,
+        },
+        ...(Array.isArray(wrap) ? wrap : [wrap]),
+      ]}
+    >
+      <Grid
+        item
+        data-testid="tx-row-title"
+        style={{ wordBreak: 'break-word' }}
+        sx={{
+          width,
+          minWidth,
+        }}
+      >
+        <Typography
+          sx={{
+            color: 'primary.light',
+          }}
+        >
+          {title}
+        </Typography>
       </Grid>
-
       <Grid item xs data-testid="tx-data-row">
         {children}
       </Grid>

@@ -85,7 +85,13 @@ const WcHints = (): ReactElement => {
   }
 
   return (
-    <Box display="flex" flexDirection="column" gap={1}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+      }}
+    >
       <HintAccordion
         title={ConnectionTitle}
         items={ConnectionSteps}

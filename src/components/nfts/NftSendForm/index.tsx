@@ -4,24 +4,58 @@ import ArrowIcon from '@/public/images/common/arrow-nw.svg'
 import type { SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { Sticky } from '@/components/common/Sticky'
 import CheckWallet from '@/components/common/CheckWallet'
+import { maybePlural } from '@/utils/formatters'
 
 type NftSendFormProps = {
   selectedNfts: SafeCollectibleResponse[]
 }
 
 const NftSendForm = ({ selectedNfts }: NftSendFormProps): ReactElement => {
-  const nftsText = `NFT${selectedNfts.length === 1 ? '' : 's'}`
+  const nftsText = `NFT${maybePlural(selectedNfts)}`
   const noSelected = selectedNfts.length === 0
 
   return (
     <Sticky>
-      <Grid container spacing={1} justifyContent="flex-end" alignItems="center">
-        <Grid item display={['none', 'block']} flex="1">
-          <Box bgcolor="secondary.background" py={0.75} px={2} flex={1} borderRadius={1} mr={1}>
-            <Box display="flex" alignItems="center" gap={1.5}>
+      <Grid
+        container
+        spacing={1}
+        sx={{
+          justifyContent: 'flex-end',
+          alignItems: 'center',
+        }}
+      >
+        <Grid
+          item
+          sx={{
+            display: ['none', 'block'],
+            flex: '1',
+          }}
+        >
+          <Box
+            sx={{
+              bgcolor: 'secondary.background',
+              py: 0.75,
+              px: 2,
+              flex: 1,
+              borderRadius: 1,
+              mr: 1,
+            }}
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.5,
+              }}
+            >
               <SvgIcon component={ArrowIcon} inheritViewBox color="border" sx={{ width: 12, height: 12 }} />
 
-              <Typography variant="body2" lineHeight="inherit">
+              <Typography
+                variant="body2"
+                sx={{
+                  lineHeight: 'inherit',
+                }}
+              >
                 {`${selectedNfts.length} ${nftsText} selected`}
               </Typography>
             </Box>

@@ -16,6 +16,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import OwnerRow from '@/components/new-safe/OwnerRow'
+import { maybePlural } from '@/utils/formatters'
 
 enum OwnerPolicyStepFields {
   owners = 'owners',
@@ -121,7 +122,15 @@ const OwnerPolicyStep = ({
 
         <Divider />
         <Box className={layoutCss.row}>
-          <Typography variant="h4" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 700,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
             Threshold
             <Tooltip
               title="The threshold of a Safe Account specifies how many signers need to confirm a Safe Account transaction before it can be executed."
@@ -133,10 +142,23 @@ const OwnerPolicyStep = ({
               </span>
             </Tooltip>
           </Typography>
-          <Typography variant="body2" mb={2}>
+          <Typography
+            variant="body2"
+            sx={{
+              mb: 2,
+            }}
+          >
             Any transaction requires the confirmation of:
           </Typography>
-          <Grid container direction="row" alignItems="center" gap={2} pt={1}>
+          <Grid
+            container
+            direction="row"
+            sx={{
+              alignItems: 'center',
+              gap: 2,
+              pt: 1,
+            }}
+          >
             <Grid item>
               <Controller
                 control={control}
@@ -153,13 +175,22 @@ const OwnerPolicyStep = ({
               />
             </Grid>
             <Grid item>
-              <Typography>out of {ownerFields.length} signer(s)</Typography>
+              <Typography>
+                out of {ownerFields.length} signer{maybePlural(ownerFields)}
+              </Typography>
             </Grid>
           </Grid>
         </Box>
         <Divider />
         <Box className={layoutCss.row}>
-          <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              gap: 3,
+            }}
+          >
             <Button
               data-testid="back-btn"
               variant="outlined"

@@ -44,8 +44,20 @@ const ExplorerButton = ({
       href={href}
       onClick={onClick}
     >
-      <Box display="flex" alignItems="center">
-        <Typography fontWeight={700} fontSize="small" mr="var(--space-1)" noWrap>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <Typography
+          noWrap
+          sx={{
+            fontWeight: 700,
+            fontSize: 'small',
+            mr: 'var(--space-1)',
+          }}
+        >
           View on explorer
         </Typography>
 

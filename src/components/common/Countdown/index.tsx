@@ -22,7 +22,12 @@ export function Countdown({ seconds }: { seconds: number }): ReactElement | null
 
   if (seconds <= 60) {
     return (
-      <Typography fontWeight={700} component="span">
+      <Typography
+        component="span"
+        sx={{
+          fontWeight: 700,
+        }}
+      >
         {'< 1 min'}
       </Typography>
     )
@@ -31,7 +36,12 @@ export function Countdown({ seconds }: { seconds: number }): ReactElement | null
   const { days, hours, minutes } = _getCountdown(seconds)
 
   return (
-    <Box display="flex" gap={1}>
+    <Box
+      sx={{
+        display: 'flex',
+        gap: 1,
+      }}
+    >
       <TimeLeft value={days} unit="day" />
       <TimeLeft value={hours} unit="hr" />
       <TimeLeft value={minutes} unit="min" />
@@ -46,10 +56,20 @@ function TimeLeft({ value, unit }: { value: number; unit: string }): ReactElemen
 
   return (
     <div>
-      <Typography fontWeight={700} component="span">
+      <Typography
+        component="span"
+        sx={{
+          fontWeight: 700,
+        }}
+      >
         {value}
       </Typography>{' '}
-      <Typography color="primary.light" component="span">
+      <Typography
+        component="span"
+        sx={{
+          color: 'primary.light',
+        }}
+      >
         {value === 1 ? unit : `${unit}s`}
       </Typography>
     </div>

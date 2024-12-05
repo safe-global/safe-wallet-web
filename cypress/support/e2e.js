@@ -19,6 +19,8 @@ import './commands'
 import './safe-apps-commands'
 import * as constants from './constants'
 import * as ls from './localstorage_data'
+import { acceptCookies2 } from '../e2e/pages/main.page'
+
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
@@ -73,5 +75,8 @@ beforeEach(() => {
       constants.localStorageKeys.SAFE_v2__SafeApps__infoModal,
       ls.appPermissions(constants.safeTestAppurl).infoModalAccepted,
     )
+    cy.wrap(window.localStorage).invoke('getItem', cookiesKey).should('equal', ls.cookies.acceptedCookies)
   })
+  cy.visit(constants.setupUrl + 'sep:0xBb26E3717172d5000F87DeFd391994f789D80aEB')
+  acceptCookies2()
 })

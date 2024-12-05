@@ -44,7 +44,7 @@ const mockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
 const getProviders: (options: {
   routerProps?: Partial<NextRouter>
   initialReduxState?: Partial<RootState>
-}) => React.FC<{ children: React.ReactElement }> = ({ routerProps, initialReduxState }) =>
+}) => React.JSXElementConstructor<{ children: React.ReactNode }> = ({ routerProps, initialReduxState }) =>
   function ProviderComponent({ children }) {
     const store = makeStore(initialReduxState)
 

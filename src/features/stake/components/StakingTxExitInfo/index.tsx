@@ -1,9 +1,10 @@
+import { maybePlural } from '@/utils/formatters'
 import type { StakingTxExitInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 const StakingTxExitInfo = ({ info }: { info: StakingTxExitInfo }) => {
   return (
     <>
-      {info.numValidators} Validator{info.numValidators > 1 ? 's' : ''}
+      {info.numValidators} Validator{maybePlural(info.numValidators)}
     </>
   )
 }

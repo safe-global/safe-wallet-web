@@ -64,7 +64,13 @@ const StakingBanner = ({
     return (
       <>
         <Card className={`${css.bannerWrapper} ${css.bannerWrapperLarge}`}>
-          <Box sx={{ display: { xs: 'none', sm: 'block' }, position: 'relative' }} mr={{ sm: -8, md: -4, lg: 0 }}>
+          <Box
+            sx={{
+              mr: { sm: -8, md: -4, lg: 0 },
+              display: { xs: 'none', sm: 'block' },
+              position: 'relative',
+            }}
+          >
             <Box className={classNames(css.gradientShadow, { [css.gradientShadowDarkMode]: isDarkMode })} />
             <SvgIcon
               component={isDarkMode ? StakeIllustrationLight : StakeIllustrationDark}
@@ -74,9 +80,21 @@ const StakingBanner = ({
           </Box>
 
           <Grid container rowSpacing={2}>
-            <Grid item xs={12} zIndex={2} mb={1}>
+            <Grid
+              item
+              xs={12}
+              sx={{
+                zIndex: 2,
+                mb: 1,
+              }}
+            >
               <Stack spacing={0.5} direction="row">
-                <Typography variant="overline" color="primary.light">
+                <Typography
+                  variant="overline"
+                  sx={{
+                    color: 'primary.light',
+                  }}
+                >
                   Powered by
                 </Typography>
                 <SvgIcon
@@ -88,17 +106,33 @@ const StakingBanner = ({
               </Stack>
             </Grid>
 
-            <Grid item xs={12} zIndex={2}>
+            <Grid
+              item
+              xs={12}
+              sx={{
+                zIndex: 2,
+              }}
+            >
               <Typography
                 variant="h2"
-                fontWeight={700}
                 className={classNames(css.header, { [css.gradientText]: isDarkMode })}
+                sx={{
+                  fontWeight: 700,
+                }}
               >
                 Stake your ETH and earn rewards
               </Typography>
             </Grid>
 
-            <Grid item xs={12} sm={6} zIndex={2} mb={1}>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              sx={{
+                zIndex: 2,
+                mb: 1,
+              }}
+            >
               <Typography variant="body1">
                 Lock 32 ETH and become a validator easily with the Kiln widget — faster and more cost-effective. You can
                 also explore Safe Apps or home staking for other options. Staking involves risks like slashing.
@@ -110,7 +144,15 @@ const StakingBanner = ({
               )}
             </Grid>
 
-            <Grid item container xs={12} spacing={2} textAlign="center">
+            <Grid
+              item
+              container
+              xs={12}
+              spacing={2}
+              sx={{
+                textAlign: 'center',
+              }}
+            >
               <Grid item xs={12} md="auto">
                 <NextLink
                   href={AppRoutes.stake && { pathname: AppRoutes.stake, query: { safe: router.query.safe } }}
@@ -143,10 +185,20 @@ const StakingBanner = ({
         <Stack
           direction={{ xs: 'column', md: 'row' }}
           spacing={2}
-          alignItems={{ xs: 'initial', md: 'center' }}
-          justifyContent="space-between"
+          sx={{
+            alignItems: { xs: 'initial', md: 'center' },
+            justifyContent: 'space-between',
+          }}
         >
-          <Stack direction="row" spacing={2} alignItems="center" justifyContent="center" zIndex={1}>
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 1,
+            }}
+          >
             <SvgIcon component={StakeIcon} sx={{ width: '16px', height: '16px' }} inheritViewBox />
 
             <Typography variant="body2">
@@ -171,7 +223,13 @@ const StakingBanner = ({
             </Typography>
           </Stack>
 
-          <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems={{ xs: 'center', md: 'flex-end' }}>
+          <Stack
+            direction={{ xs: 'column', md: 'row' }}
+            spacing={2}
+            sx={{
+              alignItems: { xs: 'center', md: 'flex-end' },
+            }}
+          >
             <Box>
               <Button variant="text" onClick={onHide} size="small" sx={{ whiteSpace: 'nowrap' }}>
                 Don&apos;t show again

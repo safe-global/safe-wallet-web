@@ -61,7 +61,14 @@ const TransactionQueueBar = ({
             <AccordionSummary
               sx={{ '.MuiAccordionSummary-content': { alignItems: 'center' }, height: TRANSACTION_BAR_HEIGHT }}
             >
-              <Typography variant="body1" color="primary.main" fontWeight={700} sx={{ mr: 'auto' }}>
+              <Typography
+                variant="body1"
+                sx={{
+                  color: 'primary.main',
+                  fontWeight: 700,
+                  mr: 'auto',
+                }}
+              >
                 {barTitle}
               </Typography>
 
@@ -81,7 +88,13 @@ const TransactionQueueBar = ({
             </AccordionSummary>
             <AccordionDetails>
               <BatchExecuteHoverProvider>
-                <Box display="flex" flexDirection="column" alignItems="flex-end">
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'flex-end',
+                  }}
+                >
                   <BatchExecuteButton />
                 </Box>
                 <PaginatedTxns useTxns={useTxQueue} />

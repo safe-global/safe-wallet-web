@@ -8,7 +8,7 @@ import {
   isSettingTwapFallbackHandler,
   TWAP_FALLBACK_HANDLER,
 } from '../utils'
-import type { DecodedDataResponse, TwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
+import type { DataDecoded, TwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
 import { type SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
 
 describe('Swap helpers', () => {
@@ -171,7 +171,6 @@ describe('Swap helpers', () => {
       expect(result).toEqual('0')
     })
 
-    // eslint-disable-next-line no-only-tests/no-only-tests
     it('returns the surplus amount for buy orders', () => {
       const mockOrder = {
         executedSellAmount: '10000000000000000000', //10
@@ -352,7 +351,7 @@ describe('Swap helpers', () => {
             ],
           },
         ],
-      } as unknown as DecodedDataResponse
+      } as unknown as DataDecoded
       expect(isSettingTwapFallbackHandler(decodedData)).toBe(true)
     })
 
@@ -370,7 +369,7 @@ describe('Swap helpers', () => {
             ],
           },
         ],
-      } as unknown as DecodedDataResponse
+      } as unknown as DataDecoded
       expect(isSettingTwapFallbackHandler(decodedData)).toBe(false)
     })
 
@@ -388,16 +387,12 @@ describe('Swap helpers', () => {
             ],
           },
         ],
-      } as unknown as DecodedDataResponse
+      } as unknown as DataDecoded
       expect(isSettingTwapFallbackHandler(decodedData)).toBe(false)
     })
 
-    it('should return false when decodedData is undefined', () => {
-      expect(isSettingTwapFallbackHandler(undefined)).toBe(false)
-    })
-
     it('should return false when parameters are missing', () => {
-      const decodedData = {} as unknown as DecodedDataResponse
+      const decodedData = {} as unknown as DataDecoded
       expect(isSettingTwapFallbackHandler(decodedData)).toBe(false)
     })
 
@@ -408,7 +403,7 @@ describe('Swap helpers', () => {
             valueDecoded: null,
           },
         ],
-      } as unknown as DecodedDataResponse
+      } as unknown as DataDecoded
       expect(isSettingTwapFallbackHandler(decodedData)).toBe(false)
     })
 
@@ -423,7 +418,7 @@ describe('Swap helpers', () => {
             ],
           },
         ],
-      } as unknown as DecodedDataResponse
+      } as unknown as DataDecoded
       expect(isSettingTwapFallbackHandler(decodedData)).toBe(false)
     })
   })

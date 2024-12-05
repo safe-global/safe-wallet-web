@@ -28,10 +28,12 @@ export const ReviewRemoveGuard = ({ params }: { params: RemoveGuardFlowProps }) 
   return (
     <SignOrExecuteForm onSubmit={onFormSubmit}>
       <Typography sx={({ palette }) => ({ color: palette.primary.light })}>Transaction guard</Typography>
-
       <EthHashInfo address={params.address} showCopyButton hasExplorer shortAddress={false} />
-
-      <Typography my={2}>
+      <Typography
+        sx={{
+          my: 2,
+        }}
+      >
         Once the transaction guard has been removed, checks by the transaction guard will not be conducted before or
         after any subsequent transactions.
       </Typography>

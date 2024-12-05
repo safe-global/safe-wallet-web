@@ -178,7 +178,7 @@ describe('getTokenAllowanceForDelegate', () => {
           },
           _isProvider: true,
           resolveName: (name: string) => name,
-        } as any),
+        }) as any,
     )
 
     const mockContract = { getTokenAllowance: getTokenAllowanceMock } as unknown as AllowanceModule

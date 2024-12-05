@@ -6,7 +6,7 @@ import { ApprovalValueField } from './ApprovalValueField'
 import Track from '@/components/common/Track'
 import { MODALS_EVENTS } from '@/services/analytics'
 import { useFormContext } from 'react-hook-form'
-import { get } from 'lodash'
+import get from 'lodash/get'
 import { EditOutlined } from '@mui/icons-material'
 import TokenIcon from '@/components/common/TokenIcon'
 import { useState } from 'react'
@@ -43,17 +43,24 @@ const EditableApprovalItem = ({
   return (
     <Stack
       direction="row"
-      alignItems="center"
-      gap={2}
       className={css.approvalField}
       onClick={readOnly ? handleEditMode : undefined}
+      sx={{
+        alignItems: 'center',
+        gap: 2,
+      }}
     >
-      <Box display="flex" flexDirection="row" alignItems="center" gap="4px">
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: '4px',
+        }}
+      >
         <TokenIcon size={32} logoUri={approval.tokenInfo?.logoUri} tokenSymbol={approval.tokenInfo?.symbol} />
       </Box>
-
       <ApprovalValueField name={name} tx={approval} readOnly={readOnly} />
-
       <Track {...MODALS_EVENTS.EDIT_APPROVALS} label={readOnly ? 'edit' : 'save'}>
         {readOnly ? (
           <IconButton color="border" onClick={handleEditMode} title="Edit">

@@ -6,7 +6,6 @@ import { IS_OFFICIAL_HOST } from '@/config/constants'
 import SafePrivacyPolicy from '@/markdown/privacy/privacy.md'
 
 const overrideComponents: MDXComponents = {
-  // @ts-expect-error
   a: CustomLink,
 }
 

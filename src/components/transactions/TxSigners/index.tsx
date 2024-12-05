@@ -65,7 +65,7 @@ enum StepState {
 }
 
 const getStepColor = (state: StepState, palette: Palette): string => {
-  const colors: { [key in StepState]: string } = {
+  const colors: { [_key in StepState]: string } = {
     [StepState.CONFIRMED]: palette.primary.main,
     [StepState.ACTIVE]: palette.warning.dark,
     [StepState.DISABLED]: palette.border.main,
@@ -202,7 +202,14 @@ export const TxSigners = ({
               <Dot />
             </StyledListItemIcon>
             <ListItemText>
-              <Link data-testid="confirmation-visibility-btn" component="button" onClick={toggleHide} fontSize="medium">
+              <Link
+                data-testid="confirmation-visibility-btn"
+                component="button"
+                onClick={toggleHide}
+                sx={{
+                  fontSize: 'medium',
+                }}
+              >
                 {hideConfirmations ? 'Show all' : 'Hide all'}
               </Link>
             </ListItemText>

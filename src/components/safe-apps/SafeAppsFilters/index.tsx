@@ -73,7 +73,6 @@ const SafeAppsFilters = ({
           }}
         />
       </Grid>
-
       {/* Select Category */}
       <Grid item xs={12} sm={6} md={3} lg={3}>
         <FormControl fullWidth>
@@ -143,7 +142,6 @@ const SafeAppsFilters = ({
           )}
         </FormControl>
       </Grid>
-
       {/* Optimized with Batch Transaction */}
       <Grid item xs={12} sm={6} md={3} lg={3}>
         <Tooltip
@@ -161,7 +159,13 @@ const SafeAppsFilters = ({
                 onChangeOptimizedWithBatch(value)
               }}
               label={
-                <Box display="flex" alignItems="center" gap={1}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                  }}
+                >
                   <span>Batch transactions</span> <BatchIcon />
                 </Box>
               }

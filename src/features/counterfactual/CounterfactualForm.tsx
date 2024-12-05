@@ -164,7 +164,11 @@ export const CounterfactualForm = ({
         )}
 
         {submitError && (
-          <Box mt={1}>
+          <Box
+            sx={{
+              mt: 1,
+            }}
+          >
             <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
           </Box>
         )}

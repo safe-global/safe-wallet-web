@@ -41,8 +41,20 @@ const OverviewWidget = ({ safeName, networks }: { safeName: string; networks: Ch
             </div>
           ))
         ) : (
-          <Box p={2}>
-            <Typography variant="body2" color="border.main" textAlign="center" width={1} mb={1}>
+          <Box
+            sx={{
+              p: 2,
+            }}
+          >
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'border.main',
+                textAlign: 'center',
+                width: 1,
+                mb: 1,
+              }}
+            >
               Connect your wallet to continue
             </Typography>
             <ConnectWalletButton />

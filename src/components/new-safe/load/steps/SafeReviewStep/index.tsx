@@ -17,6 +17,7 @@ import { LOAD_SAFE_EVENTS, OPEN_SAFE_LABELS, OVERVIEW_EVENTS, trackEvent } from 
 import { AppRoutes } from '@/config/routes'
 import ReviewRow from '@/components/new-safe/ReviewRow'
 import { upsertAddressBookEntries } from '@/store/addressBookSlice'
+import { maybePlural } from '@/utils/formatters'
 
 const SafeReviewStep = ({ data, onBack }: StepRenderProps<LoadSafeFormData>) => {
   const chain = useCurrentChain()
@@ -118,7 +119,7 @@ const SafeReviewStep = ({ data, onBack }: StepRenderProps<LoadSafeFormData>) => 
             name="Threshold"
             value={
               <Typography>
-                {data.threshold} out of {data.owners.length} signer(s)
+                {data.threshold} out of {data.owners.length} signer{maybePlural(data.owners)}
               </Typography>
             }
           />
@@ -126,7 +127,14 @@ const SafeReviewStep = ({ data, onBack }: StepRenderProps<LoadSafeFormData>) => 
       </Box>
       <Divider />
       <Box className={layoutCss.row}>
-        <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            gap: 3,
+          }}
+        >
           <Button variant="outlined" size="small" onClick={handleBack} startIcon={<ArrowBackIcon fontSize="small" />}>
             Back
           </Button>

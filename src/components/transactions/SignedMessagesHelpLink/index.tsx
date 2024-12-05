@@ -14,10 +14,21 @@ const SignedMessagesHelpLink = () => {
   }
 
   return (
-    <Box display="flex" alignItems="center" gap={1}>
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 1,
+      }}
+    >
       <SvgIcon component={InfoIcon} inheritViewBox color="border" fontSize="small" />
       <ExternalLink noIcon href={HelpCenterArticle.SIGNED_MESSAGES}>
-        <Typography variant="body2" fontWeight={700}>
+        <Typography
+          variant="body2"
+          sx={{
+            fontWeight: 700,
+          }}
+        >
           What are signed messages?
         </Typography>
       </ExternalLink>

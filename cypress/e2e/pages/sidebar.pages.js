@@ -6,6 +6,7 @@ import { safeHeaderInfo } from './import_export.pages.js'
 import * as file from './import_export.pages.js'
 import safes from '../../fixtures/safes/static.json'
 import * as address_book from './address_book.page.js'
+import * as create_wallet from '../pages/create_wallet.pages.js'
 
 export const chainLogo = '[data-testid="chain-logo"]'
 const safeIcon = '[data-testid="safe-icon"]'
@@ -26,14 +27,13 @@ export const safeItemOptionsRemoveBtn = '[data-testid="remove-btn"]'
 export const safeItemOptionsAddChainBtn = '[data-testid="add-chain-btn"]'
 const nameInput = '[data-testid="name-input"]'
 const saveBtn = '[data-testid="save-btn"]'
-const cancelBtn = '[data-testid="cancel-btn"]'
 const deleteBtn = '[data-testid="delete-btn"]'
 const readOnlyVisibility = '[data-testid="read-only-visibility"]'
 const currencySection = '[data-testid="currency-section"]'
 const missingSignatureInfo = '[data-testid="missing-signature-info"]'
 const queuedTxInfo = '[data-testid="queued-tx-info"]'
-const showMoreBtn = '[data-testid="show-more-btn" ]'
-const importBtn = '[data-testid="import-btn"]'
+const expandSafesList = '[data-testid="expand-safes-list"]'
+export const importBtn = '[data-testid="import-btn"]'
 export const pendingActivationIcon = '[data-testid="pending-activation-icon"]'
 const safeItemMenuIcon = '[data-testid="MoreVertIcon"]'
 const multichainItemSummary = '[data-testid="multichain-item-summary"]'
@@ -54,7 +54,14 @@ export const addedNetworkOption = 'li[role="option"]'
 const modalAddNetworkName = '[data-testid="added-network"]'
 const networkSeperator = 'div[role="separator"]'
 export const addNetworkTooltip = '[data-testid="add-network-tooltip"]'
-const networkOptionNetworkSwitch = 'span[data-track="overview: Add new network"] > li'
+const pinnedAccountsContainer = '[data-testid="pinned-accounts"]'
+const emptyPinnedList = '[data-testid="empty-pinned-list"]'
+const boomarkIcon = '[data-testid="bookmark-icon"]'
+const emptyAccountList = '[data-testid="empty-account-list"]'
+const searchInput = '[id="search-by-name"]'
+const accountsList = '[data-testid="accounts-list"]'
+const sortbyBtn = '[data-testid="sortby-button"]'
+
 export const importBtnStr = 'Import'
 export const exportBtnStr = 'Export'
 export const undeployedSafe = 'Undeployed Sepolia'
@@ -67,6 +74,8 @@ const signersNotConsistentMsg3 =
   'To manage your account easier and to prevent lose of funds, we recommend keeping the same signers'
 const signersNotConsistentConfirmTxViewMsg = (network) =>
   `Signers are not consistent across networks on this account. Changing signers will only affect the account on ${network}`
+const activateStr = 'You need to activate your Safe first'
+const emptyPinnedMessage = 'Personalize your account list by clicking theicon on the accounts most important to you.'
 
 export const addedSafesEth = ['0x8675...a19b']
 export const addedSafesSepolia = ['0x6d0b...6dC1', '0x5912...fFdb', '0x0637...708e', '0xD157...DE9a']
@@ -74,38 +83,84 @@ export const sideBarListItems = ['Home', 'Assets', 'Transactions', 'Address book
 export const sideBarSafes = {
   safe1: '0xBb26E3717172d5000F87DeFd391994f789D80aEB',
   safe2: '0x905934aA8758c06B2422F0C90D97d2fbb6677811',
+  safe3: '0xC96ee38f5A73C8A70b565CB8EA938D2aF913ee3B',
   safe1short: '0xBb26...0aEB',
+  safe1short_: '0xBb26',
   safe2short: '0x9059...7811',
   safe3short: '0x86Cb...2C27',
+  safe4short: '0x9261...7E00',
+  multichain_short_: '0xC96e',
 }
+
+// 0x926186108f74dB20BFeb2b6c888E523C78cb7E00
 export const sideBarSafesPendingActions = {
   safe1: '0x5912f6616c84024cD1aff0D5b55bb36F5180fFdb',
   safe1short: '0x5912...fFdb',
 }
 export const testSafeHeaderDetails = ['2/2', safes.SEP_STATIC_SAFE_9_SHORT]
 const receiveAssetsStr = 'Receive assets'
-const emptyWatchListStr = 'Watch any Safe Account to keep an eye on its activity'
-const emptySafeListStr = "You don't have any Safe Accounts yet"
-const myAccountsStr = 'My accounts'
+const emptyPinnedListStr = 'Watch any Safe Account to keep an eye on its activity'
+const emptySafeListStr = "You don't have any safes yet"
+const accountsRegex = /(My accounts|Accounts) \((\d+)\)/
 const confirmTxStr = (number) => `${number} to confirm`
-const pedningTxStr = (n) => `${n} pending transaction`
+const pedningTxStr = (n) => `${n} pending`
 export const confirmGenStr = 'to confirm'
+const searchResults = (number) => `Found ${number} result${number === 1 ? '' : 's'}`
+
+export const sortOptions = {
+  lastVisited: '[data-testid="last-visited-option"]',
+  name: '[data-testid="name-option"]',
+}
+export function checkSearchResults(number) {
+  cy.contains(searchResults(number)).should('exist')
+}
 
 export const multichainSafes = {
   polygon: 'Multichain polygon',
   sepolia: 'Multichain Sepolia',
 }
 
+export function searchSafe(safe) {
+  cy.get(searchInput).clear().type(safe)
+}
+
+export function openSortOptionsMenu() {
+  cy.get(sortbyBtn).click()
+}
+
+export function selectSortOption(option) {
+  cy.get(option).click()
+}
+
+export function clearSearchInput() {
+  cy.get(searchInput).scrollIntoView().clear({ force: true })
+}
+
+export function verifySearchInputPosition() {
+  cy.get(searchInput).then(($searchInput) => {
+    cy.get(pinnedAccountsContainer).then(($pinnedList) => {
+      const searchInputPosition = $searchInput[0].compareDocumentPosition($pinnedList[0])
+      expect(searchInputPosition & Node.DOCUMENT_POSITION_FOLLOWING).to.equal(Node.DOCUMENT_POSITION_FOLLOWING)
+    })
+  })
+}
+
 export function verifyNumberOfPendingTxTag(tx) {
-  cy.contains(pedningTxStr(tx))
+  cy.get(pinnedAccountsContainer).within(() => {
+    cy.get('span').contains(pedningTxStr(tx))
+  })
+}
+
+export function verifyPinnedSafe(safe) {
+  cy.get(pinnedAccountsContainer).within(() => {
+    cy.get(sideSafeListItem).contains(safe)
+  })
 }
 
 export function getImportBtn() {
   return cy.get(importBtn).scrollIntoView().should('be.visible')
 }
 export function clickOnSidebarImportBtn() {
-  cy.get(sidebarSafeContainer).find(sideSafeListItem).last().scrollIntoView()
-
   getImportBtn().click()
   modal.verifyModalTitle(modal.modalTitiles.dataImport)
   file.verifyValidImportInputExists()
@@ -113,11 +168,20 @@ export function clickOnSidebarImportBtn() {
 
 export function showAllSafes() {
   cy.get('body').then(($body) => {
-    if ($body.find(showMoreBtn).length > 0) {
-      cy.get(showMoreBtn).click()
+    if ($body.find(expandSafesList).length > 0) {
+      cy.get(expandSafesList).click()
       cy.wait(500)
-      showAllSafes()
     }
+  })
+}
+
+export function verifyAccountsCollapsed() {
+  cy.get(expandSafesList).should('have.attr', 'aria-expanded', 'false')
+}
+
+export function verifyConnectBtnDisplayed() {
+  cy.get(emptyAccountList).within(() => {
+    create_wallet.verifyConnectWalletBtnDisplayed()
   })
 }
 
@@ -169,7 +233,7 @@ export function verifyEtherscanLinkExists() {
   cy.get(sidebarContainer)
     .should('be.visible')
     .within(() => {
-      cy.get(explorerBtn).should('have.attr', 'href').and('include', constants.sepoliaEtherscanlLink)
+      cy.get(explorerBtn).should('have.attr', 'href').and('include', constants.etherscanlLink)
     })
 }
 
@@ -187,15 +251,26 @@ export function verifyTxCounter(counter) {
 }
 
 export function verifyNavItemDisabled(item) {
-  cy.get(sideBarListItem).contains(item).parents('li').invoke('attr', 'class').should('include', 'disabled')
+  cy.get(`div[aria-label*="${activateStr}"]`).contains(item).should('exist')
 }
 
 export function verifySafeCount(count) {
   main.verifyMinimumElementsCount(sideSafeListItem, count)
 }
 
-export function openSidebar() {
+export function verifyAccountListSafeCount(count) {
+  cy.get(accountsList).within(() => {
+    cy.get(sideSafeListItem).should('have.length', count)
+  })
+}
+
+export function clickOnOpenSidebarBtn() {
   cy.get(openSafesIcon).click()
+}
+
+// Expands all safes in the sidebar
+export function openSidebar() {
+  clickOnOpenSidebarBtn()
   cy.wait(500)
   showAllSafes()
   main.verifyElementsExist([sidebarSafeContainer])
@@ -205,9 +280,12 @@ export function verifyAddedSafesExist(safes) {
   main.verifyValuesExist(sideSafeListItem, safes)
 }
 
+export function verifySafesDoNotExist(safes) {
+  main.verifyValuesDoNotExist(sidebarSafeContainer, safes)
+}
+
 export function verifyAddedSafesExistByIndex(index, safe) {
   cy.get(sideSafeListItem).eq(index).should('contain', safe)
-  cy.get(sideSafeListItem).eq(index).should('contain', 'sep:')
 }
 
 export function verifySafesByNetwork(netwrok, safes) {
@@ -222,36 +300,38 @@ export function verifySafesByNetwork(netwrok, safes) {
   })
 }
 
-function getSafeItemByName(name) {
-  return cy
-    .get(sidebarSafeContainer)
-    .find(sideSafeListItem)
-    .contains(name)
-    .parents('span')
-    .parent()
-    .within(() => {
-      cy.get(safeItemOptionsBtn)
-    })
+function getSafeByName(safe) {
+  return cy.get(sidebarSafeContainer).find(sideSafeListItem).contains(safe).parents('span').parent().should('exist')
+}
+
+function getSafeItemOptions(name) {
+  return getSafeByName(name).within(() => {
+    cy.get(safeItemOptionsBtn)
+  })
 }
 
 export function verifySafeReadOnlyState(safe) {
-  getSafeItemByName(safe).find(readOnlyVisibility).should('exist')
+  getSafeItemOptions(safe).find(readOnlyVisibility).should('exist')
 }
 
 export function verifyMissingSignature(safe) {
-  getSafeItemByName(safe).find(missingSignatureInfo).should('exist')
+  getSafeItemOptions(safe).find(missingSignatureInfo).should('exist')
 }
 
 export function verifyQueuedTx(safe) {
-  return getSafeItemByName(safe).find(queuedTxInfo).should('exist')
+  return getSafeItemOptions(safe).find(queuedTxInfo).should('exist')
 }
 
 export function clickOnSafeItemOptionsBtn(name) {
-  getSafeItemByName(name).find(safeItemOptionsBtn).click()
+  getSafeItemOptions(name).find(safeItemOptionsBtn).click()
 }
 
 export function clickOnSafeItemOptionsBtnByIndex(index) {
   cy.get(safeItemOptionsBtn).eq(index).click()
+}
+
+export function expandGroupSafes(index) {
+  cy.get(multichainItemSummary).eq(index).click()
 }
 
 export function clickOnMultichainItemOptionsBtn(index) {
@@ -260,7 +340,6 @@ export function clickOnMultichainItemOptionsBtn(index) {
 
 export function checkMultichainTooltipExists(index) {
   cy.get(multichainItemSummary).eq(index).find(chainLogo).eq(0).trigger('mouseover', { force: true })
-
   cy.get(multichainTooltip).should('exist')
 }
 
@@ -270,7 +349,7 @@ export function checkSafeGroupBalance(index) {
     .find(groupBalance)
     .invoke('text')
     .should('include', '$')
-    .and('match', /\d+\.\d{2}/)
+    .and('match', /\$?\s?\d+(\.\d{1,3})?/)
 }
 
 export function checkSafeGroupAddress(index, address) {
@@ -297,6 +376,10 @@ export function checkThereIsNoOptionsMenu(index) {
 
 export function checkUndeployedSafeExists(index) {
   return getSubAccountContainer(index).contains(notActivatedStr).should('exist')
+}
+
+export function checkMultichainSubSafeExists(safes) {
+  main.verifyValuesExist(subAccountContainer, safes)
 }
 
 export function checkAddNetworkBtnPosition(index) {
@@ -344,6 +427,7 @@ export function renameSafeItem(oldName, newName) {
 
 export function removeSafeItem(name) {
   clickOnSafeItemOptionsBtn(name)
+  cy.wait(1000)
   clickOnRemoveBtn()
   confirmSafeItemRemoval()
   verifyModalRemoved()
@@ -395,12 +479,25 @@ export function checkSafeAddressInHeader(address) {
   main.verifyValuesExist(sidebarSafeHeader, address)
 }
 
-export function verifyWatchlistIsEmpty() {
-  main.verifyValuesExist(sidebarSafeContainer, [emptyWatchListStr])
+export function verifyPinnedListIsEmpty() {
+  cy.get(emptyPinnedList).should('contain.text', emptyPinnedMessage).find('svg').should('exist')
 }
 
 export function verifySafeListIsEmpty() {
   main.verifyValuesExist(sidebarSafeContainer, [emptySafeListStr])
+}
+
+export function verifySafeBookmarkBtnExists(safe) {
+  getSafeByName(safe).within(() => {
+    cy.get(boomarkIcon).should('exist')
+  })
+}
+
+export function clickOnBookmarkBtn(safe) {
+  getSafeByName(safe).within(() => {
+    cy.get(boomarkIcon).click()
+    cy.wait(500)
+  })
 }
 
 export function verifySafeGiveNameOptionExists(index) {
@@ -408,8 +505,16 @@ export function verifySafeGiveNameOptionExists(index) {
   clickOnRenameBtn()
 }
 
-export function checkMyAccountCounter(value) {
-  cy.contains(myAccountsStr).should('contain', value)
+export function checkAccountsCounter(value) {
+  verifySafeCount(2)
+  cy.get(sidebarSafeContainer)
+    .should('exist')
+    .then(($el) => {
+      const text = $el.text()
+      const match = text.match(accountsRegex)
+      expect(match).not.to.be.null
+      expect(match[0]).to.exist
+    })
 }
 
 export function checkTxToConfirm(numberOfTx) {

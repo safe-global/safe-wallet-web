@@ -30,10 +30,12 @@ type DecodedTxProps = {
 
 export const Divider = () => (
   <Box
-    borderBottom="1px solid var(--color-border-light)"
-    width="calc(100% + 32px)"
-    my={2}
-    sx={{ ml: '-16px !important' }}
+    sx={{
+      borderBottom: '1px solid var(--color-border-light)',
+      width: 'calc(100% + 32px)',
+      my: 2,
+      ml: '-16px !important',
+    }}
   />
 )
 
@@ -81,11 +83,16 @@ const DecodedTx = ({
   return (
     <Stack spacing={2}>
       {!isMethodCallInAdvanced && (
-        <Box border="1px solid var(--color-border-light)" borderRadius={1} p={2}>
+        <Box
+          sx={{
+            border: '1px solid var(--color-border-light)',
+            borderRadius: 1,
+            p: 2,
+          }}
+        >
           {decodedDataBlock}
         </Box>
       )}
-
       {isMultisend && showMultisend && <Multisend txData={txDetails?.txData || txData} compact />}
 
       {showAdvancedDetails && (
@@ -98,7 +105,11 @@ const DecodedTx = ({
             >
               Advanced details
               <HelpToolTip />
-              <Box flexGrow={1} />
+              <Box
+                sx={{
+                  flexGrow: 1,
+                }}
+              />
               {isMethodCallInAdvanced && decodedData?.method}
               {txDetails &&
                 isTransferTxInfo(txDetails.txInfo) &&

@@ -7,7 +7,14 @@ type SafeAppsListHeaderProps = {
 
 const SafeAppsListHeader = ({ title, amount }: SafeAppsListHeaderProps) => {
   return (
-    <Typography variant="body2" color="primary.light" fontWeight="bold" mt={3}>
+    <Typography
+      variant="body2"
+      sx={{
+        color: 'primary.light',
+        fontWeight: 'bold',
+        mt: 3,
+      }}
+    >
       {title} ({amount || 0})
     </Typography>
   )

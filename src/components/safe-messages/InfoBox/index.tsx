@@ -20,7 +20,12 @@ const InfoBox = ({
       <div className={css.message}>
         <SvgIcon component={icon} color="info" inheritViewBox fontSize="medium" />
         <div>
-          <Typography variant="subtitle1" fontWeight="bold">
+          <Typography
+            variant="subtitle1"
+            sx={{
+              fontWeight: 'bold',
+            }}
+          >
             {title}
           </Typography>
           <Typography variant="body2">{message}</Typography>

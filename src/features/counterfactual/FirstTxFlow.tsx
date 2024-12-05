@@ -73,7 +73,15 @@ const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) 
 
   return (
     <ModalDialog open={open} dialogTitle="Create new transaction" hideChainIndicator onClose={onClose}>
-      <Grid container justifyContent="center" flexDirection="column" p={3} spacing={2}>
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          justifyContent: 'center',
+          flexDirection: 'column',
+          p: 3,
+        }}
+      >
         <Grid item>
           <ChoiceButton
             title="Activate Safe now"

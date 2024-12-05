@@ -120,35 +120,51 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
   return (
     <SignOrExecuteForm onSubmit={handleSubmit}>
       <SendFromBlock />
-
       <InfoDetails title="Interact with SignMessageLib">
         <EthHashInfo address={signMessageAddress} shortAddress={false} showCopyButton hasExplorer />
       </InfoDetails>
-
       {isEIP712TypedData(decodedMessage) && (
         <ErrorBoundary fallback={<div>Error parsing data</div>}>
           <ApprovalEditor safeMessage={decodedMessage} />
         </ErrorBoundary>
       )}
-
       {safeTx && (
-        <Box pb={1}>
+        <Box
+          sx={{
+            pb: 1,
+          }}
+        >
           <HexEncodedData title="Data (hex-encoded)" hexData={safeTx.data.data} />
         </Box>
       )}
-
-      <Typography my={1}>
+      <Typography
+        sx={{
+          my: 1,
+        }}
+      >
         <b>Signing method:</b> <code>{method}</code>
       </Typography>
-
-      <Typography my={2}>
+      <Typography
+        sx={{
+          my: 2,
+        }}
+      >
         <b>Signing message:</b> {readableMessage && <CopyButton text={readableMessage} />}
       </Typography>
       <DecodedMsg message={decodedMessage} isInModal />
-
-      <Box display="flex" alignItems="center" my={2}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          my: 2,
+        }}
+      >
         <SvgIcon component={WarningIcon} inheritViewBox color="warning" />
-        <Typography ml={1}>
+        <Typography
+          sx={{
+            ml: 1,
+          }}
+        >
           Signing a message with your Safe Account requires a transaction on the blockchain
         </Typography>
       </Box>

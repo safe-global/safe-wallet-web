@@ -25,8 +25,20 @@ const BatchTooltip = ({ children }: { children: ReactElement }) => {
       open={showTooltip}
       onClose={() => setShowTooltip(false)}
       title={
-        <Box display="flex" flexDirection="column" alignItems="center" p={2} gap={2}>
-          <Box fontSize="53px">
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            p: 2,
+            gap: 2,
+          }}
+        >
+          <Box
+            sx={{
+              fontSize: '53px',
+            }}
+          >
             <SvgIcon component={SuccessIcon} inheritViewBox fontSize="inherit" />
           </Box>
           Transaction is added to batch

@@ -84,7 +84,12 @@ const BlockaidResultWarning = ({
             <BlockaidMessage />
           </Alert>
           {needsRiskConfirmation && (
-            <Box pl={2} className={css.riskConfirmationBlock}>
+            <Box
+              className={css.riskConfirmationBlock}
+              sx={{
+                pl: 2,
+              }}
+            >
               <Track {...MODALS_EVENTS.ACCEPT_RISK}>
                 <FormControlLabel
                   label={
@@ -97,8 +102,20 @@ const BlockaidResultWarning = ({
               </Track>
             </Box>
           )}
-          <Stack direction="row" alignItems="center" spacing={0.5} mt={1}>
-            <Typography variant="caption" color="text.secondary">
+          <Stack
+            direction="row"
+            spacing={0.5}
+            sx={{
+              alignItems: 'center',
+              mt: 1,
+            }}
+          >
+            <Typography
+              variant="caption"
+              sx={{
+                color: 'text.secondary',
+              }}
+            >
               Powered by
             </Typography>
             <BlockaidIcon />
@@ -126,7 +143,13 @@ const ResultDescription = ({
   }
 
   return (
-    <Typography fontWeight={700} variant="subtitle1" lineHeight="20px">
+    <Typography
+      variant="subtitle1"
+      sx={{
+        fontWeight: 700,
+        lineHeight: '20px',
+      }}
+    >
       {text ?? 'The transaction is malicious.'}
     </Typography>
   )
@@ -136,7 +159,12 @@ const BlockaidError = () => {
   return (
     <Alert severity="warning" className={css.customAlert}>
       <AlertTitle>
-        <Typography fontWeight={700} variant="subtitle1">
+        <Typography
+          variant="subtitle1"
+          sx={{
+            fontWeight: 700,
+          }}
+        >
           Proceed with caution
         </Typography>
       </AlertTitle>
@@ -212,7 +240,13 @@ export const BlockaidMessage = () => {
   if (sortedSeverities.length === 0) return null
 
   return (
-    <Box display="flex" flexDirection="column" gap={1}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+      }}
+    >
       {sortedSeverities.map((key) => (
         <BlockaidHint key={key} warnings={groupedShownWarnings[key].map((warning) => warning.description)} />
       ))}

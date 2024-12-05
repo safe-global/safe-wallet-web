@@ -4,9 +4,7 @@ import * as owner from '../pages/owners.pages'
 import * as addressBook from '../pages/address_book.page'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
-import * as createTx from '../pages/create_tx.pages.js'
-import * as navigation from '../pages/navigation.page'
-import { getEvents, events, checkDataLayerEvents } from '../../support/utils/gtag.js'
+import { getMockAddress } from '../../support/utils/ethers.js'
 
 let staticSafes = []
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
@@ -58,7 +56,7 @@ describe('Add Owners tests', () => {
   it('Verify that Name field not mandatory', () => {
     wallet.connectSigner(signer)
     owner.openAddOwnerWindow()
-    owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
+    owner.typeOwnerAddress(getMockAddress())
     owner.clickOnNextBtn()
     owner.verifyConfirmTransactionWindowDisplayed()
   })

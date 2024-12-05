@@ -10,13 +10,23 @@ const SecuritySettings = () => {
     <Paper sx={{ padding: 4 }}>
       <Grid container spacing={3}>
         <Grid item lg={4} xs={12}>
-          <Typography variant="h4" fontWeight="bold" mb={1}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 'bold',
+              mb: 1,
+            }}
+          >
             Security
           </Typography>
         </Grid>
 
         <Grid item xs>
-          <Typography mb={2}>
+          <Typography
+            sx={{
+              mb: 2,
+            }}
+          >
             Enabling this setting allows the signing of unreadable signature requests. Signing these messages can lead
             to unpredictable consequences, including the potential loss of funds or control over your account.
           </Typography>

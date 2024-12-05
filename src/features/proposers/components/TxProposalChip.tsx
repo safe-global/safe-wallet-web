@@ -18,7 +18,7 @@ const TxProposalChip = () => {
               gap={0.7}
             >
               <SvgIcon component={InfoIcon} inheritViewBox fontSize="small" />
-              <Typography variant="caption" fontWeight="bold">
+              <Typography data-testid="proposal-status" variant="caption" fontWeight="bold">
                 Proposal
               </Typography>
             </Typography>

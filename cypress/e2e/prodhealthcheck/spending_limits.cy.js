@@ -4,6 +4,8 @@ import * as navigation from '../pages/navigation.page'
 import * as tx from '../pages/create_tx.pages'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
+import { getMockAddress } from '../../support/utils/ethers.js'
+import { acceptCookies2 } from '../pages/main.page.js'
 
 let staticSafes = []
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
@@ -18,18 +20,19 @@ describe('[PROD] Spending limits tests', () => {
   beforeEach(() => {
     cy.visit(constants.prodbaseUrl + constants.setupUrl + staticSafes.SEP_STATIC_SAFE_8)
     cy.get(spendinglimit.spendingLimitsSection).should('be.visible')
+    acceptCookies2()
   })
 
   it('Verify that the Review step shows beneficiary, amount allowed, reset time', () => {
     //Assume that default reset time is set to One time
     wallet.connectSigner(signer)
     spendinglimit.clickOnNewSpendingLimitBtn()
-    spendinglimit.enterBeneficiaryAddress(staticSafes.SEP_STATIC_SAFE_6)
+    spendinglimit.enterBeneficiaryAddress(getMockAddress())
     spendinglimit.enterSpendingLimitAmount(0.1)
     spendinglimit.clickOnNextBtn()
     spendinglimit.checkReviewData(
       tokenAmount,
-      staticSafes.SEP_STATIC_SAFE_6,
+      getMockAddress(),
       spendinglimit.timePeriodOptions.oneTime.split(' ').join('-'),
     )
   })

@@ -34,20 +34,28 @@ const Appearance: NextPage = () => {
       <Head>
         <title>{'Safe{Wallet} – Settings – Appearance'}</title>
       </Head>
-
       <SettingsHeader />
-
       <main>
         <Paper sx={{ p: 4 }}>
           <Grid container spacing={3}>
             <Grid item lg={4} xs={12}>
-              <Typography variant="h4" fontWeight="bold" mb={1}>
+              <Typography
+                variant="h4"
+                sx={{
+                  fontWeight: 'bold',
+                  mb: 1,
+                }}
+              >
                 Chain-specific addresses
               </Typography>
             </Grid>
 
             <Grid item xs>
-              <Typography mb={2}>
+              <Typography
+                sx={{
+                  mb: 2,
+                }}
+              >
                 Choose whether to copy{' '}
                 <ExternalLink href="https://eips.ethereum.org/EIPS/eip-3770">EIP-3770</ExternalLink> prefixes when
                 copying Ethereum addresses.
@@ -66,9 +74,21 @@ const Appearance: NextPage = () => {
             </Grid>
           </Grid>
 
-          <Grid container alignItems="center" marginTop={2} spacing={3}>
+          <Grid
+            container
+            spacing={3}
+            sx={{
+              alignItems: 'center',
+              marginTop: 2,
+            }}
+          >
             <Grid item lg={4} xs={12}>
-              <Typography variant="h4" fontWeight="bold">
+              <Typography
+                variant="h4"
+                sx={{
+                  fontWeight: 'bold',
+                }}
+              >
                 Theme
               </Typography>
             </Grid>

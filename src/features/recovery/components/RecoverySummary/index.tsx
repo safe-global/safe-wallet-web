@@ -18,24 +18,46 @@ export function RecoverySummary({ item }: { item: RecoveryQueueItem }): ReactEle
 
   return (
     <Box className={css.gridContainer}>
-      <Box gridArea="type">
+      <Box
+        sx={{
+          gridArea: 'type',
+        }}
+      >
         <RecoveryType isMalicious={isMalicious} />
       </Box>
-
-      <Box gridArea="info">
+      <Box
+        sx={{
+          gridArea: 'info',
+        }}
+      >
         <RecoveryInfo isMalicious={isMalicious} />
       </Box>
-
-      <Box gridArea="date" data-testid="tx-date" className={css.date}>
+      <Box
+        data-testid="tx-date"
+        className={css.date}
+        sx={{
+          gridArea: 'date',
+        }}
+      >
         <DateTime value={Number(item.timestamp)} />
       </Box>
-
       {!isExecutable || isPending ? (
-        <Box gridArea="status">
+        <Box
+          sx={{
+            gridArea: 'status',
+          }}
+        >
           <RecoveryStatus recovery={item} />
         </Box>
       ) : (
-        <Box gridArea="actions" mr={2} display="flex" justifyContent="center">
+        <Box
+          sx={{
+            gridArea: 'actions',
+            mr: 2,
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
           {!isMalicious && wallet && <ExecuteRecoveryButton recovery={item} compact />}
         </Box>
       )}

@@ -111,7 +111,11 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
   return (
     <>
       <TxCard>
-        <Typography mb={1}>
+        <Typography
+          sx={{
+            mb: 1,
+          }}
+        >
           This transaction will reset the Account setup, changing the signers
           {newThreshold !== safe.threshold ? ' and threshold' : ''}.
         </Typography>
@@ -120,8 +124,18 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
         <Divider className={commonCss.nestedDivider} sx={{ mt: 'var(--space-2) !important' }} />
 
-        <Box my={1}>
-          <Typography variant="body2" color="text.secondary" gutterBottom>
+        <Box
+          sx={{
+            my: 1,
+          }}
+        >
+          <Typography
+            variant="body2"
+            gutterBottom
+            sx={{
+              color: 'text.secondary',
+            }}
+          >
             After recovery, Safe Account transactions will require:
           </Typography>
           <Typography>
@@ -135,9 +149,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
         <BlockaidBalanceChanges />
       </TxCard>
-
       <TxChecks executionOwner={safe.owners[0].value} />
-
       <TxCard>
         <>
           <ConfirmationTitle variant={ConfirmationTitleTypes.execute} />

@@ -21,7 +21,7 @@
 }
 
 .drawer {
-  width: 480px;
+  width: 550px;
   max-width: 90vw;
   padding-top: var(--header-height);
   border-right: 1px solid var(--color-border-light);

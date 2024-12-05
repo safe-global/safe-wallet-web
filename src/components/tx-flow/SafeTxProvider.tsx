@@ -8,6 +8,7 @@ import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useCurrentChain } from '@/hooks/useChains'
 import { prependSafeToL2Migration } from '@/utils/transactions'
+import { useSelectAvailableSigner } from '@/hooks/wallets/useSelectAvailableSigner'
 
 export type SafeTxContextParams = {
   safeTx?: SafeTransaction
@@ -49,6 +50,7 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
 
   const { safe } = useSafeInfo()
   const chain = useCurrentChain()
+  const selectAvailableSigner = useSelectAvailableSigner()
 
   const setAndMigrateSafeTx: Dispatch<SetStateAction<SafeTransaction | undefined>> = useCallback(
     (
@@ -62,8 +64,11 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
       }
 
       prependSafeToL2Migration(safeTx, safe, chain).then(setSafeTx)
+
+      // Select a matching signer when we update the transaction
+      selectAvailableSigner(safeTx, safe)
     },
-    [chain, safe],
+    [chain, safe, selectAvailableSigner],
   )
 
   // Signed txs cannot be updated
@@ -74,8 +79,10 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
   const recommendedSafeTxGas = useSafeTxGas(safeTx)
 
   // Priority to external nonce, then to the recommended one
-  const finalNonce = isSigned ? safeTx?.data.nonce : nonce ?? recommendedNonce ?? safeTx?.data.nonce
-  const finalSafeTxGas = isSigned ? safeTx?.data.safeTxGas : safeTxGas ?? recommendedSafeTxGas ?? safeTx?.data.safeTxGas
+  const finalNonce = isSigned ? safeTx?.data.nonce : (nonce ?? recommendedNonce ?? safeTx?.data.nonce)
+  const finalSafeTxGas = isSigned
+    ? safeTx?.data.safeTxGas
+    : (safeTxGas ?? recommendedSafeTxGas ?? safeTx?.data.safeTxGas)
 
   // Update the tx when the nonce or safeTxGas change
   useEffect(() => {
@@ -84,7 +91,6 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
 
     createTx({ ...safeTx.data, safeTxGas: String(finalSafeTxGas) }, finalNonce)
       .then((tx) => {
-        console.log('SafeTxProvider: Updated tx with nonce and safeTxGas', tx)
         setSafeTx(tx)
       })
       .catch(setSafeTxError)

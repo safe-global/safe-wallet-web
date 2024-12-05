@@ -13,7 +13,7 @@ import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-st
 import labelCss from '@/components/transactions/GroupLabel/styles.module.css'
 
 // Conditional hook
-function _RecoveryList({ recoveryQueue }: { recoveryQueue: Array<RecoveryQueueItem> }): ReactElement {
+function InternalRecoveryList({ recoveryQueue }: { recoveryQueue: Array<RecoveryQueueItem> }): ReactElement {
   const queue = useTxQueue()
 
   const groupedItems = useMemo(() => {
@@ -53,7 +53,7 @@ function LazyRecoveryList(): ReactElement | null {
       <div className={labelCss.container}>Pending recovery</div>
 
       <TxListGrid>
-        <_RecoveryList recoveryQueue={recoveryQueue} />
+        <InternalRecoveryList recoveryQueue={recoveryQueue} />
       </TxListGrid>
     </>
   )

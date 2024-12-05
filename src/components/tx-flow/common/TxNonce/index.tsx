@@ -42,7 +42,13 @@ const CustomPopper = function ({
 const NonceFormHeader = memo(function NonceFormSubheader({ children, ...props }: ListSubheaderProps) {
   return (
     <ListSubheader {...props} disableSticky>
-      <Typography variant="caption" fontWeight={700} color="text.secondary">
+      <Typography
+        variant="caption"
+        sx={{
+          fontWeight: 700,
+          color: 'text.secondary',
+        }}
+      >
         {children}
       </Typography>
     </ListSubheader>
@@ -179,7 +185,13 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
       render={({ field, fieldState }) => {
         if (readOnly) {
           return (
-            <Typography variant="body2" fontWeight={700} ml={-1}>
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: 700,
+                ml: -1,
+              }}
+            >
               {nonce}
             </Typography>
           )
@@ -277,9 +289,21 @@ const TxNonce = () => {
   const { nonce, recommendedNonce } = useContext(SafeTxContext)
 
   return (
-    <Box data-testid="nonce-fld" display="flex" alignItems="center" gap={1}>
+    <Box
+      data-testid="nonce-fld"
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 1,
+      }}
+    >
       Nonce{' '}
-      <Typography component="span" fontWeight={700}>
+      <Typography
+        component="span"
+        sx={{
+          fontWeight: 700,
+        }}
+      >
         #
       </Typography>
       {nonce === undefined || recommendedNonce === undefined ? (

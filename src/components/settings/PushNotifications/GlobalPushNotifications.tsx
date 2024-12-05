@@ -36,9 +36,10 @@ import type { PushNotificationPreferences } from '@/services/push-notifications/
 import CheckWallet from '@/components/common/CheckWallet'
 
 import css from './styles.module.css'
-import useAllOwnedSafes from '@/components/welcome/MyAccounts/useAllOwnedSafes'
+import useAllOwnedSafes from '@/features/myAccounts/hooks/useAllOwnedSafes'
 import useWallet from '@/hooks/wallets/useWallet'
 import { selectAllAddedSafes, type AddedSafesState } from '@/store/addedSafesSlice'
+import { maybePlural } from '@/utils/formatters'
 
 // UI logic
 
@@ -374,7 +375,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
 
   if (totalNotifiableSafes === 0) {
     return (
-      <Typography color={({ palette }) => palette.primary.light}>
+      <Typography sx={{ color: ({ palette }) => palette.primary.light }}>
         {address ? 'No owned Safes' : 'No wallet connected'}
       </Typography>
     )
@@ -391,7 +392,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
           {totalSignaturesRequired > 0 && (
             <Typography display="inline" mr={2} textAlign="right">
               We&apos;ll ask you to verify ownership of each Safe Account with your signature per chain{' '}
-              {totalSignaturesRequired} time{totalSignaturesRequired > 1 ? 's' : ''}
+              {totalSignaturesRequired} time{maybePlural(totalSignaturesRequired)}
             </Typography>
           )}
 

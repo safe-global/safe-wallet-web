@@ -191,9 +191,12 @@ export function clickOnContinueWithWalletBtn() {
   cy.get('button').contains(continueWithWalletBtn).click().wait(1000)
 }
 
+export function verifyConnectWalletBtnDisplayed() {
+  return cy.get(connectWalletBtn).should('be.visible')
+}
 export function clickOnConnectWalletBtn() {
   cy.get(welcomeLoginScreen).within(() => {
-    cy.get(connectWalletBtn).should('be.visible').should('be.enabled').click().wait(1000)
+    verifyConnectWalletBtnDisplayed().should('be.enabled').click().wait(1000)
   })
 }
 

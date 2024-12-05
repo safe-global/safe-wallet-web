@@ -10,6 +10,7 @@ import SafeAppPreviewDrawer from '@/components/safe-apps/SafeAppPreviewDrawer'
 import SafeAppCard, { SafeAppCardContainer } from '@/components/safe-apps/SafeAppCard'
 import { AppRoutes } from '@/config/routes'
 import ExploreSafeAppsIcon from '@/public/images/apps/explore.svg'
+import { SAFE_APPS_LABELS } from '@/services/analytics'
 
 import css from './styles.module.css'
 
@@ -19,18 +20,28 @@ const SafeAppsDashboardSection = () => {
 
   return (
     <WidgetContainer>
-      <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
+      <Typography
+        component="h2"
+        variant="subtitle1"
+        sx={{
+          fontWeight: 700,
+          mb: 2,
+        }}
+      >
         Safe Apps
       </Typography>
-
       <Grid container spacing={3}>
         {rankedSafeApps.map((rankedSafeApp) => (
           <Grid key={rankedSafeApp.id} item xs={12} sm={6} md={4} xl={4}>
             <SafeAppCard
               safeApp={rankedSafeApp}
-              onBookmarkSafeApp={togglePin}
+              onBookmarkSafeApp={(appId) => togglePin(appId, SAFE_APPS_LABELS.dashboard)}
               isBookmarked={pinnedSafeAppIds.has(rankedSafeApp.id)}
-              onClickSafeApp={() => openPreviewDrawer(rankedSafeApp)}
+              onClickSafeApp={(e) => {
+                // Don't open link
+                e.preventDefault()
+                openPreviewDrawer(rankedSafeApp)
+              }}
               openPreviewDrawer={openPreviewDrawer}
             />
           </Grid>
@@ -40,13 +51,12 @@ const SafeAppsDashboardSection = () => {
           <ExploreSafeAppsCard />
         </Grid>
       </Grid>
-
       <SafeAppPreviewDrawer
         isOpen={isPreviewDrawerOpen}
         safeApp={previewDrawerApp}
         isBookmarked={previewDrawerApp && pinnedSafeAppIds.has(previewDrawerApp.id)}
         onClose={closePreviewDrawer}
-        onBookmark={togglePin}
+        onBookmark={(appId) => togglePin(appId, SAFE_APPS_LABELS.apps_sidebar)}
       />
     </WidgetContainer>
   )

@@ -159,7 +159,7 @@ export const normalizeAppName = (appName?: string): string => {
 }
 
 export const gtmTrackSafeApp = (eventData: AnalyticsEvent, appName?: string, sdkEventData?: SafeAppSDKEvent): void => {
-  if (!location.pathname.startsWith(AppRoutes.apps.index)) {
+  if (!location.pathname.startsWith(AppRoutes.apps.index) && !eventData.label) {
     return
   }
 

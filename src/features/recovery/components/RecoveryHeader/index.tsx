@@ -11,7 +11,7 @@ import { WidgetContainer, WidgetBody } from '@/components/dashboard/styled'
 import { RecoveryEvent, RecoveryTxType, recoverySubscribe } from '@/features/recovery/services/recoveryEvents'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 
-export function _RecoveryHeader({
+export function InternalRecoveryHeader({
   isProposalInProgress,
   isRecoverer,
   queue,
@@ -40,7 +40,7 @@ export function _RecoveryHeader({
   return null
 }
 
-export function _useIsProposalInProgress(): boolean {
+export function useIsProposalInProgress(): boolean {
   const [isProposalSubmitting, setIsProposalSubmitting] = useState(false)
   const queue = useRecoveryQueue()
 
@@ -63,8 +63,8 @@ export function _useIsProposalInProgress(): boolean {
   return isProposalSubmitting
 }
 
-const RecoveryHeader = madProps(_RecoveryHeader, {
-  isProposalInProgress: _useIsProposalInProgress,
+const RecoveryHeader = madProps(InternalRecoveryHeader, {
+  isProposalInProgress: useIsProposalInProgress,
   isRecoverer: useIsRecoverer,
   queue: useRecoveryQueue,
 })

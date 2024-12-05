@@ -157,7 +157,11 @@ const AssetsTable = ({
               rawValue: rawFiatValue,
               collapsed: item.tokenInfo.address === hidingAsset,
               content: (
-                <Typography textAlign="right">
+                <Typography
+                  sx={{
+                    textAlign: 'right',
+                  }}
+                >
                   <FiatValue value={item.fiatBalance} />
 
                   {rawFiatValue === 0 && (
@@ -185,7 +189,14 @@ const AssetsTable = ({
               sticky: true,
               collapsed: item.tokenInfo.address === hidingAsset,
               content: (
-                <Box display="flex" flexDirection="row" gap={1} alignItems="center">
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    gap: 1,
+                    alignItems: 'center',
+                  }}
+                >
                   <>
                     <SendButton tokenInfo={item.tokenInfo} />
 

@@ -47,7 +47,7 @@ const nextConfig = {
       '@gnosis.pm/zodiac',
     ],
   },
-  webpack(config) {
+  webpack(config, { dev }) {
     config.module.rules.push({
       test: /\.svg$/i,
       issuer: { and: [/\.(js|ts|md)x?$/] },
@@ -77,6 +77,21 @@ const nextConfig = {
       ...config.resolve.alias,
       'bn.js': path.resolve('./node_modules/bn.js/lib/bn.js'),
       'mainnet.json': path.resolve('./node_modules/@ethereumjs/common/dist.browser/genesisStates/mainnet.json'),
+    }
+
+    if (dev) {
+      config.optimization.splitChunks = {
+        ...config.optimization.splitChunks,
+        cacheGroups: {
+          ...config.optimization.splitChunks.cacheGroups,
+          customModule: {
+            test: /[\\/]node_modules[\\/](@safe-global|ethers)[\\/]/,
+            name: 'protocol-kit-ethers',
+            chunks: 'all',
+          },
+        },
+      }
+      config.optimization.minimize = false
     }
 
     return config

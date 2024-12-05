@@ -72,6 +72,21 @@ export const MODALS_EVENTS = {
     action: 'Swap',
     category: MODALS_CATEGORY,
   },
+  CHANGE_SIGNER: {
+    action: 'Change tx signer',
+    category: MODALS_CATEGORY,
+    event: EventType.CLICK,
+  },
+  OPEN_PARENT_TX: {
+    action: 'Open parent transaction',
+    category: MODALS_CATEGORY,
+    event: EventType.CLICK,
+  },
+  OPEN_NESTED_TX: {
+    action: 'Open nested transaction',
+    category: MODALS_CATEGORY,
+    event: EventType.CLICK,
+  },
 }
 
 export enum MODAL_NAVIGATION {

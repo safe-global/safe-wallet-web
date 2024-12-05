@@ -71,7 +71,11 @@ function ExportDialog({
           .
         </Typography>
 
-        <Typography mt={1}>
+        <Typography
+          sx={{
+            mt: 1,
+          }}
+        >
           <ExternalLink
             href={HelpCenterArticle.ADDRESS_BOOK_DATA}
             title="Learn about the address book import and export"
@@ -80,7 +84,6 @@ function ExportDialog({
           </ExternalLink>
         </Typography>
       </DialogContent>
-
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <CSVDownloader filename={filename} bom config={{ delimiter: ',' }} data={csvData} style={{ order: 2 }}>

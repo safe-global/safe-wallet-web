@@ -7,18 +7,41 @@ import Paper from '@mui/material/Paper'
 
 const SafeLicenses = () => (
   <>
-    <Typography variant="h1" mb={2}>
+    <Typography
+      variant="h1"
+      sx={{
+        mb: 2,
+      }}
+    >
       Licenses
     </Typography>
-    <Typography variant="h3" mb={2}>
+    <Typography
+      variant="h3"
+      sx={{
+        mb: 2,
+      }}
+    >
       Libraries we use
     </Typography>
-    <Box mb={4}>
-      <Typography mb={3}>
+    <Box
+      sx={{
+        mb: 4,
+      }}
+    >
+      <Typography
+        sx={{
+          mb: 3,
+        }}
+      >
         This page contains a list of attribution notices for third party software that may be contained in portions of
         the {'Safe{Wallet}'}. We thank the open source community for all of their contributions.
       </Typography>
-      <Typography variant="h2" mb={2}>
+      <Typography
+        variant="h2"
+        sx={{
+          mb: 2,
+        }}
+      >
         Android
       </Typography>
       <TableContainer component={Paper}>
@@ -215,8 +238,17 @@ const SafeLicenses = () => (
         </Table>
       </TableContainer>
     </Box>
-    <Box mb={4}>
-      <Typography variant="h2" mb={2}>
+    <Box
+      sx={{
+        mb: 4,
+      }}
+    >
+      <Typography
+        variant="h2"
+        sx={{
+          mb: 2,
+        }}
+      >
         iOS
       </Typography>
       <TableContainer component={Paper}>
@@ -342,7 +374,12 @@ const SafeLicenses = () => (
       </TableContainer>
     </Box>
     <Box>
-      <Typography variant="h2" mb={2}>
+      <Typography
+        variant="h2"
+        sx={{
+          mb: 2,
+        }}
+      >
         Web
       </Typography>
       <TableContainer component={Paper}>

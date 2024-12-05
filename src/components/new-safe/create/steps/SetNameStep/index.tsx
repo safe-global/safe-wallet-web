@@ -130,16 +130,35 @@ function SetNameStep({
             </Grid>
 
             <Grid xs={12} item>
-              <Typography variant="h5" fontWeight={700} display="inline-flex" alignItems="center" gap={1} mt={2}>
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: 700,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 1,
+                  mt: 2,
+                }}
+              >
                 Select Networks
               </Typography>
-              <Typography variant="body2" mb={2}>
+              <Typography
+                variant="body2"
+                sx={{
+                  mb: 2,
+                }}
+              >
                 Choose which networks you want your account to be active on. You can add more networks later.{' '}
               </Typography>
               <NetworkMultiSelector isAdvancedFlow={isAdvancedFlow} name={SetNameStepFields.networks} />
             </Grid>
           </Grid>
-          <Typography variant="body2" mt={2}>
+          <Typography
+            variant="body2"
+            sx={{
+              mt: 2,
+            }}
+          >
             By continuing, you agree to our{' '}
             <Link href={AppRoutes.terms} passHref legacyBehavior>
               <MUILink>terms of use</MUILink>
@@ -155,7 +174,14 @@ function SetNameStep({
         </Box>
         <Divider />
         <Box className={layoutCss.row}>
-          <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              gap: 3,
+            }}
+          >
             <Button data-testid="cancel-btn" variant="outlined" onClick={onCancel} size="small">
               Cancel
             </Button>

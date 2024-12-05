@@ -14,7 +14,14 @@ const StakingTxExitDetails = ({ info }: { info: StakingTxExitInfo }) => {
   ])
 
   return (
-    <Box pr={5} display="flex" flexDirection="column" gap={1}>
+    <Box
+      sx={{
+        pr: 5,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+      }}
+    >
       <FieldsGrid title="Exit">
         {info.validators.map((validator: string, index: number) => {
           return (
@@ -26,7 +33,6 @@ const StakingTxExitDetails = ({ info }: { info: StakingTxExitInfo }) => {
         })}
       </FieldsGrid>
       {info.status !== NativeStakingStatus.EXITED && <FieldsGrid title="Est. exit time">Up to {withdrawIn}</FieldsGrid>}
-
       <FieldsGrid title="Validator status">
         <StakingStatus status={info.status} />
       </FieldsGrid>

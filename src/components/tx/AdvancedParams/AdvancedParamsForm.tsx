@@ -4,7 +4,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
 import { FLOAT_REGEX } from '@/utils/validation'
 import ModalDialog from '@/components/common/ModalDialog'
-import { AdvancedField, type AdvancedParameters } from './types.d'
+import { AdvancedField, type AdvancedParameters } from './types'
 import GasLimitInput from './GasLimitInput'
 import ExternalLink from '@/components/common/ExternalLink'
 import NumberField from '@/components/common/NumberField'
@@ -73,7 +73,12 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
           <DialogContent>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <Typography variant="body1" fontWeight={700}>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: 700,
+                  }}
+                >
                   Execution parameters
                 </Typography>
               </Grid>
@@ -128,7 +133,11 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
             </Grid>
 
             {/* Help link */}
-            <Typography mt={2}>
+            <Typography
+              sx={{
+                mt: 2,
+              }}
+            >
               <ExternalLink href={HelpCenterArticle.ADVANCED_PARAMS}>
                 How can I configure these parameters manually?
               </ExternalLink>

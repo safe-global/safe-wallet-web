@@ -17,6 +17,7 @@ describe('Share Safe App Page', () => {
 
   beforeEach(() => {
     jest.restoreAllMocks()
+    jest.useFakeTimers()
     window.localStorage.clear()
 
     fetchSafeAppFromManifestSpy = jest.spyOn(manifest, 'fetchSafeAppFromManifest').mockResolvedValue({
@@ -214,9 +215,8 @@ describe('Share Safe App Page', () => {
       label: 'Metamask',
       chainId: '1',
     }))
-    jest.spyOn(useOwnedSafesHook, 'default').mockImplementation(() => ({
-      '1': [safeAddress],
-    }))
+    const mockOwnedSafes = { '1': [safeAddress] }
+    jest.spyOn(useOwnedSafesHook, 'default').mockImplementation(() => mockOwnedSafes)
 
     render(<ShareSafeApp />, {
       routerProps: {
@@ -238,6 +238,7 @@ describe('Share Safe App Page', () => {
       expect(fetchSafeAppFromManifestSpy).toHaveBeenCalledWith(TX_BUILDER, '1')
       expect(getSafeAppsSpy).toHaveBeenCalledWith('1', { url: TX_BUILDER })
 
+      console.log('screen', screen.debug())
       expect(screen.getByLabelText('Select a Safe Account')).toBeInTheDocument()
     })
   })

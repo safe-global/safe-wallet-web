@@ -14,7 +14,8 @@ import {
   ConflictType,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
-import { filterUntrustedQueue, useHasPendingTxs, usePendingTxsQueue } from '../usePendingTxs'
+import { filterUntrustedQueue, getNextTransactions, useHasPendingTxs, usePendingTxsQueue } from '../usePendingTxs'
+import { isLabelListItem } from '@/utils/transaction-guards'
 
 const mockQueue = <TransactionListPage>{
   next: undefined,
@@ -38,6 +39,24 @@ const mockQueue = <TransactionListPage>{
       type: 'TRANSACTION',
       transaction: {
         id: 'multisig_456',
+      },
+    },
+  ],
+}
+
+const mockQueueWithQueued = <TransactionListPage>{
+  next: undefined,
+  previous: undefined,
+  results: [
+    ...mockQueue.results,
+    {
+      type: TransactionListItemType.LABEL,
+      label: LabelValue.Queued,
+    },
+    {
+      type: 'TRANSACTION',
+      transaction: {
+        id: 'multisig_789',
       },
     },
   ],
@@ -79,6 +98,25 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
   ...jest.requireActual('@safe-global/safe-gateway-typescript-sdk'),
   getTransactionQueue: jest.fn(() => Promise.resolve(mockQueue)),
 }))
+
+describe('getNextTransactions', () => {
+  it('should return all transactions up to the "Queued" label', () => {
+    const result = getNextTransactions(mockQueueWithQueued)
+
+    expect(result.results).toStrictEqual(mockQueue.results)
+  })
+
+  it('should return all transactions if there is no "Queued" label', () => {
+    const mockQueueWithoutQueuedLabel = {
+      ...mockQueueWithQueued,
+      results: mockQueueWithQueued.results.filter((item) => isLabelListItem(item) && item.label !== LabelValue.Queued),
+    }
+
+    const result = getNextTransactions(mockQueueWithoutQueuedLabel)
+
+    expect(result.results).toStrictEqual(mockQueueWithoutQueuedLabel.results)
+  })
+})
 
 describe('filterUntrustedQueue', () => {
   it('should remove transactions that are not pending', () => {

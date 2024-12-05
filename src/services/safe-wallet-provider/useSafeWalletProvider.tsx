@@ -24,7 +24,7 @@ import { selectOnChainSigning } from '@/store/settingsSlice'
 import { isOffchainEIP1271Supported } from '@/utils/safe-messages'
 import { getCreateCallContractDeployment } from '../contracts/deployments'
 
-export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK | undefined => {
+export const useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK | undefined => {
   const { safe } = useSafeInfo()
   const currentChain = useCurrentChain()
   const { setTxFlow } = useContext(TxModalContext)
@@ -233,7 +233,7 @@ const useSafeWalletProvider = (): SafeWalletProvider | undefined => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
 
-  const txFlowApi = _useTxFlowApi(chainId, safeAddress)
+  const txFlowApi = useTxFlowApi(chainId, safeAddress)
 
   return useMemo(() => {
     if (!safeAddress || !chainId || !txFlowApi) return

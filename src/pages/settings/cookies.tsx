@@ -10,14 +10,17 @@ const Cookies: NextPage = () => {
       <Head>
         <title>{'Safe{Wallet} – Settings – Cookies'}</title>
       </Head>
-
       <SettingsHeader />
-
       <main>
         <Paper sx={{ p: 4, mb: 2 }}>
           <Grid container spacing={3}>
             <Grid item sm={4} xs={12}>
-              <Typography variant="h4" fontWeight={700}>
+              <Typography
+                variant="h4"
+                sx={{
+                  fontWeight: 700,
+                }}
+              >
                 Cookie preferences
               </Typography>
             </Grid>

@@ -20,9 +20,22 @@ const SpendingLimits = () => {
 
   return (
     <Paper data-testid="spending-limit-section" sx={{ padding: 4 }}>
-      <Grid container direction="row" justifyContent="space-between" spacing={3} mb={2}>
+      <Grid
+        container
+        direction="row"
+        spacing={3}
+        sx={{
+          justifyContent: 'space-between',
+          mb: 2,
+        }}
+      >
         <Grid item lg={4} xs={12}>
-          <Typography variant="h4" fontWeight={700}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 700,
+            }}
+          >
             Spending limits
           </Typography>
         </Grid>

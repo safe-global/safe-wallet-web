@@ -77,7 +77,10 @@ export const ExecuteForm = ({
   const [advancedParams, setAdvancedParams] = useAdvancedParams(gasLimit)
 
   // Check if transaction will fail
-  const { executionValidationError } = useIsValidExecution(safeTx, advancedParams.gasLimit)
+  const { executionValidationError } = useIsValidExecution(
+    safeTx,
+    advancedParams.gasLimit ? advancedParams.gasLimit : undefined,
+  )
 
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
@@ -111,7 +114,7 @@ export const ExecuteForm = ({
 
     // On success
     onSubmit?.(executedTxId, true)
-    setTxFlow(<SuccessScreenFlow txId={executedTxId} safeTx={safeTx} />, undefined, false)
+    setTxFlow(<SuccessScreenFlow txId={executedTxId} />, undefined, false)
   }
 
   const walletCanPay = useWalletCanPay({
@@ -173,13 +176,21 @@ export const ExecuteForm = ({
         )}
 
         {submitError && (
-          <Box mt={1}>
+          <Box
+            sx={{
+              mt: 1,
+            }}
+          >
             <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
           </Box>
         )}
 
         {isRejectedByUser && (
-          <Box mt={1}>
+          <Box
+            sx={{
+              mt: 1,
+            }}
+          >
             <WalletRejectionError />
           </Box>
         )}

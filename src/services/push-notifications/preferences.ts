@@ -10,7 +10,7 @@ export type PushNotificationPreferences = {
   [safeKey: PushNotificationPrefsKey]: {
     chainId: string
     safeAddress: string
-    preferences: { [key in WebhookType]: boolean }
+    preferences: { [_key in WebhookType]: boolean }
   }
 }
 

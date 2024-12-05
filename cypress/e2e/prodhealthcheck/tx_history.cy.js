@@ -3,6 +3,7 @@ import * as main from '../pages/main.page'
 import * as createTx from '../pages/create_tx.pages'
 import * as data from '../../fixtures/txhistory_data_data.json'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import { acceptCookies2 } from '../pages/main.page.js'
 
 let staticSafes = []
 
@@ -33,14 +34,16 @@ describe('[PROD] Tx history tests 1', () => {
 
     cy.visit(constants.prodbaseUrl + constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_7)
     cy.wait('@allTransactions')
+    acceptCookies2()
   })
 
   // Account creation
   it('Verify summary for account creation', () => {
     createTx.verifySummaryByName(
       typeCreateAccount.title,
+      null,
       [typeCreateAccount.actionsSummary, typeGeneral.statusOk],
-      typeCreateAccount.altTmage,
+      typeCreateAccount.altImage,
     )
   })
 
@@ -76,7 +79,7 @@ describe('[PROD] Tx history tests 1', () => {
       typeSpendingLimits.title,
       typeSpendingLimits.summaryTxInfo,
       [typeGeneral.statusOk],
-      typeSpendingLimits.altTmage,
+      typeSpendingLimits.altImage,
     )
   })
 

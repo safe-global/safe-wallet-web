@@ -101,24 +101,45 @@ export const CreateSafeStatus = ({
         textAlign: 'center',
       }}
     >
-      <Box p={{ xs: 2, sm: 8 }}>
+      <Box
+        sx={{
+          p: { xs: 2, sm: 8 },
+        }}
+      >
         <StatusMessage status={status} isError={isError} pendingSafe={pendingSafe} />
 
         {counter && counter > SPEED_UP_THRESHOLD_IN_SECONDS && !isError && (
           <Alert severity="warning" icon={<SvgIcon component={Rocket} />} sx={{ mt: 5 }}>
             <AlertTitle>
-              <Typography variant="body2" textAlign="left" fontWeight="bold">
+              <Typography
+                variant="body2"
+                sx={{
+                  textAlign: 'left',
+                  fontWeight: 'bold',
+                }}
+              >
                 Transaction is taking too long
               </Typography>
             </AlertTitle>
-            <Typography variant="body2" textAlign="left">
+            <Typography
+              variant="body2"
+              sx={{
+                textAlign: 'left',
+              }}
+            >
               Try to speed it up with better gas parameters in your wallet.
             </Typography>
           </Alert>
         )}
 
         {isError && (
-          <Stack direction="row" justifyContent="center" gap={2}>
+          <Stack
+            direction="row"
+            sx={{
+              justifyContent: 'center',
+              gap: 2,
+            }}
+          >
             <Link href={AppRoutes.welcome.index} passHref>
               <Button variant="outlined" onClick={onCancel}>
                 Go to homepage

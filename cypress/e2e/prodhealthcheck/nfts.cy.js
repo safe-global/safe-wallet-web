@@ -3,6 +3,10 @@ import * as nfts from '../pages/nfts.pages'
 import * as createTx from '../pages/create_tx.pages'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
+import { getMockAddress } from '../../support/utils/ethers.js'
+import * as navigation from '../pages/navigation.page.js'
+import { waitForConnectionStatus } from '../pages/owners.pages'
+import { acceptCookies2 } from '../pages/main.page.js'
 
 const multipleNFT = ['multiSend']
 const multipleNFTAction = 'safeTransferFrom'
@@ -29,17 +33,17 @@ describe('[PROD] NFTs tests', () => {
   beforeEach(() => {
     cy.visit(constants.prodbaseUrl + constants.balanceNftsUrl + staticSafes.SEP_STATIC_SAFE_2)
     wallet.connectSigner(signer)
+    acceptCookies2()
     nfts.waitForNftItems(2)
   })
 
-  // TODO: Add Sign action
   it('Verify multipls NFTs can be selected and reviewed', () => {
     nfts.verifyInitialNFTData()
     nfts.selectNFTs(3)
     nfts.deselectNFTs([2], 3)
     nfts.sendNFT()
     nfts.verifyNFTModalData()
-    nfts.typeRecipientAddress(staticSafes.SEP_STATIC_SAFE_1)
+    nfts.typeRecipientAddress(getMockAddress())
     nfts.clikOnNextBtn()
     nfts.verifyReviewModalData(2)
   })
@@ -48,7 +52,7 @@ describe('[PROD] NFTs tests', () => {
     nfts.verifyInitialNFTData()
     nfts.selectNFTs(2)
     nfts.sendNFT()
-    nfts.typeRecipientAddress(staticSafes.SEP_STATIC_SAFE_1)
+    nfts.typeRecipientAddress(getMockAddress())
     nfts.clikOnNextBtn()
     nfts.verifyTxDetails(multipleNFT)
     nfts.verifyCountOfActions(2)

@@ -10,8 +10,21 @@ type Props = {
 }
 
 const TryDemo = ({ demoUrl, onClick }: Props) => (
-  <Box display="flex" flexDirection="column" alignItems="center" justifyContent="space-between" height={CTA_HEIGHT}>
-    <Typography variant="h5" fontWeight={700}>
+  <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      height: CTA_HEIGHT,
+    }}
+  >
+    <Typography
+      variant="h5"
+      sx={{
+        fontWeight: 700,
+      }}
+    >
       Try the Safe App before using it
     </Typography>
     <DemoAppSVG alt="An icon of a internet browser" />

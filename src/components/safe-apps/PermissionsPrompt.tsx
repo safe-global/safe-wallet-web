@@ -25,7 +25,12 @@ const PermissionsPrompt = ({
   return (
     <Dialog open={isOpen}>
       <ModalDialogTitle onClose={() => onReject()}>
-        <Typography variant="body1" fontWeight={700}>
+        <Typography
+          variant="body1"
+          sx={{
+            fontWeight: 700,
+          }}
+        >
           Permissions Request
         </Typography>
       </ModalDialogTitle>

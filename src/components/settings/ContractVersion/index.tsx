@@ -33,11 +33,23 @@ export const ContractVersion = () => {
 
   return (
     <>
-      <Typography variant="h4" fontWeight={700} marginBottom={1}>
+      <Typography
+        variant="h4"
+        sx={{
+          fontWeight: 700,
+          marginBottom: 1,
+        }}
+      >
         Contract version
       </Typography>
-
-      <Typography variant="body1" fontWeight={400} display="flex" alignItems="center">
+      <Typography
+        variant="body1"
+        sx={{
+          fontWeight: 400,
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
         {safeLoaded ? (
           <>
             {safe.version ?? 'Unsupported contract'}
@@ -51,7 +63,6 @@ export const ContractVersion = () => {
           <Skeleton width="60px" />
         )}
       </Typography>
-
       {safeLoaded && safe.version && showUpdateDialog && (
         <Alert
           sx={{ mt: 2, borderRadius: '2px', borderColor: '#B0FFC9' }}
@@ -59,7 +70,11 @@ export const ContractVersion = () => {
         >
           <AlertTitle sx={{ fontWeight: 700 }}>New version is available: {latestSafeVersion}</AlertTitle>
 
-          <Typography mb={3}>
+          <Typography
+            sx={{
+              mb: 3,
+            }}
+          >
             Update now to take advantage of new features and the highest security standards available. You will need to
             confirm this update just like any other transaction.{' '}
             <ExternalLink href={safeMasterCopy?.deployerRepoUrl}>GitHub</ExternalLink>

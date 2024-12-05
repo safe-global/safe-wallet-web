@@ -112,14 +112,30 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
                 },
               })}
             />
-            <Box mt={2}>
+            <Box
+              sx={{
+                mt: 2,
+              }}
+            >
               {safeApp ? (
                 <>
                   <CustomApp safeApp={safeApp} shareUrl={isCustomAppInTheDefaultList ? shareSafeAppUrl : ''} />
                   {isCustomAppInTheDefaultList ? (
-                    <Box display="flex" mt={2} alignItems="center">
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        mt: 2,
+                        alignItems: 'center',
+                      }}
+                    >
                       <CheckIcon color="success" />
-                      <Typography ml={1}>This Safe App is already registered</Typography>
+                      <Typography
+                        sx={{
+                          ml: 1,
+                        }}
+                      >
+                        This Safe App is already registered
+                      </Typography>
                     </Box>
                   ) : (
                     <>
@@ -150,7 +166,13 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
 
           <div className={css.addCustomAppHelp}>
             <InfoOutlinedIcon className={css.addCustomAppHelpIcon} />
-            <Typography ml={0.5}>Learn more about building</Typography>
+            <Typography
+              sx={{
+                ml: 0.5,
+              }}
+            >
+              Learn more about building
+            </Typography>
             <ExternalLink className={css.addCustomAppHelpLink} href={HELP_LINK} fontWeight={700}>
               Safe Apps
             </ExternalLink>

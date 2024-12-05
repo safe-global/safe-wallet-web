@@ -67,7 +67,13 @@ const SafeHeader = (): ReactElement => {
               </Typography>
             )}
 
-            <Typography data-testid="currency-section" variant="body2" fontWeight={700}>
+            <Typography
+              data-testid="currency-section"
+              variant="body2"
+              sx={{
+                fontWeight: 700,
+              }}
+            >
               {safe.deployed ? (
                 balances.fiatTotal ? (
                   <FiatValue value={balances.fiatTotal} />
@@ -113,7 +119,6 @@ const SafeHeader = (): ReactElement => {
           <EnvHintButton />
         </div>
       </div>
-
       <NewTxButton />
     </div>
   )

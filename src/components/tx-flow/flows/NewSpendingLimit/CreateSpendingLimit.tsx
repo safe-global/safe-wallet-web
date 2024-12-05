@@ -74,7 +74,13 @@ export const CreateSpendingLimit = ({
 
           <TokenAmountInput balances={balances.items} selectedToken={selectedToken} validate={validateSpendingLimit} />
 
-          <Typography variant="h4" fontWeight={700} mt={3}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 700,
+              mt: 3,
+            }}
+          >
             Reset Timer
           </Typography>
           <Typography>

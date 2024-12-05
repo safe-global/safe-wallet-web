@@ -10,7 +10,12 @@ const SuccessMessage = ({ children, className }: { children: ReactNode; classNam
       <div className={css.message}>
         <SvgIcon component={CheckIcon} color="success" inheritViewBox fontSize="small" />
 
-        <Typography variant="body2" width="100%">
+        <Typography
+          variant="body2"
+          sx={{
+            width: '100%',
+          }}
+        >
           {children}
         </Typography>
       </div>

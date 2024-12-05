@@ -20,7 +20,7 @@ describe('SafeTokenWidget', () => {
       () =>
         ({
           get: () => fakeSafeAddress,
-        } as any),
+        }) as any,
     )
 
     jest.spyOn(safePass, 'useGetOwnGlobalCampaignRankQuery').mockReturnValue({

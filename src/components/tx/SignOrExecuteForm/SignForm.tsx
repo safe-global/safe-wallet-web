@@ -17,6 +17,8 @@ import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletReject
 import BatchButton from './BatchButton'
 import { asError } from '@/services/exceptions/utils'
 import { isWalletRejection } from '@/utils/wallets'
+import { useSigner } from '@/hooks/wallets/useWallet'
+import { NestedTxSuccessScreenFlow } from '@/components/tx-flow/flows'
 
 export const SignForm = ({
   safeTx,
@@ -47,6 +49,7 @@ export const SignForm = ({
   const { setTxFlow } = useContext(TxModalContext)
   const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = txSecurity
   const hasSigned = useAlreadySigned(safeTx)
+  const signer = useSigner()
 
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent, isAddingToBatch = false) => {
@@ -83,7 +86,11 @@ export const SignForm = ({
       onSubmit?.(resultTxId)
     }
 
-    setTxFlow(undefined)
+    if (signer?.isSafe) {
+      setTxFlow(<NestedTxSuccessScreenFlow txId={resultTxId} />, undefined, false)
+    } else {
+      setTxFlow(undefined)
+    }
   }
 
   const onBatchClick = (e: SyntheticEvent) => {
@@ -97,7 +104,6 @@ export const SignForm = ({
   return (
     <form onSubmit={handleSubmit}>
       {hasSigned && <ErrorMessage level="warning">You have already signed this transaction.</ErrorMessage>}
-
       {cannotPropose ? (
         <NonOwnerError />
       ) : (
@@ -105,15 +111,16 @@ export const SignForm = ({
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )
       )}
-
       {isRejectedByUser && (
-        <Box mt={1}>
+        <Box
+          sx={{
+            mt: 1,
+          }}
+        >
           <WalletRejectionError />
         </Box>
       )}
-
       <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
-
       <CardActions>
         <Stack
           sx={{

@@ -81,11 +81,28 @@ const SrcEthHashInfo = ({
           )}
         </div>
       )}
-
-      <Box overflow="hidden" className={onlyName ? css.inline : undefined} gap={0.5}>
+      <Box
+        className={onlyName ? css.inline : undefined}
+        sx={{
+          overflow: 'hidden',
+          gap: 0.5,
+        }}
+      >
         {name && (
-          <Box title={name} display="flex" alignItems="center" gap={0.5}>
-            <Box overflow="hidden" textOverflow="ellipsis">
+          <Box
+            title={name}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 0.5,
+            }}
+          >
+            <Box
+              sx={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
               {name}
             </Box>
 
@@ -101,7 +118,14 @@ const SrcEthHashInfo = ({
 
         <div className={classnames(css.addressContainer, { [css.inline]: onlyName })}>
           {(!onlyName || !name) && (
-            <Box fontWeight="inherit" fontSize="inherit" overflow="hidden" textOverflow="ellipsis">
+            <Box
+              sx={{
+                fontWeight: 'inherit',
+                fontSize: 'inherit',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
               {copyAddress ? (
                 <CopyAddressButton prefix={prefix} address={address} copyPrefix={shouldCopyPrefix} trusted={trusted}>
                   {addressElement}
@@ -117,7 +141,11 @@ const SrcEthHashInfo = ({
           )}
 
           {hasExplorer && ExplorerButtonProps && (
-            <Box color="border.main">
+            <Box
+              sx={{
+                color: 'border.main',
+              }}
+            >
               <ExplorerButton {...ExplorerButtonProps} onClick={stopPropagation} />
             </Box>
           )}

@@ -75,7 +75,12 @@ const Toast = ({
     <Snackbar open onClose={handleClose} sx={toastStyle} autoHideDuration={autoHideDuration}>
       <Alert severity={variant} onClose={handleClose} elevation={3} sx={{ width: '340px' }}>
         {title && (
-          <Typography variant="body2" fontWeight="700">
+          <Typography
+            variant="body2"
+            sx={{
+              fontWeight: '700',
+            }}
+          >
             {title}
           </Typography>
         )}

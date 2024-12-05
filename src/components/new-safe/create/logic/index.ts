@@ -202,7 +202,9 @@ export type UndeployedSafeWithoutSalt = Omit<ReplayedSafeProps, 'saltNonce'>
  */
 export const createNewUndeployedSafeWithoutSalt = (
   safeVersion: SafeVersion,
-  safeAccountConfig: Pick<ReplayedSafeProps['safeAccountConfig'], 'owners' | 'threshold'>,
+  safeAccountConfig: Pick<ReplayedSafeProps['safeAccountConfig'], 'owners' | 'threshold'> & {
+    paymentReceiver?: string
+  },
   chain: ChainInfo,
 ): UndeployedSafeWithoutSalt => {
   // Create universal deployment Data across chains:
@@ -243,7 +245,7 @@ export const createNewUndeployedSafeWithoutSalt = (
       fallbackHandler: fallbackHandlerAddress,
       to: includeMigration && safeToL2SetupAddress ? safeToL2SetupAddress : ZERO_ADDRESS,
       data: includeMigration ? safeToL2SetupInterface.encodeFunctionData('setupToL2', [safeL2Address]) : EMPTY_DATA,
-      paymentReceiver: ECOSYSTEM_ID_ADDRESS,
+      paymentReceiver: safeAccountConfig.paymentReceiver ?? ECOSYSTEM_ID_ADDRESS,
     },
     safeVersion,
   }

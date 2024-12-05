@@ -18,10 +18,20 @@ const SafeAppDetails = ({ app, showDefaultListWarning }: DetailsProps) => (
       <SafeAppIconCard src={app.iconUrl} alt={app.name} width={90} height={90} />
 
       <Box sx={{ ml: 8 }}>
-        <Typography variant="h3" fontWeight={700}>
+        <Typography
+          variant="h3"
+          sx={{
+            fontWeight: 700,
+          }}
+        >
           {app.name}
         </Typography>
-        <Typography variant="body2" mt={1}>
+        <Typography
+          variant="body2"
+          sx={{
+            mt: 1,
+          }}
+        >
           {app.description}
         </Typography>
       </Box>
@@ -31,14 +41,18 @@ const SafeAppDetails = ({ app, showDefaultListWarning }: DetailsProps) => (
       <Typography variant="body1">Safe App URL</Typography>
       <Typography
         variant="body2"
-        sx={({ palette, shape }) => ({
-          mt: 1,
-          p: 1,
-          backgroundColor: palette.primary.background,
-          display: 'inline-block',
-          borderRadius: shape.borderRadius,
-        })}
-        fontWeight={700}
+        sx={[
+          {
+            fontWeight: 700,
+          },
+          ({ palette, shape }) => ({
+            mt: 1,
+            p: 1,
+            backgroundColor: palette.primary.background,
+            display: 'inline-block',
+            borderRadius: shape.borderRadius,
+          }),
+        ]}
       >
         {app.url}
       </Typography>
@@ -63,10 +77,23 @@ const SafeAppDetails = ({ app, showDefaultListWarning }: DetailsProps) => (
               Warning
             </Typography>
           </Box>
-          <Typography variant="body1" mt={1} sx={({ palette }) => ({ color: palette.warning.dark })}>
+          <Typography
+            variant="body1"
+            sx={[
+              {
+                mt: 1,
+              },
+              ({ palette }) => ({ color: palette.warning.dark }),
+            ]}
+          >
             The application is not in the default Safe App list
           </Typography>
-          <Typography variant="body2" mt={2}>
+          <Typography
+            variant="body2"
+            sx={{
+              mt: 2,
+            }}
+          >
             Check the app link and ensure it comes from a trusted source
           </Typography>
         </Box>

@@ -8,6 +8,7 @@ import { OperationType } from '@safe-global/safe-core-sdk-types'
 import TxLayout from '../../common/TxLayout'
 import BatchIcon from '@/public/images/common/batch.svg'
 import { useDraftBatch } from '@/hooks/useDraftBatch'
+import { maybePlural } from '@/utils/formatters'
 
 type ConfirmBatchProps = {
   onSubmit: () => void
@@ -36,11 +37,10 @@ const ConfirmBatch = ({ onSubmit }: ConfirmBatchProps): ReactElement => {
 
 const ConfirmBatchFlow = (props: ConfirmBatchProps) => {
   const { length } = useDraftBatch()
-
   return (
     <TxLayout
       title="Confirm batch"
-      subtitle={`This batch contains ${length} transaction${length > 1 ? 's' : ''}`}
+      subtitle={`This batch contains ${length} transaction${maybePlural(length)}`}
       icon={BatchIcon}
       step={0}
       isBatch

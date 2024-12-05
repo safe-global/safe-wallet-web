@@ -3,6 +3,7 @@ import * as constants from '../../support/constants'
 import * as safe from '../pages/load_safe.pages'
 import * as createwallet from '../pages/create_wallet.pages'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import { acceptCookies2 } from '../pages/main.page.js'
 
 let staticSafes = []
 
@@ -16,7 +17,7 @@ describe('[PROD] Load Safe tests', () => {
 
   beforeEach(() => {
     cy.visit(constants.prodbaseUrl + constants.loadNewSafeSepoliaUrl)
-    cy.wait(2000)
+    acceptCookies2()
   })
 
   it('Verify Safe and owner names are displayed in the Review step', () => {

@@ -40,12 +40,12 @@ describe('Safe Apps list tests', () => {
 
   it('Verify apps can be pinned', () => {
     safeapps.clearSearchAppInput()
-    safeapps.pinApp(1, safeapps.transactionBuilderStr)
+    safeapps.pinApp(0, safeapps.transactionBuilderStr)
     safeapps.verifyPinnedAppCount(1)
   })
 
   it('Verify apps can be unpinned', () => {
-    safeapps.pinApp(1, safeapps.transactionBuilderStr)
+    safeapps.pinApp(0, safeapps.transactionBuilderStr)
     safeapps.pinApp(0, safeapps.transactionBuilderStr, false)
     safeapps.verifyPinnedAppCount(0)
   })
@@ -75,5 +75,16 @@ describe('Safe Apps list tests', () => {
     safeapps.clickOnAddBtn()
     safeapps.verifyCustomAppCount(1)
     safeapps.verifyAppDescription(myCustomAppDescrAdded)
+  })
+
+  it('Verify the featured apps list', () => {
+    safeapps.verifyAppInFeaturedList(safeapps.transactionBuilderStr)
+    safeapps.verifyAppInFeaturedList(safeapps.cowswapStr)
+  })
+
+  it('Verify that pinned app can be in pinned section and in featured at the same time', () => {
+    safeapps.pinApp(0, safeapps.transactionBuilderStr)
+    safeapps.verifyAppInFeaturedList(safeapps.transactionBuilderStr)
+    safeapps.verifyAppInPinnedList(safeapps.transactionBuilderStr)
   })
 })

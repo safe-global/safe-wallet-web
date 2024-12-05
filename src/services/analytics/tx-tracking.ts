@@ -9,6 +9,7 @@ import {
   isCancellationTxInfo,
   isSwapOrderTxInfo,
   isAnyStakingTxInfo,
+  isNestedConfirmationTxInfo,
 } from '@/utils/transaction-guards'
 import { BRIDGE_WIDGET_URL } from '@/features/bridge/components/BridgeWidget'
 
@@ -73,6 +74,10 @@ export const getTransactionTrackingType = (details: TransactionDetails | undefin
 
     if (isMultiSendTxInfo(txInfo)) {
       return TX_TYPES.batch
+    }
+
+    if (isNestedConfirmationTxInfo(txInfo)) {
+      return TX_TYPES.nested_safe
     }
 
     return TX_TYPES.walletconnect

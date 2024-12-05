@@ -35,7 +35,6 @@ const TokenListSelect = () => {
   return (
     <FormControl size="small">
       <InputLabel id="tokenlist-select-label">Token list</InputLabel>
-
       <OnboardingTooltip
         widgetLocalStorageId={LS_TOKENLIST_ONBOARDING}
         text={
@@ -58,7 +57,15 @@ const TokenListSelect = () => {
         >
           <MenuItem value={TOKEN_LISTS.TRUSTED}>
             <Track {...ASSETS_EVENTS.SHOW_DEFAULT_TOKENS}>
-              <Box display="flex" flexDirection="row" gap="4px" alignItems="center" minWidth={155}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  gap: '4px',
+                  alignItems: 'center',
+                  minWidth: 155,
+                }}
+              >
                 {TokenListLabel.TRUSTED}
                 <Tooltip
                   arrow

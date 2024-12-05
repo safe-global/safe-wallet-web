@@ -21,7 +21,7 @@ import css from './styles.module.css'
 
 type SafeAppCardProps = {
   safeApp: SafeAppData
-  onClickSafeApp?: () => void
+  onClickSafeApp?: (e: SyntheticEvent) => void
   isBookmarked?: boolean
   onBookmarkSafeApp?: (safeAppId: number) => void
   removeCustomApp?: (safeApp: SafeAppData) => void
@@ -66,7 +66,7 @@ export const getSafeAppUrl = (router: NextRouter, safeAppUrl: string) => {
 
 type SafeAppCardViewProps = {
   safeApp: SafeAppData
-  onClickSafeApp?: () => void
+  onClickSafeApp?: (e: SyntheticEvent) => void
   safeAppUrl: string
   isBookmarked?: boolean
   onBookmarkSafeApp?: (safeAppId: number) => void
@@ -112,7 +112,6 @@ const SafeAppCardGridView = ({
           </>
         }
       />
-
       <CardContent className={css.safeAppContent}>
         {/* Safe App Title */}
         <Typography className={css.safeAppTitle} gutterBottom variant="h5">
@@ -120,7 +119,13 @@ const SafeAppCardGridView = ({
         </Typography>
 
         {/* Safe App Description */}
-        <Typography className={css.safeAppDescription} variant="body2" color="text.secondary">
+        <Typography
+          className={css.safeAppDescription}
+          variant="body2"
+          sx={{
+            color: 'text.secondary',
+          }}
+        >
           {safeApp.description}
         </Typography>
 
@@ -132,7 +137,7 @@ const SafeAppCardGridView = ({
 }
 
 type SafeAppCardContainerProps = {
-  onClickSafeApp?: () => void
+  onClickSafeApp?: (e: SyntheticEvent) => void
   safeAppUrl: string
   children: ReactNode
   height?: string
@@ -148,8 +153,7 @@ export const SafeAppCardContainer = ({
 }: SafeAppCardContainerProps) => {
   const handleClickSafeApp = (event: SyntheticEvent) => {
     if (onClickSafeApp) {
-      event.preventDefault()
-      onClickSafeApp()
+      onClickSafeApp(event)
     }
   }
 

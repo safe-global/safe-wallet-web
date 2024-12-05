@@ -4,6 +4,7 @@ import * as createwallet from '../pages/create_wallet.pages'
 import * as owner from '../pages/owners.pages'
 import * as ls from '../../support/localstorage_data.js'
 import * as wallet from '../../support/utils/wallet.js'
+import { getMockAddress } from '../../support/utils/ethers.js'
 
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
@@ -107,7 +108,7 @@ describe('Safe creation tests', () => {
     createwallet.typeOwnerAddress(constants.DEFAULT_OWNER_ADDRESS, 1)
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.ownerAdded)
 
-    createwallet.typeOwnerAddress(constants.DEFAULT_OWNER_ADDRESS.toUpperCase(), 1)
+    createwallet.typeOwnerAddress(getMockAddress().replace('A', 'a'), 1)
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.invalidChecksum)
 
     createwallet.typeOwnerAddress(constants.ENS_TEST_SEPOLIA_INVALID, 1)

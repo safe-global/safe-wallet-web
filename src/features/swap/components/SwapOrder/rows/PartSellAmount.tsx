@@ -15,10 +15,20 @@ export const PartSellAmount = ({
   return (
     <DataRow title="Sell amount" key="sell_amount_part">
       <Box>
-        <Typography component="span" fontWeight="bold">
+        <Typography
+          component="span"
+          sx={{
+            fontWeight: 'bold',
+          }}
+        >
           {formatVisualAmount(partSellAmount, sellToken.decimals)} {sellToken.symbol}
         </Typography>
-        <Typography component="span" color="var(--color-primary-light)">
+        <Typography
+          component="span"
+          sx={{
+            color: 'var(--color-primary-light)',
+          }}
+        >
           {` ${addonText}`}
         </Typography>
       </Box>

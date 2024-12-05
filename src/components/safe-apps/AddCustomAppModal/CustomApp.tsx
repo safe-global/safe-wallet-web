@@ -22,15 +22,25 @@ const CustomApp = ({ safeApp, shareUrl }: CustomAppProps) => {
   return (
     <div className={css.customAppContainer}>
       <SafeAppIconCard src={safeApp.iconUrl} alt={safeApp.name} width={48} height={48} />
-
-      <Typography component="h2" mt={2} color="text.primary" fontWeight={700}>
+      <Typography
+        component="h2"
+        sx={{
+          mt: 2,
+          color: 'text.primary',
+          fontWeight: 700,
+        }}
+      >
         {safeApp.name}
       </Typography>
-
-      <Typography variant="body2" mt={1} color="text.secondary">
+      <Typography
+        variant="body2"
+        sx={{
+          mt: 1,
+          color: 'text.secondary',
+        }}
+      >
         {safeApp.description}
       </Typography>
-
       {shareUrl ? (
         <CopyButton
           className={css.customAppCheckIcon}

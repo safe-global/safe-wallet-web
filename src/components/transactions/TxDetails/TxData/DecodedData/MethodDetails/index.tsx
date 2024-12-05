@@ -14,15 +14,27 @@ type MethodDetailsProps = {
 
 export const MethodDetails = ({ data, addressInfoIndex }: MethodDetailsProps): ReactElement => {
   if (!data.parameters?.length) {
-    return <Typography color="text.secondary">No parameters</Typography>
+    return (
+      <Typography
+        sx={{
+          color: 'text.secondary',
+        }}
+      >
+        No parameters
+      </Typography>
+    )
   }
 
   return (
     <Box>
-      <Typography fontWeight="bold" pb={1}>
+      <Typography
+        sx={{
+          fontWeight: 'bold',
+          pb: 1,
+        }}
+      >
         Parameters
       </Typography>
-
       {data.parameters?.map((param, index) => {
         const isArrayValueParam = isArrayParameter(param.type) || Array.isArray(param.value)
         const inlineType = isAddress(param.type) ? 'address' : isByte(param.type) ? 'bytes' : undefined
@@ -31,7 +43,12 @@ export const MethodDetails = ({ data, addressInfoIndex }: MethodDetailsProps): R
         const title = (
           <>
             <Typography component="span">{param.name}</Typography>{' '}
-            <Typography component="span" color="text.secondary">
+            <Typography
+              component="span"
+              sx={{
+                color: 'text.secondary',
+              }}
+            >
               {param.type}
             </Typography>
           </>

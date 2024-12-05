@@ -58,16 +58,23 @@ export const EditOwnerDialog = ({ chainId, address, name }: { chainId: string; a
           </span>
         </Tooltip>
       </Track>
-
       <ModalDialog open={open} onClose={handleClose} dialogTitle="Edit signer name">
         <FormProvider {...formMethods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <DialogContent>
-              <Box py={2}>
+              <Box
+                sx={{
+                  py: 2,
+                }}
+              >
                 <NameInput label="Signer name" name="name" required />
               </Box>
 
-              <Box py={2}>
+              <Box
+                sx={{
+                  py: 2,
+                }}
+              >
                 <EthHashInfo address={address} showCopyButton shortAddress={false} />
               </Box>
             </DialogContent>

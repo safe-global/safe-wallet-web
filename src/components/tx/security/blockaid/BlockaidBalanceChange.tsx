@@ -41,11 +41,23 @@ const FungibleBalanceChange = ({ change, asset }: { asset: AssetDiff['asset']; c
 
   return (
     <>
-      <Typography variant="body2" mx={1}>
+      <Typography
+        variant="body2"
+        sx={{
+          mx: 1,
+        }}
+      >
         {change.value ? formatAmount(change.value) : 'unknown'}
       </Typography>
       <TokenIcon size={16} logoUri={logoUri} tokenSymbol={asset.symbol} />
-      <Typography variant="body2" fontWeight={700} display="inline" ml={0.5}>
+      <Typography
+        variant="body2"
+        sx={{
+          fontWeight: 700,
+          display: 'inline',
+          ml: 0.5,
+        }}
+      >
         {asset.symbol}
       </Typography>
       <span style={{ margin: 'auto' }} />
@@ -66,11 +78,23 @@ const NFTBalanceChange = ({
   return (
     <>
       {asset.symbol ? (
-        <Typography variant="body2" fontWeight={700} display="inline" ml={1}>
+        <Typography
+          variant="body2"
+          sx={{
+            fontWeight: 700,
+            display: 'inline',
+            ml: 1,
+          }}
+        >
           {asset.symbol}
         </Typography>
       ) : (
-        <Typography variant="body2" ml={1}>
+        <Typography
+          variant="body2"
+          sx={{
+            ml: 1,
+          }}
+        >
           <EthHashInfo
             address={asset.address}
             chainId={chainId}
@@ -84,7 +108,13 @@ const NFTBalanceChange = ({
           />
         </Typography>
       )}
-      <Typography variant="subtitle2" className={css.nftId} ml={1}>
+      <Typography
+        variant="subtitle2"
+        className={css.nftId}
+        sx={{
+          ml: 1,
+        }}
+      >
         #{Number(change.token_id)}
       </Typography>
       <span style={{ margin: 'auto' }} />
@@ -132,7 +162,12 @@ const BalanceChanges = () => {
             color: ({ palette }) => palette.text.secondary,
           }}
         />
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          sx={{
+            color: 'text.secondary',
+          }}
+        >
           Calculating...
         </Typography>
       </div>
@@ -140,14 +175,26 @@ const BalanceChanges = () => {
   }
   if (error) {
     return (
-      <Typography variant="body2" color="text.secondary" justifySelf="flex-end">
+      <Typography
+        variant="body2"
+        sx={{
+          color: 'text.secondary',
+          justifySelf: 'flex-end',
+        }}
+      >
         Could not calculate balance changes.
       </Typography>
     )
   }
   if (totalBalanceChanges === 0) {
     return (
-      <Typography variant="body2" color="text.secondary" justifySelf="flex-end">
+      <Typography
+        variant="body2"
+        sx={{
+          color: 'text.secondary',
+          justifySelf: 'flex-end',
+        }}
+      >
         No balance change detected
       </Typography>
     )
@@ -180,7 +227,13 @@ export const BlockaidBalanceChanges = () => {
 
   return (
     <div className={css.box}>
-      <Typography variant="subtitle2" fontWeight={700} flexShrink={0}>
+      <Typography
+        variant="subtitle2"
+        sx={{
+          fontWeight: 700,
+          flexShrink: 0,
+        }}
+      >
         Balance change
         <Tooltip
           title={

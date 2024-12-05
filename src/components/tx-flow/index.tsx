@@ -1,14 +1,15 @@
 import { createContext, type ReactElement, type ReactNode, useState, useEffect, useCallback, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import TxModalDialog from '@/components/common/TxModalDialog'
-import { SuccessScreenFlow } from './flows'
+import { SuccessScreenFlow, NestedTxSuccessScreenFlow } from './flows'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useChainId from '@/hooks/useChainId'
+import { useWalletContext } from '@/hooks/wallets/useWallet'
 
 const noop = () => {}
 
 export type TxModalContextType = {
-  txFlow: JSX.Element | undefined
+  txFlow: ReactElement | undefined
   setTxFlow: (txFlow: TxModalContextType['txFlow'], onClose?: () => void, shouldWarn?: boolean) => void
   setFullWidth: (fullWidth: boolean) => void
 }
@@ -33,6 +34,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
   const prevSafeId = useRef<string>(safeId ?? '')
   const pathname = usePathname()
   const prevPathname = useRef<string | null>(pathname)
+  const { setSignerAddress } = useWalletContext() ?? {}
 
   const handleModalClose = useCallback(() => {
     if (shouldWarn.current && !confirmClose()) {
@@ -41,7 +43,9 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
     onClose.current()
     onClose.current = noop
     setFlow(undefined)
-  }, [])
+
+    setSignerAddress?.(undefined)
+  }, [setSignerAddress])
 
   // Open a new tx flow, close the previous one if any
   const setTxFlow = useCallback(
@@ -50,7 +54,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
         if (prev === newTxFlow) return prev
 
         // If a new flow is triggered, close the current one
-        if (prev && newTxFlow && newTxFlow.type !== SuccessScreenFlow) {
+        if (prev && newTxFlow && newTxFlow.type !== SuccessScreenFlow && newTxFlow.type !== NestedTxSuccessScreenFlow) {
           if (shouldWarn.current && !confirmClose()) {
             return prev
           }

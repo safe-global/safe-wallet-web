@@ -8,11 +8,28 @@ type Props = {
   pendingTx: PendingTx
 }
 export const ProcessingStatus = ({ txId, pendingTx }: Props) => (
-  <Box paddingX={3} mt={3}>
-    <Typography data-testid="transaction-status" variant="h6" marginTop={2} fontWeight={700}>
+  <Box
+    sx={{
+      paddingX: 3,
+      mt: 3,
+    }}
+  >
+    <Typography
+      data-testid="transaction-status"
+      variant="h6"
+      sx={{
+        marginTop: 2,
+        fontWeight: 700,
+      }}
+    >
       Transaction is now processing
     </Typography>
-    <Typography variant="body2" mb={3}>
+    <Typography
+      variant="body2"
+      sx={{
+        mb: 3,
+      }}
+    >
       The transaction was confirmed and is now being processed.
     </Typography>
     <Box>

@@ -24,12 +24,17 @@ const EditProposerDialog = ({ proposer }: { proposer: Delegate }) => {
                 isOk && canEdit
                   ? 'Edit proposer'
                   : isOk && !canEdit
-                  ? 'Only the owner of this proposer can edit them'
-                  : undefined
+                    ? 'Only the owner of this proposer can edit them'
+                    : undefined
               }
             >
               <span>
-                <IconButton onClick={() => setOpen(true)} size="small" disabled={!isOk || !canEdit}>
+                <IconButton
+                  data-testid="edit-proposer-btn"
+                  onClick={() => setOpen(true)}
+                  size="small"
+                  disabled={!isOk || !canEdit}
+                >
                   <SvgIcon component={EditIcon} inheritViewBox color="border" fontSize="small" />
                 </IconButton>
               </span>
