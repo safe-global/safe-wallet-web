@@ -10,6 +10,7 @@ on:
 
 jobs:
   review:
+    # Don't run on draft PRs
     if: ${{ github.event.pull_request.draft == false }}
     runs-on: ubuntu-latest
     steps:
