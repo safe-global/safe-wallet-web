@@ -21,9 +21,11 @@ jobs:
           # Optional
           MODEL: gpt-4o # https://platform.openai.com/docs/models
           PROMPT: |
-            Review the code changes in this PR and provide feedback if something is off.
-            Skip politeness and get straight to the point.
-            Only point out potential issues, don't comment on the good parts and the code that was already there prior to this PR.
-            Pay attention to the logic, structure, and the usage of best practices and design patterns.
-            Suggest refactoring if necessary.
-            Keep it short if you have no issues to point out, or if you aren't sure that the code is wrong.
+            Review the code changes in this pull request with the following guidelines:
+            1.	Focus on Issues: Only highlight potential problems, such as logical errors, violations of best practices, or opportunities for improvement. Avoid commenting on existing code unless directly impacted by the changes.
+            2.	Skip Politeness: Provide feedback directly and concisely, without unnecessary niceties.
+            3.	No Praise: Avoid commenting on what’s done well or works correctly unless necessary for context.
+            4.	Actionable Suggestions: Offer specific, actionable recommendations for refactoring or fixes where applicable.
+            5.	Stay Brief: If no clear issues are identified or the concerns are minor, keep feedback minimal or state that no significant issues were found.
+
+            Output should be focused, practical, and devoid of redundant commentary.
