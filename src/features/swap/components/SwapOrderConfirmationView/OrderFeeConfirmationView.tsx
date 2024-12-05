@@ -1,7 +1,7 @@
 import type { SwapOrderConfirmationView, TwapOrderConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
 import { getOrderFeeBps } from '@/features/swap/helpers/utils'
 import { DataRow } from '@/components/common/Table/DataRow'
-import { HelpCenterArticle } from '@/config/constants'
+import { BRAND_NAME, HelpCenterArticle } from '@/config/constants'
 import { HelpIconTooltip } from '@/features/swap/components/HelpIconTooltip'
 import MUILink from '@mui/material/Link'
 
@@ -24,7 +24,7 @@ export const OrderFeeConfirmationView = ({
           <>
             The tiered widget fee incurred here is charged by CoW Protocol for the operation of this widget. The fee is
             automatically calculated into this quote. Part of the fee will contribute to a license fee that supports the
-            Safe Community. Neither the Safe Ecosystem Foundation nor {`Safe{Wallet}`} operate the CoW Swap Widget
+            Safe Community. Neither the Safe Ecosystem Foundation nor {`${BRAND_NAME}`} operate the CoW Swap Widget
             and/or CoW Swap.
             <MUILink href={HelpCenterArticle.SWAP_WIDGET_FEES} target="_blank" rel="noopener noreferrer">
               Learn more

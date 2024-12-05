@@ -3,12 +3,13 @@ import SettingsHeader from '@/components/settings/SettingsHeader'
 import { Grid, Paper, Typography } from '@mui/material'
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import { BRAND_NAME } from '@/config/constants'
 
 const Cookies: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Settings – Cookies'}</title>
+        <title>{`${BRAND_NAME} – Settings – Cookies`}</title>
       </Head>
       <SettingsHeader />
       <main>

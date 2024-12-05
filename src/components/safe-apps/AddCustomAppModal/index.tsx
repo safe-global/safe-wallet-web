@@ -29,6 +29,7 @@ import { useShareSafeAppUrl } from '@/components/safe-apps/hooks/useShareSafeApp
 
 import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
+import { BRAND_NAME } from '@/config/constants'
 
 type Props = {
   open: boolean
@@ -148,7 +149,7 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
                             })}
                           />
                         }
-                        label="This Safe App is not part of Safe{Wallet} and I agree to use it at my own risk."
+                        label={`This Safe App is not part of ${BRAND_NAME} and I agree to use it at my own risk.`}
                         sx={{ mt: 2 }}
                       />
 

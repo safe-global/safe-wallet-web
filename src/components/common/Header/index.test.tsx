@@ -32,6 +32,10 @@ jest.mock(
     },
 )
 
+jest.mock('@/hooks/useIsOfficialHost', () => ({
+  useIsOfficialHost: () => true,
+}))
+
 describe('Header', () => {
   beforeEach(() => {
     jest.resetAllMocks()

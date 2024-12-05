@@ -31,3 +31,5 @@ jobs:
           package-manager: yarn
           test-script: yarn test:ci
           github-token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          NEXT_PUBLIC_IS_OFFICIAL_HOST: true

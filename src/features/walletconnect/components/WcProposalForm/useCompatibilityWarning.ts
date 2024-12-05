@@ -5,6 +5,7 @@ import useChains from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { capitalize } from '@/utils/formatters'
 import { getPeerName, isBlockedBridge, isWarnedBridge } from '@/features/walletconnect/services/utils'
+import { BRAND_NAME } from '@/config/constants'
 
 const NAME_FALLBACK = 'this dApp'
 const NAME_PLACEHOLDER = '%%name%%'
@@ -13,7 +14,7 @@ const CHAIN_PLACEHOLDER = '%%chain%%'
 const Warnings: Record<string, { severity: AlertColor; message: string }> = {
   BLOCKED_BRIDGE: {
     severity: 'error',
-    message: `${NAME_PLACEHOLDER} is a bridge that is incompatible with Safe{Wallet} — the bridged funds will be lost. Consider using a different bridge.`,
+    message: `${NAME_PLACEHOLDER} is a bridge that is incompatible with ${BRAND_NAME} — the bridged funds will be lost. Consider using a different bridge.`,
   },
   WARNED_BRIDGE: {
     severity: 'warning',

@@ -8,6 +8,7 @@ import { Box } from '@mui/material'
 import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 import { usePendingTxsQueue, useShowUnsignedQueue } from '@/hooks/usePendingTxs'
 import RecoveryList from '@/features/recovery/components/RecoveryList'
+import { BRAND_NAME } from '@/config/constants'
 
 const Queue: NextPage = () => {
   const showPending = useShowUnsignedQueue()
@@ -15,7 +16,7 @@ const Queue: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Transaction queue'}</title>
+        <title>{`${BRAND_NAME} – Transaction queue`}</title>
       </Head>
       <BatchExecuteHoverProvider>
         <TxHeader>

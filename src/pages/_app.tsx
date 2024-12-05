@@ -12,7 +12,7 @@ import { setBaseUrl as setNewGatewayBaseUrl } from '@safe-global/safe-client-gat
 import { CacheProvider, type EmotionCache } from '@emotion/react'
 import SafeThemeProvider from '@/components/theme/SafeThemeProvider'
 import '@/styles/globals.css'
-import { IS_PRODUCTION, GATEWAY_URL_STAGING, GATEWAY_URL_PRODUCTION } from '@/config/constants'
+import { IS_PRODUCTION, GATEWAY_URL_STAGING, GATEWAY_URL_PRODUCTION, BRAND_NAME } from '@/config/constants'
 import { makeStore, useHydrateStore } from '@/store'
 import PageLayout from '@/components/common/PageLayout'
 import useLoadableStores from '@/hooks/useLoadableStores'
@@ -116,7 +116,7 @@ const WebCoreApp = ({
   return (
     <Provider store={reduxStore}>
       <Head>
-        <title key="default-title">{'Safe{Wallet}'}</title>
+        <title key="default-title">{BRAND_NAME}</title>
         <MetaTags prefetchUrl={GATEWAY_URL} />
       </Head>
 

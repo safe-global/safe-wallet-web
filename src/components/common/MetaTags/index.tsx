@@ -1,10 +1,10 @@
-import { IS_PRODUCTION } from '@/config/constants'
+import { BRAND_NAME, IS_PRODUCTION } from '@/config/constants'
 import { ContentSecurityPolicy, StrictTransportSecurity } from '@/config/securityHeaders'
 import lightPalette from '@/components/theme/lightPalette'
 import darkPalette from '@/components/theme/darkPalette'
 
-const descriptionText = 'Safe{Wallet} is the most trusted smart account wallet on Ethereum with over $100B secured.'
-const titleText = 'Safe{Wallet}'
+const descriptionText = `${BRAND_NAME} is the most trusted smart account wallet on Ethereum with over $100B secured.`
+const titleText = BRAND_NAME
 
 const MetaTags = ({ prefetchUrl }: { prefetchUrl: string }) => (
   <>

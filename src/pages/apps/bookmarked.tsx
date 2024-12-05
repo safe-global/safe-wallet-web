@@ -3,6 +3,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { AppRoutes } from '@/config/routes'
+import { BRAND_NAME } from '@/config/constants'
 
 const BookmarkedSafeApps: NextPage = () => {
   const router = useRouter()
@@ -14,7 +15,7 @@ const BookmarkedSafeApps: NextPage = () => {
 
   return (
     <Head>
-      <title>{'Safe{Wallet} – Safe Apps'}</title>
+      <title>{`${BRAND_NAME} – Safe Apps`}</title>
     </Head>
   )
 }
