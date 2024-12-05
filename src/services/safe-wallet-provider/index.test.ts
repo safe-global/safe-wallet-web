@@ -658,10 +658,10 @@ describe('SafeWalletProvider', () => {
           result: {
             receipts: [
               {
-                blockHash: receipt.blockHash,
-                blockNumber: receipt.blockNumber,
+                blockHash: numberToHex(Number(receipt.blockHash)),
+                blockNumber: numberToHex(Number(receipt.blockNumber)),
                 chainId: '0x1',
-                gasUsed: receipt.gasUsed,
+                gasUsed: numberToHex(Number(receipt.gasUsed)),
                 logs: receipt.logs,
                 status: '0x1',
                 transactionHash: '0x123',
