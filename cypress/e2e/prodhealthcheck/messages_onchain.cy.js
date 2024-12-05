@@ -21,8 +21,9 @@ describe('[PROD] Onchain Messages tests', () => {
   it('Verify summary for signed on-chain message', () => {
     createTx.verifySummaryByName(
       typeMessagesOnchain.contractName,
+      null,
       [typeMessagesOnchain.success, typeMessagesOnchain.signMessage],
-      typeMessagesOnchain.altTmage,
+      typeMessagesOnchain.altImage,
     )
   })
 })
