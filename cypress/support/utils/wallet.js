@@ -41,7 +41,7 @@ export function connectSigner(signer) {
   }
 
   function enterPrivateKey() {
-    cy.wait(1000)
+    cy.wait(3000)
     cy.get('body').then(($body) => {
       if ($body.find(pkInput).length > 0) {
         cy.get(pkInput)

@@ -29,7 +29,7 @@ describe('[SMOKE] Tx history tests', () => {
       typeReceive.summaryTitle,
       typeReceive.summaryTxInfo,
       [typeReceive.summaryTxInfo, typeGeneral.statusOk],
-      typeReceive.altTmage,
+      typeReceive.altImage,
     )
   })
 
@@ -46,6 +46,7 @@ describe('[SMOKE] Tx history tests', () => {
   it('[SMOKE] Verify summary for token send', () => {
     createTx.verifySummaryByName(
       typeSend.title,
+      null,
       [typeSend.summaryTxInfo, typeGeneral.statusOk],
       typeSend.altImage,
       typeSend.altToken,
@@ -53,7 +54,12 @@ describe('[SMOKE] Tx history tests', () => {
   })
 
   it('[SMOKE] Verify summary for on-chain rejection', () => {
-    createTx.verifySummaryByName(typeOnchainRejection.title, [typeGeneral.statusOk], typeOnchainRejection.altImage)
+    createTx.verifySummaryByName(
+      typeOnchainRejection.title,
+      null,
+      [typeGeneral.statusOk],
+      typeOnchainRejection.altImage,
+    )
   })
 
   it('[SMOKE] Verify summary for batch', () => {
