@@ -23,6 +23,6 @@ jobs:
           PROMPT: |
             Review the code changes in this PR and provide feedback if something is off.
             Skip politeness and get straight to the point.
-            Only point out potential issues, don't comment on the good parts.
+            Only point out potential issues, don't comment on the good parts and the code that was already there prior to this PR.
             Pay attention to the logic, structure, and the usage of best practices and design patterns.
-            Suggest refactoring if necessary.
+            Suggest refactoring if necessary. Keep it short if you aren't sure that the code is wrong.
