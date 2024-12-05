@@ -17,7 +17,7 @@ const useAllOwnedSafes = (address: string): AsyncResult<AllOwnedSafes> => {
     if (data != undefined) {
       setCache(data)
     }
-  }, [address, cache, data, setCache])
+  }, [data, setCache])
 
   return [cache, asError(error), isLoading]
 }
