@@ -16,13 +16,20 @@ interface DialogTitleProps {
   children: ReactNode
   onClose?: ModalProps['onClose']
   hideChainIndicator?: boolean
+  sx?: DialogProps['sx']
 }
 
-export const ModalDialogTitle = ({ children, onClose, hideChainIndicator = false, ...other }: DialogTitleProps) => {
+export const ModalDialogTitle = ({
+  children,
+  onClose,
+  hideChainIndicator = false,
+  sx = {},
+  ...other
+}: DialogTitleProps) => {
   return (
     <DialogTitle
       data-testid="modal-title"
-      sx={{ m: 0, px: 3, pt: 3, pb: 2, display: 'flex', alignItems: 'center', fontWeight: 'bold' }}
+      sx={{ m: 0, px: 3, pt: 3, pb: 2, display: 'flex', alignItems: 'center', fontWeight: 'bold', ...sx }}
       {...other}
     >
       {children}

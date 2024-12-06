@@ -123,16 +123,15 @@ const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem)
           </Typography>
         </Link>
       </Track>
-      {undeployedSafe && (
-        <SafeListContextMenu
-          name={name}
-          address={address}
-          chainId={chainId}
-          addNetwork={false}
-          rename={false}
-          undeployedSafe={!!undeployedSafe}
-        />
-      )}
+
+      <SafeListContextMenu
+        name={name}
+        address={address}
+        chainId={chainId}
+        addNetwork={!undeployedSafe}
+        rename={!undeployedSafe}
+        undeployedSafe={!!undeployedSafe}
+      />
 
       {isMobile && (
         <AccountInfoChips

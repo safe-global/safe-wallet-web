@@ -8,24 +8,35 @@ import ListItemText from '@mui/material/ListItemText'
 
 import EntryDialog from '@/components/address-book/EntryDialog'
 import SafeListRemoveDialog from '@/components/sidebar/SafeListRemoveDialog'
+import SubaccountsIcon from '@/public/images/sidebar/subaccounts-icon.svg'
 import EditIcon from '@/public/images/common/edit.svg'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import PlusIcon from '@/public/images/common/plus.svg'
 import ContextMenu from '@/components/common/ContextMenu'
-import { trackEvent, OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
+import { trackEvent, OVERVIEW_EVENTS, OVERVIEW_LABELS, type AnalyticsEvent } from '@/services/analytics'
 import { SvgIcon } from '@mui/material'
 import useAddressBook from '@/hooks/useAddressBook'
 import { AppRoutes } from '@/config/routes'
 import router from 'next/router'
 import { CreateSafeOnNewChain } from '@/features/multichain/components/CreateSafeOnNewChain'
+import { useGetSafesByOwnerQuery } from '@/store/slices'
+import { SubaccountsPopover } from '../SubaccountsPopover'
+import { SUBACCOUNT_EVENTS, SUBACCOUNT_LABELS } from '@/services/analytics/events/subaccounts'
+import { skipToken } from '@reduxjs/toolkit/query'
 
 enum ModalType {
+  SUBACCOUNTS = 'subaccounts',
   RENAME = 'rename',
   REMOVE = 'remove',
   ADD_CHAIN = 'add_chain',
 }
 
-const defaultOpen = { [ModalType.RENAME]: false, [ModalType.REMOVE]: false, [ModalType.ADD_CHAIN]: false }
+const defaultOpen = {
+  [ModalType.SUBACCOUNTS]: false,
+  [ModalType.RENAME]: false,
+  [ModalType.REMOVE]: false,
+  [ModalType.ADD_CHAIN]: false,
+}
 
 const SafeListContextMenu = ({
   name,
@@ -42,10 +53,11 @@ const SafeListContextMenu = ({
   rename: boolean
   undeployedSafe: boolean
 }): ReactElement => {
+  const { data: subaccounts } = useGetSafesByOwnerQuery(address ? { chainId, ownerAddress: address } : skipToken)
   const addressBook = useAddressBook()
   const hasName = address in addressBook
 
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined>()
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
 
   const trackingLabel =
@@ -56,17 +68,17 @@ const SafeListContextMenu = ({
   }
 
   const handleCloseContextMenu = () => {
-    setAnchorEl(undefined)
+    setAnchorEl(null)
   }
 
-  const handleOpenModal =
-    (type: keyof typeof open, event: typeof OVERVIEW_EVENTS.SIDEBAR_RENAME | typeof OVERVIEW_EVENTS.SIDEBAR_RENAME) =>
-    () => {
+  const handleOpenModal = (type: keyof typeof open, event: AnalyticsEvent) => () => {
+    if (type !== ModalType.SUBACCOUNTS) {
       handleCloseContextMenu()
-      setOpen((prev) => ({ ...prev, [type]: true }))
-
-      trackEvent({ ...event, label: trackingLabel })
     }
+    setOpen((prev) => ({ ...prev, [type]: true }))
+
+    trackEvent({ ...event, label: trackingLabel })
+  }
 
   const handleCloseModal = () => {
     setOpen(defaultOpen)
@@ -78,6 +90,20 @@ const SafeListContextMenu = ({
         <MoreVertIcon sx={({ palette }) => ({ color: palette.border.main })} />
       </IconButton>
       <ContextMenu anchorEl={anchorEl} open={!!anchorEl} onClose={handleCloseContextMenu}>
+        {!undeployedSafe && subaccounts?.safes && subaccounts.safes.length > 0 && (
+          <MenuItem
+            onClick={handleOpenModal(ModalType.SUBACCOUNTS, {
+              ...SUBACCOUNT_EVENTS.OPEN_LIST,
+              label: SUBACCOUNT_LABELS.sidebar,
+            })}
+          >
+            <ListItemIcon>
+              <SvgIcon component={SubaccountsIcon} inheritViewBox fontSize="small" color="success" />
+            </ListItemIcon>
+            <ListItemText data-testid="subaccounts-btn">Subaccounts</ListItemText>
+          </MenuItem>
+        )}
+
         {rename && (
           <MenuItem onClick={handleOpenModal(ModalType.RENAME, OVERVIEW_EVENTS.SIDEBAR_RENAME)}>
             <ListItemIcon>
@@ -105,6 +131,10 @@ const SafeListContextMenu = ({
           </MenuItem>
         )}
       </ContextMenu>
+
+      {open[ModalType.SUBACCOUNTS] && (
+        <SubaccountsPopover anchorEl={anchorEl} onClose={handleCloseModal} subaccounts={subaccounts?.safes ?? []} />
+      )}
 
       {open[ModalType.RENAME] && (
         <EntryDialog

@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material'
 import classNames from 'classnames'
 import css from '@/components/tx-flow/flows/SuccessScreen/styles.module.css'
 
-export const IndexingStatus = () => (
+export const IndexingStatus = ({ willDeploySafe: isCreatingSafe }: { willDeploySafe: boolean }) => (
   <Box
     sx={{
       paddingX: 3,
@@ -17,7 +17,7 @@ export const IndexingStatus = () => (
         fontWeight: 700,
       }}
     >
-      Transaction was processed
+      {!isCreatingSafe ? 'Transaction' : 'Subaccount'} was processed
     </Typography>
     <Box className={classNames(css.instructions, css.infoBg)}>
       <Typography variant="body2"> It is now being indexed.</Typography>
