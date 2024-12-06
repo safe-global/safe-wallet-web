@@ -46,12 +46,7 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
         {/* Toolbar */}
 
         {safeApp && (
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'right',
-            }}
-          >
+          <Box display="flex" justifyContent="right">
             <SafeAppActionButtons safeApp={safeApp} isBookmarked={isBookmarked} onBookmarkSafeApp={onBookmark} />
             <Tooltip title={`Close ${safeApp.name} preview`} placement="top">
               <IconButton
@@ -73,23 +68,11 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
           <SafeAppIconCard src={safeApp?.iconUrl || ''} alt={`${safeApp?.name} logo`} width={90} height={90} />
         </Box>
 
-        <Typography
-          variant="h4"
-          sx={{
-            fontWeight: 700,
-            mt: 2,
-          }}
-        >
+        <Typography variant="h4" fontWeight={700} sx={{ mt: 2 }}>
           {safeApp?.name}
         </Typography>
 
-        <Typography
-          variant="body2"
-          sx={{
-            color: 'primary.light',
-            mt: 2,
-          }}
-        >
+        <Typography variant="body2" color="primary.light" sx={{ mt: 2 }}>
           {safeApp?.description}
         </Typography>
 
@@ -97,13 +80,7 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
         <SafeAppTags tags={safeApp?.tags || []} />
 
         {/* Networks */}
-        <Typography
-          variant="body2"
-          sx={{
-            color: 'text.secondary',
-            mt: 2,
-          }}
-        >
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
           Available networks
         </Typography>
 

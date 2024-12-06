@@ -35,18 +35,12 @@ export const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
         <Box className={css.buttonContainer}>
           <WalletOverview wallet={wallet} balance={balance} showBalance />
 
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              marginLeft: 'auto',
-            }}
-          >
+          <Box display="flex" alignItems="center" justifyContent="flex-end" ml="auto">
             {open ? <ExpandLessIcon color="border" /> : <ExpandMoreIcon color="border" />}
           </Box>
         </Box>
       </ButtonBase>
+
       <Popover
         id={id}
         open={open}

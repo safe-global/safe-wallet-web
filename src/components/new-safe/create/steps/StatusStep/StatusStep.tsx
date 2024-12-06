@@ -23,18 +23,13 @@ const StatusStep = ({
       icon={<SvgIcon component={Icon} className={css.icon} color={color} fontSize="small" />}
     >
       <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 2,
-          color: ({ palette }) => (isLoading ? palette.border.main : palette.text.primary),
-        }}
+        display="flex"
+        alignItems="center"
+        gap={2}
+        color={color}
+        sx={{ color: ({ palette }) => (isLoading ? palette.border.main : palette.text.primary) }}
       >
-        <Box
-          sx={{
-            flexShrink: 0,
-          }}
-        >
+        <Box flexShrink={0}>
           {safeAddress && !isLoading ? (
             <Identicon address={safeAddress} size={32} />
           ) : (

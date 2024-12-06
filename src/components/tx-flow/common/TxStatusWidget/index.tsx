@@ -47,14 +47,7 @@ const TxStatusWidget = ({
   return (
     <Paper>
       <div className={css.header}>
-        <Typography
-          sx={{
-            fontWeight: '700',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-          }}
-        >
+        <Typography fontWeight="700" display="flex" alignItems="center" gap={1}>
           <SafeLogo width={16} height={16} className={css.logo} />
           {isMessage ? 'Message' : 'Transaction'} status
         </Typography>
@@ -63,7 +56,9 @@ const TxStatusWidget = ({
           <CloseIcon />
         </IconButton>
       </div>
+
       <Divider />
+
       <div className={css.content}>
         <List className={css.status}>
           <ListItem>

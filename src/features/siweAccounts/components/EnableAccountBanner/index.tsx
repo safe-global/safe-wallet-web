@@ -42,12 +42,7 @@ const SignInBanner = ({ provider }: { provider: BrowserProvider | undefined }) =
         action={
           <>
             <Button onClick={signIn} endIcon={<ChevronRightIcon />} sx={{ padding: '2px', minWidth: '130px' }}>
-              <Typography
-                noWrap
-                sx={{
-                  fontWeight: 700,
-                }}
-              >
+              <Typography noWrap fontWeight={700}>
                 Enable now
               </Typography>
             </Button>
@@ -64,19 +59,8 @@ const SignInBanner = ({ provider }: { provider: BrowserProvider | undefined }) =
           </>
         }
       >
-        <Box
-          sx={{
-            display: 'flex',
-            alignContent: 'center',
-            alignItems: 'center',
-            width: '100%',
-          }}
-        >
-          <Typography
-            sx={{
-              flex: '1',
-            }}
-          >
+        <Box display="flex" alignContent="center" alignItems="center" width="100%">
+          <Typography flex="1">
             <b>Access your accounts on any device!</b> Enable cloud storage to switch devices effortlessly and keep your
             data secure.
           </Typography>

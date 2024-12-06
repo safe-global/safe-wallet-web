@@ -39,11 +39,7 @@ const HiddenTokenButton = ({
         >
           <>
             <VisibilityOutlined fontSize="small" />
-            <Typography
-              sx={{
-                fontSize: 'medium',
-              }}
-            >
+            <Typography fontSize="medium">
               {hiddenAssetCount === 0
                 ? 'Hide tokens'
                 : `${hiddenAssetCount} hidden token${maybePlural(hiddenAssetCount)}`}{' '}

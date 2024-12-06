@@ -63,46 +63,17 @@ const StatusMessage = ({
 
   return (
     <>
-      <Box
-        data-testid="safe-status-info"
-        sx={{
-          paddingX: 3,
-          mt: 3,
-        }}
-      >
-        <Box
-          sx={{
-            width: '160px',
-            height: '160px',
-            display: 'flex',
-            margin: 'auto',
-          }}
-        >
+      <Box data-testid="safe-status-info" px={3} mt={3}>
+        <Box width="160px" height="160px" display="flex" m="auto">
           {isError ? <FailedIcon /> : <LoadingSpinner status={spinnerStatus} />}
         </Box>
-        <Typography
-          variant="h3"
-          sx={{
-            marginTop: 2,
-            fontWeight: 700,
-          }}
-        >
+        <Typography variant="h3" mt={2} fontWeight={700}>
           {stepInfo.description}
         </Typography>
       </Box>
-      <Box
-        sx={{
-          maxWidth: 390,
-          margin: 'auto',
-        }}
-      >
+      <Box sx={{ maxWidth: 390, m: 'auto' }}>
         {stepInfo.instruction && (
-          <Typography
-            variant="body2"
-            sx={{
-              my: 2,
-            }}
-          >
+          <Typography variant="body2" my={2}>
             {stepInfo.instruction}
           </Typography>
         )}

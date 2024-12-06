@@ -73,12 +73,7 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
           <DialogContent>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    fontWeight: 700,
-                  }}
-                >
+                <Typography variant="body1" fontWeight={700}>
                   Execution parameters
                 </Typography>
               </Grid>
@@ -133,11 +128,7 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
             </Grid>
 
             {/* Help link */}
-            <Typography
-              sx={{
-                mt: 2,
-              }}
-            >
+            <Typography mt={2}>
               <ExternalLink href={HelpCenterArticle.ADVANCED_PARAMS}>
                 How can I configure these parameters manually?
               </ExternalLink>

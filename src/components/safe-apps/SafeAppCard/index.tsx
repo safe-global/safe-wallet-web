@@ -112,6 +112,7 @@ const SafeAppCardGridView = ({
           </>
         }
       />
+
       <CardContent className={css.safeAppContent}>
         {/* Safe App Title */}
         <Typography className={css.safeAppTitle} gutterBottom variant="h5">
@@ -119,13 +120,7 @@ const SafeAppCardGridView = ({
         </Typography>
 
         {/* Safe App Description */}
-        <Typography
-          className={css.safeAppDescription}
-          variant="body2"
-          sx={{
-            color: 'text.secondary',
-          }}
-        >
+        <Typography className={css.safeAppDescription} variant="body2" color="text.secondary">
           {safeApp.description}
         </Typography>
 

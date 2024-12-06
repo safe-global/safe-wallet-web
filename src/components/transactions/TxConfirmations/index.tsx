@@ -17,12 +17,8 @@ const TxConfirmations = ({
   return (
     <TxStatusChip color={color}>
       <SvgIcon component={isConfirmed ? CheckIcon : OwnersIcon} inheritViewBox fontSize="small" />
-      <Typography
-        variant="caption"
-        sx={{
-          fontWeight: 'bold',
-        }}
-      >
+
+      <Typography variant="caption" fontWeight="bold">
         {submittedConfirmations} out of {requiredConfirmations}
       </Typography>
     </TxStatusChip>

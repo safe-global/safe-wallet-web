@@ -123,11 +123,9 @@ const SafeTokenWidget = () => {
                 <Typography
                   component="div"
                   variant="body2"
+                  lineHeight="20px"
                   // Badge does not accept className so must be here
                   className={css.allocationBadge}
-                  sx={{
-                    lineHeight: '20px',
-                  }}
                 >
                   {ownGlobalRankLoading ? (
                     <Skeleton width="16px" animation="wave" />

@@ -63,11 +63,7 @@ const BatchTxItem = ({ id, count, timestamp, txDetails, onDelete }: BatchTxItemP
           >
             <TxType tx={txSummary} />
 
-            <Box
-              sx={{
-                flex: 1,
-              }}
-            >
+            <Box flex={1}>
               <TxInfo info={txDetails.txInfo} />
             </Box>
 
@@ -79,12 +75,7 @@ const BatchTxItem = ({ id, count, timestamp, txDetails, onDelete }: BatchTxItemP
                   <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />
                 </ButtonBase>
 
-                <Box
-                  className={css.separator}
-                  sx={{
-                    mr: 2,
-                  }}
-                />
+                <Box className={css.separator} mr={2} />
               </>
             )}
           </Box>

@@ -143,6 +143,7 @@ export const ExecuteThroughRoleForm = ({
   return (
     <>
       <Divider className={commonCss.nestedDivider} sx={{ pt: 1 }} />
+
       <form onSubmit={handleSubmit}>
         {!permissionsError && (
           <>
@@ -164,11 +165,7 @@ export const ExecuteThroughRoleForm = ({
         )}
 
         {permissionsError && (
-          <Box
-            sx={{
-              mb: 2,
-            }}
-          >
+          <Box mb={2}>
             <Typography sx={{ mb: 2 }}>
               You are a member of the <Role>{role.roleKey}</Role> role but it does not allow this transaction.
             </Typography>
@@ -177,26 +174,14 @@ export const ExecuteThroughRoleForm = ({
           </Box>
         )}
 
-        <Typography
-          variant="caption"
-          sx={{
-            display: 'flex',
-            gap: '2px',
-            color: 'text.secondary',
-            mb: 2,
-          }}
-        >
+        <Typography variant="caption" display="flex" gap="2px" color="text.secondary" sx={{ mb: 2 }}>
           Powered by
           <img src="/images/transactions/zodiac-roles.svg" width={16} height={16} alt="Zodiac Roles" />
           <span className={css.zodiac}>Zodiac</span>
         </Typography>
 
         {multiSendImpossible && (
-          <Box
-            sx={{
-              mt: 1,
-            }}
-          >
+          <Box mt={1}>
             <ErrorMessage>
               The current configuration of the Zodiac Roles module does not allow executing multiple transactions in
               batch.
@@ -205,22 +190,14 @@ export const ExecuteThroughRoleForm = ({
         )}
 
         {!walletCanPay ? (
-          <Box
-            sx={{
-              mt: 1,
-            }}
-          >
+          <Box mt={1}>
             <ErrorMessage level="info">
               Your connected wallet doesn&apos;t have enough funds to execute this transaction.
             </ErrorMessage>
           </Box>
         ) : (
           gasLimitError && (
-            <Box
-              sx={{
-                mt: 1,
-              }}
-            >
+            <Box mt={1}>
               <ErrorMessage error={gasLimitError}>
                 This transaction will most likely fail. To save gas costs, avoid creating this transaction.
               </ErrorMessage>
@@ -229,30 +206,18 @@ export const ExecuteThroughRoleForm = ({
         )}
 
         {submitError && (
-          <Box
-            sx={{
-              mt: 1,
-            }}
-          >
+          <Box mt={1}>
             <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
           </Box>
         )}
 
         {isRejectedByUser && (
-          <Box
-            sx={{
-              mt: 1,
-            }}
-          >
+          <Box mt={1}>
             <WalletRejectionError />
           </Box>
         )}
 
-        <Box
-          sx={{
-            mt: 3,
-          }}
-        >
+        <Box mt={3}>
           <Divider className={commonCss.nestedDivider} />
         </Box>
 
