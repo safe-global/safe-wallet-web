@@ -24,9 +24,9 @@ export const DecodedData = ({ txData, toInfo }: Props): ReactElement | null => {
   const chainInfo = useCurrentChain()
 
   // nothing to render
-  if (!txData && !toInfo) return null
+  if (!txData) {
+    if (!toInfo) return null
 
-  if (!txData && toInfo) {
     return (
       <SendToBlock
         title="Interact with"
@@ -38,8 +38,6 @@ export const DecodedData = ({ txData, toInfo }: Props): ReactElement | null => {
     )
   }
 
-  if (!txData) return null
-
   const amountInWei = txData.value ?? '0'
   const isDelegateCall = txData.operation === Operation.DELEGATE
   const toAddress = toInfo?.value || txData.to.value
@@ -49,7 +47,7 @@ export const DecodedData = ({ txData, toInfo }: Props): ReactElement | null => {
     ? 'this Safe Account'
     : addressInfo?.name || toInfo?.name || txData.to.name
   const avatar = addressInfo?.logoUri || toInfo?.logoUri || txData.to.logoUri
-  const isFallback = !method && !txData?.dataDecoded?.parameters
+  const isFallback = !method || txData?.dataDecoded?.parameters?.length === 0
 
   let decodedData = <></>
   if (txData.dataDecoded && !isFallback) {
