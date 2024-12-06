@@ -4,15 +4,7 @@ import { Box } from '@mui/material'
 
 const SignOrExecuteSkeleton = () => (
   <TxCard>
-    <Box
-      sx={{
-        minHeight: '38svh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        mb: 5,
-      }}
-    >
+    <Box minHeight="38svh" display="flex" alignItems="center" justifyContent="center" mb={5}>
       <LoadingSpinner status={SpinnerStatus.PROCESSING} />
     </Box>
   </TxCard>

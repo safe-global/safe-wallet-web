@@ -157,11 +157,7 @@ const AssetsTable = ({
               rawValue: rawFiatValue,
               collapsed: item.tokenInfo.address === hidingAsset,
               content: (
-                <Typography
-                  sx={{
-                    textAlign: 'right',
-                  }}
-                >
+                <Typography textAlign="right">
                   <FiatValue value={item.fiatBalance} />
 
                   {rawFiatValue === 0 && (

@@ -145,16 +145,12 @@ function AddressBookTable({ chain, setTxFlow }: AddressBookTableProps) {
         searchQuery={searchQuery}
         onSearchQueryChange={setSearchQuery}
       />
+
       <main>
         {filteredEntries.length > 0 ? (
           <EnhancedTable rows={rows} headCells={headCells} mobileVariant />
         ) : (
-          <Box
-            sx={{
-              bgcolor: 'background.paper',
-              borderRadius: 1,
-            }}
-          >
+          <Box bgcolor="background.paper" borderRadius={1}>
             <PagePlaceholder
               img={<NoEntriesIcon />}
               text={`No entries found${chain ? ` on ${chain.chainName}` : ''}`}
@@ -162,8 +158,11 @@ function AddressBookTable({ chain, setTxFlow }: AddressBookTableProps) {
           </Box>
         )}
       </main>
+
       {open[ModalType.EXPORT] && <ExportDialog handleClose={handleClose} />}
+
       {open[ModalType.IMPORT] && <ImportDialog handleClose={handleClose} />}
+
       {open[ModalType.ENTRY] && (
         <EntryDialog
           handleClose={handleClose}
@@ -171,6 +170,7 @@ function AddressBookTable({ chain, setTxFlow }: AddressBookTableProps) {
           disableAddressInput={Boolean(defaultValues?.name)}
         />
       )}
+
       {open[ModalType.REMOVE] && <RemoveDialog handleClose={handleClose} address={defaultValues?.address || ''} />}
     </>
   )

@@ -108,6 +108,7 @@ const NotificationCenter = (): ReactElement => {
           <SvgIcon component={BellIcon} inheritViewBox fontSize="medium" />
         </UnreadBadge>
       </ButtonBase>
+
       <Popover
         // Clicking the "view transaction" link doesn't remove the popover even though
         // handleClose is called which results in the UI not being clickable anymore
@@ -134,13 +135,7 @@ const NotificationCenter = (): ReactElement => {
         <Paper className={css.popoverContainer}>
           <div className={css.popoverHeader}>
             <div>
-              <Typography
-                variant="h4"
-                component="span"
-                sx={{
-                  fontWeight: 700,
-                }}
-              >
+              <Typography variant="h4" component="span" fontWeight={700}>
                 Notifications
               </Typography>
               {hasUnread && (

@@ -18,28 +18,15 @@ const WalletLogin = ({ onLogin, onContinue }: { onLogin: () => void; onContinue:
       <Box sx={{ width: '100%' }}>
         <Button variant="contained" sx={{ padding: '8px 16px' }} fullWidth onClick={onContinue}>
           <Box
-            sx={{
-              width: '100%',
-              justifyContent: 'space-between',
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 1,
-            }}
+            width="100%"
+            justifyContent="space-between"
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
+            gap={1}
           >
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-              }}
-            >
-              <Typography
-                variant="subtitle2"
-                sx={{
-                  fontWeight: 700,
-                }}
-              >
+            <Box display="flex" flexDirection="column" alignItems="flex-start">
+              <Typography variant="subtitle2" fontWeight={700}>
                 Continue with {wallet.label}
               </Typography>
               {wallet.address && (

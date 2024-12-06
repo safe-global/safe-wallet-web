@@ -115,12 +115,7 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
                 </span>
               </Tooltip>
             </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                mb: 2,
-              }}
-            >
+            <Typography variant="body2" mb={2}>
               Changes the used master copy and fallback handler of the Safe.
             </Typography>
             <Controller
@@ -156,12 +151,7 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
                 </span>
               </Tooltip>
             </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                mb: 2,
-              }}
-            >
+            <Typography variant="body2" mb={2}>
               Impacts the derived Safe address
             </Typography>
             <NumberField

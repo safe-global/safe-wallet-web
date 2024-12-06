@@ -15,12 +15,7 @@ export function CardStepper<StepperData>(props: TxStepperProps<StepperData>) {
 
   return (
     <Card className={css.card}>
-      <Box
-        className={css.progress}
-        sx={{
-          color: progressColor,
-        }}
-      >
+      <Box className={css.progress} color={progressColor}>
         <LinearProgress color="inherit" variant="determinate" value={Math.min(progress, 100)} />
       </Box>
       {currentStep.title && (

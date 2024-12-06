@@ -176,21 +176,13 @@ export const ExecuteForm = ({
         )}
 
         {submitError && (
-          <Box
-            sx={{
-              mt: 1,
-            }}
-          >
+          <Box mt={1}>
             <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
           </Box>
         )}
 
         {isRejectedByUser && (
-          <Box
-            sx={{
-              mt: 1,
-            }}
-          >
+          <Box mt={1}>
             <WalletRejectionError />
           </Box>
         )}

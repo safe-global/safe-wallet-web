@@ -19,23 +19,9 @@ const ChainIndicatorList = ({ chainIds }: { chainIds: string[] }) => {
       {chainIds.map((chainId, index) => {
         const chain = configs.find((chain) => chain.chainId === chainId)
         return (
-          <Box
-            key={chainId}
-            sx={{
-              display: 'inline-flex',
-              flexWrap: 'wrap',
-              position: 'relative',
-              top: 5,
-            }}
-          >
+          <Box key={chainId} display="inline-flex" flexWrap="wrap" position="relative" top={5}>
             <ChainIndicator key={chainId} chainId={chainId} showUnknown={false} onlyLogo={true} />
-            <Typography
-              sx={{
-                position: 'relative',
-                top: 2,
-                mx: 0.5,
-              }}
-            >
+            <Typography position="relative" top={2} mx={0.5}>
               {chain && chain.chainName}
               {index === chainIds.length - 1 ? '.' : ','}
             </Typography>
@@ -75,20 +61,11 @@ export const InconsistentSignerSetupWarning = () => {
 
   return (
     <ErrorMessage level="warning" title="Signers are not consistent">
-      <Typography
-        sx={{
-          display: 'inline',
-          mr: 1,
-        }}
-      >
+      <Typography display="inline" mr={1}>
         Signers are different on these networks of this account:
       </Typography>
       <ChainIndicatorList chainIds={deviatingChainIds} />
-      <Typography
-        sx={{
-          display: 'inline',
-        }}
-      >
+      <Typography display="inline">
         To manage your account easier and to prevent lose of funds, we recommend keeping the same signers.
       </Typography>
     </ErrorMessage>

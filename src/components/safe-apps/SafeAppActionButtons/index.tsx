@@ -37,13 +37,7 @@ const SafeAppActionButtons = ({
   }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        gap: 1,
-        alignItems: 'center',
-      }}
-    >
+    <Box display="flex" gap={1} alignItems="center">
       {/* Open the preview drawer */}
       {openPreviewDrawer && (
         <IconButton
@@ -57,6 +51,7 @@ const SafeAppActionButtons = ({
           <SvgIcon component={InfoIcon} inheritViewBox color="border" fontSize="small" />
         </IconButton>
       )}
+
       {/* Copy share Safe App url button */}
       <CopyButton
         initialToolTipText={`Copy share URL for ${safeApp.name}`}
@@ -67,6 +62,7 @@ const SafeAppActionButtons = ({
           <SvgIcon component={ShareIcon} inheritViewBox color="border" fontSize="small" />
         </IconButton>
       </CopyButton>
+
       {/* Bookmark Safe App button */}
       {onBookmarkSafeApp && (
         <Tooltip title={`${isBookmarked ? 'Unpin' : 'Pin'} ${safeApp.name}`} placement="top">
@@ -87,6 +83,7 @@ const SafeAppActionButtons = ({
           </IconButton>
         </Tooltip>
       )}
+
       {/* Remove Custom Safe App button */}
       {removeCustomApp && (
         <Tooltip title={`Delete ${safeApp.name}`} placement="top">

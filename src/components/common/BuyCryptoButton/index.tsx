@@ -37,15 +37,7 @@ const buttonStyles = {
 const BuyCryptoOption = ({ name, children }: { name: string; children: ReactNode }) => {
   return (
     <ButtonBase className={css.button}>
-      <Typography
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          fontWeight: 'bold',
-          fontSize: '18px',
-          gap: 1,
-        }}
-      >
+      <Typography display="flex" alignItems="center" fontWeight="bold" fontSize="18px" gap={1}>
         {children}
         {name}
       </Typography>
@@ -57,11 +49,7 @@ const BuyCryptoOption = ({ name, children }: { name: string; children: ReactNode
 const _BuyCryptoOptions = ({ rampLink }: { rampLink?: LinkProps['href'] }) => {
   if (rampLink) {
     return (
-      <Box
-        sx={{
-          position: 'relative',
-        }}
-      >
+      <Box position="relative">
         <Track {...OVERVIEW_EVENTS.BUY_CRYPTO_BUTTON} label="onboarding">
           <Link href={rampLink} passHref>
             <BuyCryptoOption name="Ramp">

@@ -139,12 +139,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           )}
 
           {isQueue && expiredSwap && (
-            <Typography
-              sx={{
-                color: 'text.secondary',
-                mt: 2,
-              }}
-            >
+            <Typography color="text.secondary" mt={2}>
               This order has expired. Reject this transaction and try again.
             </Typography>
           )}

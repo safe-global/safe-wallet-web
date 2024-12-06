@@ -44,6 +44,7 @@ export const SwapOrderConfirmation = ({ order, decodedData, settlementContract }
   return (
     <>
       {isChangingFallbackHandler && <TwapFallbackHandlerWarning />}
+
       <DataTable
         header="Order details"
         rows={[
@@ -69,12 +70,7 @@ export const SwapOrderConfirmation = ({ order, decodedData, settlementContract }
           compareAsc(now, expires) !== 1 ? (
             <DataRow datatestid="expiry" key="Expiry" title="Expiry">
               <Typography>
-                <Typography
-                  component="span"
-                  sx={{
-                    fontWeight: 700,
-                  }}
-                >
+                <Typography fontWeight={700} component="span">
                   {formatTimeInWords(validUntil * 1000)}
                 </Typography>{' '}
                 ({formatDateTime(validUntil * 1000)})
@@ -124,6 +120,7 @@ export const SwapOrderConfirmation = ({ order, decodedData, settlementContract }
           ),
         ]}
       />
+
       {isTwapOrder && (
         <div className={css.partsBlock}>
           <DataTable

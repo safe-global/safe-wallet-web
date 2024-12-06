@@ -125,15 +125,7 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
       <div className={txDetailsCss.txSigners}>
         <MsgSigners msg={msg} />
         {wallet && !isConfirmed && (
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 1,
-              mt: 2,
-            }}
-          >
+          <Box display="flex" alignItems="center" justifyContent="center" gap={1} mt={2}>
             <SignMsgButton msg={msg} />
           </Box>
         )}

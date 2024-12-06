@@ -20,49 +20,27 @@ const ConfirmationOrderHeader = ({ blocks, showArrow }: { blocks: [InfoBlock, In
         <Stack
           key={index}
           direction="row"
-          sx={{
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            width: '50%',
-            bgcolor: 'border.background',
-            position: 'relative',
-            borderRadius: 1,
-            py: 2,
-            px: 3,
-          }}
+          flexWrap="wrap"
+          alignItems="center"
+          width="50%"
+          bgcolor="border.background"
+          position="relative"
+          borderRadius={1}
+          py={2}
+          px={3}
         >
           {block.tokenInfo && (
-            <Box
-              sx={{
-                width: 40,
-                mr: 2,
-              }}
-            >
+            <Box width={40} mr={2}>
               <TokenIcon size={40} logoUri={block.tokenInfo.logoUri || ''} tokenSymbol={block.tokenInfo.symbol} />
             </Box>
           )}
 
-          <Box
-            sx={{
-              flex: 1,
-            }}
-          >
-            <Typography
-              variant="body2"
-              sx={{
-                color: 'primary.light',
-              }}
-            >
+          <Box flex={1}>
+            <Typography variant="body2" color="primary.light">
               {block.label}
             </Typography>
 
-            <Typography
-              variant="h4"
-              component="div"
-              sx={{
-                fontWeight: 'bold',
-              }}
-            >
+            <Typography variant="h4" fontWeight="bold" component="div">
               {block.tokenInfo ? (
                 <TokenAmount
                   tokenSymbol={block.tokenInfo.symbol}
@@ -77,21 +55,15 @@ const ConfirmationOrderHeader = ({ blocks, showArrow }: { blocks: [InfoBlock, In
 
           {showArrow && index === 0 && (
             <Box
-              sx={{
-                bgcolor: 'background.paper',
-                width: 40,
-                height: 40,
-                p: 1,
-                borderRadius: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'absolute',
-                right: -20,
-                top: '50%',
-                transform: 'translateY(-50%)',
-                zIndex: 2,
-              }}
+              bgcolor="background.paper"
+              width={40}
+              height={40}
+              p={1}
+              borderRadius="100%"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              sx={{ position: 'absolute', right: -20, top: '50%', transform: 'translateY(-50%)', zIndex: 2 }}
             >
               <SvgIcon component={EastRoundedIcon} inheritViewBox fontSize="small" />
             </Box>

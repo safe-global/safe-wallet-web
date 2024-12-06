@@ -80,6 +80,7 @@ function ExportDialog({
           </ExternalLink>
         </Typography>
       </DialogContent>
+
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <CSVDownloader filename={filename} bom config={{ delimiter: ',' }} data={csvData} style={{ order: 2 }}>

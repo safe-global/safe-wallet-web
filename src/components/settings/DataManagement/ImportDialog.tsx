@@ -88,11 +88,7 @@ export const ImportDialog = ({
     <ModalDialog open onClose={handleClose} dialogTitle="Data import" hideChainIndicator>
       <DialogContent>
         {!jsonData || !fileName ? (
-          <Box
-            sx={{
-              mt: 2,
-            }}
-          >
+          <Box mt={2}>
             <ImportFileUpload setFileName={setFileName} setJsonData={setJsonData} />
           </Box>
         ) : (

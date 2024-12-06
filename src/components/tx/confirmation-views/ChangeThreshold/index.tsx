@@ -21,14 +21,9 @@ function ChangeThreshold({ txDetails }: ChangeThresholdProps) {
   return (
     <>
       <ChangeSignerSetupWarning />
+
       <div>
-        <Typography
-          variant="body2"
-          sx={{
-            color: 'text.secondary',
-            mb: 0.5,
-          }}
-        >
+        <Typography variant="body2" color="text.secondary" mb={0.5}>
           Any transaction will require the confirmation of:
         </Typography>
 
