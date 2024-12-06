@@ -101,6 +101,8 @@ export const SignForm = ({
   const submitDisabled =
     !safeTx || !isSubmittable || disableSubmit || cannotPropose || (needsRiskConfirmation && !isRiskConfirmed)
 
+  const isSafeAppTransaction = !!origin
+
   return (
     <form onSubmit={handleSubmit}>
       {hasSigned && <ErrorMessage level="warning">You have already signed this transaction.</ErrorMessage>}
@@ -130,7 +132,7 @@ export const SignForm = ({
           spacing={{ xs: 2, md: 2 }}
         >
           {/* Batch button */}
-          {isCreation && !isBatch && (
+          {isCreation && !isBatch && !isSafeAppTransaction && (
             <BatchButton
               onClick={onBatchClick}
               disabled={submitDisabled || !isBatchable}
