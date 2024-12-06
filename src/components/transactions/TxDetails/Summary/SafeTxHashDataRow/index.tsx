@@ -17,8 +17,9 @@ export function getDomainHash({
   safeAddress: string
   safeVersion: SafeVersion
 }): string {
+  const includeChainId = semverSatisfies(safeVersion, NEW_DOMAIN_TYPE_HASH_VERSION)
   return TypedDataEncoder.hashDomain({
-    ...(semverSatisfies(safeVersion, NEW_DOMAIN_TYPE_HASH_VERSION) && { chainId }),
+    ...(includeChainId && { chainId }),
     verifyingContract: safeAddress,
   })
 }
