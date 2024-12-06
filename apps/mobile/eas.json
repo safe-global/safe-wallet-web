@@ -5,7 +5,7 @@
   },
   "build": {
     "base": {
-      "node": "20.18.0",
+      "node": "22.11.0",
       "android": {
         "image": "sdk-52"
       },
@@ -33,8 +33,7 @@
       "extends": "base",
       "environment": "preview",
       "distribution": "internal",
-      "ios": {
-      },
+      "ios": {},
       "android": {
         "buildType": "apk"
       }
@@ -42,7 +41,7 @@
     "production": {
       "extends": "base",
       "environment": "production",
-      "autoIncrement":  true,
+      "autoIncrement": true,
       "env": {
         "APP_VARIANT": "production"
       }
