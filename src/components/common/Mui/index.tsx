@@ -1,4 +1,5 @@
 import { default as MuiBox, type BoxProps } from '@mui/material/Box'
+import { default as MuiTypograpahy, type TypographyProps } from '@mui/material/Typography'
 
 export * from '@mui/material/index'
 
@@ -48,13 +49,88 @@ export const Box = ({
         pl,
         px,
         py,
+        display,
         flex,
+        flexGrow,
+        flexShrink,
         flexDirection,
         alignItems,
         justifyItems,
         alignContent,
         justifyContent,
         gap,
+        color,
+        textAlign,
+      }}
+      {...props}
+    />
+  )
+}
+
+export const Typography = ({
+  m,
+  mt,
+  mr,
+  mb,
+  ml,
+  mx,
+  my,
+  p,
+  pt,
+  pr,
+  pb,
+  pl,
+  px,
+  py,
+  display,
+  flex,
+  flexGrow,
+  flexShrink,
+  flexDirection,
+  alignItems,
+  justifyItems,
+  alignContent,
+  justifyContent,
+  gap,
+  color,
+  textAlign,
+  fontSize,
+  fontWeight,
+  fontStyle,
+  ...props
+}: TypographyProps['sx'] & TypographyProps) => {
+  return (
+    <MuiTypograpahy
+      sx={{
+        m,
+        mt,
+        mr,
+        mb,
+        ml,
+        mx,
+        my,
+        p,
+        pt,
+        pr,
+        pb,
+        pl,
+        px,
+        py,
+        display,
+        flex,
+        flexGrow,
+        flexShrink,
+        flexDirection,
+        alignItems,
+        justifyItems,
+        alignContent,
+        justifyContent,
+        gap,
+        color,
+        textAlign,
+        fontSize,
+        fontWeight,
+        fontStyle,
       }}
       {...props}
     />

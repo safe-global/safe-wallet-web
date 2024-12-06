@@ -71,11 +71,7 @@ function ExportDialog({
           .
         </Typography>
 
-        <Typography
-          sx={{
-            mt: 1,
-          }}
-        >
+        <Typography mt={1}>
           <ExternalLink
             href={HelpCenterArticle.ADDRESS_BOOK_DATA}
             title="Learn about the address book import and export"
