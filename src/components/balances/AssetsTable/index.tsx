@@ -189,14 +189,7 @@ const AssetsTable = ({
               sticky: true,
               collapsed: item.tokenInfo.address === hidingAsset,
               content: (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    gap: 1,
-                    alignItems: 'center',
-                  }}
-                >
+                <Box display="flex" flexDirection="row" gap={1} alignItems="center">
                   <>
                     <SendButton tokenInfo={item.tokenInfo} />
 
