@@ -1,5 +1,5 @@
 {
-  "*.ts": ["prettier --write", "eslint"],
-  "*.tsx": ["prettier --write", "eslint"],
-  "assets/fonts/safe-icons/selection.json": ["node ./scripts/generateIconTypes.js", "git add ./src/types/iconTypes.ts"]
+  "*.ts": ["yarn prettier:fix", "yarn eslint"],
+  "*.tsx": ["yarn prettier:fix", "yarn eslint"],
+  "apps/mobile/assets/fonts/safe-icons/selection.json": ["node ./apps/mobile/scripts/generateIconTypes.js", "git add ./apps/mobile/src/types/iconTypes.ts"]
 }

@@ -1,123 +1,140 @@
-# Safe Mobile App 👋
+# Safe Global Monorepo 🙋‍♂️
 
-## Setup the project
+## Overview
 
-1. install the npm dependencies
+Welcome to the Safe Global Monorepo! This repository houses multiple applications and packages managed under a unified
+structure using Yarn Workspaces. The monorepo setup simplifies dependency management and ensures consistent development
+practices across projects.
 
-```bash
-npm install
-```
+### Key Components
 
-2. run expo install to make sure no package is missing
+- **apps/**: Contains application projects (e.g., `mobile` for the Safe Mobile App).
+- **packages/**: Shared libraries and utilities.
 
-```bash
-npx expo install
-```
+## Getting Started
 
-## Running the App
+To get started, ensure you have the required tools installed and follow these steps:
 
-```bash
-   npx expo run:ios --device
-```
+### Prerequisites
 
-or for android
+- **Node.js**: Install the latest stable version from [Node.js](https://nodejs.org/).
+- **Yarn**: Use Yarn version 4.5.3 or later. You can install it globally:
 
 ```bash
-   npx expo run:android --device
+npm install -g yarn
 ```
 
-### How to open custom devtools menu
+### Initial Setup
 
-currently our app have redux, rtk-query and react devtools support. To run one of them is pretty straightforward, you
-just need to run the app, and then in the terminal where expo server is runnig, you press `shift + m` and the devtools
-options will apper for you.
-Then select one of them and happy debugging 👨‍💻👩‍💻
-
-## Running the storybook
-
-1. run the storybook command on your terminal
+1. Clone the repository:
 
 ```bash
-   npm run storybook
+git clone <repo-url>
+cd monorepo
 ```
 
-2. press `i` for ios or `a` for android
-
-## How to run the e2e tests
-
-We're using [Maestro](https://maestro.mobile.dev/) for e2e. Before run the tests you should install Maestro according to
-the documentation steps for your OS.
-
-### How to run a dev build and e2e tests
-
-To build the dev version of the app for tests, depending on the platform
-you are building for, you can run either:
+2. Install dependencies:
 
 ```bash
-npm run e2e:metro-ios
+yarn install
 ```
 
-or
+## Monorepo Commands
+
+Here are some essential commands to help you navigate the monorepo:
+
+### Workspace Management
+
+- **Run a script in a specific workspace:**
 
 ```bash
-npm run e2e:metro-android
+yarn workspace <workspace-name> <script>
 ```
 
-This commands will build the app for e2e tests - the difference to a normal dev/production build is that files ending
-with `.e2e.ts|.e2e.tsx` will be included in the build and they take precedence over the normal files. This is useful to 
-mock some services or to add some test specific code.
+Example:
+ 
+```bash
+yarn workspace @safe-global/mobile start
+```
 
-in a second terminal run the e2e tests:
+- **Add a dependency to a specific workspace:**
 
 ```bash
-npm run e2e:run
+yarn workspace <workspace-name> add <package-name>
 ```
 
-### Use maestro studio to write tests
+- **Remove a dependency from a specific workspace:**
+```bash
+yarn workspace <workspace-name> remove <package-name>
+```
+  
+> [!Note]
+> 
+> Yarn treats commands that contain a semicolon as global commands. For example if you have a 
+> command in a workspace that has a semicolon and there isn't another workspace that has the same command,
+>you can run the command without specifying the workspace name. For example:
+> 
+> ```bash
+> yarn start:ios
+> ```
+> 
+> is equivalent to:
+>
+> ```bash
+> yarn workspace @safe-global/mobile start:ios
+> ```
 
-You can use maestro studio to write tests, to do that you can run the following command:
+### Linting and Formatting
+
+- **Run ESLint across all workspaces:**
 
 ```bash
-maestro studio
+yarn lint
 ```
 
-Once the tests are written you can export the yaml to the e2e folder and run the new flow together with the other tests.
+### Testing
 
-### Run the e2e tests in CI
-To run the tests in CI you can add the `eas-build-ios:build-and-maestro-test` label to a PR and the tests will run in 
-Expo CI.
-
-## Unit tests
-
-We use Jest for running our unit/component/hook tests
-and [React Native Testing Library](https://callstack.github.io/react-native-testing-library/) to manipulate them.
-
-To run the tests you can just type in your terminal:
+- **Run unit tests across all workspaces:**
 
 ```bash
-npm run test
+yarn test
 ```
 
-#### Running in watch mode
+## Contributing
+
+### Adding a New Workspace
+
+1. Create a new directory under `apps/` or `packages/`.
+2. Add a `package.json` file with the appropriate configuration.
+3. Run:
 
 ```bash
-npm run test:watch
+yarn install
 ```
 
-#### checking the coverage
+### Best Practices
 
-```bash
-npm run test
-```
+- Use Yarn Workspaces commands for managing dependencies.
+- Ensure tests and linting pass before pushing changes.
+- Follow the commit message guidelines.
 
-navigate inside the coverage folder and open the index.html file in your browser
+### Tools & Configurations
 
-## Running Eslint & Prettier
+- **Husky**: Pre-commit hooks for linting and tests.
+- **ESLint & Prettier**: Enforce coding standards and formatting.
+- **Jest**: Unit testing framework.
+- **Expo**: Mobile app framework for the `mobile` workspace.
 
-This project uses eslint + prettier + tsconfig. To run lint you can paste the following command on your terminal:
+## Useful Links
 
-```bash
-npm run lint
-```
+- [Yarn Workspaces Documentation](https://classic.yarnpkg.com/en/docs/workspaces/)
+- [Expo Documentation](https://docs.expo.dev/)
+- [Jest Documentation](https://jestjs.io/)
+- [ESLint Documentation](https://eslint.org/)
+- [Prettier Documentation](https://prettier.io/)
 
-this will not only validate the files with tslint, but also validate them with eslint and prettier configs.
+---
+
+If you have any questions or run into issues, feel free to open a discussion or contact the maintainers. Happy coding!
+🚀
+
