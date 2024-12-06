@@ -52,7 +52,7 @@ const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
         {/* Social links section */}
         {hasSocialLinks && (
           <div>
-            <Typography color="border.main" variant="body2" paddingLeft={1}>
+            <Typography color="border.main" variant="body2" pl={1}>
               Social Media
             </Typography>
 

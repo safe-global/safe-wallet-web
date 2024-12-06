@@ -63,7 +63,7 @@ const MsgSummary = ({ msg }: { msg: SafeMessage }): ReactElement => {
             display="flex"
             alignItems="center"
             gap={1}
-            color={({ palette }) => getStatusColor(msg.status, palette)}
+            sx={{ color: ({ palette }) => getStatusColor(msg.status, palette) }}
           >
             {isPending && <CircularProgress size={14} color="inherit" />}
 

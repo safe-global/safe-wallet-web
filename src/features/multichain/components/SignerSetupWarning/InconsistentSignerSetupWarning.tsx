@@ -19,9 +19,9 @@ const ChainIndicatorList = ({ chainIds }: { chainIds: string[] }) => {
       {chainIds.map((chainId, index) => {
         const chain = configs.find((chain) => chain.chainId === chainId)
         return (
-          <Box key={chainId} display="inline-flex" flexWrap="wrap" position="relative" top={5}>
+          <Box key={chainId} display="inline-flex" flexWrap="wrap" position="relative" sx={{ top: 5 }}>
             <ChainIndicator key={chainId} chainId={chainId} showUnknown={false} onlyLogo={true} />
-            <Typography position="relative" top={2} mx={0.5}>
+            <Typography position="relative" mx={0.5} sx={{ top: 2 }}>
               {chain && chain.chainName}
               {index === chainIds.length - 1 ? '.' : ','}
             </Typography>

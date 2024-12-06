@@ -18,8 +18,15 @@ export const Box = ({
   pl,
   px,
   py,
+  width,
+  height,
+  minWidth,
+  minHeight,
+  maxWidth,
+  maxHeight,
   display,
   flex,
+  flexWrap,
   flexGrow,
   flexShrink,
   flexDirection,
@@ -30,6 +37,15 @@ export const Box = ({
   gap,
   color,
   textAlign,
+  position,
+  overflow,
+  textOverflow,
+  border,
+  borderColor,
+  borderRadius,
+  borderBottom,
+  gridArea,
+  lineHeight,
   ...props
 }: BoxProps['sx'] & BoxProps) => {
   return (
@@ -49,8 +65,15 @@ export const Box = ({
         pl,
         px,
         py,
+        width,
+        height,
+        minWidth,
+        minHeight,
+        maxWidth,
+        maxHeight,
         display,
         flex,
+        flexWrap,
         flexGrow,
         flexShrink,
         flexDirection,
@@ -61,6 +84,15 @@ export const Box = ({
         gap,
         color,
         textAlign,
+        position,
+        overflow,
+        textOverflow,
+        border,
+        borderColor,
+        borderRadius,
+        borderBottom,
+        gridArea,
+        lineHeight,
       }}
       {...props}
     />
@@ -84,6 +116,7 @@ export const Typography = ({
   py,
   display,
   flex,
+  flexWrap,
   flexGrow,
   flexShrink,
   flexDirection,
@@ -97,6 +130,10 @@ export const Typography = ({
   fontSize,
   fontWeight,
   fontStyle,
+  lineHeight,
+  letterSpacing,
+  whiteSpace,
+  width,
   ...props
 }: TypographyProps['sx'] & TypographyProps) => {
   return (
@@ -118,6 +155,7 @@ export const Typography = ({
         py,
         display,
         flex,
+        flexWrap,
         flexGrow,
         flexShrink,
         flexDirection,
@@ -131,6 +169,10 @@ export const Typography = ({
         fontSize,
         fontWeight,
         fontStyle,
+        lineHeight,
+        letterSpacing,
+        whiteSpace,
+        width,
       }}
       {...props}
     />
