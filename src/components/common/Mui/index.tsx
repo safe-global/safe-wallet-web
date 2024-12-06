@@ -44,6 +44,7 @@ export const Box = ({
   borderColor,
   borderRadius,
   borderBottom,
+  bgcolor,
   gridArea,
   lineHeight,
   ...props
@@ -91,6 +92,7 @@ export const Box = ({
         borderColor,
         borderRadius,
         borderBottom,
+        bgcolor,
         gridArea,
         lineHeight,
       }}

@@ -4,7 +4,7 @@ exports[`ChangeThreshold should display the ChangeThreshold component with the n
 <div>
   <div>
     <p
-      class="MuiTypography-root MuiTypography-body2 css-ugmpf3-MuiTypography-root"
+      class="MuiTypography-root MuiTypography-body2 css-1q9800n-MuiTypography-root"
     >
       Any transaction will require the confirmation of:
     </p>
