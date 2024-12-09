@@ -18,11 +18,6 @@ export default {
     scheme: 'myapp',
     userInterfaceStyle: 'automatic',
     newArchEnabled: true,
-    splash: {
-      image: './assets/images/splash.png',
-      resizeMode: 'contain',
-      backgroundColor: '#ffffff',
-    },
     ios: {
       config: {
         usesNonExemptEncryption: false,
@@ -34,7 +29,7 @@ export default {
     android: {
       adaptiveIcon: {
         foregroundImage: './assets/images/adaptive-icon.png',
-        backgroundColor: '#ffffff',
+        backgroundColor: '#000000',
       },
       package: IS_DEV ? 'global.safe.mobileapp.dev' : 'global.safe.mobileapp',
     },
@@ -49,6 +44,18 @@ export default {
         'expo-font',
         {
           fonts: ['./assets/fonts/safe-icons/safe-icons.ttf'],
+        },
+      ],
+      [
+        'expo-splash-screen',
+        {
+          image: './assets/images/splash.png',
+          enableFullScreenImage_legacy: true,
+          backgroundColor: '#000000',
+          dark: {
+            image: './assets/images/splash.png',
+            backgroundColor: '#000000',
+          },
         },
       ],
       ['./expo-plugins/withDrawableAssets.js', './assets/android/drawable'],

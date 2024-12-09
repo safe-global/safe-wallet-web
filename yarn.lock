@@ -3759,7 +3759,7 @@ __metadata:
     expo-linear-gradient: "npm:^14.0.1"
     expo-linking: "npm:~7.0.3"
     expo-router: "npm:~4.0.11"
-    expo-splash-screen: "npm:~0.29.13"
+    expo-splash-screen: "npm:^0.29.16"
     expo-status-bar: "npm:~2.0.0"
     expo-system-ui: "npm:~4.0.5"
     expo-web-browser: "npm:~14.0.1"
@@ -10304,7 +10304,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-splash-screen@npm:~0.29.13":
+"expo-splash-screen@npm:^0.29.16":
   version: 0.29.16
   resolution: "expo-splash-screen@npm:0.29.16"
   dependencies:

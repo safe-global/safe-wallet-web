@@ -3,7 +3,7 @@ import { useFonts } from 'expo-font'
 import DmSansSemiBold from '@tamagui/font-dm-sans/fonts/static/DMSans-SemiBold.ttf'
 import DmSansRegular from '@tamagui/font-dm-sans/fonts/static/DMSans-Regular.ttf'
 import DmSansMedium from '@tamagui/font-dm-sans/fonts/static/DMSans-Medium.ttf'
-import { SplashScreen } from 'expo-router'
+import * as SplashScreen from 'expo-splash-screen'
 
 interface SafeThemeProviderProps {
   children: React.ReactNode
@@ -11,6 +11,11 @@ interface SafeThemeProviderProps {
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()
+
+SplashScreen.setOptions({
+  duration: 1000,
+  fade: true,
+})
 
 export const FontProvider = ({ children }: SafeThemeProviderProps) => {
   const [loaded] = useFonts({
