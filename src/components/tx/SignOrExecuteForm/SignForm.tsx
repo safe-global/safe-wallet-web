@@ -132,10 +132,10 @@ export const SignForm = ({
           spacing={{ xs: 2, md: 2 }}
         >
           {/* Batch button */}
-          {isCreation && !isBatch && !isSafeAppTransaction && (
+          {isCreation && !isBatch && (
             <BatchButton
               onClick={onBatchClick}
-              disabled={submitDisabled || !isBatchable}
+              disabled={submitDisabled || !isBatchable || isSafeAppTransaction}
               tooltip={!isBatchable ? `Cannot batch this type of transaction` : undefined}
             />
           )}
