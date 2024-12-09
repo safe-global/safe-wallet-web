@@ -1,6 +1,6 @@
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import useWallet from '@/hooks/wallets/useWallet'
-import { Box, Button, Typography } from '@mui/material'
+import { Stack, Button, Typography, Box } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import WalletIcon from '@/components/common/WalletIcon'
 
@@ -25,7 +25,7 @@ const WalletLogin = ({ onLogin, onContinue }: { onLogin: () => void; onContinue:
             alignItems="center"
             gap={1}
           >
-            <Box display="flex" flexDirection="column" alignItems="flex-start">
+            <Stack alignItems="flex-start">
               <Typography variant="subtitle2" fontWeight={700}>
                 Continue with {wallet.label}
               </Typography>
@@ -38,7 +38,7 @@ const WalletLogin = ({ onLogin, onContinue }: { onLogin: () => void; onContinue:
                   copyAddress={false}
                 />
               )}
-            </Box>
+            </Stack>
             {wallet.icon && <WalletIcon icon={wallet.icon} provider={wallet.label} width={24} height={24} />}
           </Box>
         </Button>

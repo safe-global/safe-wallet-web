@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Checkbox, FormControlLabel, Typography } from '@mui/material'
+import { Stack, Checkbox, FormControlLabel, Typography, Box } from '@mui/material'
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined'
 import lightPalette from '@/components/theme/lightPalette'
 import Domain from './Domain'
@@ -18,7 +18,7 @@ const UnknownAppWarning = ({ url, onHideWarning }: UnknownAppWarningProps): Reac
   }
 
   return (
-    <Box display="flex" flexDirection="column" height="100%" alignItems="center">
+    <Stack height="100%" alignItems="center">
       <Box display="block" alignItems="center" mt={6}>
         <WarningAmberOutlinedIcon fontSize="large" color="warning" />
         <Typography variant="h3" fontWeight={700} mt={2} color={lightPalette.warning.main}>
@@ -49,7 +49,7 @@ const UnknownAppWarning = ({ url, onHideWarning }: UnknownAppWarningProps): Reac
           />
         </Box>
       )}
-    </Box>
+    </Stack>
   )
 }
 

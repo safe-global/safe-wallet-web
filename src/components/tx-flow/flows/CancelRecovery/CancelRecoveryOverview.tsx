@@ -1,6 +1,6 @@
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
-import { Box, Button, Typography } from '@mui/material'
+import { Stack, Button, Typography } from '@mui/material'
 import { useContext } from 'react'
 import type { ReactElement } from 'react'
 
@@ -20,7 +20,7 @@ export function CancelRecoveryOverview({ onSubmit }: { onSubmit: () => void }): 
 
   return (
     <TxCard>
-      <Box display="flex" flexDirection="column" alignItems="center" p={{ md: 5 }}>
+      <Stack alignItems="center" p={{ md: 5 }}>
         {/* TODO: Replace with correct icon when provided */}
         <ReplaceTxIcon />
 
@@ -33,7 +33,7 @@ export function CancelRecoveryOverview({ onSubmit }: { onSubmit: () => void }): 
           time.
         </Typography>
 
-        <Box display="flex" columnGap={3} rowGap={1} flexWrap="wrap">
+        <Stack columnspacing={3} spacing={1} flexWrap="wrap">
           <Button variant="outlined" onClick={onClose} className={css.button} size="small">
             Go back
           </Button>
@@ -41,8 +41,8 @@ export function CancelRecoveryOverview({ onSubmit }: { onSubmit: () => void }): 
           <Button data-testid="cancel-proposal-btn" variant="contained" onClick={onSubmit} className={css.button}>
             Yes, cancel proposal
           </Button>
-        </Box>
-      </Box>
+        </Stack>
+      </Stack>
     </TxCard>
   )
 }

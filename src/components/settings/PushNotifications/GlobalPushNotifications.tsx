@@ -1,6 +1,5 @@
 import { selectUndeployedSafes, type UndeployedSafesState } from '@/features/counterfactual/store/undeployedSafesSlice'
 import {
-  Box,
   Grid,
   Paper,
   Typography,
@@ -13,6 +12,7 @@ import {
   ListItemIcon,
   ListItemText,
   CircularProgress,
+  Stack,
 } from '@mui/material'
 import mapValues from 'lodash/mapValues'
 import difference from 'lodash/difference'
@@ -388,7 +388,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
           My Safes Accounts ({totalNotifiableSafes})
         </Typography>
 
-        <Box display="flex" alignItems="center">
+        <Stack alignItems="center">
           {totalSignaturesRequired > 0 && (
             <Typography display="inline" mr={2} textAlign="right">
               We&apos;ll ask you to verify ownership of each Safe Account with your signature per chain{' '}
@@ -403,7 +403,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
               </Button>
             )}
           </CheckWallet>
-        </Box>
+        </Stack>
       </Grid>
 
       <Grid item xs={12}>

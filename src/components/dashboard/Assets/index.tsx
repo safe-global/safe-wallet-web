@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Box, Skeleton, Typography, Paper } from '@mui/material'
+import { Stack, Skeleton, Typography, Paper, Box } from '@mui/material'
 import type { SafeBalanceResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import useBalances from '@/hooks/useBalances'
 import FiatValue from '@/components/common/FiatValue'
@@ -37,9 +37,9 @@ const NoAssets = () => (
       Add funds directly from your bank account or copy your address to send tokens from a different account.
     </Typography>
 
-    <Box display="flex" mt={2}>
+    <Stack mt={2}>
       <BuyCryptoButton />
-    </Box>
+    </Stack>
   </Paper>
 )
 
@@ -72,11 +72,11 @@ const AssetList = ({ items }: { items: SafeBalanceResponse['items'] }) => {
   const isSwapFeatureEnabled = useIsSwapFeatureEnabled()
 
   return (
-    <Box display="flex" flexDirection="column" gap={1}>
+    <Stack spacing={1}>
       {items.map((item) => (
         <AssetRow item={item} key={item.tokenInfo.address} showSwap={isSwapFeatureEnabled} />
       ))}
-    </Box>
+    </Stack>
   )
 }
 

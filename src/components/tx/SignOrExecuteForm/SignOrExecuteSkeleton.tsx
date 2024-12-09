@@ -1,12 +1,12 @@
 import LoadingSpinner, { SpinnerStatus } from '@/components/new-safe/create/steps/StatusStep/LoadingSpinner'
 import TxCard from '@/components/tx-flow/common/TxCard'
-import { Box } from '@mui/material'
+import { Stack } from '@mui/material'
 
 const SignOrExecuteSkeleton = () => (
   <TxCard>
-    <Box minHeight="38svh" display="flex" alignItems="center" justifyContent="center" mb={5}>
+    <Stack minHeight="38svh" alignItems="center" justifyContent="center" mb={5}>
       <LoadingSpinner status={SpinnerStatus.PROCESSING} />
-    </Box>
+    </Stack>
   </TxCard>
 )
 

@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from '@/store'
 import { selectSettings, setTokenList, TOKEN_LISTS } from '@/store/settingsSlice'
 import { FEATURES } from '@/utils/chains'
 import type { SelectChangeEvent } from '@mui/material'
-import { Box, SvgIcon, Tooltip, Typography, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
+import { Stack, SvgIcon, Tooltip, Typography, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import { OnboardingTooltip } from '@/components/common/OnboardingTooltip'
@@ -58,7 +58,7 @@ const TokenListSelect = () => {
         >
           <MenuItem value={TOKEN_LISTS.TRUSTED}>
             <Track {...ASSETS_EVENTS.SHOW_DEFAULT_TOKENS}>
-              <Box display="flex" flexDirection="row" gap="4px" alignItems="center" minWidth={155}>
+              <Stack direction="row" spacing="4px" alignItems="center" minWidth={155}>
                 {TokenListLabel.TRUSTED}
                 <Tooltip
                   arrow
@@ -72,7 +72,7 @@ const TokenListSelect = () => {
                     <SvgIcon sx={{ display: 'block' }} color="border" fontSize="small" component={InfoIcon} />
                   </span>
                 </Tooltip>
-              </Box>
+              </Stack>
             </Track>
           </MenuItem>
 

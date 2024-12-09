@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Box, Container, Paper, Stack, SvgIcon, Typography } from '@mui/material'
+import { Stack, Container, Paper, Box, SvgIcon, Typography } from '@mui/material'
 import { PendingStatus, selectPendingTxById } from '@/store/pendingTxsSlice'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -65,7 +65,7 @@ const NestedTxSuccessScreen = ({ txId }: Props) => {
       }}
       maxWidth={false}
     >
-      <Box padding={3} mt={3} display="flex" flexDirection="column" alignItems="center" gap={2}>
+      <Stack padding={3} mt={3} alignItems="center" spacing={2}>
         <Box className={css.icon}>
           <SvgIcon component={NestedSafeIcon} inheritViewBox fontSize="large" alt="Nested Safe" />
         </Box>
@@ -76,7 +76,7 @@ const NestedTxSuccessScreen = ({ txId }: Props) => {
           Once confirmed and executed this signer transaction will confirm the child Safe&apos;s transaction.
         </Typography>
         <Stack spacing={2} width="70%">
-          <Box display="flex" flexDirection="column" alignItems="start" gap={1}>
+          <Stack alignItems="start" spacing={1}>
             <Typography variant="body2" color="text.secondary">
               Parent Safe
             </Typography>
@@ -86,7 +86,7 @@ const NestedTxSuccessScreen = ({ txId }: Props) => {
               isAddressBookName={Boolean(parentSafeAddress)}
               shortAddress={false}
             />
-          </Box>
+          </Stack>
           <Stack direction="row" spacing={2} alignItems="center" pl={1}>
             <SvgIcon component={ArrowDownIcon} fontSize="medium" color="border" inheritViewBox />
             <Typography
@@ -105,7 +105,7 @@ const NestedTxSuccessScreen = ({ txId }: Props) => {
               approveHash
             </Typography>
           </Stack>
-          <Box display="flex" flexDirection="column" alignItems="start" gap={1}>
+          <Stack alignItems="start" spacing={1}>
             <Typography variant="body2" color="text.secondary">
               Current Safe
             </Typography>
@@ -115,7 +115,7 @@ const NestedTxSuccessScreen = ({ txId }: Props) => {
               isAddressBookName={Boolean(currentSafeAddress)}
               shortAddress={false}
             />
-          </Box>
+          </Stack>
         </Stack>
         <Track {...MODALS_EVENTS.OPEN_PARENT_TX}>
           <Link
@@ -143,7 +143,7 @@ const NestedTxSuccessScreen = ({ txId }: Props) => {
             <ExternalLink mode="button">Open the transaction</ExternalLink>
           </Link>
         </Track>
-      </Box>
+      </Stack>
     </Container>
   )
 }

@@ -1,5 +1,5 @@
 import type { ReactElement, ComponentType, SyntheticEvent } from 'react'
-import { Box, IconButton, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { Stack, IconButton, SvgIcon, Tooltip, Typography } from '@mui/material'
 import LinkIcon from '@/public/images/common/link.svg'
 import Link from 'next/link'
 
@@ -44,13 +44,13 @@ const ExplorerButton = ({
       href={href}
       onClick={onClick}
     >
-      <Box display="flex" alignItems="center">
+      <Stack alignItems="center">
         <Typography fontWeight={700} fontSize="small" mr="var(--space-1)" noWrap>
           View on explorer
         </Typography>
 
         <SvgIcon component={icon} inheritViewBox fontSize="small" />
-      </Box>
+      </Stack>
     </Link>
   )
 }

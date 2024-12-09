@@ -4,10 +4,10 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'
 import AppsIcon from '@/public/images/apps/apps-icon.svg'
 import SettingsIcon from '@/public/images/sidebar/settings.svg'
-import { Box, SvgIcon, Typography } from '@mui/material'
+import { Box, Stack, SvgIcon, Typography } from '@mui/material'
 
 const EmptyBatch = ({ children }: { children: ReactNode }) => (
-  <Box display="flex" flexWrap="wrap" justifyContent="center" textAlign="center" mt={3} px={4}>
+  <Stack flexWrap="wrap" justifyContent="center" textAlign="center" mt={3} px={4}>
     <SvgIcon component={EmptyBatchIcon} inheritViewBox sx={{ fontSize: 110 }} />
 
     <Typography variant="h4" fontWeight={700}>
@@ -28,7 +28,7 @@ const EmptyBatch = ({ children }: { children: ReactNode }) => (
 
       <b>What type of transactions can you add to the batch?</b>
 
-      <Box display="flex" mt={3} gap={6}>
+      <Stack mt={3} spacing={6}>
         <div>
           <SvgIcon component={AssetsIcon} inheritViewBox />
           <div>Token and NFT transfers</div>
@@ -43,9 +43,9 @@ const EmptyBatch = ({ children }: { children: ReactNode }) => (
           <SvgIcon component={SettingsIcon} inheritViewBox />
           <div>Safe Account settings</div>
         </div>
-      </Box>
+      </Stack>
     </Typography>
-  </Box>
+  </Stack>
 )
 
 export default EmptyBatch

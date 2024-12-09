@@ -1,5 +1,5 @@
 import { checksumAddress } from '@/utils/addresses'
-import { Box, Typography } from '@mui/material'
+import { Stack, Typography } from '@mui/material'
 import type { ReactNode, ReactElement } from 'react'
 import CopyButton from '../CopyButton'
 import EthHashInfo from '../EthHashInfo'
@@ -22,7 +22,7 @@ const CopyAddressButton = ({
   const checksummedAddress = checksumAddress(address)
 
   const dialogContent = trusted ? undefined : (
-    <Box display="flex" flexDirection="column" gap={2}>
+    <Stack spacing={2}>
       <EthHashInfo
         address={checksummedAddress}
         shortAddress={false}
@@ -34,7 +34,7 @@ const CopyAddressButton = ({
         The copied address is linked to a transaction with an untrusted token. Make sure you are interacting with the
         right address.
       </Typography>
-    </Box>
+    </Stack>
   )
 
   return (

@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Stack } from '@mui/material'
 import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { isAwaitingExecution } from '@/utils/transaction-guards'
 import ExecuteTxButton from '../ExecuteTxButton'
@@ -20,12 +20,12 @@ const QueueActions = ({ tx }: { tx: TransactionSummary }) => {
   }
 
   return (
-    <Box data-testid="tx-actions" mr={2} display="flex" justifyContent="center">
+    <Stack data-testid="tx-actions" mr={2} justifyContent="center">
       {ExecutionComponent}
       {pendingTx && pendingTx.status === PendingStatus.PROCESSING && (
         <SpeedUpMonitor txId={tx.id} pendingTx={pendingTx} modalTrigger="alertButton" />
       )}
-    </Box>
+    </Stack>
   )
 }
 

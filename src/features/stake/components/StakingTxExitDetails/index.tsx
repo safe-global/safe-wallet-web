@@ -1,4 +1,4 @@
-import { Box, Link } from '@mui/material'
+import { Stack, Link } from '@mui/material'
 import type { StakingTxExitInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { NativeStakingStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import FieldsGrid from '@/components/tx/FieldsGrid'
@@ -14,7 +14,7 @@ const StakingTxExitDetails = ({ info }: { info: StakingTxExitInfo }) => {
   ])
 
   return (
-    <Box pr={5} display="flex" flexDirection="column" gap={1}>
+    <Stack pr={5} spacing={1}>
       <FieldsGrid title="Exit">
         {info.validators.map((validator: string, index: number) => {
           return (
@@ -30,7 +30,7 @@ const StakingTxExitDetails = ({ info }: { info: StakingTxExitInfo }) => {
       <FieldsGrid title="Validator status">
         <StakingStatus status={info.status} />
       </FieldsGrid>
-    </Box>
+    </Stack>
   )
 }
 

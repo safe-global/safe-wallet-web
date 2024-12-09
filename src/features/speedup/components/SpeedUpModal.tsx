@@ -1,7 +1,7 @@
 import useGasPrice from '@/hooks/useGasPrice'
 import ModalDialog from '@/components/common/ModalDialog'
 import DialogContent from '@mui/material/DialogContent'
-import { Box, Button, CircularProgress, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { Stack, Button, CircularProgress, SvgIcon, Tooltip, Typography, Box } from '@mui/material'
 import RocketSpeedup from '@/public/images/common/ic-rocket-speedup.svg'
 import DialogActions from '@mui/material/DialogActions'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -167,9 +167,9 @@ export const SpeedUpModal = ({
     return (
       <ModalDialog open={open} onClose={onCancel} dialogTitle="Speed up transaction">
         <DialogContent sx={{ p: '24px !important' }}>
-          <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
+          <Stack justifyContent="center" alignItems="center" mb={2}>
             <SvgIcon inheritViewBox component={RocketSpeedup} sx={{ width: 90, height: 90 }} />
-          </Box>
+          </Stack>
 
           <Typography data-testid="speedup-summary">
             This will speed up the pending transaction by{' '}
@@ -226,9 +226,9 @@ export const SpeedUpModal = ({
   return (
     <ModalDialog open={open} onClose={handleClose} dialogTitle="Speed up transaction">
       <DialogContent sx={{ p: '24px !important' }}>
-        <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
+        <Stack justifyContent="center" alignItems="center" mb={2}>
           <SvgIcon inheritViewBox component={RocketSpeedup} sx={{ width: 90, height: 90 }} />
-        </Box>
+        </Stack>
 
         <Typography data-testid="speedup-summary">
           Is this transaction taking too long? Speed it up by using the &quot;speed up&quot; option in your connected

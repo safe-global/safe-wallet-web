@@ -4,7 +4,7 @@ import type { ReactElement } from 'react'
 import { useMemo } from 'react'
 import ChevronRight from '@mui/icons-material/ChevronRight'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import TxInfo from '@/components/transactions/TxInfo'
 import TxType from '@/components/transactions/TxType'
@@ -48,7 +48,7 @@ const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
           </Box>
         </Box>
 
-        <Box alignSelf="flex-start" display="flex" flexWrap="nowrap" alignItems="center" gap={1.5}>
+        <Stack alignSelf="flex-start" flexWrap="nowrap" alignItems="center" spacing={1.5}>
           {isMultisigExecutionInfo(transaction.executionInfo) && (
             <TxConfirmations
               submittedConfirmations={transaction.executionInfo.confirmationsSubmitted}
@@ -57,7 +57,7 @@ const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
           )}
 
           <ChevronRight color="border" />
-        </Box>
+        </Stack>
       </Box>
     </NextLink>
   )

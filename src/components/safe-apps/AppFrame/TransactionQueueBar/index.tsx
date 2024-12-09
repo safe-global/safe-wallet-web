@@ -1,5 +1,14 @@
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
-import { Backdrop, Typography, Box, IconButton, Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
+import {
+  Backdrop,
+  Typography,
+  Stack,
+  IconButton,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+} from '@mui/material'
 import { ClickAwayListener } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
@@ -81,9 +90,9 @@ const TransactionQueueBar = ({
             </AccordionSummary>
             <AccordionDetails>
               <BatchExecuteHoverProvider>
-                <Box display="flex" flexDirection="column" alignItems="flex-end">
+                <Stack alignItems="flex-end">
                   <BatchExecuteButton />
-                </Box>
+                </Stack>
                 <PaginatedTxns useTxns={useTxQueue} />
               </BatchExecuteHoverProvider>
             </AccordionDetails>

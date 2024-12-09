@@ -3,8 +3,8 @@ import type { ReactElement } from 'react'
 import { useContext, useEffect, useState } from 'react'
 import { useMemo } from 'react'
 import { hashMessage, TypedDataEncoder } from 'ethers'
-import { Box } from '@mui/system'
-import { Typography, SvgIcon } from '@mui/material'
+import { Stack } from '@mui/system'
+import { Typography, SvgIcon, Box } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
 import { type EIP712TypedData, Methods, type RequestId } from '@safe-global/safe-apps-sdk'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
@@ -146,12 +146,12 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
       </Typography>
       <DecodedMsg message={decodedMessage} isInModal />
 
-      <Box display="flex" alignItems="center" my={2}>
+      <Stack alignItems="center" my={2}>
         <SvgIcon component={WarningIcon} inheritViewBox color="warning" />
         <Typography ml={1}>
           Signing a message with your Safe Account requires a transaction on the blockchain
         </Typography>
-      </Box>
+      </Stack>
     </SignOrExecuteForm>
   )
 }

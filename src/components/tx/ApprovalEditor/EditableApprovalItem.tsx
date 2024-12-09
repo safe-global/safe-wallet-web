@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Stack, SvgIcon } from '@mui/material'
+import { Stack, Button, IconButton, SvgIcon } from '@mui/material'
 import css from '@/components/tx/ApprovalEditor/styles.module.css'
 import type { ApprovalInfo } from './hooks/useApprovalInfos'
 
@@ -48,9 +48,9 @@ const EditableApprovalItem = ({
       className={css.approvalField}
       onClick={readOnly ? handleEditMode : undefined}
     >
-      <Box display="flex" flexDirection="row" alignItems="center" gap="4px">
+      <Stack direction="row" alignItems="center" spacing="4px">
         <TokenIcon size={32} logoUri={approval.tokenInfo?.logoUri} tokenSymbol={approval.tokenInfo?.symbol} />
-      </Box>
+      </Stack>
 
       <ApprovalValueField name={name} tx={approval} readOnly={readOnly} />
 

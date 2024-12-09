@@ -1,4 +1,4 @@
-import { Box, SvgIcon, Typography } from '@mui/material'
+import { Stack, SvgIcon, Typography } from '@mui/material'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import { useAppSelector } from '@/store'
@@ -14,14 +14,14 @@ const SignedMessagesHelpLink = () => {
   }
 
   return (
-    <Box display="flex" alignItems="center" gap={1}>
+    <Stack alignItems="center" spacing={1}>
       <SvgIcon component={InfoIcon} inheritViewBox color="border" fontSize="small" />
       <ExternalLink noIcon href={HelpCenterArticle.SIGNED_MESSAGES}>
         <Typography variant="body2" fontWeight={700}>
           What are signed messages?
         </Typography>
       </ExternalLink>
-    </Box>
+    </Stack>
   )
 }
 

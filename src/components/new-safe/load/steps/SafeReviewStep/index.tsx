@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Button, Divider, Grid, Typography } from '@mui/material'
+import { Stack, Button, Divider, Grid, Typography, Box } from '@mui/material'
 
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { LoadSafeFormData } from '@/components/new-safe/load'
@@ -127,14 +127,14 @@ const SafeReviewStep = ({ data, onBack }: StepRenderProps<LoadSafeFormData>) => 
       </Box>
       <Divider />
       <Box className={layoutCss.row}>
-        <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
+        <Stack direction="row" justifyContent="space-between" spacing={3}>
           <Button variant="outlined" size="small" onClick={handleBack} startIcon={<ArrowBackIcon fontSize="small" />}>
             Back
           </Button>
           <Button onClick={addSafe} variant="contained" size="stretched">
             Add
           </Button>
-        </Box>
+        </Stack>
       </Box>
     </>
   )

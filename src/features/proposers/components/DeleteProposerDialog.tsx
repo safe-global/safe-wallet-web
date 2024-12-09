@@ -25,6 +25,7 @@ import {
   CircularProgress,
   SvgIcon,
   Tooltip,
+  Stack,
 } from '@mui/material'
 import { Close } from '@mui/icons-material'
 import madProps from '@/utils/mad-props'
@@ -134,7 +135,7 @@ const InternalDeleteProposer = ({ wallet, safeAddress, chainId, proposer }: Dele
 
       <Dialog open={open} onClose={onCancel}>
         <DialogTitle>
-          <Box display="flex" alignItems="center">
+          <Stack alignItems="center">
             <Typography variant="h6" fontWeight={700} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               Delete this proposer?
             </Typography>
@@ -144,7 +145,7 @@ const InternalDeleteProposer = ({ wallet, safeAddress, chainId, proposer }: Dele
             <IconButton aria-label="close" onClick={onCancel} sx={{ marginLeft: 'auto' }}>
               <Close />
             </IconButton>
-          </Box>
+          </Stack>
         </DialogTitle>
 
         <Divider />

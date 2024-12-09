@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { type NextRouter, useRouter } from 'next/router'
-import { Box, Tooltip, Typography } from '@mui/material'
+import { Box, Stack, Tooltip, Typography } from '@mui/material'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import CancelIcon from '@/public/images/common/cancel.svg'
 import ReplaceTxIcon from '@/public/images/transactions/replace-tx.svg'
@@ -137,7 +137,7 @@ const ReplaceTxMenu = ({
           </Track>
         </Typography>
 
-        <Box display="flex" flexDirection="column" gap={2}>
+        <Stack spacing={2}>
           <Track {...REJECT_TX_EVENTS.REPLACE_TX_BUTTON} as="div">
             <ChoiceButton
               icon={CachedIcon}
@@ -176,7 +176,7 @@ const ReplaceTxMenu = ({
               onSuccess={() => setTxFlow(undefined)}
             />
           )}
-        </Box>
+        </Stack>
       </TxCard>
     </TxLayout>
   )

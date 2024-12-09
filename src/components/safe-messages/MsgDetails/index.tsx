@@ -1,5 +1,5 @@
 import { useMemo, type ReactElement } from 'react'
-import { Accordion, AccordionSummary, Typography, AccordionDetails, Box } from '@mui/material'
+import { Accordion, AccordionSummary, Typography, AccordionDetails, Stack } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import CodeIcon from '@mui/icons-material/Code'
 import classNames from 'classnames'
@@ -125,9 +125,9 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
       <div className={txDetailsCss.txSigners}>
         <MsgSigners msg={msg} />
         {wallet && !isConfirmed && (
-          <Box display="flex" alignItems="center" justifyContent="center" gap={1} mt={2}>
+          <Stack alignItems="center" justifyContent="center" spacing={1} mt={2}>
             <SignMsgButton msg={msg} />
-          </Box>
+          </Stack>
         )}
       </div>
     </div>

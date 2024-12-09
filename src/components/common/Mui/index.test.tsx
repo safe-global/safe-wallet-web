@@ -18,7 +18,7 @@ describe('Box Component', () => {
   })
 
   it('applies flex props correctly', () => {
-    const { getByTestId } = render(<Box display="flex" flexDirection="column" data-testid="box" />)
+    const { getByTestId } = render(<Box data-testid="box" />)
     const box = getByTestId('box')
     expect(box).toHaveStyle('display: flex')
     expect(box).toHaveStyle('flex-direction: column')

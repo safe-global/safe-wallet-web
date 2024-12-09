@@ -1,4 +1,4 @@
-import { Box, Paper, Typography } from '@mui/material'
+import { Stack, Paper, Typography } from '@mui/material'
 import WifiOffIcon from '@mui/icons-material/WifiOff'
 import type { NextPage } from 'next'
 import Head from 'next/head'
@@ -11,11 +11,11 @@ const Offline: NextPage = () => {
       </Head>
 
       <main>
-        <Box display="flex" justifyContent="center">
+        <Stack justifyContent="center">
           <Paper sx={{ p: 4, mb: 2, maxWidth: 900 }}>
-            <Box display="flex" justifyContent="center" mb={2} fontSize={100}>
+            <Stack justifyContent="center" mb={2} fontSize={100}>
               <WifiOffIcon fontSize="inherit" />
-            </Box>
+            </Stack>
 
             <Typography variant="h1" textAlign="center">
               Oops, it looks like you&apos;re offline!
@@ -36,7 +36,7 @@ const Offline: NextPage = () => {
               We hope to see you back online soon. Thank you for your patience.
             </Typography>
           </Paper>
-        </Box>
+        </Stack>
       </main>
     </>
   )

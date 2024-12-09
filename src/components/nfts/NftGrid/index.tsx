@@ -19,6 +19,7 @@ import {
   TextField,
   Typography,
   Tooltip,
+  Stack,
 } from '@mui/material'
 import FilterAltIcon from '@mui/icons-material/FilterAlt'
 import NftIcon from '@/public/images/common/nft.svg'
@@ -152,7 +153,7 @@ const NftGrid = ({
                   }}
                 >
                   {headCell.id === 'collection' ? (
-                    <Box display="flex" alignItems="center" alignContent="center" gap={1}>
+                    <Stack alignItems="center" alignContent="center" spacing={1}>
                       <TextField
                         placeholder="Collection"
                         hiddenLabel
@@ -174,7 +175,7 @@ const NftGrid = ({
                           disableUnderline: true,
                         }}
                       />
-                    </Box>
+                    </Stack>
                   ) : headCell.id === 'links' ? (
                     linkTemplates ? (
                       <>Links</>
@@ -202,7 +203,7 @@ const NftGrid = ({
                 <TableRow data-testid={`nfts-table-row-${index + 1}`} tabIndex={-1} key={`${item.address}-${item.id}`}>
                   {/* Collection name */}
                   <TableCell onClick={onClick} sx={sx}>
-                    <Box display="flex" alignItems="center" gap={2}>
+                    <Stack alignItems="center" spacing={2}>
                       {item.imageUri ? activeNftIcon : inactiveNftIcon}
 
                       <div>
@@ -218,7 +219,7 @@ const NftGrid = ({
                           />
                         </Typography>
                       </div>
-                    </Box>
+                    </Stack>
                   </TableCell>
 
                   {/* Token ID */}
@@ -230,13 +231,13 @@ const NftGrid = ({
 
                   {/* Links */}
                   <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
-                    <Box display="flex" alignItems="center" alignContent="center" gap={2.5}>
+                    <Stack alignItems="center" alignContent="center" spacing={2.5}>
                       {linkTemplates?.map(({ title, logo, getUrl }) => (
                         <ExternalLink href={getUrl(item)} key={title} onClick={stopPropagation} noIcon>
                           <img src={logo} width={24} height={24} alt={title} />
                         </ExternalLink>
                       ))}
-                    </Box>
+                    </Stack>
                   </TableCell>
 
                   {/* Checkbox */}

@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material'
+import { Stack, Button, Typography } from '@mui/material'
 import { CTA_HEIGHT, CTA_BUTTON_WIDTH } from '@/components/safe-apps/SafeAppLandingPage/constants'
 import Link from 'next/link'
 import type { LinkProps } from 'next/link'
@@ -10,7 +10,7 @@ type Props = {
 }
 
 const TryDemo = ({ demoUrl, onClick }: Props) => (
-  <Box display="flex" flexDirection="column" alignItems="center" justifyContent="space-between" height={CTA_HEIGHT}>
+  <Stack alignItems="center" justifyContent="space-between" height={CTA_HEIGHT}>
     <Typography variant="h5" fontWeight={700}>
       Try the Safe App before using it
     </Typography>
@@ -20,7 +20,7 @@ const TryDemo = ({ demoUrl, onClick }: Props) => (
         Try demo
       </Button>
     </Link>
-  </Box>
+  </Stack>
 )
 
 export { TryDemo }

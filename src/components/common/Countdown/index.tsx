@@ -1,4 +1,4 @@
-import { Typography, Box } from '@mui/material'
+import { Typography, Stack } from '@mui/material'
 import type { ReactElement } from 'react'
 
 export function _getCountdown(seconds: number): { days: number; hours: number; minutes: number } {
@@ -31,11 +31,11 @@ export function Countdown({ seconds }: { seconds: number }): ReactElement | null
   const { days, hours, minutes } = _getCountdown(seconds)
 
   return (
-    <Box display="flex" gap={1}>
+    <Stack spacing={1}>
       <TimeLeft value={days} unit="day" />
       <TimeLeft value={hours} unit="hr" />
       <TimeLeft value={minutes} unit="min" />
-    </Box>
+    </Stack>
   )
 }
 
