@@ -30,12 +30,10 @@ type DecodedTxProps = {
 
 export const Divider = () => (
   <Box
-    sx={{
-      borderBottom: '1px solid var(--color-border-light)',
-      width: 'calc(100% + 32px)',
-      my: 2,
-      ml: '-16px !important',
-    }}
+    borderBottom="1px solid var(--color-border-light)"
+    width="calc(100% + 32px)"
+    my={2}
+    sx={{ ml: '-16px !important' }}
   />
 )
 

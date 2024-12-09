@@ -17,12 +17,7 @@ const StatusStepper = ({ status, txHash }: { status?: PendingStatus; txHash?: st
       <Step>
         <StatusStep isLoading={!isProcessing} safeAddress={safeAddress}>
           <Box>
-            <Typography
-              variant="body2"
-              sx={{
-                fontWeight: '700',
-              }}
-            >
+            <Typography variant="body2" fontWeight="700">
               Your transaction
             </Typography>
             {txHash && (
@@ -41,12 +36,7 @@ const StatusStepper = ({ status, txHash }: { status?: PendingStatus; txHash?: st
       <Step>
         <StatusStep isLoading={!isProcessed} safeAddress={safeAddress}>
           <Box>
-            <Typography
-              variant="body2"
-              sx={{
-                fontWeight: '700',
-              }}
-            >
+            <Typography variant="body2" fontWeight="700">
               {isProcessed ? 'Processed' : 'Processing'}
             </Typography>
           </Box>
@@ -54,24 +44,14 @@ const StatusStepper = ({ status, txHash }: { status?: PendingStatus; txHash?: st
       </Step>
       <Step>
         <StatusStep isLoading={!isSuccess} safeAddress={safeAddress}>
-          <Typography
-            variant="body2"
-            sx={{
-              fontWeight: '700',
-            }}
-          >
+          <Typography variant="body2" fontWeight="700">
             {isSuccess ? 'Indexed' : 'Indexing'}
           </Typography>
         </StatusStep>
       </Step>
       <Step>
         <StatusStep isLoading={!isSuccess} safeAddress={safeAddress}>
-          <Typography
-            variant="body2"
-            sx={{
-              fontWeight: '700',
-            }}
-          >
+          <Typography variant="body2" fontWeight="700">
             Transaction is executed
           </Typography>
         </StatusStep>

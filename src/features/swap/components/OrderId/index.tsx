@@ -21,11 +21,7 @@ const OrderId = ({
     <Stack direction="row">
       <span>{truncatedOrderId}</span>
       {showCopyButton && <CopyButton text={orderId} />}
-      <Box
-        sx={{
-          color: 'border.main',
-        }}
-      >
+      <Box color="border.main">
         <ExplorerButton href={href} />
       </Box>
     </Stack>

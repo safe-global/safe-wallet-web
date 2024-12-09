@@ -14,16 +14,12 @@ const ShareSafeApp = () => {
       <Head>
         <title>{`${BRAND_NAME} – Safe Apps`}</title>
       </Head>
+
       <main>
         {appUrl && chain ? (
           <SafeAppLanding appUrl={appUrl} chain={chain} />
         ) : (
-          <Box
-            sx={{
-              py: 4,
-              textAlign: 'center',
-            }}
-          >
+          <Box py={4} textAlign="center">
             <CircularProgress size={40} />
           </Box>
         )}

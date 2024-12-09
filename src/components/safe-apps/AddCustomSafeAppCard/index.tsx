@@ -15,14 +15,7 @@ const AddCustomSafeAppCard = ({ onSave, safeAppList }: Props) => {
   return (
     <>
       <Card>
-        <Box
-          sx={{
-            padding: '48px 12px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
+        <Box p="48px 12px" display="flex" flexDirection="column" alignItems="center">
           {/* Add Custom Safe App Icon */}
           <AddCustomAppIcon alt="Add Custom Safe App card" />
 
@@ -39,6 +32,7 @@ const AddCustomSafeAppCard = ({ onSave, safeAppList }: Props) => {
           </Button>
         </Box>
       </Card>
+
       {/*  Add Custom Safe App Modal */}
       <AddCustomAppModal
         open={addCustomAppModalOpen}

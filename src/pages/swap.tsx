@@ -36,16 +36,12 @@ const SwapPage: NextPage = () => {
       <Head>
         <title>{`${BRAND_NAME} – Swap`}</title>
       </Head>
+
       <main style={{ height: 'calc(100vh - 52px)' }}>
         {isFeatureEnabled === true ? (
           <SwapWidgetNoSSR sell={sell} />
         ) : isFeatureEnabled === false ? (
-          <Typography
-            sx={{
-              textAlign: 'center',
-              my: 3,
-            }}
-          >
+          <Typography textAlign="center" my={3}>
             Swaps are not supported on this network.
           </Typography>
         ) : null}

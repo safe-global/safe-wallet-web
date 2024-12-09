@@ -233,7 +233,7 @@ export function verifyEtherscanLinkExists() {
   cy.get(sidebarContainer)
     .should('be.visible')
     .within(() => {
-      cy.get(explorerBtn).should('have.attr', 'href').and('include', constants.sepoliaEtherscanlLink)
+      cy.get(explorerBtn).should('have.attr', 'href').and('include', constants.etherscanlLink)
     })
 }
 

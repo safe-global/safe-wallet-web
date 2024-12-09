@@ -8,38 +8,20 @@ import { BRAND_NAME } from '@/config/constants'
 
 const SafeImprint = () => (
   <div>
-    <Typography
-      variant="h1"
-      sx={{
-        mb: 2,
-      }}
-    >
+    <Typography variant="h1" mb={2}>
       Imprint & Disclaimer
     </Typography>
-    <Typography
-      variant="h3"
-      sx={{
-        mb: 2,
-      }}
-    >
+    <Typography variant="h3" mb={2}>
       Information in accordance with section 5 of the Telemedia Act (TMG, Germany):
     </Typography>
-    <Typography
-      sx={{
-        mb: 2,
-      }}
-    >
+    <Typography mb={2}>
       Core Contributors GmbH
       <br />
       Gontardstraße 11
       <br />
       10178 Berlin, Germany
     </Typography>
-    <Typography
-      sx={{
-        mb: 4,
-      }}
-    >
+    <Typography mb={4}>
       Managing director: Richard Meißner
       <br />
       Contact:{' '}
@@ -51,26 +33,13 @@ const SafeImprint = () => (
       <br />
       Register Number: HRB 240421 B
     </Typography>
-    <Typography
-      variant="h3"
-      sx={{
-        mb: 2,
-      }}
-    >
+    <Typography variant="h3" mb={2}>
       Disclaimer
     </Typography>
-    <Typography
-      sx={{
-        mb: 1,
-      }}
-    >
+    <Typography mb={1}>
       <strong>Accountability for content</strong>
     </Typography>
-    <Typography
-      sx={{
-        mb: 2,
-      }}
-    >
+    <Typography mb={2}>
       The contents of our pages have been created with the utmost care. However, we cannot guarantee the contents’
       accuracy, completeness or topicality. According to statutory provisions, we are furthermore responsible for our
       own content on these web pages. In this context, please note that we are accordingly not obliged to monitor merely
@@ -78,27 +47,15 @@ const SafeImprint = () => (
       Our obligations to remove or block the use of information under generally applicable laws remain unaffected by
       this as per §§ 8 to 10 of the Telemedia Act (TMG).
     </Typography>
-    <Typography
-      sx={{
-        mb: 1,
-      }}
-    >
+    <Typography mb={1}>
       <strong>Accountability for links</strong>
     </Typography>
-    <Typography
-      sx={{
-        mb: 2,
-      }}
-    >
+    <Typography mb={2}>
       Responsibility for the content of external links (to web pages of third parties) lies solely with the operators of
       the linked pages. No violations were evident to us at the time of linking. Should any legal infringement become
       known to us, we will remove the respective link immediately.
     </Typography>
-    <Typography
-      sx={{
-        mb: 1,
-      }}
-    >
+    <Typography mb={1}>
       <strong>Copyright</strong>
     </Typography>
     <Typography>

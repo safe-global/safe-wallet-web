@@ -177,6 +177,7 @@ function EnhancedTable({ rows, headCells, mobileVariant }: EnhancedTableProps) {
           </TableBody>
         </Table>
       </TableContainer>
+
       {rows.length > pagedRows.length && (
         <TablePagination
           rowsPerPageOptions={pageSizes}

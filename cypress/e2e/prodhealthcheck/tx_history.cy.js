@@ -41,8 +41,9 @@ describe('[PROD] Tx history tests 1', () => {
   it('Verify summary for account creation', () => {
     createTx.verifySummaryByName(
       typeCreateAccount.title,
+      null,
       [typeCreateAccount.actionsSummary, typeGeneral.statusOk],
-      typeCreateAccount.altTmage,
+      typeCreateAccount.altImage,
     )
   })
 
@@ -78,7 +79,7 @@ describe('[PROD] Tx history tests 1', () => {
       typeSpendingLimits.title,
       typeSpendingLimits.summaryTxInfo,
       [typeGeneral.statusOk],
-      typeSpendingLimits.altTmage,
+      typeSpendingLimits.altImage,
     )
   })
 

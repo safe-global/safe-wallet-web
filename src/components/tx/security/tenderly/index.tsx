@@ -65,12 +65,7 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit, executionOwner }:
   return (
     <Paper variant="outlined" className={sharedCss.wrapper}>
       <div className={css.wrapper}>
-        <Typography
-          variant="body2"
-          sx={{
-            fontWeight: 700,
-          }}
-        >
+        <Typography variant="body2" fontWeight={700}>
           Run a simulation
           <Tooltip
             title="This transaction can be simulated before execution to ensure that it will be succeed, generating a detailed report of the transaction execution."
@@ -101,6 +96,7 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit, executionOwner }:
           />
         </Typography>
       </div>
+
       <div className={sharedCss.result}>
         {isLoading ? (
           <CircularProgress
@@ -177,12 +173,7 @@ export const TxSimulationMessage = () => {
   if (!isSuccess || isError || isCallTraceError) {
     return (
       <Alert severity="error" sx={{ border: 'unset' }}>
-        <Typography
-          variant="body2"
-          sx={{
-            fontWeight: 700,
-          }}
-        >
+        <Typography variant="body2" fontWeight={700}>
           Simulation failed
         </Typography>
         {requestError ? (
@@ -209,12 +200,7 @@ export const TxSimulationMessage = () => {
 
   return (
     <Alert severity="info" sx={{ border: 'unset' }}>
-      <Typography
-        variant="body2"
-        sx={{
-          fontWeight: 700,
-        }}
-      >
+      <Typography variant="body2" fontWeight={700}>
         Simulation successful
       </Typography>
       Full simulation report is available <ExternalLink href={simulationLink}>on Tenderly</ExternalLink>.

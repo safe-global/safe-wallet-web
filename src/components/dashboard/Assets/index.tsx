@@ -29,13 +29,7 @@ const AssetsDummy = () => (
 
 const NoAssets = () => (
   <Paper elevation={0} sx={{ p: 5 }}>
-    <Typography
-      variant="h3"
-      sx={{
-        fontWeight: 'bold',
-        mb: 1,
-      }}
-    >
+    <Typography variant="h3" fontWeight="bold" mb={1}>
       Add funds to get started
     </Typography>
 
@@ -43,12 +37,7 @@ const NoAssets = () => (
       Add funds directly from your bank account or copy your address to send tokens from a different account.
     </Typography>
 
-    <Box
-      sx={{
-        display: 'flex',
-        mt: 2,
-      }}
-    >
+    <Box display="flex" mt={2}>
       <BuyCryptoButton />
     </Box>
   </Paper>
@@ -56,11 +45,7 @@ const NoAssets = () => (
 
 const AssetRow = ({ item, showSwap }: { item: SafeBalanceResponse['items'][number]; showSwap?: boolean }) => (
   <Box className={css.container} key={item.tokenInfo.address}>
-    <Box
-      sx={{
-        flex: 1,
-      }}
-    >
+    <Box flex={1}>
       <TokenAmount
         value={item.balance}
         decimals={item.tokenInfo.decimals}
@@ -69,22 +54,11 @@ const AssetRow = ({ item, showSwap }: { item: SafeBalanceResponse['items'][numbe
       />
     </Box>
 
-    <Box
-      sx={{
-        flex: 1,
-        display: ['none', 'block'],
-        textAlign: 'right',
-        pr: 4,
-      }}
-    >
+    <Box flex={1} display={['none', 'block']} textAlign="right" pr={4}>
       <FiatValue value={item.fiatBalance} />
     </Box>
 
-    <Box
-      sx={{
-        my: -0.7,
-      }}
-    >
+    <Box my={-0.7}>
       {showSwap ? (
         <SwapButton tokenInfo={item.tokenInfo} amount="0" trackingLabel={SWAP_LABELS.dashboard_assets} />
       ) : (
@@ -98,13 +72,7 @@ const AssetList = ({ items }: { items: SafeBalanceResponse['items'] }) => {
   const isSwapFeatureEnabled = useIsSwapFeatureEnabled()
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 1,
-      }}
-    >
+    <Box display="flex" flexDirection="column" gap={1}>
       {items.map((item) => (
         <AssetRow item={item} key={item.tokenInfo.address} showSwap={isSwapFeatureEnabled} />
       ))}
@@ -135,19 +103,13 @@ const AssetsWidget = () => {
   return (
     <WidgetContainer data-testid="assets-widget">
       <div className={css.title}>
-        <Typography
-          component="h2"
-          variant="subtitle1"
-          sx={{
-            fontWeight: 700,
-            mb: 2,
-          }}
-        >
+        <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
           Top assets
         </Typography>
 
         {items.length > 0 && <ViewAllLink url={viewAllUrl} text={`View all (${visibleAssets.length})`} />}
       </div>
+
       <WidgetBody>
         {loading ? <AssetsDummy /> : items.length > 0 ? <AssetList items={items} /> : <NoAssets />}
       </WidgetBody>

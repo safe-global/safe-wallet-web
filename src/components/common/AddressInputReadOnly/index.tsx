@@ -7,13 +7,7 @@ const AddressInputReadOnly = ({ address }: { address: string }): ReactElement =>
   return (
     <div className={css.input} data-testid="address-book-recipient">
       <InputAdornment position="start">
-        <Typography
-          variant="body2"
-          component="div"
-          sx={{
-            width: 1,
-          }}
-        >
+        <Typography variant="body2" component="div" width={1}>
           <EthHashInfo address={address} shortAddress={false} copyAddress={false} />
         </Typography>
       </InputAdornment>

@@ -29,4 +29,4 @@ jobs:
             5.  Refactoring Ideas: Pay attention to the code structure and suggest improvements where necessary. Apply the DRY and SOLID principles. Prevent too complex components, inline functions, inline styles, and too much logic inside React components.
             6.	Stay Brief: If no clear issues are identified or the concerns are minor, keep feedback minimal or state that no significant issues were found.
 
-            Output should be focused, practical, and devoid of redundant commentary.
+            Output should be focused, practical, and devoid of redundant commentary. Stick to 260 characters per comment.

@@ -16,16 +16,12 @@ const StakePage: NextPage = () => {
       <Head>
         <title>{`${BRAND_NAME} – Stake`}</title>
       </Head>
+
       {isFeatureEnabled === true ? (
         <LazyStakePage />
       ) : isFeatureEnabled === false ? (
         <main>
-          <Typography
-            sx={{
-              textAlign: 'center',
-              my: 3,
-            }}
-          >
+          <Typography textAlign="center" my={3}>
             Staking is not available on this network.
           </Typography>
         </main>

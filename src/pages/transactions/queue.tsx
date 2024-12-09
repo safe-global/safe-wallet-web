@@ -18,17 +18,14 @@ const Queue: NextPage = () => {
       <Head>
         <title>{`${BRAND_NAME} – Transaction queue`}</title>
       </Head>
+
       <BatchExecuteHoverProvider>
         <TxHeader>
           <BatchExecuteButton />
         </TxHeader>
 
         <main>
-          <Box
-            sx={{
-              mb: 4,
-            }}
-          >
+          <Box mb={4}>
             <RecoveryList />
 
             {/* Pending unsigned transactions */}
