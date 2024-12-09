@@ -9,6 +9,7 @@ import {
   InputAdornment,
   Link,
   Paper,
+  Stack,
   SvgIcon,
   TextField,
   Typography,
@@ -119,7 +120,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
 
         <Paper sx={{ padding: 0 }}>
           <Paper sx={{ px: 2, py: 1 }}>
-            <Box display="flex" justifyContent="space-between" width="100%" gap={1}>
+            <Stack justifyContent="space-between" width="100%" spacing={1}>
               <TextField
                 id="search-by-name"
                 placeholder="Search"
@@ -150,7 +151,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
                 size="small"
               />
               <OrderByButton orderBy={orderBy} onOrderByChange={handleOrderByChange} />
-            </Box>
+            </Stack>
           </Paper>
 
           {isSidebar && <Divider />}

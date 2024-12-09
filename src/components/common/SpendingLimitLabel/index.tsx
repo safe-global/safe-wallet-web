@@ -1,18 +1,18 @@
 import React, { type ReactElement } from 'react'
-import { Box, SvgIcon, Typography } from '@mui/material'
+import { Stack, SvgIcon, Typography } from '@mui/material'
+import type { StackProps } from '@mui/material/Stack'
 import SpeedIcon from '@/public/images/settings/spending-limit/speed.svg'
-import type { BoxProps } from '@mui/system'
 
 const SpendingLimitLabel = ({
   label,
   isOneTime = false,
   ...rest
-}: { label: string | ReactElement; isOneTime?: boolean } & BoxProps) => {
+}: { label: string | ReactElement; isOneTime?: boolean } & StackProps) => {
   return (
-    <Box display="flex" alignItems="center" gap="4px" {...rest}>
+    <Stack alignItems="center" spacing="4px" {...rest}>
       {!isOneTime && <SvgIcon component={SpeedIcon} inheritViewBox color="border" fontSize="medium" />}
       {typeof label === 'string' ? <Typography>{label}</Typography> : label}
-    </Box>
+    </Stack>
   )
 }
 

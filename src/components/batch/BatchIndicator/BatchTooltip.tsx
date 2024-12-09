@@ -1,5 +1,5 @@
 import { type ReactElement, useEffect, useState } from 'react'
-import { Box, SvgIcon } from '@mui/material'
+import { Box, Stack, SvgIcon } from '@mui/material'
 
 import SuccessIcon from '@/public/images/common/success.svg'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
@@ -25,12 +25,12 @@ const BatchTooltip = ({ children }: { children: ReactElement }) => {
       open={showTooltip}
       onClose={() => setShowTooltip(false)}
       title={
-        <Box display="flex" flexDirection="column" alignItems="center" p={2} gap={2}>
+        <Stack alignItems="center" p={2} spacing={2}>
           <Box fontSize="53px">
             <SvgIcon component={SuccessIcon} inheritViewBox fontSize="inherit" />
           </Box>
           Transaction is added to batch
-        </Box>
+        </Stack>
       }
     >
       <div>{children}</div>

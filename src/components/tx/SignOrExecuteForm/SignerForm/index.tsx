@@ -1,9 +1,9 @@
 import {
-  Box,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
+  Stack,
   SvgIcon,
   Tooltip,
   Typography,
@@ -86,7 +86,7 @@ export const SignerForm = ({ willExecute }: { willExecute?: boolean }) => {
         </Tooltip>
       </Typography>
 
-      <Box display="flex" alignItems="center" gap={1}>
+      <Stack alignItems="center" spacing={1}>
         <FormControl fullWidth size="medium">
           <InputLabel id="signer-label">Signer Account</InputLabel>
           <Select
@@ -109,7 +109,7 @@ export const SignerForm = ({ willExecute }: { willExecute?: boolean }) => {
             ))}
           </Select>
         </FormControl>
-      </Box>
+      </Stack>
     </TxCard>
   )
 }

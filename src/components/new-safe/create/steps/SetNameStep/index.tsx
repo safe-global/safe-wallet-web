@@ -1,4 +1,4 @@
-import { InputAdornment, Tooltip, SvgIcon, Typography, Box, Divider, Button, Grid } from '@mui/material'
+import { InputAdornment, Tooltip, SvgIcon, Typography, Stack, Divider, Button, Grid, Box } from '@mui/material'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -155,14 +155,14 @@ function SetNameStep({
         </Box>
         <Divider />
         <Box className={layoutCss.row}>
-          <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
+          <Stack direction="row" justifyContent="space-between" spacing={3}>
             <Button data-testid="cancel-btn" variant="outlined" onClick={onCancel} size="small">
               Cancel
             </Button>
             <Button data-testid="next-btn" type="submit" variant="contained" size="stretched" disabled={isDisabled}>
               Next
             </Button>
-          </Box>
+          </Stack>
         </Box>
       </form>
     </FormProvider>

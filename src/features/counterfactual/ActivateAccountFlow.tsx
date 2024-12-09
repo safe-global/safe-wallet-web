@@ -22,7 +22,7 @@ import { asError } from '@/services/exceptions/utils'
 import { useAppSelector } from '@/store'
 import { hasFeature } from '@/utils/chains'
 import { hasRemainingRelays } from '@/utils/relaying'
-import { Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
+import { Stack, Button, CircularProgress, Divider, Grid, Typography, Box } from '@mui/material'
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { FEATURES } from '@/utils/chains'
 import React, { useContext, useMemo, useState } from 'react'
@@ -163,7 +163,7 @@ const ActivateAccountFlow = () => {
         />
 
         <Divider sx={{ mx: -3, mt: 2, mb: 1 }} />
-        <Box display="flex" flexDirection="column" gap={3}>
+        <Stack spacing={3}>
           {canRelay && (
             <Grid container spacing={3}>
               <ReviewRow
@@ -209,11 +209,11 @@ const ActivateAccountFlow = () => {
               Your connected wallet doesn&apos;t have enough funds to execute this transaction
             </ErrorMessage>
           )}
-        </Box>
+        </Stack>
 
         <Divider sx={{ mx: -3, mt: 2, mb: 1 }} />
 
-        <Box display="flex" flexDirection="row" justifyContent="flex-end" gap={3}>
+        <Stack direction="row" justifyContent="flex-end" spacing={3}>
           <CheckWallet checkNetwork={!submitDisabled} allowNonOwner allowUndeployedSafe>
             {(isOk) => (
               <Button
@@ -227,7 +227,7 @@ const ActivateAccountFlow = () => {
               </Button>
             )}
           </CheckWallet>
-        </Box>
+        </Stack>
       </TxCard>
     </TxLayout>
   )

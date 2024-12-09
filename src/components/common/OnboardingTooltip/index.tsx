@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import type { TooltipProps } from '@mui/material'
-import { Box, Button, SvgIcon, Tooltip } from '@mui/material'
+import { Stack, Button, SvgIcon, Tooltip } from '@mui/material'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { useDarkMode } from '@/hooks/useDarkMode'
 
@@ -39,7 +39,7 @@ export const OnboardingTooltip = ({
       placement={placement}
       arrow
       title={
-        <Box display="flex" alignItems="center" gap={1} p={1}>
+        <Stack alignItems="center" spacing={1} p={1}>
           <SvgIcon component={InfoIcon} inheritViewBox fontSize="small" />
           <div style={{ minWidth: '150px' }}>{text}</div>
           <Button
@@ -51,7 +51,7 @@ export const OnboardingTooltip = ({
           >
             Got it!
           </Button>
-        </Box>
+        </Stack>
       }
     >
       {children}

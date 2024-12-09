@@ -36,7 +36,7 @@ export function _SanctionWrapper({
 
   if (blockedAddress) {
     return (
-      <Stack direction="column" alignItems="center" justifyContent="center" flex={1}>
+      <Stack alignItems="center" justifyContent="center" flex={1}>
         <BlockedAddress address={blockedAddress} featureTitle={featureTitle} />
       </Stack>
     )

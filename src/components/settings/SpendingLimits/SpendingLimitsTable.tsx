@@ -1,7 +1,7 @@
 import EnhancedTable from '@/components/common/EnhancedTable'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import { safeFormatUnits } from '@/utils/formatters'
-import { Box, IconButton, Skeleton, SvgIcon, Typography } from '@mui/material'
+import { Stack, IconButton, Skeleton, SvgIcon, Typography } from '@mui/material'
 import { relativeTime } from '@/utils/date'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useContext, useMemo } from 'react'
@@ -20,7 +20,7 @@ const SKELETON_ROWS = new Array(3).fill('').map(() => {
       beneficiary: {
         rawValue: '0x',
         content: (
-          <Box display="flex" flexDirection="row" gap={1} alignItems="center">
+          <Stack direction="row" spacing={1} alignItems="center">
             <Skeleton variant="circular" width={26} height={26} />
             <div>
               <Typography>
@@ -30,18 +30,18 @@ const SKELETON_ROWS = new Array(3).fill('').map(() => {
                 <Skeleton width={300} />
               </Typography>
             </div>
-          </Box>
+          </Stack>
         ),
       },
       spent: {
         rawValue: '0',
         content: (
-          <Box display="flex" flexDirection="row" gap={1} alignItems="center">
+          <Stack direction="row" spacing={1} alignItems="center">
             <Skeleton variant="circular" width={26} height={26} />
             <Typography>
               <Skeleton width={100} />
             </Typography>
-          </Box>
+          </Stack>
         ),
       },
       resetTime: {
@@ -97,10 +97,10 @@ export const SpendingLimitsTable = ({
                 spent: {
                   rawValue: spendingLimit.spent,
                   content: (
-                    <Box data-testid="spent-amount" display="flex" alignItems="center" gap={1}>
+                    <Stack data-testid="spent-amount" alignItems="center" spacing={1}>
                       <TokenIcon logoUri={spendingLimit.token.logoUri} tokenSymbol={spendingLimit.token.symbol} />
                       {`${formattedSpent} of ${formattedAmount} ${spendingLimit.token.symbol}`}
-                    </Box>
+                    </Stack>
                   ),
                 },
                 resetTime: {

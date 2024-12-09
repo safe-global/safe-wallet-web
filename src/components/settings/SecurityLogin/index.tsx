@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Stack } from '@mui/material'
 import dynamic from 'next/dynamic'
 import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
 import SecuritySettings from '../SecuritySettings'
@@ -11,11 +11,11 @@ const SecurityLogin = () => {
   const router = useRouter()
 
   return (
-    <Box display="flex" flexDirection="column" gap={2}>
+    <Stack spacing={2}>
       {isRecoverySupported && router.query.safe ? <RecoverySettings /> : null}
 
       <SecuritySettings />
-    </Box>
+    </Stack>
   )
 }
 

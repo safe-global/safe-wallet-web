@@ -28,6 +28,7 @@ import {
   DialogTitle,
   Divider,
   IconButton,
+  Stack,
   Typography,
 } from '@mui/material'
 import type { Delegate } from '@safe-global/safe-gateway-typescript-sdk/dist/types/delegates'
@@ -137,7 +138,7 @@ const UpsertProposer = ({ onClose, onSuccess, proposer }: UpsertProposerProps) =
       <FormProvider {...methods}>
         <form onSubmit={onSubmit}>
           <DialogTitle>
-            <Box data-testid="untrusted-token-warning" display="flex" alignItems="center">
+            <Stack data-testid="untrusted-token-warning" alignItems="center">
               <Typography variant="h6" fontWeight={700} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 {isEditing ? 'Edit' : 'Add'} proposer
               </Typography>
@@ -147,7 +148,7 @@ const UpsertProposer = ({ onClose, onSuccess, proposer }: UpsertProposerProps) =
               <IconButton aria-label="close" onClick={onCancel} sx={{ marginLeft: 'auto' }}>
                 <Close />
               </IconButton>
-            </Box>
+            </Stack>
           </DialogTitle>
 
           <Divider />

@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import Card from '@mui/material/Card'
-import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
 import AddCustomAppIcon from '@/public/images/apps/add-custom-app.svg'
 import { AddCustomAppModal } from '@/components/safe-apps/AddCustomAppModal'
+import Stack from '@mui/material/Stack'
 
 type Props = { onSave: (data: SafeAppData) => void; safeAppList: SafeAppData[] }
 
@@ -15,7 +15,7 @@ const AddCustomSafeAppCard = ({ onSave, safeAppList }: Props) => {
   return (
     <>
       <Card>
-        <Box p="48px 12px" display="flex" flexDirection="column" alignItems="center">
+        <Stack p="48px 12px" alignItems="center">
           {/* Add Custom Safe App Icon */}
           <AddCustomAppIcon alt="Add Custom Safe App card" />
 
@@ -30,7 +30,7 @@ const AddCustomSafeAppCard = ({ onSave, safeAppList }: Props) => {
           >
             Add custom Safe App
           </Button>
-        </Box>
+        </Stack>
       </Card>
 
       {/*  Add Custom Safe App Modal */}

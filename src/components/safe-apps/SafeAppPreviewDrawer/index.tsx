@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import Drawer from '@mui/material/Drawer'
-import Box from '@mui/material/Box'
+import Box from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import SvgIcon from '@mui/material/SvgIcon'
@@ -19,6 +19,7 @@ import CloseIcon from '@/public/images/common/close.svg'
 import { useOpenedSafeApps } from '@/hooks/safe-apps/useOpenedSafeApps'
 import css from './styles.module.css'
 import { SAFE_APPS_EVENTS, SAFE_APPS_LABELS, trackSafeAppEvent } from '@/services/analytics'
+import Stack from '@mui/material/Stack'
 
 type SafeAppPreviewDrawerProps = {
   safeApp?: SafeAppData
@@ -46,7 +47,7 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
         {/* Toolbar */}
 
         {safeApp && (
-          <Box display="flex" justifyContent="right">
+          <Stack justifyContent="right">
             <SafeAppActionButtons safeApp={safeApp} isBookmarked={isBookmarked} onBookmarkSafeApp={onBookmark} />
             <Tooltip title={`Close ${safeApp.name} preview`} placement="top">
               <IconButton
@@ -60,7 +61,7 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
                 <SvgIcon component={CloseIcon} inheritViewBox color="border" fontSize="small" />
               </IconButton>
             </Tooltip>
-          </Box>
+          </Stack>
         )}
 
         {/* Safe App Info */}

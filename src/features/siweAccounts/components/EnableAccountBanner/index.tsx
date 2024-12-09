@@ -1,5 +1,5 @@
 import { signInWithEthereum } from '@/services/siwe'
-import { Alert, Box, Button, IconButton, Typography } from '@mui/material'
+import { Alert, Stack, Button, IconButton, Typography } from '@mui/material'
 import useWallet from '@/hooks/wallets/useWallet'
 import CloseIcon from '@mui/icons-material/Close'
 import DownloadCloud from '@/public/images/common/download-cloud.svg'
@@ -59,12 +59,12 @@ const SignInBanner = ({ provider }: { provider: BrowserProvider | undefined }) =
           </>
         }
       >
-        <Box display="flex" alignContent="center" alignItems="center" width="100%">
+        <Stack alignContent="center" alignItems="center" width="100%">
           <Typography flex="1">
             <b>Access your accounts on any device!</b> Enable cloud storage to switch devices effortlessly and keep your
             data secure.
           </Typography>
-        </Box>
+        </Stack>
       </Alert>
     </div>
   )

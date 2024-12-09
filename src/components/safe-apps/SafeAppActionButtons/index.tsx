@@ -1,8 +1,5 @@
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
-import Box from '@mui/material/Box'
-import IconButton from '@mui/material/IconButton'
-import Tooltip from '@mui/material/Tooltip'
-import SvgIcon from '@mui/material/SvgIcon'
+import { Stack, IconButton, Tooltip, SvgIcon } from '@mui/material'
 
 import { useShareSafeAppUrl } from '@/components/safe-apps/hooks/useShareSafeAppUrl'
 import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
@@ -37,7 +34,7 @@ const SafeAppActionButtons = ({
   }
 
   return (
-    <Box display="flex" gap={1} alignItems="center">
+    <Stack spacing={1} alignItems="center">
       {/* Open the preview drawer */}
       {openPreviewDrawer && (
         <IconButton
@@ -99,7 +96,7 @@ const SafeAppActionButtons = ({
           </IconButton>
         </Tooltip>
       )}
-    </Box>
+    </Stack>
   )
 }
 

@@ -1,6 +1,6 @@
 import WalletBalance from '@/components/common/WalletBalance'
 import { WalletIdenticon } from '@/components/common/WalletOverview'
-import { Box, Button, Typography } from '@mui/material'
+import { Stack, Button, Typography, Box } from '@mui/material'
 import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ChainSwitcher from '@/components/common/ChainSwitcher'
@@ -42,7 +42,7 @@ export const WalletInfo = ({ wallet, balance, currentChainId, onboard, addressBo
 
   return (
     <>
-      <Box display="flex" gap="12px">
+      <Stack spacing="12px">
         <WalletIdenticon wallet={wallet} size={36} />
 
         <Typography variant="body2" className={css.address} component="div">
@@ -56,7 +56,7 @@ export const WalletInfo = ({ wallet, balance, currentChainId, onboard, addressBo
             prefix={prefix}
           />
         </Typography>
-      </Box>
+      </Stack>
 
       <Box className={css.rowContainer}>
         <Box className={css.row}>
@@ -84,7 +84,7 @@ export const WalletInfo = ({ wallet, balance, currentChainId, onboard, addressBo
         </Box>
       </Box>
 
-      <Box display="flex" flexDirection="column" gap={2} width={1}>
+      <Stack spacing={2} width={1}>
         <ChainSwitcher fullWidth />
 
         <Button variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
@@ -101,7 +101,7 @@ export const WalletInfo = ({ wallet, balance, currentChainId, onboard, addressBo
         >
           Disconnect
         </Button>
-      </Box>
+      </Stack>
     </>
   )
 }

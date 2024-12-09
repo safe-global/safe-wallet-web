@@ -1,4 +1,4 @@
-import { Button, SvgIcon, Card, CardHeader, CardContent, Tooltip, Box } from '@mui/material'
+import { Button, SvgIcon, Card, CardHeader, CardContent, Tooltip, Stack } from '@mui/material'
 import { useState } from 'react'
 import type { ReactElement } from 'react'
 
@@ -56,7 +56,7 @@ export const DataWidget = (): ReactElement => {
         }
       />
       <CardContent>
-        <Box display="flex" gap={2} justifyContent="center" sx={{ maxWidth: 240, margin: 'auto' }}>
+        <Stack spacing={2} justifyContent="center" sx={{ maxWidth: 240, margin: 'auto' }}>
           {hasData && (
             <Track {...OVERVIEW_EVENTS.EXPORT_DATA} label={trackingLabel}>
               <Button
@@ -82,7 +82,7 @@ export const DataWidget = (): ReactElement => {
               Import
             </Button>
           </Track>
-        </Box>
+        </Stack>
       </CardContent>
       {importModalOpen && (
         <ImportDialog

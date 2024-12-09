@@ -206,7 +206,7 @@ exports[`SignOrExecute should display a loading component 1`] = `
       class="MuiCardContent-root cardContent css-1lt5qva-MuiCardContent-root"
     >
       <div
-        class="MuiBox-root css-17luq05"
+        class="MuiStack-root css-17uq0s2-MuiStack-root"
       >
         <div
           class="box MuiBox-root css-0"

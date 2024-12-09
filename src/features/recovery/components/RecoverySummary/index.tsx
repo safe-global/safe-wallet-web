@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import { RecoveryType } from '../RecoveryType'
@@ -35,9 +35,9 @@ export function RecoverySummary({ item }: { item: RecoveryQueueItem }): ReactEle
           <RecoveryStatus recovery={item} />
         </Box>
       ) : (
-        <Box gridArea="actions" mr={2} display="flex" justifyContent="center">
+        <Stack gridArea="actions" mr={2} justifyContent="center">
           {!isMalicious && wallet && <ExecuteRecoveryButton recovery={item} compact />}
-        </Box>
+        </Stack>
       )}
     </Box>
   )

@@ -3,7 +3,7 @@ import { TransferTx } from '@/components/transactions/TxInfo'
 import { isTxQueued } from '@/utils/transaction-guards'
 import type { TransactionStatus, Transfer } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box, Typography } from '@mui/material'
+import { Stack, Typography } from '@mui/material'
 import React from 'react'
 
 import TransferActions from '@/components/transactions/TxDetails/TxData/Transfer/TransferActions'
@@ -21,7 +21,7 @@ const TransferTxInfoMain = ({ txInfo, txStatus, trusted, imitation }: TransferTx
   const { direction } = txInfo
 
   return (
-    <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
+    <Stack direction="row" alignItems="center" spacing={1}>
       <Typography>
         {direction === TransferDirection.INCOMING ? 'Received' : isTxQueued(txStatus) ? 'Send' : 'Sent'}{' '}
         <b>
@@ -30,7 +30,7 @@ const TransferTxInfoMain = ({ txInfo, txStatus, trusted, imitation }: TransferTx
         {direction === TransferDirection.INCOMING ? ' from:' : ' to:'}
       </Typography>
       {!trusted && !imitation && <MaliciousTxWarning />}
-    </Box>
+    </Stack>
   )
 }
 
@@ -38,10 +38,10 @@ const TransferTxInfo = ({ txInfo, txStatus, trusted, imitation }: TransferTxInfo
   const address = txInfo.direction.toUpperCase() === TransferDirection.INCOMING ? txInfo.sender : txInfo.recipient
 
   return (
-    <Box display="flex" flexDirection="column" gap={1}>
+    <Stack spacing={1}>
       <TransferTxInfoMain txInfo={txInfo} txStatus={txStatus} trusted={trusted} imitation={imitation} />
 
-      <Box display="flex" alignItems="center" width="100%">
+      <Stack alignItems="center" width="100%">
         <EthHashInfo
           address={address.value}
           name={address.name}
@@ -53,9 +53,9 @@ const TransferTxInfo = ({ txInfo, txStatus, trusted, imitation }: TransferTxInfo
         >
           <TransferActions address={address.value} txInfo={txInfo} trusted={trusted} />
         </EthHashInfo>
-      </Box>
+      </Stack>
       {imitation && <ImitationTransactionWarning />}
-    </Box>
+    </Stack>
   )
 }
 

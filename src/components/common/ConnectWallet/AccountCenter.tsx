@@ -1,6 +1,6 @@
 import type { MouseEvent } from 'react'
 import { useState } from 'react'
-import { Box, ButtonBase, Paper, Popover } from '@mui/material'
+import { Stack, ButtonBase, Paper, Popover, Box } from '@mui/material'
 import css from '@/components/common/ConnectWallet/styles.module.css'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -35,9 +35,9 @@ export const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
         <Box className={css.buttonContainer}>
           <WalletOverview wallet={wallet} balance={balance} showBalance />
 
-          <Box display="flex" alignItems="center" justifyContent="flex-end" ml="auto">
+          <Stack alignItems="center" justifyContent="flex-end" ml="auto">
             {open ? <ExpandLessIcon color="border" /> : <ExpandMoreIcon color="border" />}
-          </Box>
+          </Stack>
         </Box>
       </ButtonBase>
 

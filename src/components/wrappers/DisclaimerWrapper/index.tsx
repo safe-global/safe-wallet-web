@@ -26,7 +26,7 @@ export function _DisclaimerWrapper({
 
   if (!hasConsented) {
     return (
-      <Stack direction="column" alignItems="center" justifyContent="center" flex={1}>
+      <Stack alignItems="center" justifyContent="center" flex={1}>
         <Disclaimer
           title="Note"
           content={<WidgetDisclaimer widgetName={widgetName} />}

@@ -32,7 +32,7 @@ exports[`SettingsChange should display the SettingsChange component with newOwne
         class="MuiBox-root css-1lchl8k"
       >
         <div
-          class="MuiBox-root css-171onha"
+          class="MuiStack-root css-c4vnuj-MuiStack-root"
           title="Bob"
         >
           <div
@@ -132,7 +132,7 @@ exports[`SettingsChange should display the SettingsChange component with newOwne
         class="MuiBox-root css-1lchl8k"
       >
         <div
-          class="MuiBox-root css-171onha"
+          class="MuiStack-root css-c4vnuj-MuiStack-root"
           title="Alice"
         >
           <div
@@ -240,7 +240,7 @@ exports[`SettingsChange should display the SettingsChange component with owner d
         class="MuiBox-root css-1lchl8k"
       >
         <div
-          class="MuiBox-root css-171onha"
+          class="MuiStack-root css-c4vnuj-MuiStack-root"
           title="Nevinha"
         >
           <div

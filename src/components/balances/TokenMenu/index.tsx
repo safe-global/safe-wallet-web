@@ -2,7 +2,7 @@ import { Sticky } from '@/components/common/Sticky'
 import Track from '@/components/common/Track'
 import { ASSETS_EVENTS } from '@/services/analytics'
 import { VisibilityOffOutlined } from '@mui/icons-material'
-import { Box, Typography, Button } from '@mui/material'
+import { Stack, Typography, Button, Box } from '@mui/material'
 
 import css from './styles.module.css'
 
@@ -31,7 +31,7 @@ const TokenMenu = ({
             {selectedAssetCount} {selectedAssetCount === 1 ? 'token' : 'tokens'} selected
           </Typography>
         </Box>
-        <Box display="flex" flexDirection="row" gap={1}>
+        <Stack direction="row" spacing={1}>
           <Track {...ASSETS_EVENTS.CANCEL_HIDE_DIALOG}>
             <Button onClick={cancel} className={css.cancelButton} size="small" variant="outlined">
               Cancel
@@ -47,7 +47,7 @@ const TokenMenu = ({
               Save
             </Button>
           </Track>
-        </Box>
+        </Stack>
       </Box>
     </Sticky>
   )

@@ -9,7 +9,7 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  Box,
+  Stack,
 } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
 import { type ReactElement, useEffect, type SyntheticEvent } from 'react'
@@ -35,7 +35,7 @@ const ConfirmCopyModal = ({ open, onClose, onCopy, children }: ConfirmCopyModalP
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>
-        <Box data-testid="untrusted-token-warning" display="flex" flexDirection="row" alignItems="center" gap={1}>
+        <Stack data-testid="untrusted-token-warning" direction="row" alignItems="center" spacing={1}>
           <SvgIcon component={WarningIcon} inheritViewBox color="warning" sx={{ mb: -0.4 }} />
           <Typography variant="h6" fontWeight={700}>
             Before you copy
@@ -43,13 +43,13 @@ const ConfirmCopyModal = ({ open, onClose, onCopy, children }: ConfirmCopyModalP
           <IconButton aria-label="close" onClick={onClose} sx={{ marginLeft: 'auto' }}>
             <Close />
           </IconButton>
-        </Box>
+        </Stack>
       </DialogTitle>
       <Divider />
       <DialogContent>{children}</DialogContent>
       <Divider />
       <DialogActions sx={{ padding: 3 }}>
-        <Box className={css.dialogActions} gap={1}>
+        <Stack className={css.dialogActions} spacing={1}>
           <Track {...TX_LIST_EVENTS.COPY_WARNING_PROCEED}>
             <Button size="small" variant="text" color="primary" onClick={onCopy} fullWidth>
               Proceed and copy
@@ -60,7 +60,7 @@ const ConfirmCopyModal = ({ open, onClose, onCopy, children }: ConfirmCopyModalP
               Do not copy
             </Button>
           </Track>
-        </Box>
+        </Stack>
       </DialogActions>
     </Dialog>
   )

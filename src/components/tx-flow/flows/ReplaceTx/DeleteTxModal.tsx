@@ -12,6 +12,7 @@ import {
   Box,
   SvgIcon,
   CircularProgress,
+  Stack,
 } from '@mui/material'
 import { Close } from '@mui/icons-material'
 import madProps from '@/utils/mad-props'
@@ -90,7 +91,7 @@ const InternalDeleteTxModal = ({
   return (
     <Dialog open onClose={onClose}>
       <DialogTitle>
-        <Box data-testid="untrusted-token-warning" display="flex" alignItems="center">
+        <Stack data-testid="untrusted-token-warning" alignItems="center">
           <Typography variant="h6" fontWeight={700} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <SvgIcon component={InfoIcon} inheritViewBox color="error" />
             Delete this transaction?
@@ -103,7 +104,7 @@ const InternalDeleteTxModal = ({
           <IconButton aria-label="close" onClick={onClose} sx={{ marginLeft: 'auto' }}>
             <Close />
           </IconButton>
-        </Box>
+        </Stack>
       </DialogTitle>
 
       <Divider />

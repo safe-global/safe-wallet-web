@@ -1,7 +1,6 @@
 import { memo, type ReactElement, useContext, useMemo, useState, useEffect } from 'react'
 import {
   Autocomplete,
-  Box,
   IconButton,
   InputAdornment,
   Skeleton,
@@ -13,6 +12,7 @@ import {
   Typography,
   ListSubheader,
   type ListSubheaderProps,
+  Stack,
 } from '@mui/material'
 import { createFilterOptions } from '@mui/material/Autocomplete'
 import { Controller, useForm } from 'react-hook-form'
@@ -277,7 +277,7 @@ const TxNonce = () => {
   const { nonce, recommendedNonce } = useContext(SafeTxContext)
 
   return (
-    <Box data-testid="nonce-fld" display="flex" alignItems="center" gap={1}>
+    <Stack data-testid="nonce-fld" alignItems="center" spacing={1}>
       Nonce{' '}
       <Typography component="span" fontWeight={700}>
         #
@@ -287,7 +287,7 @@ const TxNonce = () => {
       ) : (
         <TxNonceForm nonce={nonce.toString()} recommendedNonce={recommendedNonce.toString()} />
       )}
-    </Box>
+    </Stack>
   )
 }
 

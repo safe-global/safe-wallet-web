@@ -3,7 +3,6 @@ import {
   Accordion,
   AccordionSummary,
   Avatar,
-  Box,
   Typography,
   AccordionDetails,
   SvgIcon,
@@ -11,6 +10,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Stack,
 } from '@mui/material'
 import { useState } from 'react'
 import type { ReactElement } from 'react'
@@ -85,7 +85,7 @@ const WcHints = (): ReactElement => {
   }
 
   return (
-    <Box display="flex" flexDirection="column" gap={1}>
+    <Stack spacing={1}>
       <HintAccordion
         title={ConnectionTitle}
         items={ConnectionSteps}
@@ -98,7 +98,7 @@ const WcHints = (): ReactElement => {
         onExpand={() => onExpand('interaction')}
         expanded={expandedAccordion === 'interaction'}
       />
-    </Box>
+    </Stack>
   )
 }
 

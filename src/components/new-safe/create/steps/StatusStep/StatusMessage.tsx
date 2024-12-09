@@ -4,7 +4,7 @@ import { SafeCreationEvent } from '@/features/counterfactual/services/safeCreati
 import type { UndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getBlockExplorerLink } from '@/utils/chains'
-import { Box, Typography } from '@mui/material'
+import { Box, Stack, Typography } from '@mui/material'
 import FailedIcon from '@/public/images/common/tx-failed.svg'
 
 const getStep = (status: SafeCreationEvent) => {
@@ -64,9 +64,9 @@ const StatusMessage = ({
   return (
     <>
       <Box data-testid="safe-status-info" px={3} mt={3}>
-        <Box width="160px" height="160px" display="flex" m="auto">
+        <Stack width="160px" height="160px" m="auto">
           {isError ? <FailedIcon /> : <LoadingSpinner status={spinnerStatus} />}
-        </Box>
+        </Stack>
         <Typography variant="h3" mt={2} fontWeight={700}>
           {stepInfo.description}
         </Typography>

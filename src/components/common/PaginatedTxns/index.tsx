@@ -1,5 +1,5 @@
 import { type ReactElement, useEffect, useState } from 'react'
-import { Box } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 import TxList from '@/components/transactions/TxList'
 import { type TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -45,9 +45,9 @@ const TxPage = ({
   return (
     <>
       {isFirstPage && filter && page && (
-        <Box display="flex" flexDirection="column" alignItems="flex-end" pt={[2, 0]} pb={3}>
+        <Stack alignItems="flex-end" pt={[2, 0]} pb={3}>
           {getFilterResultCount(filter, page)}
-        </Box>
+        </Stack>
       )}
 
       {page && page.results.length > 0 && <TxList items={page.results} />}

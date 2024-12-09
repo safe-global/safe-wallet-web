@@ -1,9 +1,12 @@
+import { memo } from 'react'
 import { default as MuiBox, type BoxProps } from '@mui/material/Box'
+import { type StackProps } from '@mui/material/Stack'
+
 import { default as MuiTypograpahy, type TypographyProps } from '@mui/material/Typography'
 
 export * from '@mui/material/index'
 
-export const Box = ({
+export const Box = memo(function Box({
   m,
   mt,
   mr,
@@ -48,7 +51,7 @@ export const Box = ({
   gridArea,
   lineHeight,
   ...props
-}: BoxProps['sx'] & BoxProps) => {
+}: BoxProps['sx'] & BoxProps) {
   return (
     <MuiBox
       sx={{
@@ -99,9 +102,103 @@ export const Box = ({
       {...props}
     />
   )
-}
+})
 
-export const Typography = ({
+export const Stack = memo(function Stack({
+  m,
+  mt,
+  mr,
+  mb,
+  ml,
+  mx,
+  my,
+  p,
+  pt,
+  pr,
+  pb,
+  pl,
+  px,
+  py,
+  width,
+  height,
+  minWidth,
+  minHeight,
+  maxWidth,
+  maxHeight,
+  flex,
+  flexWrap,
+  flexGrow,
+  flexShrink,
+  alignItems,
+  justifyItems,
+  alignContent,
+  justifyContent,
+  columnGap,
+  color,
+  textAlign,
+  position,
+  overflow,
+  textOverflow,
+  border,
+  borderColor,
+  borderRadius,
+  borderBottom,
+  bgcolor,
+  gridArea,
+  lineHeight,
+  ...props
+}: StackProps['sx'] & StackProps) {
+  return (
+    <MuiBox
+      sx={{
+        m,
+        mt,
+        mr,
+        mb,
+        ml,
+        mx,
+        my,
+        p,
+        pt,
+        pr,
+        pb,
+        pl,
+        px,
+        py,
+        width,
+        height,
+        minWidth,
+        minHeight,
+        maxWidth,
+        maxHeight,
+        flex,
+        flexWrap,
+        flexGrow,
+        flexShrink,
+        alignItems,
+        justifyItems,
+        alignContent,
+        justifyContent,
+        columnGap,
+        color,
+        textAlign,
+        position,
+        overflow,
+        textOverflow,
+        border,
+        borderColor,
+        borderRadius,
+        borderBottom,
+        bgcolor,
+        gridArea,
+        lineHeight,
+      }}
+      {...props}
+    />
+  )
+})
+
+export const Typography = memo(function Typography({
   m,
   mt,
   mr,
@@ -137,7 +234,7 @@ export const Typography = ({
   whiteSpace,
   width,
   ...props
-}: TypographyProps['sx'] & TypographyProps) => {
+}: TypographyProps['sx'] & TypographyProps) {
   return (
     <MuiTypograpahy
       sx={{
@@ -179,4 +276,4 @@ export const Typography = ({
       {...props}
     />
   )
-}
+})

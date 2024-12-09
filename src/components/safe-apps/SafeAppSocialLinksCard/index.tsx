@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import Card from '@mui/material/Card'
-import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Divider from '@mui/material/Divider'
@@ -13,6 +12,7 @@ import type { SafeAppData, SafeAppSocialProfile } from '@safe-global/safe-gatewa
 
 import DiscordIcon from '@/public/images/common/discord-icon.svg'
 import css from './styles.module.css'
+import Stack from '@mui/material/Stack'
 
 type SafeAppSocialLinksCardProps = {
   safeApp: SafeAppData
@@ -33,7 +33,7 @@ const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
 
   return (
     <Card className={css.container}>
-      <Box display="flex" alignItems="center" gap={1} component="a">
+      <Stack alignItems="center" spacing={1} component="a">
         {/* Team Link section */}
         <div className={css.questionMarkIcon}>
           <HelpOutlineRoundedIcon color="info" />
@@ -46,9 +46,9 @@ const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
             Get in touch with the team
           </Typography>
         </div>
-      </Box>
+      </Stack>
 
-      <Box className={css.socialLinksSectionContainer} display="flex" gap={4}>
+      <Stack className={css.socialLinksSectionContainer} spacing={4}>
         {/* Social links section */}
         {hasSocialLinks && (
           <div>
@@ -56,7 +56,7 @@ const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
               Social Media
             </Typography>
 
-            <Box display="flex" mt={0.2} minHeight="40px">
+            <Stack mt={0.2} minHeight="40px">
               {discordSocialLink && (
                 <IconButton aria-label="Discord link" component="a" target="_blank" href={discordSocialLink.url}>
                   <DiscordIcon />
@@ -80,7 +80,7 @@ const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
                   <GitHubIcon color="border" />
                 </IconButton>
               )}
-            </Box>
+            </Stack>
           </div>
         )}
 
@@ -90,7 +90,7 @@ const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
 
         {/* Developer website section */}
         {developerWebsite && (
-          <Box display="flex" flexDirection="column">
+          <Stack>
             <Typography color="border.main" variant="body2">
               Website
             </Typography>
@@ -107,9 +107,9 @@ const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
                 {developerWebsite}
               </MuiLink>
             </Link>
-          </Box>
+          </Stack>
         )}
-      </Box>
+      </Stack>
     </Card>
   )
 }

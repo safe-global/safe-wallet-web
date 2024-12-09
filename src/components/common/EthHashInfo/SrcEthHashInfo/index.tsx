@@ -2,7 +2,7 @@ import classnames from 'classnames'
 import type { ReactNode, ReactElement, SyntheticEvent } from 'react'
 import { isAddress } from 'ethers'
 import { useTheme } from '@mui/material/styles'
-import { Box, SvgIcon, Tooltip } from '@mui/material'
+import { Box, Stack, SvgIcon, Tooltip } from '@mui/material'
 import AddressBookIcon from '@/public/images/sidebar/address-book.svg'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import Identicon from '../../Identicon'
@@ -84,7 +84,7 @@ const SrcEthHashInfo = ({
 
       <Box overflow="hidden" className={onlyName ? css.inline : undefined} gap={0.5}>
         {name && (
-          <Box title={name} display="flex" alignItems="center" gap={0.5}>
+          <Stack title={name} alignItems="center" spacing={0.5}>
             <Box overflow="hidden" textOverflow="ellipsis">
               {name}
             </Box>
@@ -96,7 +96,7 @@ const SrcEthHashInfo = ({
                 </span>
               </Tooltip>
             )}
-          </Box>
+          </Stack>
         )}
 
         <div className={classnames(css.addressContainer, { [css.inline]: onlyName })}>

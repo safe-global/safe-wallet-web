@@ -1,7 +1,7 @@
 import Track from '@/components/common/Track'
 import { ChooseRecoveryMethodModal } from './ChooseRecoveryMethodModal'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
-import { Box, Button, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { Stack, Button, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { type ReactElement, useMemo, useState } from 'react'
 
 import ExternalLink from '@/components/common/ExternalLink'
@@ -113,11 +113,11 @@ function RecoverySettings(): ReactElement {
     <Paper sx={{ p: 4 }}>
       <Grid container spacing={3}>
         <Grid item lg={4} xs={12}>
-          <Box display="flex" alignItems="center" gap={1} mb={1}>
+          <Stack alignItems="center" spacing={1} mb={1}>
             <Typography variant="h4" fontWeight="bold">
               Account recovery
             </Typography>
-          </Box>
+          </Stack>
         </Grid>
 
         <Grid item xs>

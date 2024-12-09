@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Button, ListItemText, MenuItem, SvgIcon, Typography } from '@mui/material'
+import { Stack, Button, ListItemText, MenuItem, SvgIcon, Typography } from '@mui/material'
 import ContextMenu from '@/components/common/ContextMenu'
 import TransactionsIcon from '@/public/images/transactions/transactions.svg'
 import CheckIcon from '@/public/images/common/check.svg'
@@ -34,7 +34,7 @@ const OrderByButton = ({ orderBy: orderBy, onOrderByChange: onOrderByChange }: O
   }
 
   return (
-    <Box display="flex">
+    <Stack>
       <Button
         data-testid="sortby-button"
         onClick={handleClick}
@@ -79,7 +79,7 @@ const OrderByButton = ({ orderBy: orderBy, onOrderByChange: onOrderByChange }: O
           {orderBy === OrderByOption.NAME && <CheckIcon sx={{ ml: 1 }} />}
         </MenuItem>
       </ContextMenu>
-    </Box>
+    </Stack>
   )
 }
 

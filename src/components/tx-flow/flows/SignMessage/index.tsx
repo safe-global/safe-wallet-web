@@ -3,7 +3,7 @@ import SignMessage, { type ConfirmProps, type ProposeProps } from '@/components/
 import { getSwapTitle } from '@/features/swap'
 import { selectSwapParams } from '@/features/swap/store/swapParamsSlice'
 import { useAppSelector } from '@/store'
-import { Box, Typography } from '@mui/material'
+import { Stack, Typography } from '@mui/material'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import { ErrorBoundary } from '@sentry/react'
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
@@ -38,12 +38,12 @@ export const AppTitle = ({
   }
 
   return (
-    <Box display="flex" alignItems="center">
+    <Stack alignItems="center">
       <SafeAppIconCard src={appLogo} alt={name || 'The icon of the application'} width={32} height={32} />
       <Typography variant="h4" pl={2} fontWeight="bold">
         {title}
       </Typography>
-    </Box>
+    </Stack>
   )
 }
 

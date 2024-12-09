@@ -1,6 +1,6 @@
 import CheckBalance from '@/features/counterfactual/CheckBalance'
 import { type ReactElement } from 'react'
-import { Box, IconButton, Checkbox, Skeleton, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { Stack, IconButton, Checkbox, Skeleton, SvgIcon, Tooltip, Typography } from '@mui/material'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import css from './styles.module.css'
@@ -185,7 +185,7 @@ const AssetsTable = ({
               sticky: true,
               collapsed: item.tokenInfo.address === hidingAsset,
               content: (
-                <Box display="flex" flexDirection="row" gap={1} alignItems="center">
+                <Stack direction="row" spacing={1} alignItems="center">
                   <>
                     <SendButton tokenInfo={item.tokenInfo} />
 
@@ -209,7 +209,7 @@ const AssetsTable = ({
                       </Track>
                     )}
                   </>
-                </Box>
+                </Stack>
               ),
             },
           },

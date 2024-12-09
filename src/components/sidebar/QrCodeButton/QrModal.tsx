@@ -1,5 +1,5 @@
 import { type ReactElement } from 'react'
-import { Box, Switch, DialogContent, FormControlLabel, Typography } from '@mui/material'
+import { Stack, Switch, DialogContent, FormControlLabel, Typography, Box } from '@mui/material'
 import ModalDialog from '@/components/common/ModalDialog'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -30,7 +30,7 @@ const QrModal = ({ onClose }: { onClose: () => void }): ReactElement => {
           Only send {nativeToken} and tokens (e.g. ERC20, ERC721) to this address.
         </Typography>
 
-        <Box display="flex" flexDirection="column" flexWrap="wrap" justifyContent="center" alignItems="center" my={2}>
+        <Stack flexWrap="wrap" justifyContent="center" alignItems="center" my={2}>
           <Box mt={1} mb={1} p={1} border="1px solid" borderColor="border.main" borderRadius={1}>
             <QRCode value={qrCode} size={164} />
           </Box>
@@ -55,7 +55,7 @@ const QrModal = ({ onClose }: { onClose: () => void }): ReactElement => {
               showCopyButton
             />
           </Box>
-        </Box>
+        </Stack>
       </DialogContent>
     </ModalDialog>
   )

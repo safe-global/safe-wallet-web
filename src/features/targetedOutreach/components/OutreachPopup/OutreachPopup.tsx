@@ -1,7 +1,7 @@
 import { useCreateSubmissionMutation, useGetSubmissionQuery } from '@/store/api/gateway'
 import { skipToken } from '@reduxjs/toolkit/query'
 import { useEffect, type ReactElement } from 'react'
-import { Avatar, Box, Button, Chip, IconButton, Link, Paper, Stack, ThemeProvider, Typography } from '@mui/material'
+import { Avatar, Stack, Button, Chip, IconButton, Link, Paper, ThemeProvider, Typography, Box } from '@mui/material'
 import { Close } from '@mui/icons-material'
 import type { Theme } from '@mui/material/styles'
 import { useAppDispatch, useAppSelector } from '@/store'
@@ -80,8 +80,8 @@ const OutreachPopup = (): ReactElement | null => {
         <ThemeProvider theme={safeTheme}>
           <Box className={css.popup}>
             <Paper className={css.container}>
-              <Stack gap={2}>
-                <Box display="flex">
+              <Stack spacing={2}>
+                <Stack>
                   <Avatar alt="Clem, product lead" src="/images/common/outreach-popup-avatar.png" />
                   <Box ml={1}>
                     <Typography variant="body2">Clem</Typography>
@@ -89,7 +89,7 @@ const OutreachPopup = (): ReactElement | null => {
                       Product Lead
                     </Typography>
                   </Box>
-                </Box>
+                </Stack>
                 <Box>
                   <Chip
                     size="small"

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { getSafeInfo, type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
-import { Box, Button, Divider } from '@mui/material'
+import { Stack, Button, Divider, Box } from '@mui/material'
 
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { LoadSafeFormData } from '@/components/new-safe/load'
@@ -74,14 +74,14 @@ const SafeOwnerStep = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeFormD
         </Box>
         <Divider />
         <Box className={layoutCss.row}>
-          <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
+          <Stack direction="row" justifyContent="space-between" spacing={3}>
             <Button variant="outlined" size="small" onClick={handleBack} startIcon={<ArrowBackIcon fontSize="small" />}>
               Back
             </Button>
             <Button type="submit" variant="contained" size="stretched" disabled={!isValid}>
               Next
             </Button>
-          </Box>
+          </Stack>
         </Box>
       </form>
     </FormProvider>

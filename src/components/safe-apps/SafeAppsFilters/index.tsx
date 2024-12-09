@@ -8,7 +8,6 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import ListItemText from '@mui/material/ListItemText'
 import Select from '@mui/material/Select'
 import IconButton from '@mui/material/IconButton'
-import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
 import FormLabel from '@mui/material/FormLabel'
 import FormControl from '@mui/material/FormControl'
@@ -22,6 +21,7 @@ import { getUniqueTags } from '@/components/safe-apps/utils'
 import SearchIcon from '@/public/images/common/search.svg'
 import BatchIcon from '@/public/images/apps/batch-icon.svg'
 import css from './styles.module.css'
+import Stack from '@mui/material/Stack'
 
 export type safeAppCatogoryOptionType = {
   label: string
@@ -161,9 +161,9 @@ const SafeAppsFilters = ({
                 onChangeOptimizedWithBatch(value)
               }}
               label={
-                <Box display="flex" alignItems="center" gap={1}>
+                <Stack alignItems="center" spacing={1}>
                   <span>Batch transactions</span> <BatchIcon />
-                </Box>
+                </Stack>
               }
             />
           </FormControl>

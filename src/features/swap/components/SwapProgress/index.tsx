@@ -15,7 +15,7 @@ const SwapProgress = ({ order }: { order: Order }) => {
   const tokenSymbol = isSellOrder ? order.sellToken.symbol : order.buyToken.symbol
 
   return (
-    <Stack direction="row" alignItems="center" gap={1}>
+    <Stack direction="row" alignItems="center" spacing={1}>
       <LinearProgress
         variant="determinate"
         value={progressValue}

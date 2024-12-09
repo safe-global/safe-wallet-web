@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
 import { getLatestTransactions } from '@/utils/tx-list'
-import { Box, Skeleton, Typography } from '@mui/material'
+import { Stack, Skeleton, Typography } from '@mui/material'
 import { Card, ViewAllLink, WidgetBody, WidgetContainer } from '../styled'
 import PendingTxListItem from './PendingTxListItem'
 import useTxQueue from '@/hooks/useTxQueue'
@@ -24,13 +24,13 @@ const MAX_TXS = 4
 const EmptyState = () => {
   return (
     <Card>
-      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100%" gap={2}>
+      <Stack alignItems="center" justifyContent="center" height="100%" spacing={2}>
         <NoTransactionsIcon data-testid="no-tx-icon" />
 
         <Typography data-testid="no-tx-text" variant="body1" color="primary.light">
           This Safe Account has no queued transactions
         </Typography>
-      </Box>
+      </Stack>
     </Card>
   )
 }

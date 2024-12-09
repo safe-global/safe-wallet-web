@@ -11,7 +11,7 @@ import useProposers from '@/hooks/useProposers'
 import AddIcon from '@/public/images/common/add.svg'
 import { SETTINGS_EVENTS } from '@/services/analytics'
 import { FEATURES } from '@/utils/chains'
-import { Box, Button, Grid, Paper, SvgIcon, Typography } from '@mui/material'
+import { Stack, Button, Grid, Paper, SvgIcon, Typography, Box } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
@@ -83,7 +83,7 @@ const ProposersList = () => {
 
   return (
     <Paper sx={{ mt: 2 }}>
-      <Box data-testid="proposer-section" display="flex" flexDirection="column" gap={2}>
+      <Stack data-testid="proposer-section" spacing={2}>
         <Grid container spacing={3}>
           <Grid item lg={4} xs={12}>
             <Typography variant="h4" fontWeight={700}></Typography>
@@ -126,7 +126,7 @@ const ProposersList = () => {
             <UpsertProposer onClose={() => setIsAddDialogOpen(false)} onSuccess={() => setIsAddDialogOpen(false)} />
           )}
         </Grid>
-      </Box>
+      </Stack>
     </Paper>
   )
 }

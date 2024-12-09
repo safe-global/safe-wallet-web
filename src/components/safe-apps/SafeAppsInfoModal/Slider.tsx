@@ -1,4 +1,4 @@
-import { Box, Button } from '@mui/material'
+import { Stack, Button } from '@mui/material'
 import React, { useState, useEffect, useMemo } from 'react'
 import css from './styles.module.css'
 
@@ -68,7 +68,7 @@ const Slider: React.FC<SliderProps> = ({ onSlideChange, children, initialStep })
           ))}
         </div>
       </div>
-      <Box display="flex" justifyContent="center" width="100%">
+      <Stack justifyContent="center" width="100%">
         <Button color="primary" variant="outlined" size="small" fullWidth onClick={prevSlide}>
           {isFirstStep ? 'Cancel' : 'Back'}
         </Button>
@@ -85,7 +85,7 @@ const Slider: React.FC<SliderProps> = ({ onSlideChange, children, initialStep })
         >
           Continue
         </Button>
-      </Box>
+      </Stack>
     </>
   )
 }
