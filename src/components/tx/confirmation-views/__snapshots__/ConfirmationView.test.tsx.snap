@@ -32,7 +32,7 @@ exports[`ConfirmationView should display a confirmation screen for a SETTINGS_CH
         class="MuiBox-root css-1lchl8k"
       >
         <div
-          class="MuiBox-root css-171onha"
+          class="MuiStack-root css-c4vnuj-MuiStack-root"
           title="Nevinha"
         >
           <div
@@ -381,7 +381,7 @@ exports[`ConfirmationView should display a confirmation screen for a SETTINGS_CH
                               class="MuiBox-root css-1lchl8k"
                             >
                               <div
-                                class="MuiBox-root css-171onha"
+                                class="MuiStack-root css-c4vnuj-MuiStack-root"
                                 title="MetaMultiSigWallet"
                               >
                                 <div
@@ -937,7 +937,7 @@ exports[`ConfirmationView should display a confirmation with method call when th
                               class="MuiBox-root css-1lchl8k"
                             >
                               <div
-                                class="MuiBox-root css-171onha"
+                                class="MuiStack-root css-c4vnuj-MuiStack-root"
                                 title="MetaMultiSigWallet"
                               >
                                 <div
