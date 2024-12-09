@@ -19,7 +19,7 @@ const useAllOwnedSafes = (address: string): AsyncResult<AllOwnedSafes> => {
     }
   }, [data, setCache])
 
-  return address ? [cache, asError(error), isLoading] : [undefined, undefined, false]
+  return address ? [cache, asError(error), isLoading] : [{}, undefined, false]
 }
 
 export default useAllOwnedSafes
