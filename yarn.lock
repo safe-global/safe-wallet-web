@@ -1125,12 +1125,12 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@chromatic-com/storybook@^1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@chromatic-com/storybook/-/storybook-1.3.1.tgz#f47fab7309163f708844acd68aae003d3853cffe"
-  integrity sha512-v8pFYFkU+0ZScZ2FBJCCGZxmqCgSBlb3HxXFgR5XFODaHa3m8wP61Tywn0GN67/7P5tp6YVSrMKPAvhX8JReqA==
+"@chromatic-com/storybook@^3.2.2":
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/@chromatic-com/storybook/-/storybook-3.2.2.tgz#08754443de55618f802f88450c35266fd6d25db5"
+  integrity sha512-xmXt/GW0hAPbzNTrxYuVo43Adrtjue4DeVrsoIIEeJdGaPNNeNf+DHMlJKOBdlHmCnFUoe9R/0mLM9zUp5bKWw==
   dependencies:
-    chromatic "^11.3.0"
+    chromatic "^11.15.0"
     filesize "^10.0.12"
     jsonfile "^6.1.0"
     react-confetti "^6.1.0"
@@ -8411,10 +8411,10 @@ chownr@^1.1.1:
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.1.4.tgz#6fc9d7b42d32a583596337666e7d08084da2cc6b"
   integrity sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==
 
-chromatic@^11.3.0:
-  version "11.3.0"
-  resolved "https://registry.yarnpkg.com/chromatic/-/chromatic-11.3.0.tgz#d46b7aac1a0eaed29a765645eaf93c484220174c"
-  integrity sha512-q1ZtJDJrjLGnz60ivpC16gmd7KFzcaA4eTb7gcytCqbaKqlHhCFr1xQmcUDsm14CK7JsqdkFU6S+JQdOd2ZNJg==
+chromatic@^11.15.0:
+  version "11.20.0"
+  resolved "https://registry.yarnpkg.com/chromatic/-/chromatic-11.20.0.tgz#bcd49bcb0b1a894499d5c4dff4115f818e8d2f7e"
+  integrity sha512-Btdli1qoAI01UKmk3Iqe6vKhAhePRXqNI/2uKKy2R16q7SN/5kLTqhd1JI20LFOZSnH3xSJaUXeJ2xZOJB//3A==
 
 chrome-trace-event@^1.0.2:
   version "1.0.3"
