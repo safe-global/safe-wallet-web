@@ -25,7 +25,7 @@ export const SafeAppsSigningMethod = () => {
         </Grid>
 
         <Grid item xs>
-          <Typography  mb={2}>
+          <Typography mb={2}>
             This setting determines how the {BRAND_NAME} will sign message requests from Safe Apps. Gasless, off-chain
             signing is used by default. Learn more about message signing{' '}
             <ExternalLink href={HelpCenterArticle.SIGNED_MESSAGES}>here</ExternalLink>.
