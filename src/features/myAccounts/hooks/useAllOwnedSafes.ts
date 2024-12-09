@@ -4,14 +4,14 @@ import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { useEffect } from 'react'
 import { useGetAllOwnedSafesQuery } from '@/store/api/gateway'
 import { asError } from '@/services/exceptions/utils'
-import { skipToken } from '@reduxjs/toolkit/query'
 
 const CACHE_KEY = 'ownedSafesCache_'
 
 const useAllOwnedSafes = (address: string): AsyncResult<AllOwnedSafes> => {
   const [cache, setCache] = useLocalStorage<AllOwnedSafes>(CACHE_KEY + address)
 
-  const { data, error, isLoading } = useGetAllOwnedSafesQuery(address === '' ? skipToken : { walletAddress: address })
+  const { data, error, isLoading } = useGetAllOwnedSafesQuery({ walletAddress: address })
+  // const { data, error, isLoading } = useGetAllOwnedSafesQuery(address === '' ? skipToken : { walletAddress: address })
 
   useEffect(() => {
     if (data != undefined) {
@@ -19,7 +19,7 @@ const useAllOwnedSafes = (address: string): AsyncResult<AllOwnedSafes> => {
     }
   }, [data, setCache])
 
-  return [cache, asError(error), isLoading]
+  return address ? [cache, asError(error), isLoading] : [undefined, undefined, false]
 }
 
 export default useAllOwnedSafes

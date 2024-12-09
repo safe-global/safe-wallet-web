@@ -13,6 +13,7 @@ import { ImportFileUpload } from '@/components/settings/DataManagement/ImportFil
 import { ImportDialog } from '@/components/settings/DataManagement/ImportDialog'
 import { SAFE_EXPORT_VERSION } from '@/components/settings/DataManagement/useGlobalImportFileParser'
 import { FileListCard } from '@/components/settings/DataManagement/FileListCard'
+import { visitedSafesSlice } from '@/store/visitedSafesSlice'
 
 import css from './styles.module.css'
 import Track from '@/components/common/Track'
@@ -31,6 +32,7 @@ export const exportAppData = () => {
     [settingsSlice.name]: setting,
     [safeAppsSlice.name]: safeApps,
     [undeployedSafesSlice.name]: undeployedSafes,
+    [visitedSafesSlice.name]: visitedSafes,
   } = getPersistedState()
 
   // Ensure they are under the same name as the slice
@@ -40,9 +42,10 @@ export const exportAppData = () => {
     [settingsSlice.name]: setting,
     [safeAppsSlice.name]: safeApps,
     [undeployedSafesSlice.name]: undeployedSafes,
+    [visitedSafesSlice.name]: visitedSafes,
   }
 
-  const data = JSON.stringify({ version: SAFE_EXPORT_VERSION.V2, data: exportData })
+  const data = JSON.stringify({ version: SAFE_EXPORT_VERSION.V3, data: exportData })
 
   const blob = new Blob([data], { type: 'text/json' })
   const link = document.createElement('a')
