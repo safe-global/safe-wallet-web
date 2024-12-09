@@ -33,7 +33,7 @@ export function CancelRecoveryOverview({ onSubmit }: { onSubmit: () => void }): 
           time.
         </Typography>
 
-        <Stack columnspacing={3} spacing={1} flexWrap="wrap">
+        <Stack columnGap={3} spacing={1} flexWrap="wrap">
           <Button variant="outlined" onClick={onClose} className={css.button} size="small">
             Go back
           </Button>
