@@ -33,7 +33,9 @@
     "e2e:metro-ios": "EXPO_PUBLIC_ENV=e2e NODE_ENV=test RN_SRC_EXT=e2e.ts,e2e.tsx expo run:ios",
     "e2e:metro-android": "EXPO_PUBLIC_ENV=e2e NODE_ENV=test RN_SRC_EXT=e2e.ts,e2e.tsx expo run:android",
     "e2e:run": "maestro test e2e",
-    "eas-build-pre-install": "corepack enable && yarn set version 4"
+    "eas-build-pre-install": "corepack enable && yarn set version 4",
+    "android": "expo run:android",
+    "ios": "expo run:ios"
   },
   "dependencies": {
     "@cowprotocol/app-data": "^2.3.0",
@@ -67,7 +69,7 @@
     "expo-linear-gradient": "^14.0.1",
     "expo-linking": "~7.0.3",
     "expo-router": "~4.0.11",
-    "expo-splash-screen": "~0.29.13",
+    "expo-splash-screen": "^0.29.16",
     "expo-status-bar": "~2.0.0",
     "expo-system-ui": "~4.0.5",
     "expo-web-browser": "~14.0.1",
