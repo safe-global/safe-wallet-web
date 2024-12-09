@@ -1,3 +1,4 @@
+import { BRAND_NAME } from '@/config/constants'
 import type { AppInfo } from '.'
 
 export const showNotification = (title: string, options?: NotificationOptions) => {
@@ -27,13 +28,13 @@ export const NotificationMessages: Record<
   SIGNATURE_REQUEST: (appInfo: AppInfo) => ({
     title: 'Signature request',
     options: {
-      body: `${appInfo.name} wants you to sign a message. Open the Safe{Wallet} to continue.`,
+      body: `${appInfo.name} wants you to sign a message. Open the ${BRAND_NAME} to continue.`,
     },
   }),
   TRANSACTION_REQUEST: (appInfo: AppInfo) => ({
     title: 'Transaction request',
     options: {
-      body: `${appInfo.name} wants to submit a transaction. Open the Safe{Wallet} to continue.`,
+      body: `${appInfo.name} wants to submit a transaction. Open the ${BRAND_NAME} to continue.`,
     },
   }),
 }

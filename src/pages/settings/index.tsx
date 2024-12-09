@@ -3,6 +3,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { generalSettingsNavItems, settingsNavItems } from '@/components/sidebar/SidebarNavigation/config'
+import { BRAND_NAME } from '@/config/constants'
 
 const Settings: NextPage = () => {
   const router = useRouter()
@@ -17,7 +18,7 @@ const Settings: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Settings'}</title>
+        <title>{`${BRAND_NAME} – Settings`}</title>
       </Head>
     </>
   )
