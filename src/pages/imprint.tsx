@@ -1,9 +1,10 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { IS_OFFICIAL_HOST } from '@/config/constants'
 import { Typography } from '@mui/material'
 import Link from 'next/link'
 import MUILink from '@mui/material/Link'
+import { useIsOfficialHost } from '@/hooks/useIsOfficialHost'
+import { BRAND_NAME } from '@/config/constants'
 
 const SafeImprint = () => (
   <div>
@@ -69,13 +70,15 @@ const SafeImprint = () => (
 )
 
 const Imprint: NextPage = () => {
+  const isOfficialHost = useIsOfficialHost()
+
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Imprint'}</title>
+        <title>{`${BRAND_NAME} – Imprint`}</title>
       </Head>
 
-      <main>{IS_OFFICIAL_HOST && <SafeImprint />}</main>
+      <main>{isOfficialHost && <SafeImprint />}</main>
     </>
   )
 }

@@ -3,12 +3,13 @@ import Head from 'next/head'
 
 import SettingsHeader from '@/components/settings/SettingsHeader'
 import SecurityLogin from '@/components/settings/SecurityLogin'
+import { BRAND_NAME } from '@/config/constants'
 
 const SecurityPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Settings – Security'}</title>
+        <title>{`${BRAND_NAME} – Settings – Security`}</title>
       </Head>
 
       <SettingsHeader />

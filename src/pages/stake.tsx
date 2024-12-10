@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic'
 import { Typography } from '@mui/material'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
+import { BRAND_NAME } from '@/config/constants'
 
 const LazyStakePage = dynamic(() => import('@/features/stake/components/StakePage'), { ssr: false })
 
@@ -13,7 +14,7 @@ const StakePage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Stake'}</title>
+        <title>{`${BRAND_NAME} – Stake`}</title>
       </Head>
 
       {isFeatureEnabled === true ? (

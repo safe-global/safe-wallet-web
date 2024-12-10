@@ -15,6 +15,7 @@ import SafeAppsFilters from '@/components/safe-apps/SafeAppsFilters'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import { SAFE_APPS_LABELS } from '@/services/analytics'
+import { BRAND_NAME } from '@/config/constants'
 
 const SafeApps: NextPage = () => {
   const router = useRouter()
@@ -50,7 +51,7 @@ const SafeApps: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Safe Apps'}</title>
+        <title>{`${BRAND_NAME} – Safe Apps`}</title>
       </Head>
 
       <SafeAppsSDKLink />

@@ -5,12 +5,13 @@ import SafeModules from '@/components/settings/SafeModules'
 import TransactionGuards from '@/components/settings/TransactionGuards'
 import SettingsHeader from '@/components/settings/SettingsHeader'
 import { FallbackHandler } from '@/components/settings/FallbackHandler'
+import { BRAND_NAME } from '@/config/constants'
 
 const Modules: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Settings – Modules'}</title>
+        <title>{`${BRAND_NAME} – Settings – Modules`}</title>
       </Head>
 
       <SettingsHeader />

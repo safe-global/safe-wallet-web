@@ -30,7 +30,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { RecovererWarning } from './RecovererSmartContractWarning'
 import ExternalLink from '@/components/common/ExternalLink'
-import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
+import { BRAND_NAME, HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
 import { TOOLTIP_TITLES } from '../../common/constants'
 import Track from '@/components/common/Track'
 import type { RecoveryStateItem } from '@/features/recovery/services/recovery-state'
@@ -281,7 +281,7 @@ export function UpsertRecoveryFlowSettings({
           <TxCard>
             <FormControlLabel
               data-testid="warning-section"
-              label="I understand that the Recoverer will be able to initiate recovery of this Safe Account and that I will only be informed within the Safe{Wallet}."
+              label={`I understand that the Recoverer will be able to initiate recovery of this Safe Account and that I will only be informed within the ${BRAND_NAME}.`}
               control={<Checkbox checked={understandsRisk} onChange={(_, checked) => setUnderstandsRisk(checked)} />}
               sx={{ pl: 2 }}
             />
