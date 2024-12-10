@@ -25,6 +25,7 @@ export const MethodDetails = ({ data, hexData, addressInfoIndex }: MethodDetails
         >
           No parameters
         </Typography>
+
         {hexData && <HexEncodedData title="Data (hex-encoded)" hexData={hexData} />}
       </>
     )
