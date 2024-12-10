@@ -10,15 +10,23 @@ import css from './styles.module.css'
 interface ModalDialogProps extends DialogProps {
   dialogTitle?: React.ReactNode
   hideChainIndicator?: boolean
+  chainId?: string
 }
 
 interface DialogTitleProps {
   children: ReactNode
   onClose?: ModalProps['onClose']
   hideChainIndicator?: boolean
+  chainId?: string
 }
 
-export const ModalDialogTitle = ({ children, onClose, hideChainIndicator = false, ...other }: DialogTitleProps) => {
+export const ModalDialogTitle = ({
+  children,
+  onClose,
+  hideChainIndicator = false,
+  chainId,
+  ...other
+}: DialogTitleProps) => {
   return (
     <DialogTitle
       data-testid="modal-title"
@@ -27,7 +35,7 @@ export const ModalDialogTitle = ({ children, onClose, hideChainIndicator = false
     >
       {children}
       <span style={{ flex: 1 }} />
-      {!hideChainIndicator && <ChainIndicator inline />}
+      {!hideChainIndicator && <ChainIndicator chainId={chainId} inline />}
       {onClose ? (
         <IconButton
           data-testid="modal-dialog-close-btn"
@@ -53,6 +61,7 @@ const ModalDialog = ({
   hideChainIndicator,
   children,
   fullScreen = false,
+  chainId,
   ...restProps
 }: ModalDialogProps): ReactElement => {
   const theme = useTheme()
@@ -69,7 +78,7 @@ const ModalDialog = ({
       onClick={(e) => e.stopPropagation()}
     >
       {dialogTitle && (
-        <ModalDialogTitle onClose={restProps.onClose} hideChainIndicator={hideChainIndicator}>
+        <ModalDialogTitle onClose={restProps.onClose} hideChainIndicator={hideChainIndicator} chainId={chainId}>
           {dialogTitle}
         </ModalDialogTitle>
       )}

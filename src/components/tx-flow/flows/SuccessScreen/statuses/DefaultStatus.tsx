@@ -10,20 +10,8 @@ type Props = {
   error: undefined | Error
 }
 export const DefaultStatus = ({ error }: Props) => (
-  <Box
-    sx={{
-      paddingX: 3,
-      mt: 3,
-    }}
-  >
-    <Typography
-      data-testid="transaction-status"
-      variant="h6"
-      sx={{
-        marginTop: 2,
-        fontWeight: 700,
-      }}
-    >
+  <Box px={3} mt={3}>
+    <Typography data-testid="transaction-status" variant="h6" mt={2} fontWeight={700}>
       {error ? TRANSACTION_FAILED : TRANSACTION_SUCCESSFUL}
     </Typography>
     {error && (

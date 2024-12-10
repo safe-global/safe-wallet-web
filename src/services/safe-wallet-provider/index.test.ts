@@ -622,10 +622,10 @@ describe('SafeWalletProvider', () => {
       it('should return a confirmed transaction if blockNumber/gasUsed are hex', async () => {
         const receipt: Pick<TransactionReceipt, 'logs' | 'blockHash' | 'blockNumber' | 'gasUsed'> = {
           logs: [],
-          blockHash: faker.string.hexadecimal(),
+          blockHash: numberToHex(Number(faker.string.hexadecimal())),
           // Typed as number/bigint; is hex
-          blockNumber: faker.string.hexadecimal() as unknown as number,
-          gasUsed: faker.string.hexadecimal() as unknown as bigint,
+          blockNumber: numberToHex(Number(faker.string.hexadecimal())) as unknown as number,
+          gasUsed: numberToHex(Number(faker.string.hexadecimal())) as unknown as bigint,
         }
         const sdk = {
           getBySafeTxHash: jest.fn().mockResolvedValue({
@@ -675,7 +675,7 @@ describe('SafeWalletProvider', () => {
       it('should return a confirmed transaction if blockNumber/gasUsed are number/bigint', async () => {
         const receipt: Pick<TransactionReceipt, 'logs' | 'blockHash' | 'blockNumber' | 'gasUsed'> = {
           logs: [],
-          blockHash: faker.string.hexadecimal(),
+          blockHash: numberToHex(Number(faker.string.hexadecimal())),
           blockNumber: faker.number.int(),
           gasUsed: faker.number.bigInt(),
         }
@@ -710,8 +710,8 @@ describe('SafeWalletProvider', () => {
           result: {
             receipts: [
               {
-                blockHash: receipt.blockHash,
-                blockNumber: numberToHex(receipt.blockNumber),
+                blockHash: numberToHex(Number(receipt.blockHash)),
+                blockNumber: numberToHex(Number(receipt.blockNumber)),
                 chainId: '0x1',
                 gasUsed: numberToHex(receipt.gasUsed),
                 logs: receipt.logs,

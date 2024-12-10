@@ -114,6 +114,12 @@ const AddressInput = ({
     </InputAdornment>
   )
 
+  const resetName = () => {
+    if (!props.disabled && addressBook[watchedValue]) {
+      setValue(name, '')
+    }
+  }
+
   return (
     <>
       <TextField
@@ -124,7 +130,7 @@ const AddressInput = ({
         label={<>{error?.message || props.label || `Recipient address${isDomainLookupEnabled ? ' or ENS' : ''}`}</>}
         error={!!error}
         fullWidth
-        onClick={addressBook[watchedValue] ? () => setValue(name, '') : undefined}
+        onClick={resetName}
         spellCheck={false}
         InputProps={{
           ...(props.InputProps || {}),
@@ -140,6 +146,7 @@ const AddressInput = ({
               ) : (
                 <Skeleton variant="circular" width={32} height={32} animation={false} />
               )}
+
               {!rawValueRef.current.startsWith(`${currentShortName}:`) && <>{currentShortName}:</>}
             </InputAdornment>
           ),

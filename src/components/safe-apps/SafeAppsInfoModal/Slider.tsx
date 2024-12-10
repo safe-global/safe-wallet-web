@@ -68,13 +68,7 @@ const Slider: React.FC<SliderProps> = ({ onSlideChange, children, initialStep })
           ))}
         </div>
       </div>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          width: '100%',
-        }}
-      >
+      <Box display="flex" justifyContent="center" width="100%">
         <Button color="primary" variant="outlined" size="small" fullWidth onClick={prevSlide}>
           {isFirstStep ? 'Cancel' : 'Back'}
         </Button>

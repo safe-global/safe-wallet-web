@@ -16,14 +16,12 @@ const MethodCall = ({
   return (
     <>
       <Typography
+        fontWeight="bold"
+        display="flex"
+        flexWrap={['wrap', 'wrap', 'nowrap']}
+        alignItems="center"
+        gap=".5em"
         component="div"
-        sx={{
-          fontWeight: 'bold',
-          display: 'flex',
-          flexWrap: ['wrap', 'wrap', 'nowrap'],
-          alignItems: 'center',
-          gap: '.5em',
-        }}
       >
         Call
         <Typography
@@ -52,6 +50,7 @@ const MethodCall = ({
           avatarSize={24}
         />
       </Typography>
+
       <Divider />
     </>
   )

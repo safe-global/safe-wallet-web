@@ -17,13 +17,11 @@ const TxStatusChip = ({ children, color }: TxStatusChipProps): ReactElement => {
       label={
         <Typography
           variant="caption"
-          sx={{
-            fontWeight: 'bold',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 0.7,
-          }}
+          fontWeight="bold"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          gap={0.7}
         >
           {children}
         </Typography>

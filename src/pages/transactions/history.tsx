@@ -27,6 +27,7 @@ const History: NextPage = () => {
       <Head>
         <title>{'Safe{Wallet} – Transaction history'}</title>
       </Head>
+
       <TxHeader>
         <TrustedToggle />
 
@@ -34,14 +35,11 @@ const History: NextPage = () => {
           {filter?.type ?? 'Filter'}
         </Button>
       </TxHeader>
+
       <main>
         {showFilter && <TxFilterForm toggleFilter={toggleFilter} />}
 
-        <Box
-          sx={{
-            mb: 4,
-          }}
-        >
+        <Box mb={4}>
           <PaginatedTxns useTxns={useTxHistory} />
         </Box>
       </main>

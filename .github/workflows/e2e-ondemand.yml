@@ -10,7 +10,7 @@ concurrency:
 jobs:
   e2e:
     runs-on: ubuntu-20.04
-    timeout-minutes: 40
+    timeout-minutes: 90
     name: Cypress Regression on demand tests
     strategy:
       fail-fast: false

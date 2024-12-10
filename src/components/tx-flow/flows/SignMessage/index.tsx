@@ -38,20 +38,9 @@ export const AppTitle = ({
   }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-      }}
-    >
+    <Box display="flex" alignItems="center">
       <SafeAppIconCard src={appLogo} alt={name || 'The icon of the application'} width={32} height={32} />
-      <Typography
-        variant="h4"
-        sx={{
-          pl: 2,
-          fontWeight: 'bold',
-        }}
-      >
+      <Typography variant="h4" pl={2} fontWeight="bold">
         {title}
       </Typography>
     </Box>
