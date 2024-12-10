@@ -35,7 +35,8 @@ export const ImportDialog = ({
   const { addedSafes, addressBook, addressBookEntriesCount, settings, safeApps, undeployedSafes, visitedSafes, error } =
     useGlobalImportJsonParser(jsonData)
 
-  const isDisabled = (!addedSafes && !addressBook && !settings && !safeApps) || !!error
+  const isDisabled =
+    (!addedSafes && !addressBook && !settings && !safeApps && !undeployedSafes && !visitedSafes) || !!error
 
   const handleClose = () => {
     setFileName(undefined)
@@ -116,6 +117,7 @@ export const ImportDialog = ({
               addressBook={addressBook}
               settings={settings}
               safeApps={safeApps}
+              visitedSafes={visitedSafes}
               undeployedSafes={undeployedSafes}
               error={error}
               showPreview

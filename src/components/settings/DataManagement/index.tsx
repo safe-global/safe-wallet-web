@@ -13,7 +13,7 @@ import { ImportFileUpload } from '@/components/settings/DataManagement/ImportFil
 import { ImportDialog } from '@/components/settings/DataManagement/ImportDialog'
 import { SAFE_EXPORT_VERSION } from '@/components/settings/DataManagement/useGlobalImportFileParser'
 import { FileListCard } from '@/components/settings/DataManagement/FileListCard'
-import { visitedSafesSlice } from '@/store/visitedSafesSlice'
+import { selectAllVisitedSafes, visitedSafesSlice } from '@/store/visitedSafesSlice'
 
 import css from './styles.module.css'
 import Track from '@/components/common/Track'
@@ -64,6 +64,7 @@ const DataManagement = () => {
   const addedSafes = useAppSelector(selectAllAddedSafes)
   const addressBook = useAppSelector(selectAllAddressBooks)
   const settings = useAppSelector(selectSettings)
+  const visitedSafes = useAppSelector(selectAllVisitedSafes)
   const safeApps = useAppSelector(selectSafeApps)
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
 
@@ -102,6 +103,7 @@ const DataManagement = () => {
               addedSafes={addedSafes}
               addressBook={addressBook}
               settings={settings}
+              visitedSafes={visitedSafes}
               safeApps={safeApps}
               undeployedSafes={undeployedSafes}
             />
