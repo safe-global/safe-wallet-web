@@ -87,6 +87,7 @@ const CheckWallet = ({
     isUndeployedSafe,
     sdk,
     wallet,
+    safeLoaded,
   ])
 
   if (checkNetwork && isWrongChain) return children(false)
