@@ -44,7 +44,7 @@ const CheckWallet = ({
   const sdk = useSafeSDK()
   const isProposer = useIsWalletProposer()
 
-  const { safe } = useSafeInfo()
+  const { safe, safeLoaded } = useSafeInfo()
 
   const isNestedSafeOwner = useIsNestedSafeOwner()
 
@@ -54,7 +54,7 @@ const CheckWallet = ({
     if (!wallet) {
       return Message.WalletNotConnected
     }
-    if (!sdk) {
+    if (!sdk && safeLoaded) {
       return Message.SDKNotInitialized
     }
 
