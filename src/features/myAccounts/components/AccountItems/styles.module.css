@@ -64,6 +64,12 @@
   grid-template-columns: 60px 3fr minmax(auto, 2fr);
 }
 
+.safeSubLink .balance {
+  padding-right: var(--space-5);
+  text-align: right;
+  font-weight: bold;
+}
+
 .safeName,
 .safeAddress {
   white-space: nowrap;
