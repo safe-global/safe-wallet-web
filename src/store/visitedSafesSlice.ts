@@ -24,6 +24,10 @@ export const visitedSafesSlice = createSlice({
       state[chainId] ??= {}
       state[chainId][address] = { lastVisited }
     },
+    setVisitedSafes: (_, { payload }: PayloadAction<VisitedSafesState>) => {
+      // We must return as we are overwriting the entire state
+      return payload
+    },
   },
 })
 

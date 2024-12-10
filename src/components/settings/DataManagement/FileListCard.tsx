@@ -14,6 +14,7 @@ import type { UndeployedSafesState } from '@/features/counterfactual/store/undep
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import css from './styles.module.css'
+import type { VisitedSafesState } from '@/store/visitedSafesSlice'
 
 const getItemSecondaryText = (
   chains: ChainInfo[],
@@ -53,6 +54,7 @@ type Data = {
   settings?: SettingsState
   safeApps?: SafeAppsState
   undeployedSafes?: UndeployedSafesState
+  visitedSafes?: VisitedSafesState
   error?: string
 }
 
@@ -68,6 +70,7 @@ const getItems = ({
   settings,
   safeApps,
   undeployedSafes,
+  visitedSafes,
   error,
   chains,
   showPreview = false,
@@ -120,6 +123,18 @@ const getItems = ({
     items.push(settingsPreview)
   }
 
+  if (visitedSafes) {
+    const visitedSafesPreview: ListItemTextProps = {
+      primary: (
+        <>
+          <b>Visited Safe Accounts history</b>
+        </>
+      ),
+    }
+
+    items.push(visitedSafesPreview)
+  }
+
   const hasBookmarkedSafeApps = Object.values(safeApps || {}).some((chainId) => chainId.pinned?.length > 0)
   if (hasBookmarkedSafeApps) {
     const safeAppsPreview: ListItemTextProps = {
@@ -160,6 +175,7 @@ export const FileListCard = ({
   settings,
   safeApps,
   undeployedSafes,
+  visitedSafes,
   error,
   showPreview = false,
   ...cardHeaderProps
@@ -170,6 +186,7 @@ export const FileListCard = ({
     addressBook,
     settings,
     safeApps,
+    visitedSafes,
     undeployedSafes,
     error,
     chains: chains.configs,
