@@ -36,6 +36,8 @@ const OutreachPopup = (): ReactElement | null => {
         },
   )
 
+  const outreachUrl = `${ACTIVE_OUTREACH.url}#safe_address=${safeAddress}&signer_address=${wallet?.address}&chain_id=${currentChainId}`
+
   const [askAgainLaterTimestamp, setAskAgainLaterTimestamp] = useSessionStorage<number>(OUTREACH_SS_KEY)
 
   const shouldOpen = useShowOutreachPopup(isClosed, askAgainLaterTimestamp, submission)
@@ -109,7 +111,7 @@ const OutreachPopup = (): ReactElement | null => {
                   contact info, and we&apos;ll reach out for a short interview.
                 </Typography>
                 <Track {...OUTREACH_EVENTS.OPEN_SURVEY}>
-                  <Link rel="noreferrer noopener" target="_blank" href={ACTIVE_OUTREACH.url}>
+                  <Link rel="noreferrer noopener" target="_blank" href={outreachUrl}>
                     <Button fullWidth variant="contained" onClick={handleOpenSurvey}>
                       Get Involved
                     </Button>
