@@ -5,6 +5,10 @@ description: 'Install the dependencies'
 runs:
   using: 'composite'
   steps:
+    # We require yarn v4 and installing through corepack is the easiest way to get it
+    - name: Enable Corepack
+      shell: bash
+      run: corepack enable
     - name: Yarn cache
       uses: actions/cache@v3
       with:
@@ -14,7 +18,7 @@ runs:
         key: web-core-modules-${{ hashFiles('**/yarn.lock') }}
     - name: Yarn install
       shell: bash
-      run: yarn install --frozen-lockfile
+      run: yarn install  --immutable
     - name: Yarn after install
       shell: bash
       run: yarn after-install
