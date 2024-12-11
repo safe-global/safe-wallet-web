@@ -121,11 +121,7 @@ export const predictAddressBasedOnReplayData = async (safeCreationData: Replayed
 }
 
 export const hasMultiChainCreationFeatures = (chain: ChainInfo): boolean => {
-  return (
-    hasFeature(chain, FEATURES.MULTI_CHAIN_SAFE_CREATION) &&
-    hasFeature(chain, FEATURES.COUNTERFACTUAL) &&
-    hasFeature(chain, FEATURES.SAFE_141)
-  )
+  return hasFeature(chain, FEATURES.MULTI_CHAIN_SAFE_CREATION) && hasFeature(chain, FEATURES.COUNTERFACTUAL)
 }
 
 export const hasMultiChainAddNetworkFeature = (chain: ChainInfo | undefined): boolean => {
