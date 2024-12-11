@@ -12,13 +12,14 @@ import { useAppSelector } from '@/store'
 import { CookieAndTermType, hasConsentFor } from '@/store/cookiesAndTermsSlice'
 import { Link, ListItem, SvgIcon, Typography } from '@mui/material'
 import DebugToggle from '../DebugToggle'
-import { IS_PRODUCTION, NEW_SUGGESTION_FORM } from '@/config/constants'
+import { HELP_CENTER_URL, IS_PRODUCTION, NEW_SUGGESTION_FORM } from '@/config/constants'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import { useCurrentChain } from '@/hooks/useChains'
 import ProtofireLogo from '@/public/images/protofire-logo.svg'
 import SuggestionIcon from '@/public/images/sidebar/lightbulb_icon.svg'
 import darkPalette from '@/components/theme/darkPalette'
+import HelpCenterIcon from '@/public/images/sidebar/help-center.svg'
 
 const SidebarFooter = (): ReactElement => {
   const chain = useCurrentChain()
@@ -51,6 +52,21 @@ const SidebarFooter = (): ReactElement => {
           </SidebarListItemButton>
         </ListItem>
       </Track> */}
+
+      <Track {...OVERVIEW_EVENTS.HELP_CENTER}>
+        <ListItem disablePadding>
+          <a target="_blank" rel="noopener noreferrer" href={HELP_CENTER_URL} style={{ width: '100%' }}>
+            <SidebarListItemButton>
+              <SidebarListItemIcon color="primary">
+                <HelpCenterIcon />
+              </SidebarListItemIcon>
+              <SidebarListItemText data-testid="list-item-need-help" bold>
+                Need help?
+              </SidebarListItemText>
+            </SidebarListItemButton>
+          </a>
+        </ListItem>
+      </Track>
 
       <Track {...OVERVIEW_EVENTS.SUGGESTIONS}>
         <ListItem disablePadding>
