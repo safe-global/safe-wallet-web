@@ -21,10 +21,10 @@ const STATUSES = {
     color: 'success',
     text: 'Synced',
   },
-  slow: {
-    color: 'warning',
-    text: 'Slow network',
-  },
+  // slow: {
+  //   color: 'warning',
+  //   text: 'Slow network',
+  // },
   outOfSync: {
     color: 'error',
     text: 'Out of sync',
@@ -37,7 +37,8 @@ const getStatus = (synced: boolean, lastSync: number) => {
   if (synced) {
     status = STATUSES.synced
   } else if (Date.now() - lastSync > MAX_SYNC_DELAY) {
-    status = STATUSES.slow
+    // status = STATUSES.slow
+    status = STATUSES.outOfSync
   }
 
   return status
