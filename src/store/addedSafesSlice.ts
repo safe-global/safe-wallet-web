@@ -45,7 +45,7 @@ export const addedSafesSlice = createSlice({
 
       delete state[chainId]?.[address]
 
-      if (state[chainId] && Object.keys(state[chainId]).length === 0) {
+      if (Object.keys(state[chainId]).length === 0) {
         delete state[chainId]
       }
     },
@@ -59,7 +59,7 @@ export const addedSafesSlice = createSlice({
 
       delete state[chainId]?.[address]
 
-      if (state[chainId] && Object.keys(state[chainId]).length === 0) {
+      if (Object.keys(state[chainId]).length === 0) {
         delete state[chainId]
       }
     },
