@@ -4376,6 +4376,20 @@
     ethers "^6.13.1"
     semver "^7.6.2"
 
+"@safe-global/protocol-kit@^4.1.2":
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/@safe-global/protocol-kit/-/protocol-kit-4.1.2.tgz#ba00eece4f302c25ae937e234895028d182aab85"
+  integrity sha512-SMl5vPezWJfOHvfMNdl+qsRLsjqWPSFwGEDpD/7g77suAOLL5OWcCDV9kQLm/LqaddzJLfC+pY+iw4Z+MZoreg==
+  dependencies:
+    "@noble/hashes" "^1.3.3"
+    "@safe-global/safe-core-sdk-types" "^5.1.0"
+    "@safe-global/safe-deployments" "^1.37.21"
+    "@safe-global/safe-modules-deployments" "^2.2.1"
+    abitype "^1.0.2"
+    ethereumjs-util "^7.1.5"
+    ethers "^6.13.1"
+    semver "^7.6.2"
+
 "@safe-global/safe-apps-sdk@^9.1.0":
   version "9.1.0"
   resolved "https://registry.yarnpkg.com/@safe-global/safe-apps-sdk/-/safe-apps-sdk-9.1.0.tgz#0e65913e0f202e529ed3c846e0f5a98c2d35aa98"
@@ -4405,10 +4419,10 @@
   dependencies:
     abitype "^1.0.2"
 
-"@safe-global/safe-deployments@1.37.12":
-  version "1.37.12"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.37.12.tgz#c01b0a272991ae0e63a37d506024a809de53c370"
-  integrity sha512-6UM5wS6b0h4Uu2BCK6sWLNC5UYFBd1Xu4YsuZpoSjlo/6UDbbK6lzYVEgtqbsy8p1z2ZO+Z73WgRo3mlh7awig==
+"@safe-global/safe-deployments@^1.37.21":
+  version "1.37.21"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.37.21.tgz#9b194c08a5605bb012d0bc321a74d322d107e361"
+  integrity sha512-Q5qvcxXjAIcKOO8e3uQ/iNOSE5vRI+5jCO6JW/id5tEwMBtfyj5Ec2Vkk6nz0AM0uo2pyGROYjNTTuefoTthvQ==
   dependencies:
     semver "^7.6.2"
 
