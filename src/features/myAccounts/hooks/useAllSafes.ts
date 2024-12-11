@@ -41,21 +41,21 @@ export const useHasSafes = () => {
 const useAllSafes = (): SafeItems | undefined => {
   const { address: walletAddress = '' } = useWallet() || {}
   const [allOwned] = useAllOwnedSafes(walletAddress)
+  const { configs } = useChains()
   const allAdded = useAddedSafes()
   const allUndeployed = useAppSelector(selectUndeployedSafes)
   const allVisitedSafes = useAppSelector(selectAllVisitedSafes)
-  const { configs } = useChains()
   const allSafeNames = useAppSelector(selectAllAddressBooks)
 
   return useMemo<SafeItems>(() => {
-    if (walletAddress && allOwned === undefined) {
-      return []
-    }
+    if (walletAddress && allOwned === undefined) return []
+
     const chains = uniq(Object.keys(allOwned || {}).concat(Object.keys(allAdded), Object.keys(allUndeployed)))
     chains.sort((a, b) => parseInt(a) - parseInt(b))
 
     return chains.flatMap((chainId) => {
       if (!configs.some((item) => item.chainId === chainId)) return []
+
       const addedOnChain = Object.keys(allAdded[chainId] || {})
       const ownedOnChain = (allOwned || {})[chainId]
       const undeployedOnChain = Object.keys(allUndeployed[chainId] || {})
@@ -69,6 +69,7 @@ const useAllSafes = (): SafeItems | undefined => {
         const isOwned = (ownedOnChain || []).includes(address) || isOwner
         const lastVisited = allVisitedSafes?.[chainId]?.[address]?.lastVisited || 0
         const name = allSafeNames?.[chainId]?.[address]
+
         return {
           address,
           chainId,
