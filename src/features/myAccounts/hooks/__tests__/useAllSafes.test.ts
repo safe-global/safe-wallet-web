@@ -11,6 +11,7 @@ describe('useAllSafes hook', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
+    jest.spyOn(allOwnedSafes, 'default').mockReturnValue([undefined, undefined, false])
     jest.spyOn(useChains, 'default').mockImplementation(() => ({
       configs: [{ chainId: '1' } as ChainInfo],
     }))
