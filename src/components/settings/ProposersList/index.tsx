@@ -13,8 +13,6 @@ import { SETTINGS_EVENTS } from '@/services/analytics'
 import { FEATURES } from '@/utils/chains'
 import { Box, Button, Grid, Paper, SvgIcon, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import ExternalLink from '@/components/common/ExternalLink'
-import { HelpCenterArticle } from '@/config/constants'
 import React, { useMemo, useState } from 'react'
 
 const headCells = [
