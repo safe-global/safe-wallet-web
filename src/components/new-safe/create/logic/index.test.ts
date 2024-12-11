@@ -23,7 +23,6 @@ import {
 } from '@/services/contracts/safeContracts'
 import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
 import { FEATURES, getLatestSafeVersion } from '@/utils/chains'
-import { type FEATURES as GatewayFeatures } from '@safe-global/safe-gateway-typescript-sdk'
 import { chainBuilder } from '@/tests/builders/chains'
 import { type ReplayedSafeProps } from '@/store/slices'
 import { faker } from '@faker-js/faker'
@@ -40,9 +39,7 @@ import { Safe_to_l2_setup__factory } from '@/types/contracts'
 const provider = new JsonRpcProvider(undefined, { name: 'ethereum', chainId: 1 })
 
 const latestSafeVersion = getLatestSafeVersion(
-  chainBuilder()
-    .with({ chainId: '1', features: [FEATURES.SAFE_141 as unknown as GatewayFeatures] })
-    .build(),
+  chainBuilder().with({ chainId: '1', recommendedMasterCopyVersion: '1.4.1' }).build(),
 )
 
 const safeToL2SetupDeployment = getSafeToL2SetupDeployment()
@@ -58,7 +55,7 @@ describe('create/logic', () => {
       .with({
         chainId: '1',
         l2: false,
-        features: [FEATURES.SAFE_141 as unknown as GatewayFeatures],
+        recommendedMasterCopyVersion: '1.4.1',
       })
       .build()
 
@@ -207,7 +204,7 @@ describe('create/logic', () => {
           chainBuilder()
             .with({ chainId: '1' })
             // Multichain creation is toggled off
-            .with({ features: [FEATURES.SAFE_141, FEATURES.COUNTERFACTUAL] as any })
+            .with({ features: [FEATURES.COUNTERFACTUAL] as any })
             .with({ l2: false })
             .build(),
         ),
@@ -237,7 +234,7 @@ describe('create/logic', () => {
           chainBuilder()
             .with({ chainId: '137' })
             // Multichain creation is toggled off
-            .with({ features: [FEATURES.SAFE_141, FEATURES.COUNTERFACTUAL] as any })
+            .with({ features: [FEATURES.COUNTERFACTUAL] as any })
             .with({ l2: true })
             .build(),
         ),
@@ -267,7 +264,7 @@ describe('create/logic', () => {
           chainBuilder()
             .with({ chainId: '137' })
             // Multichain creation is toggled on
-            .with({ features: [FEATURES.SAFE_141, FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
+            .with({ features: [FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
             .with({ l2: true })
             .build(),
         ),
@@ -301,7 +298,7 @@ describe('create/logic', () => {
           chainBuilder()
             .with({ chainId: '137' })
             // Multichain creation is toggled on
-            .with({ features: [FEATURES.SAFE_141, FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
+            .with({ features: [FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
             .with({ l2: true })
             .build(),
         ),
