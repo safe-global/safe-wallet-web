@@ -100,4 +100,119 @@ describe('useAllSafes hook', () => {
       },
     ])
   })
+
+  it('returns SafeItems for added safes and owned safes', () => {
+    const mockOwnedSafes = {
+      '1': ['0x456', '0x789'],
+    }
+    jest.spyOn(allOwnedSafes, 'default').mockReturnValue([mockOwnedSafes, undefined, false])
+
+    const { result } = renderHook(() => useAllSafes(), {
+      initialReduxState: {
+        addedSafes: {
+          '1': {
+            '0x123': {
+              owners: [],
+              threshold: 1,
+            },
+          },
+        },
+      },
+    })
+
+    expect(result.current).toEqual([
+      { address: '0x123', chainId: '1', isPinned: true, isReadOnly: true, lastVisited: 0, name: undefined },
+      { address: '0x456', chainId: '1', isPinned: false, isReadOnly: false, lastVisited: 0, name: undefined },
+      { address: '0x789', chainId: '1', isPinned: false, isReadOnly: false, lastVisited: 0, name: undefined },
+    ])
+  })
+
+  it('returns SafeItems for added safes and undeployed safes', () => {
+    const { result } = renderHook(() => useAllSafes(), {
+      initialReduxState: {
+        addedSafes: {
+          '1': {
+            '0x123': {
+              owners: [],
+              threshold: 1,
+            },
+          },
+        },
+        undeployedSafes: {
+          '1': {
+            '0x456': {
+              status: {} as UndeployedSafe['status'],
+              props: {} as UndeployedSafe['props'],
+            },
+          },
+        },
+      },
+    })
+
+    expect(result.current).toEqual([
+      { address: '0x123', chainId: '1', isPinned: true, isReadOnly: true, lastVisited: 0, name: undefined },
+      { address: '0x456', chainId: '1', isPinned: false, isReadOnly: true, lastVisited: 0, name: undefined },
+    ])
+  })
+
+  it('returns SafeItems for owned safes and undeployed safes', () => {
+    const mockOwnedSafes = {
+      '1': ['0x456', '0x789'],
+    }
+    jest.spyOn(allOwnedSafes, 'default').mockReturnValue([mockOwnedSafes, undefined, false])
+
+    const { result } = renderHook(() => useAllSafes(), {
+      initialReduxState: {
+        undeployedSafes: {
+          '1': {
+            '0x123': {
+              status: {} as UndeployedSafe['status'],
+              props: {} as UndeployedSafe['props'],
+            },
+          },
+        },
+      },
+    })
+
+    expect(result.current).toEqual([
+      { address: '0x123', chainId: '1', isPinned: false, isReadOnly: true, lastVisited: 0, name: undefined },
+      { address: '0x456', chainId: '1', isPinned: false, isReadOnly: false, lastVisited: 0, name: undefined },
+      { address: '0x789', chainId: '1', isPinned: false, isReadOnly: false, lastVisited: 0, name: undefined },
+    ])
+  })
+
+  it('returns SafeItems for added, owned and undeployed safes', () => {
+    const mockOwnedSafes = {
+      '1': ['0x456', '0x789'],
+    }
+    jest.spyOn(allOwnedSafes, 'default').mockReturnValue([mockOwnedSafes, undefined, false])
+
+    const { result } = renderHook(() => useAllSafes(), {
+      initialReduxState: {
+        addedSafes: {
+          '1': {
+            '0x123': {
+              owners: [],
+              threshold: 1,
+            },
+          },
+        },
+        undeployedSafes: {
+          '1': {
+            '0x321': {
+              status: {} as UndeployedSafe['status'],
+              props: {} as UndeployedSafe['props'],
+            },
+          },
+        },
+      },
+    })
+
+    expect(result.current).toEqual([
+      { address: '0x123', chainId: '1', isPinned: true, isReadOnly: true, lastVisited: 0, name: undefined },
+      { address: '0x321', chainId: '1', isPinned: false, isReadOnly: true, lastVisited: 0, name: undefined },
+      { address: '0x456', chainId: '1', isPinned: false, isReadOnly: false, lastVisited: 0, name: undefined },
+      { address: '0x789', chainId: '1', isPinned: false, isReadOnly: false, lastVisited: 0, name: undefined },
+    ])
+  })
 })
