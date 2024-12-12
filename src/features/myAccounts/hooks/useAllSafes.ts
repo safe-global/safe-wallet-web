@@ -1,7 +1,5 @@
 import type { AllOwnedSafes } from '@safe-global/safe-gateway-typescript-sdk'
 import { useMemo } from 'react'
-import uniq from 'lodash/uniq'
-import isEmpty from 'lodash/isEmpty'
 import { useAppSelector } from '@/store'
 import type { AddedSafesState } from '@/store/addedSafesSlice'
 import { selectAllAddedSafes } from '@/store/addedSafesSlice'
@@ -23,36 +21,7 @@ export type SafeItem = {
 
 export type SafeItems = SafeItem[]
 
-const useAddedSafes = () => {
-  const allAdded = useAppSelector(selectAllAddedSafes)
-  return allAdded
-}
-
-export const useHasSafes = () => {
-  const { address = '' } = useWallet() || {}
-  const allAdded = useAddedSafes()
-  const hasAdded = !isEmpty(allAdded)
-  const [allOwned] = useAllOwnedSafes(!hasAdded ? address : '') // pass an empty string to not fetch owned safes
-
-  if (hasAdded) return { isLoaded: true, hasSafes: hasAdded }
-  if (!allOwned) return { isLoaded: false }
-
-  const hasOwned = !isEmpty(Object.values(allOwned).flat())
-  return { isLoaded: true, hasSafes: hasOwned }
-}
-
-const mergeAndSortChainIds = (
-  allOwned: AllOwnedSafes | undefined,
-  allAdded: AddedSafesState,
-  allUndeployed: UndeployedSafesState,
-) => {
-  const chainIds = uniq([...Object.keys(allOwned || {}), ...Object.keys(allAdded), ...Object.keys(allUndeployed)])
-  chainIds.sort((a, b) => parseInt(a, 10) - parseInt(b, 10))
-
-  return chainIds
-}
-
-const mergeAndSortAddresses = (
+const prepareAddresses = (
   chainId: string,
   allAdded: AddedSafesState,
   allOwned: AllOwnedSafes,
@@ -62,10 +31,9 @@ const mergeAndSortAddresses = (
   const ownedOnChain = allOwned[chainId] || []
   const undeployedOnChain = Object.keys(allUndeployed[chainId] || {})
 
-  const merged = [...addedOnChain, ...ownedOnChain, ...undeployedOnChain].filter(Boolean)
-  const uniqueAddresses = uniq(merged)
-  uniqueAddresses.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-  return uniqueAddresses
+  const combined = [...addedOnChain, ...ownedOnChain, ...undeployedOnChain]
+
+  return [...new Set(combined)]
 }
 
 const buildSafeItem = (
@@ -77,16 +45,17 @@ const buildSafeItem = (
   allVisitedSafes: VisitedSafesState,
   allSafeNames: AddressBookState,
 ): SafeItem => {
-  const safeData = allAdded?.[chainId]?.[address]
-  const owners = safeData?.owners || []
-  const isPinned = Boolean(safeData)
+  const addedSafe = allAdded[chainId]?.[address]
+  const addedSafeOwners = addedSafe?.owners || []
+  const isPinned = Boolean(addedSafe) // Pinning a safe means adding it to the added safes storage
 
   // Determine if the user is an owner
-  const isOwnerFromAdded = owners.some(({ value }: { value: string }) => sameAddress(walletAddress, value))
-  const isOwned = (allOwned[chainId] || []).includes(address) || isOwnerFromAdded
+  const isOwnerFromAdded = addedSafeOwners.some(({ value }) => sameAddress(walletAddress, value))
+  const isOwnedSafe = (allOwned[chainId] || []).includes(address)
+  const isOwned = isOwnedSafe || isOwnerFromAdded
 
-  const lastVisited = allVisitedSafes?.[chainId]?.[address]?.lastVisited || 0
-  const name = allSafeNames?.[chainId]?.[address]
+  const lastVisited = allVisitedSafes[chainId]?.[address]?.lastVisited || 0
+  const name = allSafeNames[chainId]?.[address]
 
   return {
     chainId,
@@ -102,7 +71,7 @@ const useAllSafes = (): SafeItems | undefined => {
   const { address: walletAddress = '' } = useWallet() || {}
   const [allOwned] = useAllOwnedSafes(walletAddress)
   const { configs } = useChains()
-  const allAdded = useAddedSafes()
+  const allAdded = useAppSelector(selectAllAddedSafes)
   const allUndeployed = useAppSelector(selectUndeployedSafes)
   const allVisitedSafes = useAppSelector(selectAllVisitedSafes)
   const allSafeNames = useAppSelector(selectAllAddressBooks)
@@ -110,11 +79,10 @@ const useAllSafes = (): SafeItems | undefined => {
   return useMemo<SafeItems>(() => {
     if (walletAddress && allOwned === undefined) return []
 
-    const chainIds = mergeAndSortChainIds(allOwned, allAdded, allUndeployed)
-    const validChainIds = chainIds.filter((chainId) => configs.some((item) => item.chainId === chainId))
+    const allChainIds = configs.map((config) => config.chainId)
 
-    return validChainIds.flatMap((chainId) => {
-      const uniqueAddresses = mergeAndSortAddresses(chainId, allAdded, allOwned || {}, allUndeployed)
+    return allChainIds.flatMap((chainId) => {
+      const uniqueAddresses = prepareAddresses(chainId, allAdded, allOwned || {}, allUndeployed)
 
       return uniqueAddresses.map((address) => {
         return buildSafeItem(chainId, address, walletAddress, allAdded, allOwned || {}, allVisitedSafes, allSafeNames)

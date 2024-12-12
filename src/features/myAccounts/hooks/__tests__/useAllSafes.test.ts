@@ -176,9 +176,9 @@ describe('useAllSafes hook', () => {
     })
 
     expect(result.current).toEqual([
-      { address: '0x123', chainId: '1', isPinned: false, isReadOnly: true, lastVisited: 0, name: undefined },
       { address: '0x456', chainId: '1', isPinned: false, isReadOnly: false, lastVisited: 0, name: undefined },
       { address: '0x789', chainId: '1', isPinned: false, isReadOnly: false, lastVisited: 0, name: undefined },
+      { address: '0x123', chainId: '1', isPinned: false, isReadOnly: true, lastVisited: 0, name: undefined },
     ])
   })
 
@@ -211,9 +211,9 @@ describe('useAllSafes hook', () => {
 
     expect(result.current).toEqual([
       { address: '0x123', chainId: '1', isPinned: true, isReadOnly: true, lastVisited: 0, name: undefined },
-      { address: '0x321', chainId: '1', isPinned: false, isReadOnly: true, lastVisited: 0, name: undefined },
       { address: '0x456', chainId: '1', isPinned: false, isReadOnly: false, lastVisited: 0, name: undefined },
       { address: '0x789', chainId: '1', isPinned: false, isReadOnly: false, lastVisited: 0, name: undefined },
+      { address: '0x321', chainId: '1', isPinned: false, isReadOnly: true, lastVisited: 0, name: undefined },
     ])
   })
 })
