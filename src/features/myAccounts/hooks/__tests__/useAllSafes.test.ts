@@ -216,4 +216,20 @@ describe('useAllSafes hook', () => {
       { address: '0x321', chainId: '1', isPinned: false, isReadOnly: true, lastVisited: 0, name: undefined },
     ])
   })
+
+  describe('buildSafeItem', () => {
+    it.todo('returns a pinned SafeItem if its an added safe')
+    it.todo('returns a SafeItem with lastVisited of 0 if there is no entry')
+    it.todo('returns a readOnly SafeItem if wallet is not owner of added safe')
+    it.todo('returns a readOnly SafeItem if it is not an owned safe')
+    it.todo('returns a SafeItem with name if it exists in the address book')
+  })
+
+  describe('prepareAddresses', () => {
+    it.todo('returns added safe addresses')
+    it.todo('returns owned safe addresses')
+    it.todo('returns undeployed safe addresses')
+    it.todo('remove duplicates')
+    it.todo('concatenates safe addresses')
+  })
 })

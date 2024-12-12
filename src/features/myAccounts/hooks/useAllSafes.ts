@@ -21,7 +21,7 @@ export type SafeItem = {
 
 export type SafeItems = SafeItem[]
 
-const prepareAddresses = (
+export const _prepareAddresses = (
   chainId: string,
   allAdded: AddedSafesState,
   allOwned: AllOwnedSafes,
@@ -36,7 +36,7 @@ const prepareAddresses = (
   return [...new Set(combined)]
 }
 
-const buildSafeItem = (
+export const _buildSafeItem = (
   chainId: string,
   address: string,
   walletAddress: string,
@@ -82,10 +82,10 @@ const useAllSafes = (): SafeItems | undefined => {
     const allChainIds = configs.map((config) => config.chainId)
 
     return allChainIds.flatMap((chainId) => {
-      const uniqueAddresses = prepareAddresses(chainId, allAdded, allOwned || {}, allUndeployed)
+      const uniqueAddresses = _prepareAddresses(chainId, allAdded, allOwned || {}, allUndeployed)
 
       return uniqueAddresses.map((address) => {
-        return buildSafeItem(chainId, address, walletAddress, allAdded, allOwned || {}, allVisitedSafes, allSafeNames)
+        return _buildSafeItem(chainId, address, walletAddress, allAdded, allOwned || {}, allVisitedSafes, allSafeNames)
       })
     })
   }, [allAdded, allOwned, allUndeployed, configs, walletAddress, allVisitedSafes, allSafeNames])
