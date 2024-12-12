@@ -83,7 +83,11 @@ describe('useAllSafes hook', () => {
           '1': {
             '0x123': {
               status: {} as UndeployedSafe['status'],
-              props: {} as UndeployedSafe['props'],
+              props: {
+                safeAccountConfig: {
+                  owners: ['0x111'],
+                },
+              } as UndeployedSafe['props'],
             },
           },
         },
@@ -143,7 +147,11 @@ describe('useAllSafes hook', () => {
           '1': {
             '0x456': {
               status: {} as UndeployedSafe['status'],
-              props: {} as UndeployedSafe['props'],
+              props: {
+                safeAccountConfig: {
+                  owners: ['0x111'],
+                },
+              } as UndeployedSafe['props'],
             },
           },
         },
@@ -168,7 +176,11 @@ describe('useAllSafes hook', () => {
           '1': {
             '0x123': {
               status: {} as UndeployedSafe['status'],
-              props: {} as UndeployedSafe['props'],
+              props: {
+                safeAccountConfig: {
+                  owners: ['0x111'],
+                },
+              } as UndeployedSafe['props'],
             },
           },
         },
@@ -202,7 +214,11 @@ describe('useAllSafes hook', () => {
           '1': {
             '0x321': {
               status: {} as UndeployedSafe['status'],
-              props: {} as UndeployedSafe['props'],
+              props: {
+                safeAccountConfig: {
+                  owners: ['0x111'],
+                },
+              } as UndeployedSafe['props'],
             },
           },
         },
@@ -231,11 +247,22 @@ describe('useAllSafes hook', () => {
       '1': ['0x456'],
     }
 
+    const mockAllUndeployed = {}
+
     const mockAllVisited = {}
     const mockAllSafeNames = {}
 
     it('returns a pinned SafeItem if its an added safe', () => {
-      const result = _buildSafeItem('1', '0x123', '0x111', mockAllAdded, mockAllOwned, mockAllVisited, mockAllSafeNames)
+      const result = _buildSafeItem(
+        '1',
+        '0x123',
+        '0x111',
+        mockAllAdded,
+        mockAllOwned,
+        mockAllUndeployed,
+        mockAllVisited,
+        mockAllSafeNames,
+      )
 
       expect(result).toEqual({
         address: '0x123',
@@ -256,7 +283,16 @@ describe('useAllSafes hook', () => {
         },
       }
 
-      const result = _buildSafeItem('1', '0x123', '0x111', mockAllAdded, mockAllOwned, mockAllVisited, mockAllSafeNames)
+      const result = _buildSafeItem(
+        '1',
+        '0x123',
+        '0x111',
+        mockAllAdded,
+        mockAllOwned,
+        mockAllUndeployed,
+        mockAllVisited,
+        mockAllSafeNames,
+      )
 
       expect(result.lastVisited).toEqual(123456)
     })
@@ -270,13 +306,58 @@ describe('useAllSafes hook', () => {
           },
         },
       }
-      const result = _buildSafeItem('1', '0x123', '0x111', mockAllAdded, mockAllOwned, mockAllVisited, mockAllSafeNames)
+      const result = _buildSafeItem(
+        '1',
+        '0x123',
+        '0x111',
+        mockAllAdded,
+        mockAllOwned,
+        mockAllUndeployed,
+        mockAllVisited,
+        mockAllSafeNames,
+      )
+
+      expect(result.isReadOnly).toEqual(false)
+    })
+
+    it('returns a SafeItem with readOnly false if wallet is an owner of undeployed safe', () => {
+      const mockAllUndeployed = {
+        '1': {
+          '0x123': {
+            status: {} as UndeployedSafe['status'],
+            props: {
+              safeAccountConfig: {
+                owners: ['0x111'],
+              },
+            } as UndeployedSafe['props'],
+          },
+        },
+      }
+      const result = _buildSafeItem(
+        '1',
+        '0x123',
+        '0x111',
+        mockAllAdded,
+        mockAllOwned,
+        mockAllUndeployed,
+        mockAllVisited,
+        mockAllSafeNames,
+      )
 
       expect(result.isReadOnly).toEqual(false)
     })
 
     it('returns a SafeItem with readOnly false if it is an owned safe', () => {
-      const result = _buildSafeItem('1', '0x456', '0x111', mockAllAdded, mockAllOwned, mockAllVisited, mockAllSafeNames)
+      const result = _buildSafeItem(
+        '1',
+        '0x456',
+        '0x111',
+        mockAllAdded,
+        mockAllOwned,
+        mockAllUndeployed,
+        mockAllVisited,
+        mockAllSafeNames,
+      )
 
       expect(result.isReadOnly).toEqual(false)
     })
@@ -287,7 +368,16 @@ describe('useAllSafes hook', () => {
           '0x123': 'My test safe',
         },
       }
-      const result = _buildSafeItem('1', '0x123', '0x111', mockAllAdded, mockAllOwned, mockAllVisited, mockAllSafeNames)
+      const result = _buildSafeItem(
+        '1',
+        '0x123',
+        '0x111',
+        mockAllAdded,
+        mockAllOwned,
+        mockAllUndeployed,
+        mockAllVisited,
+        mockAllSafeNames,
+      )
 
       expect(result.name).toEqual('My test safe')
     })

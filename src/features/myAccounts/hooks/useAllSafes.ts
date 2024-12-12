@@ -42,17 +42,20 @@ export const _buildSafeItem = (
   walletAddress: string,
   allAdded: AddedSafesState,
   allOwned: AllOwnedSafes,
+  allUndeployed: UndeployedSafesState,
   allVisitedSafes: VisitedSafesState,
   allSafeNames: AddressBookState,
 ): SafeItem => {
   const addedSafe = allAdded[chainId]?.[address]
   const addedSafeOwners = addedSafe?.owners || []
+  const undeployedSafeOwners = allUndeployed[chainId]?.[address]?.props.safeAccountConfig.owners || []
   const isPinned = Boolean(addedSafe) // Pinning a safe means adding it to the added safes storage
 
   // Determine if the user is an owner
   const isOwnerFromAdded = addedSafeOwners.some(({ value }) => sameAddress(walletAddress, value))
+  const isOwnerFromCF = undeployedSafeOwners.some((ownedAddress) => sameAddress(walletAddress, ownedAddress))
   const isOwnedSafe = (allOwned[chainId] || []).includes(address)
-  const isOwned = isOwnedSafe || isOwnerFromAdded
+  const isOwned = isOwnedSafe || isOwnerFromAdded || isOwnerFromCF
 
   const lastVisited = allVisitedSafes[chainId]?.[address]?.lastVisited || 0
   const name = allSafeNames[chainId]?.[address]
@@ -85,7 +88,16 @@ const useAllSafes = (): SafeItems | undefined => {
       const uniqueAddresses = _prepareAddresses(chainId, allAdded, allOwned || {}, allUndeployed)
 
       return uniqueAddresses.map((address) => {
-        return _buildSafeItem(chainId, address, walletAddress, allAdded, allOwned || {}, allVisitedSafes, allSafeNames)
+        return _buildSafeItem(
+          chainId,
+          address,
+          walletAddress,
+          allAdded,
+          allOwned || {},
+          allUndeployed,
+          allVisitedSafes,
+          allSafeNames,
+        )
       })
     })
   }, [allAdded, allOwned, allUndeployed, configs, walletAddress, allVisitedSafes, allSafeNames])
