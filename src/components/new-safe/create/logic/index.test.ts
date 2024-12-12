@@ -235,6 +235,7 @@ describe('create/logic', () => {
             .with({ chainId: '137' })
             // Multichain creation is toggled off
             .with({ features: [FEATURES.COUNTERFACTUAL] as any })
+            .with({ recommendedMasterCopyVersion: '1.4.1' })
             .with({ l2: true })
             .build(),
         ),
@@ -265,6 +266,7 @@ describe('create/logic', () => {
             .with({ chainId: '137' })
             // Multichain creation is toggled on
             .with({ features: [FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
+            .with({ recommendedMasterCopyVersion: '1.3.0' })
             .with({ l2: true })
             .build(),
         ),
@@ -299,6 +301,7 @@ describe('create/logic', () => {
             .with({ chainId: '137' })
             // Multichain creation is toggled on
             .with({ features: [FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
+            .with({ recommendedMasterCopyVersion: '1.4.1' })
             .with({ l2: true })
             .build(),
         ),
@@ -331,6 +334,7 @@ describe('create/logic', () => {
             .with({ chainId: '324' })
             // Multichain and 1.4.1 creation is toggled off
             .with({ features: [FEATURES.COUNTERFACTUAL] as any })
+            .with({ recommendedMasterCopyVersion: '1.3.0' })
             .with({ l2: true })
             .build(),
         ),
