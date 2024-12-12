@@ -3008,6 +3008,24 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-2.0.2.tgz#d9fae00a2d5cb40f92cfe64b47ad749fbc38f917"
   integrity sha512-6EwiSjwWYP7pTckG6I5eyFANjPhmPjUX9JRLUSfNPC7FX7zK9gyZAfUEaECL6ALTpGX5AjnBq3C9XmVWPitNpw==
 
+"@inversifyjs/common@1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@inversifyjs/common/-/common-1.4.0.tgz#4df42e8cb012a1630ebf2f3c65bb76ac5b0f3e4c"
+  integrity sha512-qfRJ/3iOlCL/VfJq8+4o5X4oA14cZSBbpAmHsYj8EsIit1xDndoOl0xKOyglKtQD4u4gdNVxMHx4RWARk/I4QA==
+
+"@inversifyjs/core@1.3.5":
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/@inversifyjs/core/-/core-1.3.5.tgz#c02ee3ed036aae40189302794f16a9f4e0ed4557"
+  integrity sha512-B4MFXabhNTAmrfgB+yeD6wd/GIvmvWC6IQ8Rh/j2C3Ix69kmqwz9pr8Jt3E+Nho9aEHOQCZaGmrALgtqRd+oEQ==
+  dependencies:
+    "@inversifyjs/common" "1.4.0"
+    "@inversifyjs/reflect-metadata-utils" "0.2.4"
+
+"@inversifyjs/reflect-metadata-utils@0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@inversifyjs/reflect-metadata-utils/-/reflect-metadata-utils-0.2.4.tgz#c65172283db9516c4a27e8d673ca7a31a07d528b"
+  integrity sha512-u95rV3lKfG+NT2Uy/5vNzoDujos8vN8O18SSA5UyhxsGYd4GLQn/eUsGXfOsfa7m34eKrDelTKRUX1m/BcNX5w==
+
 "@ioredis/commands@^1.1.1":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@ioredis/commands/-/commands-1.2.0.tgz#6d61b3097470af1fdbbe622795b8921d42018e11"
@@ -3332,27 +3350,28 @@
     rxjs "^6.6.3"
     typescript "^4.6.2"
 
-"@ledgerhq/context-module@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/context-module/-/context-module-1.0.0.tgz#28361d374a449dbc64ad663c61dc3e2f761ebea9"
-  integrity sha512-/XV0VRgm3skw3684ccv0bdIsTMr7Hm4RgJHLCosAR91uyro+l+V3KUrNyfIytnQgscPLorQIWld7ukQbvpp1ZQ==
+"@ledgerhq/context-module@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/context-module/-/context-module-1.1.0.tgz#d20b4d85e8063122cdb987c3150ec2add512b596"
+  integrity sha512-RLQtXnxCaaXuG0JfCvt6fJq5wzioR5JIwcZM9nfb+mw/nBw47ZABMGnV52PAlOUFg4ViSXRuYpRqu27swcvZ0g==
   dependencies:
-    axios "^1.7.7"
+    axios "^1.7.9"
     crypto-js "^4.2.0"
-    ethers "^6.13.2"
-    inversify "^6.0.2"
+    ethers "6.13.4"
+    inversify "^6.1.6"
     purify-ts "^2.1.0"
     reflect-metadata "^0.2.2"
 
-"@ledgerhq/device-management-kit@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/device-management-kit/-/device-management-kit-0.4.0.tgz#74990c30d764d9b69340922a3923ce869d71ef19"
-  integrity sha512-RTv0obGFbReYCYK0Ucd25B/T8lUELbfyHicdcjYLdjeSaoOKAGgW5Nh+Mxo3g0uH1zI01qU6A/tgaWP2M+pgnA==
+"@ledgerhq/device-management-kit@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/device-management-kit/-/device-management-kit-0.5.1.tgz#8d3000bc690b7fdbccb8bae8b0091e239c25ac9b"
+  integrity sha512-oh0ME54DyuMIVDjOrekz5Dm8LThSBqMw/wmkqPdLHxRd4HCq6efGHLjkwryRPRpI3RjU8IE2jHoFCC8dZ+x9Mw==
   dependencies:
+    "@ledgerhq/device-transport-kit-mock-client" "1.1.0"
     "@sentry/minimal" "^6.19.7"
     "@statelyai/inspect" "^0.4.0"
     axios "^1.7.7"
-    inversify "^6.0.2"
+    inversify "^6.0.3"
     inversify-logger-middleware "^3.1.0"
     purify-ts "^2.1.0"
     reflect-metadata "^0.2.2"
@@ -3361,18 +3380,30 @@
     uuid "^10.0.0"
     xstate "^5.18.2"
 
-"@ledgerhq/device-signer-kit-ethereum@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/device-signer-kit-ethereum/-/device-signer-kit-ethereum-1.0.0.tgz#a968f1f8ced545046ed6999b259edf9c8c890e52"
-  integrity sha512-S7PnCVDK5qd/n4/f4vPCnWZ6FHqR+dFlg143vFUYXy7cm7V7fKsoIb+bH3bTB7dkrvqXdKKVof7PXZYKZLkvwA==
+"@ledgerhq/device-signer-kit-ethereum@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/device-signer-kit-ethereum/-/device-signer-kit-ethereum-1.1.0.tgz#d0ce97b62a69be50297903d502638cc9d704bc14"
+  integrity sha512-I1kWhPuWYK2pXiaVycibPCwHbp1MSAEmMRoNOSQbEMGQiSoFgj2JBMd+6qO9y3c3PD46qsOVaqpGZlY3+d8Ayg==
   dependencies:
+    "@ledgerhq/signer-utils" "1.0.2"
     ethers-v5 "npm:ethers@^5.7.2"
-    ethers-v6 "npm:ethers@^6.13.2"
-    inversify "^6.0.2"
+    ethers-v6 "npm:ethers@6.13.4"
+    inversify "^6.1.6"
     inversify-logger-middleware "^3.1.0"
     purify-ts "^2.1.0"
     reflect-metadata "^0.2.2"
-    xstate "^5.18.2"
+    semver "^7.6.3"
+    xstate "^5.19.0"
+
+"@ledgerhq/device-transport-kit-mock-client@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/device-transport-kit-mock-client/-/device-transport-kit-mock-client-1.1.0.tgz#66e0d55fbb98113a5ce8d3eecb8b07badd988c52"
+  integrity sha512-gHY+g6y69iI+2axBPgINPNwQ45vMg+5QYy82aUPiyF6P2et5NIabIURsOzzXtfhAYopkCeanmgzg/DNDtf4IZw==
+
+"@ledgerhq/signer-utils@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/signer-utils/-/signer-utils-1.0.2.tgz#9b29c0dd1216948395f36e9179f55263b33d866b"
+  integrity sha512-6YKSYauyDrzUvkBQP/vvmtdCt22n4p1DG/va64iBuv2xdeepM7ikN6hq6KON1e3us/EjhEHLYA/IF+nm45z++A==
 
 "@lit-labs/react@^1.0.2":
   version "1.2.1"
@@ -7431,6 +7462,15 @@ axios@^1.7.7:
     form-data "^4.0.0"
     proxy-from-env "^1.1.0"
 
+axios@^1.7.9:
+  version "1.7.9"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.7.9.tgz#d7d071380c132a24accda1b2cfc1535b79ec650a"
+  integrity sha512-LhLcE7Hbiryz8oMDdDptSrWowmB4Bl6RCt6sIJKpRB4XtVf0iEgewX3au/pJqm+Py1kCASkb/FFKjxQaLtxJvw==
+  dependencies:
+    follow-redirects "^1.15.6"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
+
 axobject-query@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/axobject-query/-/axobject-query-3.2.1.tgz#39c378a6e3b06ca679f29138151e45b2b32da62a"
@@ -10256,7 +10296,7 @@ ethereumjs-util@7.1.5, ethereumjs-util@^7.0.7, ethereumjs-util@^7.0.8, ethereumj
     "@ethersproject/web" "5.7.1"
     "@ethersproject/wordlists" "5.7.0"
 
-"ethers-v6@npm:ethers@^6.13.2":
+"ethers-v6@npm:ethers@6.13.4":
   version "6.13.4"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-6.13.4.tgz#bd3e1c3dc1e7dc8ce10f9ffb4ee40967a651b53c"
   integrity sha512-21YtnZVg4/zKkCQPjrDj38B1r4nQvTZLopUGMLQ1ePU2zV/joCfDC3t3iKQjWRzjjjbzR+mdAIoikeBRNkdllA==
@@ -10377,6 +10417,19 @@ ethers@5.7.2:
     "@ethersproject/web" "5.7.1"
     "@ethersproject/wordlists" "5.7.0"
 
+ethers@6.13.4:
+  version "6.13.4"
+  resolved "https://registry.yarnpkg.com/ethers/-/ethers-6.13.4.tgz#bd3e1c3dc1e7dc8ce10f9ffb4ee40967a651b53c"
+  integrity sha512-21YtnZVg4/zKkCQPjrDj38B1r4nQvTZLopUGMLQ1ePU2zV/joCfDC3t3iKQjWRzjjjbzR+mdAIoikeBRNkdllA==
+  dependencies:
+    "@adraffy/ens-normalize" "1.10.1"
+    "@noble/curves" "1.2.0"
+    "@noble/hashes" "1.3.2"
+    "@types/node" "22.7.5"
+    aes-js "4.0.0-beta.5"
+    tslib "2.7.0"
+    ws "8.17.1"
+
 ethers@^6.11.1, ethers@^6.13.1, ethers@^6.9.2:
   version "6.11.1"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-6.11.1.tgz#96aae00b627c2e35f9b0a4d65c7ab658259ee6af"
@@ -10389,19 +10442,6 @@ ethers@^6.11.1, ethers@^6.13.1, ethers@^6.9.2:
     aes-js "4.0.0-beta.5"
     tslib "2.4.0"
     ws "8.5.0"
-
-ethers@^6.13.2:
-  version "6.13.4"
-  resolved "https://registry.yarnpkg.com/ethers/-/ethers-6.13.4.tgz#bd3e1c3dc1e7dc8ce10f9ffb4ee40967a651b53c"
-  integrity sha512-21YtnZVg4/zKkCQPjrDj38B1r4nQvTZLopUGMLQ1ePU2zV/joCfDC3t3iKQjWRzjjjbzR+mdAIoikeBRNkdllA==
-  dependencies:
-    "@adraffy/ens-normalize" "1.10.1"
-    "@noble/curves" "1.2.0"
-    "@noble/hashes" "1.3.2"
-    "@types/node" "22.7.5"
-    aes-js "4.0.0-beta.5"
-    tslib "2.7.0"
-    ws "8.17.1"
 
 event-emitter@^0.3.5:
   version "0.3.5"
@@ -11880,10 +11920,13 @@ inversify-logger-middleware@^3.1.0:
   dependencies:
     chalk "2.3.0"
 
-inversify@^6.0.2:
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/inversify/-/inversify-6.0.2.tgz#dc7fa0348213d789d35ffb719dea9685570989c7"
-  integrity sha512-i9m8j/7YIv4mDuYXUAcrpKPSaju/CIly9AHK5jvCBeoiM/2KEsuCQTTP+rzSWWpLYWRukdXFSl6ZTk2/uumbiA==
+inversify@^6.0.3, inversify@^6.1.6:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/inversify/-/inversify-6.2.0.tgz#3c1a81bcd5722975f001a8af162c48255858daaa"
+  integrity sha512-wpiGpyIphFthWf18CBASJ1gClYwnW0mKjcSHwOuF7ToF/TBoarYSItX492WTGyK0VdJN1afwBIfaEpvp8IetPA==
+  dependencies:
+    "@inversifyjs/common" "1.4.0"
+    "@inversifyjs/core" "1.3.5"
 
 ioredis@^5.3.2:
   version "5.3.2"
@@ -17179,7 +17222,16 @@ string-length@^4.0.1:
     char-regex "^1.0.2"
     strip-ansi "^6.0.0"
 
-"string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
+"string-width-cjs@npm:string-width@^4.2.0":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
+  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
+  dependencies:
+    emoji-regex "^8.0.0"
+    is-fullwidth-code-point "^3.0.0"
+    strip-ansi "^6.0.1"
+
+string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -17275,7 +17327,14 @@ stringify-object@^3.3.0:
     is-obj "^1.0.1"
     is-regexp "^1.0.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
+  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
+  dependencies:
+    ansi-regex "^5.0.1"
+
+strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -19033,7 +19092,7 @@ workbox-window@7.0.0:
     "@types/trusted-types" "^2.0.2"
     workbox-core "7.0.0"
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
@@ -19046,6 +19105,15 @@ wrap-ansi@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-6.2.0.tgz#e9393ba07102e6c91a3b221478f0257cd2856e53"
   integrity sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==
+  dependencies:
+    ansi-styles "^4.0.0"
+    string-width "^4.1.0"
+    strip-ansi "^6.0.0"
+
+wrap-ansi@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
+  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
   dependencies:
     ansi-styles "^4.0.0"
     string-width "^4.1.0"
@@ -19122,6 +19190,11 @@ xstate@^5.18.2:
   version "5.18.2"
   resolved "https://registry.yarnpkg.com/xstate/-/xstate-5.18.2.tgz#924122af5102f3c3f7e172ebf20a09455ddb2963"
   integrity sha512-hab5VOe29D0agy8/7dH1lGw+7kilRQyXwpaChoMu4fe6rDP+nsHYhDYKfS2O4iXE7myA98TW6qMEudj/8NXEkA==
+
+xstate@^5.19.0:
+  version "5.19.0"
+  resolved "https://registry.yarnpkg.com/xstate/-/xstate-5.19.0.tgz#619fdf00cef5de0552c4cb463fcba42ee482a149"
+  integrity sha512-Juh1MjeRaVWr1IRxXYvQMMRFMrei6vq6+AfP6Zk9D9YV0ZuvubN0aM6s2ITwUrq+uWtP1NTO8kOZmsM/IqeOiQ==
 
 xtend@^4.0.1, xtend@^4.0.2, xtend@~4.0.1:
   version "4.0.2"

@@ -9,6 +9,10 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
+    groups:
+      ledger:
+        patterns:
+          - '@ledgerhq/*'
 
   - package-ecosystem: 'github-actions'
     directory: '/'

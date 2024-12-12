@@ -45,7 +45,7 @@ export function ledgerModule(): WalletInit {
         const { StaticJsonRpcProvider } = await import('@ethersproject/providers')
         const { createEIP1193Provider, ProviderRpcError, ProviderRpcErrorCode } = await import('@web3-onboard/common')
         const { accountSelect, getHardwareWalletProvider } = await import('@web3-onboard/hw-common')
-        const { Signature, Transaction } = await import('ethers-v6')
+        const { Signature, toUtf8Bytes, Transaction } = await import('ethers-v6')
 
         const eventEmitter = new EventEmitter()
         const ledgerSdk = await getLedgerSdk()
@@ -135,19 +135,38 @@ export function ledgerModule(): WalletInit {
             eth_signTransaction: async (args) => {
               const txParams = args.params[0]
 
+              // Cannot use Transaction.from with unsigned transaction
+              const transaction = new Transaction()
+
+              transaction.chainId = BigInt(currentChain.id)
+
+              // Transaction
+              transaction.to = txParams.to
+              if (txParams.data) {
+                transaction.data = txParams.data
+              }
+              if (txParams.value) {
+                transaction.value = BigInt(txParams.value)
+              }
+
+              if (txParams.nonce) {
+                transaction.nonce = parseInt(txParams.nonce, 16)
+              }
+
+              // Gas
               const gasLimit = txParams.gas ?? txParams.gasLimit
-              const transaction = Transaction.from({
-                chainId: BigInt(currentChain.id),
-                data: txParams.data,
-                from: currentAccount?.address,
-                gasLimit: gasLimit ? BigInt(gasLimit) : null,
-                gasPrice: txParams.gasPrice ? BigInt(txParams.gasPrice) : null,
-                maxFeePerGas: txParams.maxFeePerGas ? BigInt(txParams.maxFeePerGas) : null,
-                maxPriorityFeePerGas: txParams.maxPriorityFeePerGas ? BigInt(txParams.maxPriorityFeePerGas) : null,
-                nonce: txParams.nonce ? parseInt(txParams.nonce, 16) : null,
-                to: txParams.to,
-                value: txParams.value ? BigInt(txParams.value) : null,
-              })
+              if (gasLimit) {
+                transaction.gasLimit = BigInt(gasLimit)
+              }
+              if (txParams.gasPrice) {
+                transaction.gasPrice = BigInt(txParams.gasPrice)
+              }
+              if (txParams.maxFeePerGas) {
+                transaction.maxFeePerGas = BigInt(txParams.maxFeePerGas)
+              }
+              if (txParams.maxPriorityFeePerGas) {
+                transaction.maxPriorityFeePerGas = BigInt(txParams.maxPriorityFeePerGas)
+              }
 
               transaction.signature = await ledgerSdk.signTransaction(getAssertedDerivationPath(), transaction)
 
@@ -165,7 +184,11 @@ export function ledgerModule(): WalletInit {
             },
             eth_sign: async (args) => {
               const message = args.params[1]
-              const signature = await ledgerSdk.signMessage(getAssertedDerivationPath(), message)
+              const signature = await ledgerSdk.signMessage(
+                getAssertedDerivationPath(),
+                // Safe signs bytes
+                toUtf8Bytes(message),
+              )
               return Signature.from(signature).serialized
             },
             personal_sign: async (args) => {
@@ -306,15 +329,20 @@ export function ledgerModule(): WalletInit {
 
 // Promisified Ledger SDK
 async function getLedgerSdk() {
-  const { DeviceActionStatus, DeviceSdkBuilder } = await import('@ledgerhq/device-management-kit')
-  const { KeyringEthBuilder } = await import('@ledgerhq/device-signer-kit-ethereum')
+  const { BuiltinTransports, DeviceActionStatus, DeviceManagementKitBuilder } = await import(
+    '@ledgerhq/device-management-kit'
+  )
+  const { SignerEthBuilder } = await import('@ledgerhq/device-signer-kit-ethereum')
   const { lastValueFrom } = await import('rxjs')
 
   // Get connected device and create signer
-  const sdk = new DeviceSdkBuilder().build()
-  const device = await lastValueFrom(sdk.startDiscovering())
-  const sessionId = await sdk.connect({ deviceId: device.id })
-  const keyring = new KeyringEthBuilder({ sdk, sessionId }).build()
+  const transport = BuiltinTransports.USB
+  const dmk = new DeviceManagementKitBuilder().addTransport(transport).build()
+  const device = await lastValueFrom(dmk.startDiscovering({ transport }))
+  const sessionId = await dmk.connect({ device })
+
+  // TODO: Create a Safe-specific contextModule for clear signing
+  const signer = new SignerEthBuilder({ dmk, sessionId }).build()
 
   function mapOutput<T>(actionState: DeviceActionState<T, unknown, unknown>): T {
     switch (actionState.status) {
@@ -332,22 +360,22 @@ async function getLedgerSdk() {
 
   return {
     disconnect: async () => {
-      return sdk.disconnect({ sessionId })
+      return dmk.disconnect({ sessionId })
     },
     getAddress: async (derivationPath: string): Promise<GetAddressDAOutput> => {
-      const actionState = await lastValueFrom(keyring.getAddress(derivationPath, { checkOnDevice: false }).observable)
+      const actionState = await lastValueFrom(signer.getAddress(derivationPath, { checkOnDevice: false }).observable)
       return mapOutput(actionState)
     },
-    signMessage: async (derivationPath: string, message: string): Promise<SignPersonalMessageDAOutput> => {
-      const actionState = await lastValueFrom(keyring.signMessage(derivationPath, message).observable)
+    signMessage: async (derivationPath: string, message: string | Uint8Array): Promise<SignPersonalMessageDAOutput> => {
+      const actionState = await lastValueFrom(signer.signMessage(derivationPath, message).observable)
       return mapOutput(actionState)
     },
     signTransaction: async (derivationPath: string, transaction: Transaction): Promise<SignTransactionDAOutput> => {
-      const actionState = await lastValueFrom(keyring.signTransaction(derivationPath, transaction).observable)
+      const actionState = await lastValueFrom(signer.signTransaction(derivationPath, transaction).observable)
       return mapOutput(actionState)
     },
     signTypedData: async (derivationPath: string, typedData: TypedData): Promise<SignTypedDataDAOutput> => {
-      const actionState = await lastValueFrom(keyring.signTypedData(derivationPath, typedData).observable)
+      const actionState = await lastValueFrom(signer.signTypedData(derivationPath, typedData).observable)
       return mapOutput(actionState)
     },
   }
