@@ -4,6 +4,25 @@ import { type SafeTransactionData, type SafeVersion } from '@safe-global/safe-co
 import { getEip712TxTypes } from '@safe-global/protocol-kit/dist/src/utils'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useChainId from '@/hooks/useChainId'
+import semverSatisfies from 'semver/functions/satisfies'
+
+const NEW_DOMAIN_TYPE_HASH_VERSION = '>=1.3.0'
+
+export function getDomainHash({
+  chainId,
+  safeAddress,
+  safeVersion,
+}: {
+  chainId: string
+  safeAddress: string
+  safeVersion: SafeVersion
+}): string {
+  const includeChainId = semverSatisfies(safeVersion, NEW_DOMAIN_TYPE_HASH_VERSION)
+  return TypedDataEncoder.hashDomain({
+    ...(includeChainId && { chainId }),
+    verifyingContract: safeAddress,
+  })
+}
 
 export const SafeTxHashDataRow = ({
   safeTxHash,
@@ -16,10 +35,8 @@ export const SafeTxHashDataRow = ({
 }) => {
   const chainId = useChainId()
   const safeAddress = useSafeAddress()
-  const domainHash = TypedDataEncoder.hashDomain({
-    chainId,
-    verifyingContract: safeAddress,
-  })
+
+  const domainHash = getDomainHash({ chainId, safeAddress, safeVersion })
   const messageHash = safeTxData
     ? TypedDataEncoder.hashStruct('SafeTx', { SafeTx: getEip712TxTypes(safeVersion).SafeTx }, safeTxData)
     : undefined

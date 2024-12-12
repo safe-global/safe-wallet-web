@@ -154,7 +154,12 @@ export function UpsertRecoveryFlowSettings({
                 recovery proposal when it is not needed or wanted during this period.
               </Typography>
             </div>
-            <Box display="flex" gap={2}>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 2,
+              }}
+            >
               <Controller
                 control={formMethods.control}
                 name={UpsertRecoveryFlowFields.selectedDelay}
@@ -175,7 +180,15 @@ export function UpsertRecoveryFlowSettings({
                   </TextField>
                 )}
               />
-              <Box display="flex" flex="1" gap={2} sx={{ maxWidth: '180px', minWidth: '140px' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flex: '1',
+                  gap: 2,
+                  maxWidth: '180px',
+                  minWidth: '140px',
+                }}
+              >
                 {isCustomDelaySelected(selectedDelay) && (
                   <>
                     <Controller
@@ -193,7 +206,13 @@ export function UpsertRecoveryFlowSettings({
                         />
                       )}
                     />
-                    <Typography my="auto">days.</Typography>
+                    <Typography
+                      sx={{
+                        my: 'auto',
+                      }}
+                    >
+                      days.
+                    </Typography>
                   </>
                 )}
               </Box>
@@ -224,7 +243,12 @@ export function UpsertRecoveryFlowSettings({
                   </Tooltip>
                 </Typography>
 
-                <Typography variant="body2" mb={2}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    mb: 2,
+                  }}
+                >
                   Set a period of time after which the recovery proposal will expire and can no longer be executed.
                 </Typography>
               </div>

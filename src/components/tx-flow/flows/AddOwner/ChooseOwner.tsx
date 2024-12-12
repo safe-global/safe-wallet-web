@@ -27,6 +27,7 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TOOLTIP_TITLES } from '@/components/tx-flow/common/constants'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import { maybePlural } from '@/utils/formatters'
 
 type FormData = Pick<AddOwnerFlowProps | ReplaceOwnerFlowProps, 'newOwner' | 'threshold'>
 
@@ -83,12 +84,27 @@ export const ChooseOwner = ({
         <form onSubmit={onFormSubmit} className={commonCss.form}>
           {params.removedOwner && (
             <>
-              <Typography variant="body2" mb={1}>
+              <Typography
+                variant="body2"
+                sx={{
+                  mb: 1,
+                }}
+              >
                 {params.removedOwner &&
                   'Review the signer you want to replace in the active Safe Account, then specify the new signer you want to replace it with:'}
               </Typography>
-              <Box my={3}>
-                <Typography variant="body2" color="text.secondary" mb={1}>
+              <Box
+                sx={{
+                  my: 3,
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                    mb: 1,
+                  }}
+                >
                   Current signer
                 </Typography>
                 <EthHashInfo address={params.removedOwner.address} showCopyButton shortAddress={false} hasExplorer />
@@ -125,7 +141,13 @@ export const ChooseOwner = ({
 
           {mode === ChooseOwnerMode.ADD && (
             <FormControl fullWidth>
-              <Typography variant="h6" fontWeight={700} mt={3}>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 700,
+                  mt: 3,
+                }}
+              >
                 Threshold
                 <Tooltip title={TOOLTIP_TITLES.THRESHOLD} arrow placement="top">
                   <span>
@@ -143,11 +165,24 @@ export const ChooseOwner = ({
                 </Tooltip>
               </Typography>
 
-              <Typography variant="body2" mb={1}>
+              <Typography
+                variant="body2"
+                sx={{
+                  mb: 1,
+                }}
+              >
                 Any transaction requires the confirmation of:
               </Typography>
 
-              <Grid container direction="row" alignItems="center" gap={2} pt={1}>
+              <Grid
+                container
+                direction="row"
+                sx={{
+                  alignItems: 'center',
+                  gap: 2,
+                  pt: 1,
+                }}
+              >
                 <Grid item>
                   <Controller
                     control={control}
@@ -169,7 +204,9 @@ export const ChooseOwner = ({
                   />
                 </Grid>
                 <Grid item>
-                  <Typography>out of {newNumberOfOwners} signer(s)</Typography>
+                  <Typography>
+                    out of {newNumberOfOwners} signer{maybePlural(newNumberOfOwners)}
+                  </Typography>
                 </Grid>
               </Grid>
             </FormControl>

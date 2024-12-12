@@ -37,8 +37,8 @@ const SafeAppDetails = ({ app, showDefaultListWarning }: DetailsProps) => (
           backgroundColor: palette.primary.background,
           display: 'inline-block',
           borderRadius: shape.borderRadius,
+          fontWeight: 700,
         })}
-        fontWeight={700}
       >
         {app.url}
       </Typography>

@@ -55,7 +55,13 @@ function AddressBookHeader({
       title="Address book"
       noBorder
       action={
-        <Grid container pb={1} spacing={1}>
+        <Grid
+          container
+          spacing={1}
+          sx={{
+            pb: 1,
+          }}
+        >
           <Grid item xs={12} md={5} xl={4.5}>
             <TextField
               placeholder="Search"
@@ -77,7 +83,16 @@ function AddressBookHeader({
               size="small"
             />
           </Grid>
-          <Grid item xs={12} md={7} display="flex" justifyContent={['space-between', , 'flex-end']} alignItems="center">
+          <Grid
+            item
+            xs={12}
+            md={7}
+            sx={{
+              display: 'flex',
+              justifyContent: ['space-between', , 'flex-end'],
+              alignItems: 'center',
+            }}
+          >
             <Track {...ADDRESS_BOOK_EVENTS.IMPORT_BUTTON}>
               <HeaderButton onClick={handleOpenModal(ModalType.IMPORT)} icon={ImportIcon}>
                 Import

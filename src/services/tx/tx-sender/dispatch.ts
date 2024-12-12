@@ -112,8 +112,8 @@ export const dispatchTxSigning = async (
   return signedTx
 }
 
-// We have to manually sign because sdk.signTransaction doesn't support delegates
-export const dispatchDelegateTxSigning = async (safeTx: SafeTransaction, wallet: ConnectedWallet) => {
+// We have to manually sign because sdk.signTransaction doesn't support proposers
+export const dispatchProposerTxSigning = async (safeTx: SafeTransaction, wallet: ConnectedWallet) => {
   const sdk = await getSafeSDKWithSigner(wallet.provider)
 
   let signature: SafeSignature
@@ -141,18 +141,22 @@ export const dispatchOnChainSigning = async (
   chainId: SafeInfo['chainId'],
   signerAddress: string,
   safeAddress: string,
+  isNestedSafe: boolean,
 ) => {
   const sdk = await getSafeSDKWithSigner(provider)
   const safeTxHash = await sdk.getTransactionHash(safeTx)
   const eventParams = { txId, nonce: safeTx.data.nonce }
 
   const options = chainId === chains.zksync ? { gasLimit: ZK_SYNC_ON_CHAIN_SIGNATURE_GAS_LIMIT } : undefined
-
+  let txHashOrParentSafeTxHash: string
   try {
     // TODO: This is a workaround until there is a fix for unchecked transactions in the protocol-kit
     const encodedApproveHashTx = await prepareApproveTxHash(safeTxHash, provider)
 
-    await provider.request({
+    // Note: SafeWalletProvider returns transaction hash if it exists, otherwise the safeTxHash
+    // If the parent immediately executes, this will be the transaction hash of the approveHash
+    // otherwise the safeTxHash of it
+    txHashOrParentSafeTxHash = await provider.request({
       method: 'eth_sendTransaction',
       params: [{ from: signerAddress, to: safeAddress, data: encodedApproveHashTx, gas: options?.gasLimit }],
     })
@@ -164,6 +168,14 @@ export const dispatchOnChainSigning = async (
   }
 
   txDispatch(TxEvent.ONCHAIN_SIGNATURE_SUCCESS, eventParams)
+
+  if (isNestedSafe) {
+    txDispatch(TxEvent.NESTED_SAFE_TX_CREATED, {
+      ...eventParams,
+      txHashOrParentSafeTxHash,
+      parentSafeAddress: signerAddress,
+    })
+  }
 
   // Until the on-chain signature is/has been executed, the safeTx is not
   // signed so we don't return it

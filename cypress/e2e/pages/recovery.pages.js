@@ -5,6 +5,7 @@ import * as tx from '../pages/transactions.page'
 import { tableContainer } from '../pages/address_book.page'
 import { txDate } from '../pages/create_tx.pages'
 import { modalHeader } from '../pages/modals.page'
+import { moduleRemoveIcon } from '../pages/modules.page'
 
 export const setupRecoveryBtn = '[data-testid="setup-recovery-btn"]'
 export const setupRecoveryModalBtn = '[data-testid="setup-btn"]'
@@ -26,10 +27,17 @@ const executeFormBtn = '[data-testid="execute-form-btn"]'
 const advancedBtn = '[data-testid="advanced-btn"]'
 const recoveryProposalModal = '[data-testid="recovery-proposal"]'
 const recoveryProposalHorizontal = '[data-testid="recovery-proposal-hr"]'
+const recoveryModalTitle = 'How does recovery work?'
 
 export const recoveryOptions = {
+  customPeriod: 'Custom period',
+  oneMin: '1 minute',
   fiveMin: '5 minutes',
   oneHr: '1 hour',
+  twoDays: '2 days',
+  sevenDays: '7 days',
+  fourteenDays: '14 days',
+  twentyEightDays: '28 days',
   fiveSixDays: '56 days',
   never: 'never',
 }
@@ -101,7 +109,6 @@ export function getSetupRecoveryBtn() {
 
 export function clickOnSetupRecoveryBtn() {
   getSetupRecoveryBtn().click()
-  cy.get(setupRecoveryModalBtn).should('be.visible')
 }
 
 export function clickOnSetupRecoveryModalBtn() {
@@ -182,4 +189,14 @@ export function verifyRecoveryProposalModalState(option, horizontal = false) {
   let modal = recoveryProposalModal
   if (horizontal) modal = recoveryProposalHorizontal
   cy.get(modal).should(option)
+}
+
+export function verifyRecoveryModalDisplayed() {
+  cy.contains(recoveryModalTitle).should('be.visible')
+}
+
+export function deleteRecoveryModule() {
+  cy.get(moduleRemoveIcon).click()
+  clickOnNextBtn()
+  tx.executeFlow_1()
 }

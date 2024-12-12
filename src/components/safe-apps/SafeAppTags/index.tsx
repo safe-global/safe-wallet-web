@@ -12,7 +12,14 @@ const SafeAppTags = ({ tags = [] }: SafeAppTagsProps) => {
   const displayedTags = filterInternalCategories(tags)
 
   return (
-    <Stack className={css.safeAppTagContainer} flexDirection="row" gap={1} flexWrap="wrap">
+    <Stack
+      className={css.safeAppTagContainer}
+      sx={{
+        flexDirection: 'row',
+        gap: 1,
+        flexWrap: 'wrap',
+      }}
+    >
       {displayedTags.map((tag) => (
         <Chip className={css.safeAppTagLabel} key={tag} label={tag} />
       ))}

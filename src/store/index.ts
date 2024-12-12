@@ -26,7 +26,7 @@ import * as slices from './slices'
 import * as hydrate from './useHydrateStore'
 import { ofacApi } from '@/store/api/ofac'
 import { safePassApi } from './api/safePass'
-import { metadata } from '@/markdown/terms/terms.md'
+import { version as termsVersion } from '@/markdown/terms/version'
 
 const rootReducer = combineReducers({
   [slices.chainsSlice.name]: slices.chainsSlice.reducer,
@@ -50,6 +50,8 @@ const rootReducer = combineReducers({
   [slices.batchSlice.name]: slices.batchSlice.reducer,
   [slices.undeployedSafesSlice.name]: slices.undeployedSafesSlice.reducer,
   [slices.swapParamsSlice.name]: slices.swapParamsSlice.reducer,
+  [slices.visitedSafesSlice.name]: slices.visitedSafesSlice.reducer,
+  [slices.orderByPreferenceSlice.name]: slices.orderByPreferenceSlice.reducer,
   [ofacApi.reducerPath]: ofacApi.reducer,
   [safePassApi.reducerPath]: safePassApi.reducer,
   [slices.gatewayApi.reducerPath]: slices.gatewayApi.reducer,
@@ -68,6 +70,8 @@ const persistedSlices: (keyof Partial<RootState>)[] = [
   slices.undeployedSafesSlice.name,
   slices.swapParamsSlice.name,
   slices.swapOrderSlice.name,
+  slices.visitedSafesSlice.name,
+  slices.orderByPreferenceSlice.name,
 ]
 
 export const getPersistedState = () => {
@@ -99,10 +103,7 @@ export const _hydrationReducer: typeof rootReducer = (state, action) => {
     const nextState = merge({}, state, action.payload) as RootState
 
     // Check if termsVersion matches
-    if (
-      nextState[cookiesAndTermsSlice.name] &&
-      nextState[cookiesAndTermsSlice.name].termsVersion !== metadata.version
-    ) {
+    if (nextState[cookiesAndTermsSlice.name] && nextState[cookiesAndTermsSlice.name].termsVersion !== termsVersion) {
       // Reset consent
       nextState[cookiesAndTermsSlice.name] = {
         ...cookiesAndTermsInitialState,

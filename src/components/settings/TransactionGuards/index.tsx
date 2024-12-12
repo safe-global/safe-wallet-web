@@ -15,7 +15,7 @@ import { RemoveGuardFlow } from '@/components/tx-flow/flows'
 
 const NoTransactionGuard = () => {
   return (
-    <Typography mt={2} color={({ palette }) => palette.primary.light}>
+    <Typography mt={2} sx={{ color: ({ palette }) => palette.primary.light }}>
       No transaction guard set
     </Typography>
   )

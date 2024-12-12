@@ -140,14 +140,14 @@ const BalanceChanges = () => {
   }
   if (error) {
     return (
-      <Typography variant="body2" color="text.secondary" justifySelf="flex-end">
+      <Typography variant="body2" color="text.secondary" sx={{ justifySelf: 'flex-end' }}>
         Could not calculate balance changes.
       </Typography>
     )
   }
   if (totalBalanceChanges === 0) {
     return (
-      <Typography variant="body2" color="text.secondary" justifySelf="flex-end">
+      <Typography variant="body2" color="text.secondary" sx={{ justifySelf: 'flex-end' }}>
         No balance change detected
       </Typography>
     )

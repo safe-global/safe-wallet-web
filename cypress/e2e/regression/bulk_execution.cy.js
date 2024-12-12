@@ -69,7 +69,7 @@ describe('Bulk execution', () => {
 
       cy.visit(constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_1)
       main.acceptCookies()
-
+      create_tx.toggleUntrustedTxs()
       create_tx.verifyBulkTxHistoryBlock(tx, data)
     },
   )

@@ -27,7 +27,7 @@ function PendingRecoveryListItem({ transaction }: { transaction: RecoveryQueueIt
 
   return (
     <Link href={url} passHref>
-      <Box className={css.container} minHeight={50}>
+      <Box className={css.container} sx={{ minHeight: 50 }}>
         <Box flex={1}>
           <RecoveryType isMalicious={isMalicious} />
         </Box>

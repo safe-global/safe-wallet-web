@@ -13,6 +13,7 @@ import DecodedData from '../TxData/DecodedData'
 import { calculateSafeTransactionHash } from '@safe-global/protocol-kit/dist/src/utils'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { SafeTxHashDataRow } from './SafeTxHashDataRow'
+import { logError, Errors } from '@/services/exceptions'
 
 interface Props {
   txDetails: TransactionDetails
@@ -136,7 +137,12 @@ export const PartialSummary = ({ safeTx }: { safeTx: SafeTransaction }) => {
   const txData = safeTx.data
   const { safeAddress, safe } = useSafeInfo()
   const safeTxHash = useMemo(() => {
-    return safe.version && calculateSafeTransactionHash(safeAddress, safeTx.data, safe.version, BigInt(safe.chainId))
+    if (!safe.version) return
+    try {
+      return calculateSafeTransactionHash(safeAddress, safeTx.data, safe.version, BigInt(safe.chainId))
+    } catch (e) {
+      logError(Errors._809, e)
+    }
   }, [safe.chainId, safe.version, safeAddress, safeTx.data])
   return (
     <>

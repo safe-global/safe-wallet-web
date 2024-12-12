@@ -55,6 +55,6 @@ jobs:
           --username ${{ secrets.TESTRAIL_USERNAME }} \
           --password ${{ secrets.TESTRAIL_PASSWORD }} \
           parse_junit \
-          --title "Happy path Tests, branch: ${GITHUB_REF_NAME}" \
+          --title "Happy Path Automated Tests, branch: ${GITHUB_REF_NAME}" \
           --run-description ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} \
           -f "reports/junit-report.xml"

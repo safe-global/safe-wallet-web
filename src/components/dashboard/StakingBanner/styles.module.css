@@ -1,0 +1,75 @@
+.bannerWrapper {
+  position: relative;
+  border: none;
+  margin: 0;
+  padding: var(--space-2);
+}
+
+.bannerWrapperLarge {
+  padding: var(--space-4);
+}
+
+.stakeIllustration {
+  position: absolute;
+  width: 400px;
+  height: inherit;
+  right: 0;
+}
+
+.gradientShadow {
+  width: 400px;
+  height: 243px;
+  background: linear-gradient(#b0ffc9, #5fddff);
+  filter: blur(40px);
+  position: absolute;
+  right: 0;
+  top: var(--space-8);
+  border-radius: 50%;
+}
+
+.gradientShadowDarkMode {
+  background: linear-gradient(#04491a, #087796);
+}
+
+.gradientBackground {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(225deg, #d7f6ff, #b0ffc9);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.kilnIcon {
+  height: 14px;
+  width: inherit;
+  margin-top: -1px;
+}
+
+.kilnIconDarkMode path {
+  fill: var(--color-primary-light);
+}
+
+.gradientText {
+  background: linear-gradient(225deg, #5fddff 12.5%, #12ff80 88.07%);
+  background-clip: text;
+  color: transparent;
+}
+
+.header {
+  padding-right: var(--space-8);
+}
+
+.stakeButton {
+  width: 100%;
+}
+
+@media (max-width: 899.99px) {
+  .header {
+    padding: 0;
+  }
+
+  .widgetWrapper {
+    padding: var(--space-4);
+  }
+}

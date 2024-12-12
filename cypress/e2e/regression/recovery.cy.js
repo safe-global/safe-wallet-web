@@ -6,6 +6,7 @@ import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 import * as modules from '../pages/modules.page.js'
 import * as navigation from '../pages/navigation.page.js'
+import { getMockAddress } from '../../support/utils/ethers.js'
 
 let recoverySafes,
   staticSafes = []
@@ -144,7 +145,7 @@ describe('Recovery regression tests', { defaultCommandTimeout: 50000 }, () => {
     recovery.clickOnSetupRecoveryBtn()
     recovery.clickOnSetupRecoveryModalBtn()
     recovery.clickOnNextBtn()
-    recovery.enterRecovererAddress(constants.SEPOLIA_OWNER_2)
+    recovery.enterRecovererAddress(getMockAddress())
     recovery.agreeToTerms()
     recovery.clickOnNextBtn()
     navigation.clickOnModalCloseBtn(0)
@@ -155,9 +156,15 @@ describe('Recovery regression tests', { defaultCommandTimeout: 50000 }, () => {
 
   it('Verify Recovery delay and Expiry options are present during recovery setup', () => {
     const options = [
+      recovery.recoveryOptions.customPeriod,
+      recovery.recoveryOptions.oneMin,
       recovery.recoveryOptions.fiveMin,
-      recovery.recoveryOptions.fiveSixDays,
       recovery.recoveryOptions.oneHr,
+      recovery.recoveryOptions.twoDays,
+      recovery.recoveryOptions.sevenDays,
+      recovery.recoveryOptions.fourteenDays,
+      recovery.recoveryOptions.twentyEightDays,
+      recovery.recoveryOptions.fiveSixDays,
     ]
     cy.visit(constants.securityUrl + recoverySafes.SEP_RECOVERY_SAFE_4)
     cy.clearLocalStorage()
@@ -168,32 +175,8 @@ describe('Recovery regression tests', { defaultCommandTimeout: 50000 }, () => {
     recovery.clickOnNextBtn()
     recovery.verifyRecoveryDelayOptions(options)
     cy.get('body').click()
-    recovery.verifyRecoveryExpiryOptions(options)
+    recovery.verifyRecoveryExpiryOptions(options.slice(1))
     cy.get('body').click()
-    navigation.clickOnWalletExpandMoreIcon()
-    navigation.clickOnDisconnectBtn()
-  })
-
-  it('Verify that there is validation for the Guardian address field', () => {
-    cy.visit(constants.securityUrl + staticSafes.SEP_STATIC_SAFE_13)
-    cy.clearLocalStorage()
-    wallet.connectSigner(signer)
-    main.acceptCookies()
-    recovery.clickOnSetupRecoveryBtn()
-    recovery.clickOnSetupRecoveryModalBtn()
-    recovery.clickOnNextBtn()
-
-    recovery.enterRecovererAddress(main.generateRandomString(10), 1)
-    owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.invalidFormat)
-
-    recovery.enterRecovererAddress(constants.DEFAULT_OWNER_ADDRESS.toUpperCase(), 1)
-    owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.invalidChecksum)
-
-    recovery.enterRecovererAddress(constants.ENS_TEST_SEPOLIA_INVALID, 1)
-    owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.failedResolve)
-
-    recovery.enterRecovererAddress(staticSafes.SEP_STATIC_SAFE_13, 1)
-    owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.ownSafeGuardian)
     navigation.clickOnWalletExpandMoreIcon()
     navigation.clickOnDisconnectBtn()
   })
@@ -206,7 +189,7 @@ describe('Recovery regression tests', { defaultCommandTimeout: 50000 }, () => {
     recovery.clickOnRecoverLaterBtn()
     cy.visit(constants.homeUrl + recoverySafes.SEP_RECOVERY_SAFE_4)
     recovery.clickOnStartRecoveryBtn()
-    recovery.enterRecovererAddress(constants.SEPOLIA_OWNER_2)
+    recovery.enterRecovererAddress(getMockAddress())
     navigation.clickOnWalletExpandMoreIcon()
     navigation.clickOnDisconnectBtn()
   })

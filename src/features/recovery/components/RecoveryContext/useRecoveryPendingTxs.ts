@@ -10,7 +10,7 @@ export type PendingRecoveryTransactions = {
   }
 }
 
-const pendingStatuses: { [key in RecoveryEvent]: RecoveryEvent | null } = {
+const pendingStatuses: { [_key in RecoveryEvent]: RecoveryEvent | null } = {
   [RecoveryEvent.PROCESSING_BY_SMART_CONTRACT_WALLET]: null,
   [RecoveryEvent.PROCESSING]: RecoveryEvent.PROCESSING,
   [RecoveryEvent.PROCESSED]: RecoveryEvent.PROCESSED,

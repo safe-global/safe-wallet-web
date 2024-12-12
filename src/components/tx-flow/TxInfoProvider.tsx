@@ -1,4 +1,4 @@
-import { createContext } from 'react'
+import { createContext, type ReactElement } from 'react'
 
 import { useSimulation, type UseSimulationReturn } from '@/components/tx/security/tenderly/useSimulation'
 import { FETCH_STATUS, type TenderlySimulation } from '@/components/tx/security/tenderly/types'
@@ -40,7 +40,7 @@ export const TxInfoContext = createContext<{
   },
 })
 
-export const TxInfoProvider = ({ children }: { children: JSX.Element }) => {
+export const TxInfoProvider = ({ children }: { children: ReactElement }) => {
   const simulation = useSimulation()
 
   const isLoading = simulation._simulationRequestStatus === FETCH_STATUS.LOADING

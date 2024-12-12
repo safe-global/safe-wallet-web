@@ -1,6 +1,6 @@
 import React, { useContext, useMemo, type ReactElement } from 'react'
 import { useRouter } from 'next/router'
-import ListItem from '@mui/material/ListItem'
+import { ListItemButton } from '@mui/material'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 
 import {
@@ -21,16 +21,18 @@ import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
 import { GeoblockingContext } from '@/components/common/GeoblockingProvider'
 import { STAKE_EVENTS, STAKE_LABELS } from '@/services/analytics/events/stake'
 import { Tooltip } from '@mui/material'
+import { BRIDGE_EVENTS, BRIDGE_LABELS } from '@/services/analytics/events/bridge'
 
 const getSubdirectory = (pathname: string): string => {
   return pathname.split('/')[1]
 }
 
-const geoBlockedRoutes = [AppRoutes.swap, AppRoutes.stake]
+const geoBlockedRoutes = [AppRoutes.bridge, AppRoutes.swap, AppRoutes.stake]
 
-const undeployedSafeBlockedRoutes = [AppRoutes.swap, AppRoutes.stake, AppRoutes.apps.index]
+const undeployedSafeBlockedRoutes = [AppRoutes.bridge, AppRoutes.swap, AppRoutes.stake, AppRoutes.apps.index]
 
 const customSidebarEvents: { [key: string]: { event: any; label: string } } = {
+  [AppRoutes.bridge]: { event: BRIDGE_EVENTS.OPEN_BRIDGE, label: BRIDGE_LABELS.sidebar },
   [AppRoutes.swap]: { event: SWAP_EVENTS.OPEN_SWAPS, label: SWAP_LABELS.sidebar },
   [AppRoutes.stake]: { event: STAKE_EVENTS.OPEN_STAKE, label: STAKE_LABELS.sidebar },
 }
@@ -99,27 +101,30 @@ const Navigation = (): ReactElement => {
             key={item.href}
             arrow
           >
-            <ListItem
-              disablePadding
-              disabled={isDisabled}
-              selected={isSelected}
-              onClick={isDisabled ? undefined : () => handleNavigationClick(item.href)}
-              key={item.href}
-            >
-              <SidebarListItemButton
-                selected={isSelected}
-                href={item.href && { pathname: getRoute(item.href), query: { safe: router.query.safe } }}
+            <div>
+              <ListItemButton
+                // disablePadding
+                sx={{ padding: 0 }}
                 disabled={isDisabled}
+                selected={isSelected}
+                onClick={isDisabled ? undefined : () => handleNavigationClick(item.href)}
+                key={item.href}
               >
-                {item.icon && <SidebarListItemIcon badge={getBadge(item)}>{item.icon}</SidebarListItemIcon>}
+                <SidebarListItemButton
+                  selected={isSelected}
+                  href={item.href && { pathname: getRoute(item.href), query: { safe: router.query.safe } }}
+                  disabled={isDisabled}
+                >
+                  {item.icon && <SidebarListItemIcon badge={getBadge(item)}>{item.icon}</SidebarListItemIcon>}
 
-                <SidebarListItemText data-testid="sidebar-list-item" bold>
-                  {item.label}
+                  <SidebarListItemText data-testid="sidebar-list-item" bold>
+                    {item.label}
 
-                  {ItemTag}
-                </SidebarListItemText>
-              </SidebarListItemButton>
-            </ListItem>
+                    {ItemTag}
+                  </SidebarListItemText>
+                </SidebarListItemButton>
+              </ListItemButton>
+            </div>
           </Tooltip>
         )
       })}

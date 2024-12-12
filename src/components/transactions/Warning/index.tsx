@@ -6,6 +6,7 @@ import InfoOutlinedIcon from '@/public/images/notifications/info.svg'
 import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
+import { maybePlural } from '@/utils/formatters'
 
 const Warning = ({
   datatestid,
@@ -55,7 +56,7 @@ export const DelegateCallWarning = ({ showWarning }: { showWarning: boolean }): 
 }
 
 export const ApprovalWarning = ({ approvalTxCount }: { approvalTxCount: number }): ReactElement => (
-  <Warning title="" severity="warning" text={`${approvalTxCount} ERC20 approval${approvalTxCount > 1 ? 's' : ''}`} />
+  <Warning title="" severity="warning" text={`${approvalTxCount} ERC20 approval${maybePlural(approvalTxCount)}`} />
 )
 
 export const ThresholdWarning = (): ReactElement => (

@@ -4,7 +4,7 @@ import type { CheckboxProps } from '@mui/material'
 import { Grid, Button, Checkbox, FormControlLabel, Typography, Paper, SvgIcon, Box } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
 import { useForm } from 'react-hook-form'
-import { metadata } from '@/markdown/terms/terms.md'
+import * as metadata from '@/markdown/terms/version'
 
 import { useAppDispatch, useAppSelector } from '@/store'
 import {
@@ -77,31 +77,61 @@ export const CookieAndTermBanner = ({
   return (
     <Paper className={classnames(css.container, { [css.inverted]: inverted })}>
       {warning && (
-        <Typography align="center" mb={2} color="warning.background" variant="body2">
+        <Typography
+          align="center"
+          variant="body2"
+          sx={{
+            mb: 2,
+            color: 'warning.background',
+          }}
+        >
           <SvgIcon component={WarningIcon} inheritViewBox fontSize="small" color="error" sx={{ mb: -0.4 }} /> {warning}
         </Typography>
       )}
-
       <form>
-        <Grid container alignItems="center">
+        <Grid
+          container
+          sx={{
+            alignItems: 'center',
+          }}
+        >
           <Grid item xs>
-            <Typography variant="body2" mb={2}>
+            <Typography
+              variant="body2"
+              sx={{
+                mb: 2,
+              }}
+            >
               By browsing this page, you accept our{' '}
               <ExternalLink href={AppRoutes.terms}>Terms & Conditions</ExternalLink> (last updated{' '}
-              {metadata.last_update_date}) and the use of necessary cookies. By clicking &quot;Accept all&quot; you
+              {metadata.lastUpdated}) and the use of necessary cookies. By clicking &quot;Accept all&quot; you
               additionally agree to the use of Beamer and Analytics cookies as listed below.{' '}
               <ExternalLink href={AppRoutes.cookie}>Cookie policy</ExternalLink>
             </Typography>
 
-            <Grid container alignItems="center" gap={4}>
+            <Grid
+              container
+              sx={{
+                alignItems: 'center',
+                gap: 4,
+              }}
+            >
               <Grid item xs={12} sm>
-                <Box mb={2}>
+                <Box
+                  sx={{
+                    mb: 2,
+                  }}
+                >
                   <CookieCheckbox checkboxProps={{ id: 'necessary', disabled: true }} label="Necessary" checked />
                   <br />
                   <Typography variant="body2">Locally stored data for core functionality</Typography>
                 </Box>
 
-                <Box mb={2}>
+                <Box
+                  sx={{
+                    mb: 2,
+                  }}
+                >
                   <CookieCheckbox
                     checkboxProps={{ ...register(CookieAndTermType.UPDATES), id: 'beamer' }}
                     label="Beamer"
@@ -125,7 +155,15 @@ export const CookieAndTermBanner = ({
               </Grid>
             </Grid>
 
-            <Grid container alignItems="center" justifyContent="center" mt={4} gap={2}>
+            <Grid
+              container
+              sx={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                mt: 4,
+                gap: 2,
+              }}
+            >
               <Grid item>
                 <Typography>
                   <Button onClick={handleAccept} variant="text" size="small" color="inherit" disableElevation>
@@ -162,7 +200,7 @@ const CookieBannerPopup = (): ReactElement | null => {
     }
   }, [dispatch, shouldOpen])
 
-  return cookiePopup?.open ? (
+  return cookiePopup.open ? (
     <div className={css.popup}>
       <CookieAndTermBanner warningKey={cookiePopup.warningKey} inverted />
     </div>

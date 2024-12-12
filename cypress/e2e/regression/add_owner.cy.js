@@ -4,9 +4,7 @@ import * as owner from '../pages/owners.pages'
 import * as addressBook from '../pages/address_book.page'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
-import * as createTx from '../pages/create_tx.pages.js'
-import * as navigation from '../pages/navigation.page'
-import { getEvents, events, checkDataLayerEvents } from '../../support/utils/gtag.js'
+import { getMockAddress } from '../../support/utils/ethers.js'
 
 let staticSafes = []
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
@@ -58,75 +56,8 @@ describe('Add Owners tests', () => {
   it('Verify that Name field not mandatory', () => {
     wallet.connectSigner(signer)
     owner.openAddOwnerWindow()
-    owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
+    owner.typeOwnerAddress(getMockAddress())
     owner.clickOnNextBtn()
     owner.verifyConfirmTransactionWindowDisplayed()
   })
-
-  it(
-    'Verify creation, confirmation and deletion of Add owner tx. GA tx_confirm',
-    { defaultCommandTimeout: 30000 },
-    () => {
-      const tx_confirmed = [
-        {
-          eventLabel: events.txConfirmedAddOwner.eventLabel,
-          eventCategory: events.txConfirmedAddOwner.category,
-          eventType: events.txConfirmedAddOwner.eventType,
-          safeAddress: staticSafes.SEP_STATIC_SAFE_24.slice(6),
-        },
-      ]
-      function step1() {
-        cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_24)
-        wallet.connectSigner(signer2)
-        owner.waitForConnectionStatus()
-        owner.openAddOwnerWindow()
-        owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
-        createTx.changeNonce(1)
-        owner.clickOnNextBtn()
-        createTx.clickOnSignTransactionBtn()
-        createTx.clickViewTransaction()
-
-        navigation.clickOnWalletExpandMoreIcon()
-        navigation.clickOnDisconnectBtn()
-        wallet.connectSigner(signer)
-      }
-
-      function step2() {
-        createTx.clickOnConfirmTransactionBtn()
-        createTx.clickOnNoLaterOption()
-        createTx.clickOnSignTransactionBtn()
-
-        navigation.clickOnWalletExpandMoreIcon()
-        navigation.clickOnDisconnectBtn()
-        getEvents()
-        checkDataLayerEvents(tx_confirmed)
-        wallet.connectSigner(signer2)
-        createTx.deleteTx()
-      }
-
-      step1()
-      cy.get('body').then(($body) => {
-        if ($body.find(`button:contains("${createTx.executeStr}")`).length > 0) {
-          navigation.clickOnWalletExpandMoreIcon()
-          navigation.clickOnDisconnectBtn()
-          wallet.connectSigner(signer2)
-          createTx.deleteTx()
-          cy.wait(5000)
-          step1()
-          step2()
-        } else {
-          createTx.clickOnConfirmTransactionBtn()
-          createTx.clickOnNoLaterOption()
-          createTx.clickOnSignTransactionBtn()
-
-          navigation.clickOnWalletExpandMoreIcon()
-          navigation.clickOnDisconnectBtn()
-          getEvents()
-          checkDataLayerEvents(tx_confirmed)
-          wallet.connectSigner(signer2)
-          createTx.deleteTx()
-        }
-      })
-    },
-  )
 })

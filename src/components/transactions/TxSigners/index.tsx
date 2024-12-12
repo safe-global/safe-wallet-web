@@ -12,6 +12,7 @@ import {
   type ListItemIconProps,
 } from '@mui/material'
 import type {
+  AddressEx,
   DetailedExecutionInfo,
   TransactionDetails,
   TransactionSummary,
@@ -64,7 +65,7 @@ enum StepState {
 }
 
 const getStepColor = (state: StepState, palette: Palette): string => {
-  const colors: { [key in StepState]: string } = {
+  const colors: { [_key in StepState]: string } = {
     [StepState.CONFIRMED]: palette.primary.main,
     [StepState.ACTIVE]: palette.warning.dark,
     [StepState.DISABLED]: palette.border.main,
@@ -105,9 +106,16 @@ const shouldHideConfirmations = (detailedExecutionInfo?: DetailedExecutionInfo):
 type TxSignersProps = {
   txDetails: TransactionDetails
   txSummary: TransactionSummary
+  isTxFromProposer: boolean
+  proposer?: AddressEx
 }
 
-export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElement | null => {
+export const TxSigners = ({
+  txDetails,
+  txSummary,
+  isTxFromProposer,
+  proposer,
+}: TxSignersProps): ReactElement | null => {
   const { detailedExecutionInfo, txInfo, txId } = txDetails
   const [hideConfirmations, setHideConfirmations] = useState<boolean>(shouldHideConfirmations(detailedExecutionInfo))
   const isPending = useIsPending(txId)
@@ -154,15 +162,29 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
           )}
         </ListItem>
 
-        <ListItem>
-          <StyledListItemIcon $state={isConfirmed ? StepState.CONFIRMED : StepState.ACTIVE}>
-            {isConfirmed ? <Check /> : <MissingConfirmation />}
-          </StyledListItemIcon>
-          <ListItemText data-testid="confirmation-action" primaryTypographyProps={{ fontWeight: 700 }}>
-            Confirmations{' '}
-            <Box className={css.confirmationsTotal}>({`${confirmationsCount} of ${confirmationsRequired}`})</Box>
-          </ListItemText>
-        </ListItem>
+        {proposer && (
+          <ListItem key={proposer.value} sx={{ py: 0 }}>
+            <StyledListItemIcon $state={StepState.CONFIRMED}>
+              <Dot />
+            </StyledListItemIcon>
+            <ListItemText data-testid="signer">
+              <EthHashInfo address={proposer.value} hasExplorer showCopyButton />
+            </ListItemText>
+          </ListItem>
+        )}
+
+        {confirmations.length > 0 && (
+          <ListItem>
+            <StyledListItemIcon $state={isConfirmed ? StepState.CONFIRMED : StepState.ACTIVE}>
+              {isConfirmed ? <Check /> : <MissingConfirmation />}
+            </StyledListItemIcon>
+            <ListItemText data-testid="confirmation-action" primaryTypographyProps={{ fontWeight: 700 }}>
+              Confirmations{' '}
+              <Box className={css.confirmationsTotal}>({`${confirmationsCount} of ${confirmationsRequired}`})</Box>
+            </ListItemText>
+          </ListItem>
+        )}
+
         {!hideConfirmations &&
           confirmations.map(({ signer }) => (
             <ListItem key={signer.value} sx={{ py: 0 }}>
@@ -180,19 +202,36 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
               <Dot />
             </StyledListItemIcon>
             <ListItemText>
-              <Link data-testid="confirmation-visibility-btn" component="button" onClick={toggleHide} fontSize="medium">
+              <Link
+                data-testid="confirmation-visibility-btn"
+                component="button"
+                onClick={toggleHide}
+                sx={{
+                  fontSize: 'medium',
+                }}
+              >
                 {hideConfirmations ? 'Show all' : 'Hide all'}
               </Link>
             </ListItemText>
           </ListItem>
         )}
-        <ListItem>
+        <ListItem sx={{ alignItems: 'flex-start' }}>
           <StyledListItemIcon $state={executor ? StepState.CONFIRMED : StepState.DISABLED}>
             {executor ? <Check /> : <MissingConfirmation />}
           </StyledListItemIcon>
-          <ListItemText data-testid="tx-action-status" primaryTypographyProps={{ fontWeight: 700 }}>
-            {executor ? 'Executed' : isPending ? txStatus : 'Can be executed'}
-          </ListItemText>
+          <ListItemText
+            primary={
+              executor ? 'Executed' : isPending ? txStatus : isTxFromProposer ? 'Signer review' : 'Can be executed'
+            }
+            secondary={
+              isTxFromProposer
+                ? 'This transaction was created by a Proposer. Please review and either confirm or reject it. Once confirmed, it can be finalized and executed.'
+                : undefined
+            }
+            data-testid="tx-action-status"
+            primaryTypographyProps={{ fontWeight: 700 }}
+            secondaryTypographyProps={{ mt: 1 }}
+          />
         </ListItem>
       </List>
       {executor ? (

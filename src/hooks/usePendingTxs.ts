@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import {
   type TransactionListPage,
   type TransactionSummary,
-  type LabelValue,
+  LabelValue,
   getTransactionQueue,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { useAppSelector } from '@/store'
@@ -63,6 +63,12 @@ export const filterUntrustedQueue = (
   return transactions.length ? { results } : undefined
 }
 
+export function getNextTransactions(queue: TransactionListPage): TransactionListPage {
+  const queueLabelIndex = queue.results.findIndex((item) => isLabelListItem(item) && item.label === LabelValue.Queued)
+  const nextTransactions = queueLabelIndex === -1 ? queue.results : queue.results.slice(0, queueLabelIndex)
+  return { results: nextTransactions }
+}
+
 export const usePendingTxsQueue = (): {
   page?: TransactionListPage
   error?: string
@@ -73,20 +79,21 @@ export const usePendingTxsQueue = (): {
   const pendingIds = usePendingTxIds()
   const hasPending = pendingIds.length > 0
 
-  const [untrustedQueue, error, loading] = useAsync<TransactionListPage>(
-    () => {
+  const [untrustedNext, error, loading] = useAsync<TransactionListPage | undefined>(
+    async () => {
       if (!hasPending) return
-      return getTransactionQueue(chainId, safeAddress, { trusted: false })
+      const untrustedQueue = await getTransactionQueue(chainId, safeAddress, { trusted: false })
+      return getNextTransactions(untrustedQueue)
     },
     [chainId, safeAddress, hasPending],
     false,
   )
 
   const pendingTxPage = useMemo(() => {
-    if (!untrustedQueue || !pendingIds.length) return
+    if (!untrustedNext || !pendingIds.length) return
 
-    return filterUntrustedQueue(untrustedQueue, pendingIds)
-  }, [untrustedQueue, pendingIds])
+    return filterUntrustedQueue(untrustedNext, pendingIds)
+  }, [untrustedNext, pendingIds])
 
   return useMemo(
     () => ({

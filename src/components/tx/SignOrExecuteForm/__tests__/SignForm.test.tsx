@@ -24,8 +24,15 @@ describe('SignForm', () => {
 
   const defaultProps = {
     onSubmit: jest.fn(),
+    txId: '0x01231',
     isOwner: true,
-    txActions: { signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn(), signDelegateTx: jest.fn() },
+    txActions: {
+      proposeTx: jest.fn(),
+      signTx: jest.fn(),
+      addToBatch: jest.fn(),
+      executeTx: jest.fn(),
+      signProposerTx: jest.fn(),
+    },
     txSecurity: defaultSecurityContextValues,
   }
 
@@ -70,7 +77,13 @@ describe('SignForm', () => {
       <SignForm
         {...defaultProps}
         safeTx={safeTransaction}
-        txActions={{ signTx: mockSignTx, addToBatch: jest.fn(), executeTx: jest.fn(), signDelegateTx: jest.fn() }}
+        txActions={{
+          proposeTx: jest.fn(),
+          signTx: mockSignTx,
+          addToBatch: jest.fn(),
+          signProposerTx: jest.fn(),
+          executeTx: jest.fn(),
+        }}
       />,
     )
 
@@ -90,7 +103,13 @@ describe('SignForm', () => {
       <SignForm
         {...defaultProps}
         safeTx={safeTransaction}
-        txActions={{ signTx: mockSignTx, addToBatch: jest.fn(), executeTx: jest.fn(), signDelegateTx: jest.fn() }}
+        txActions={{
+          proposeTx: jest.fn(),
+          signTx: mockSignTx,
+          addToBatch: jest.fn(),
+          executeTx: jest.fn(),
+          signProposerTx: jest.fn(),
+        }}
       />,
     )
 
@@ -133,7 +152,13 @@ describe('SignForm', () => {
         safeTx={safeTransaction}
         isBatchable
         isCreation
-        txActions={{ signTx: jest.fn(), addToBatch: mockAddToBatch, executeTx: jest.fn(), signDelegateTx: jest.fn() }}
+        txActions={{
+          proposeTx: jest.fn(),
+          signTx: jest.fn(),
+          addToBatch: mockAddToBatch,
+          executeTx: jest.fn(),
+          signProposerTx: jest.fn(),
+        }}
       />,
     )
 
@@ -201,5 +226,30 @@ describe('SignForm', () => {
 
     expect(button).toBeInTheDocument()
     expect(button).not.toBeDisabled()
+  })
+
+  it('Hides the Add to batch button if there is an origin', () => {
+    const { queryByText } = render(
+      <SignForm
+        {...defaultProps}
+        safeTx={safeTransaction}
+        txSecurity={{ ...defaultSecurityContextValues, needsRiskConfirmation: true, isRiskConfirmed: true }}
+        origin="MockOrigin"
+      />,
+    )
+
+    const button = queryByText('Add to batch')
+
+    expect(button).not.toBeInTheDocument()
+  })
+
+  it('Shows the Add to batch button if there is no origin and it is a creation', () => {
+    const { getByText } = render(
+      <SignForm {...defaultProps} safeTx={safeTransaction} origin={undefined} isCreation={true} />,
+    )
+
+    const button = getByText('Add to batch')
+
+    expect(button).toBeInTheDocument()
   })
 })

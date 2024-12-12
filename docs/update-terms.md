@@ -4,7 +4,7 @@ To update the terms and conditions, follow these steps:
 
 1. Export the terms and conditions from Google Docs as a Markdown file.
 2. Replace the content of the src/markdown/terms/terms.md file with the exported content.
-3. Update the frontmatter of the file with the new version number and date.
+3. If significant changes were made, update the version and last updated date in `version.ts` in the same folder.
 
 That’s it!
 
@@ -13,7 +13,7 @@ will automatically appear for users who haven’t accepted the new terms.
 
 ## How does this work?
 
-We rely on the version number from the frontmatter. When the Redux store is rehydrated, we check the version stored in
+We rely on the version number from `version.ts`. When the Redux store is rehydrated, we check the version stored in
 the store against the version in the frontmatter. If they differ, we reset the accepted terms, forcing the user to
 accept the new version.
 

@@ -101,4 +101,19 @@ describe('formatters', () => {
       expect(formatters.formatVisualAmount('1', 18, 18)).toEqual('0.000000000000000001')
     })
   })
+
+  describe('maybePlural', () => {
+    const { maybePlural } = formatters
+    it('should add an "s" for more than 1', () => {
+      expect(maybePlural(2)).toEqual('s')
+      expect(maybePlural(10)).toEqual('s')
+      expect(maybePlural(0)).toEqual('')
+      expect(maybePlural(1)).toEqual('')
+    })
+
+    it('should work for arrays too', () => {
+      expect(maybePlural(['1', '2'])).toEqual('s')
+      expect(maybePlural(['1'])).toEqual('')
+    })
+  })
 })

@@ -19,6 +19,8 @@ import './commands'
 import './safe-apps-commands'
 import * as constants from './constants'
 import * as ls from './localstorage_data'
+import { acceptCookies2 } from '../e2e/pages/main.page'
+
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
@@ -30,7 +32,7 @@ import * as ls from './localstorage_data'
 const { addCompareSnapshotCommand } = require('cypress-visual-regression/dist/command')
 addCompareSnapshotCommand()
 
-const beamer = JSON.parse(Cypress.env('BEAMER_DATA_E2E'))
+const beamer = JSON.parse(Cypress.env('BEAMER_DATA_E2E') || '{}')
 const productID = beamer.PRODUCT_ID
 
 before(() => {
@@ -45,6 +47,12 @@ before(() => {
         style.innerHTML = '.command-name-request, .command-name-xhr { display: none }'
         style.setAttribute('data-hide-command-log-request', '')
         app.document.head.appendChild(style)
+      }
+    }
+    const originalConsoleLog = console.log
+    console.log = (...args) => {
+      if (typeof args[0] === 'string' && !args[0].includes('Intercepted request with headers')) {
+        originalConsoleLog(...args)
       }
     }
   })
@@ -67,5 +75,8 @@ beforeEach(() => {
       constants.localStorageKeys.SAFE_v2__SafeApps__infoModal,
       ls.appPermissions(constants.safeTestAppurl).infoModalAccepted,
     )
+    cy.wrap(window.localStorage).invoke('getItem', cookiesKey).should('equal', ls.cookies.acceptedCookies)
   })
+  cy.visit(constants.setupUrl + 'sep:0xBb26E3717172d5000F87DeFd391994f789D80aEB')
+  acceptCookies2()
 })

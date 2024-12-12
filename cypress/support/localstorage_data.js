@@ -279,7 +279,19 @@ export const batchData = {
     },
   },
 }
+export const visitedSafes = {
+  set1: {
+    11155111: {
+      '0x905934aA8758c06B2422F0C90D97d2fbb6677811': {
+        lastVisited: 1732794651004,
+      },
+    },
+  },
+}
 export const addressBookData = {
+  proposers: {
+    11155111: { '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED': 'AD Proposer1' },
+  },
   sepoliaAddress1: {
     11155111: { '0x6a5602335a878ADDCa4BF63a050E34946B56B5bC': 'Owner1' },
   },
@@ -338,6 +350,32 @@ export const addressBookData = {
       '0x0A0EEb6fBCc7c82259E548Fc4617175A357b3e71': 'Added safe 200',
       '0xF21445699e91aC6F2EeeAF1a19510AC4197e59aB': 'Added owner',
       '0x9E6DAfe829431e1892EcF8461FDAd02665170c31': 'Added non-owner',
+    },
+  },
+  multichain: {
+    137: {
+      '0xC96ee38f5A73C8A70b565CB8EA938D2aF913ee3B': 'Multichain polygon',
+    },
+    11155111: {
+      '0xC96ee38f5A73C8A70b565CB8EA938D2aF913ee3B': 'Multichain Sepolia',
+    },
+  },
+  undeployed: {
+    11155111: {
+      '0x926186108f74dB20BFeb2b6c888E523C78cb7E00': 'Undeployed Sepolia',
+    },
+  },
+  undeployedSet: {
+    100: {
+      '0xC96ee38f5A73C8A70b565CB8EA938D2aF913ee3B': 'Safe A',
+    },
+    1: {
+      '0xC96ee38f5A73C8A70b565CB8EA938D2aF913ee3B': 'Safe B',
+    },
+  },
+  undeployedEth: {
+    1: {
+      '0x926186108f74dB20BFeb2b6c888E523C78cb7E00': 'Undeployed Sepolia',
     },
   },
   sortingData: {
@@ -657,6 +695,40 @@ export const addedSafes = {
       },
     },
   },
+  set5: {
+    137: {
+      '0xC96ee38f5A73C8A70b565CB8EA938D2aF913ee3B': {
+        owners: [
+          {
+            value: '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED',
+          },
+        ],
+        threshold: 1,
+      },
+    },
+    11155111: {
+      '0xC96ee38f5A73C8A70b565CB8EA938D2aF913ee3B': {
+        owners: [
+          {
+            value: '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED',
+          },
+        ],
+        threshold: 1,
+      },
+    },
+  },
+  set6_undeployed_safe: {
+    11155111: {
+      '0x926186108f74dB20BFeb2b6c888E523C78cb7E00': {
+        owners: [
+          {
+            value: '0x9445deb174C1eCbbfce8d31D33F438B8e7a0F1BA',
+          },
+        ],
+        threshold: 1,
+      },
+    },
+  },
 }
 
 export const pinnedApps = {
@@ -708,6 +780,46 @@ export const undeployedSafe = {
           safeDeploymentConfig: {
             saltNonce: '21',
             safeVersion: '1.3.0',
+          },
+        },
+        status: {
+          status: 'AWAITING_EXECUTION',
+          type: 'PayLater',
+        },
+      },
+    },
+  },
+  safes2: {
+    1: {
+      '0xC96ee38f5A73C8A70b565CB8EA938D2aF913ee3B': {
+        props: {
+          safeAccountConfig: {
+            threshold: 1,
+            owners: ['0x3ba5d9a6d6169429Adb278768D9681A125C01Af6'],
+            fallbackHandler: '0xfd0732Dc9E303f09fCEf3a7388Ad10A83459Ec99',
+          },
+          safeDeploymentConfig: {
+            saltNonce: '0',
+            safeVersion: '1.4.1',
+          },
+        },
+        status: {
+          status: 'AWAITING_EXECUTION',
+          type: 'PayLater',
+        },
+      },
+    },
+    100: {
+      '0xC96ee38f5A73C8A70b565CB8EA938D2aF913ee3B': {
+        props: {
+          safeAccountConfig: {
+            threshold: 1,
+            owners: ['0x3ba5d9a6d6169429Adb278768D9681A125C01Af6'],
+            fallbackHandler: '0xfd0732Dc9E303f09fCEf3a7388Ad10A83459Ec99',
+          },
+          safeDeploymentConfig: {
+            saltNonce: '0',
+            safeVersion: '1.4.1',
           },
         },
         status: {

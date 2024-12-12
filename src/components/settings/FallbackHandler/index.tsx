@@ -75,9 +75,21 @@ export const FallbackHandler = (): ReactElement | null => {
 
   return (
     <Paper sx={{ padding: 4 }}>
-      <Grid container direction="row" justifyContent="space-between" spacing={3}>
+      <Grid
+        container
+        direction="row"
+        spacing={3}
+        sx={{
+          justifyContent: 'space-between',
+        }}
+      >
         <Grid item lg={4} xs={12}>
-          <Typography variant="h4" fontWeight={700}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 700,
+            }}
+          >
             Fallback handler
           </Typography>
         </Grid>
@@ -96,7 +108,12 @@ export const FallbackHandler = (): ReactElement | null => {
               sx={{ mt: 2 }}
             >
               {warning && (
-                <Typography mb={hasFallbackHandler ? 1 : 0} variant="body2">
+                <Typography
+                  variant="body2"
+                  sx={{
+                    mb: hasFallbackHandler ? 1 : 0,
+                  }}
+                >
                   {warning}
                 </Typography>
               )}

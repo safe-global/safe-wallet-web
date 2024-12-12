@@ -10,6 +10,7 @@ import { isAddress } from 'ethers'
 import type { ReactElement } from 'react'
 import Msg from '../Msg'
 import css from './styles.module.css'
+import { logError, Errors } from '@/services/exceptions'
 
 const EIP712_DOMAIN_TYPE = 'EIP712Domain'
 
@@ -75,7 +76,13 @@ export const DecodedMsg = ({
   }
 
   // Normalize message such that we know the primaryType
-  const normalizedMsg = normalizeTypedData(message)
+  let normalizedMsg: EIP712Normalized
+  try {
+    normalizedMsg = normalizeTypedData(message)
+  } catch (error) {
+    logError(Errors._809, error)
+    normalizedMsg = message as EIP712Normalized
+  }
 
   return (
     <Box

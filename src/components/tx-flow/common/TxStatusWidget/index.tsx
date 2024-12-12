@@ -11,6 +11,8 @@ import CloseIcon from '@mui/icons-material/Close'
 import useWallet from '@/hooks/wallets/useWallet'
 import SafeLogo from '@/public/images/logo-no-text.svg'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import { useIsWalletProposer } from '@/hooks/useProposers'
 
 const TxStatusWidget = ({
   step,
@@ -29,12 +31,18 @@ const TxStatusWidget = ({
   const { safe } = useSafeInfo()
   const { nonceNeeded } = useContext(SafeTxContext)
   const { threshold } = safe
+  const isSafeOwner = useIsSafeOwner()
+  const isProposer = useIsWalletProposer()
+  const isProposing = isProposer && !isSafeOwner
 
   const { executionInfo = undefined } = txSummary || {}
   const { confirmationsSubmitted = 0 } = isMultisigExecutionInfo(executionInfo) ? executionInfo : {}
 
-  const canConfirm = txSummary ? isConfirmableBy(txSummary, wallet?.address || '') : safe.threshold === 1
-  const canSign = txSummary ? isSignableBy(txSummary, wallet?.address || '') : true
+  const canConfirm = txSummary
+    ? isConfirmableBy(txSummary, wallet?.address || '')
+    : safe.threshold === 1 && !isProposing
+
+  const canSign = txSummary ? isSignableBy(txSummary, wallet?.address || '') : !isProposing
 
   return (
     <Paper>

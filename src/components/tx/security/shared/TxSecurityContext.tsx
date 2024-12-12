@@ -1,6 +1,14 @@
 import { SecuritySeverity } from '@/services/security/modules/types'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-import { createContext, type Dispatch, type SetStateAction, useContext, useMemo, useState } from 'react'
+import {
+  createContext,
+  type Dispatch,
+  type SetStateAction,
+  useContext,
+  useMemo,
+  useState,
+  type ReactElement,
+} from 'react'
 import type { BlockaidModuleResponse } from '@/services/security/modules/BlockaidModule'
 import { useBlockaid } from '../blockaid/useBlockaid'
 
@@ -44,7 +52,7 @@ export type TxSecurityContextProps = {
 
 export const TxSecurityContext = createContext<TxSecurityContextProps>(defaultSecurityContextValues)
 
-export const TxSecurityProvider = ({ children }: { children: JSX.Element }) => {
+export const TxSecurityProvider = ({ children }: { children: ReactElement }) => {
   const { safeTx, safeMessage } = useContext(SafeTxContext)
   const [blockaidResponse, blockaidError, blockaidLoading] = useBlockaid(safeTx ?? safeMessage)
 

@@ -16,5 +16,4 @@
 
 .readOnly :global .MuiInputBase-input {
   visibility: hidden;
-  position: absolute;
 }

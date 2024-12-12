@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ChangeThreshold should display the ChangeThreshold component with the new threshold range 1`] = `
+<div>
+  <div>
+    <p
+      class="MuiTypography-root MuiTypography-body2 css-1q9800n-MuiTypography-root"
+    >
+      Any transaction will require the confirmation of:
+    </p>
+    <p
+      aria-label="threshold"
+      class="MuiTypography-root MuiTypography-body1 css-v6lhhw-MuiTypography-root"
+    >
+      <b>
+        3
+      </b>
+       out of
+       
+      <b>
+        1
+         signer
+      </b>
+    </p>
+  </div>
+  <div
+    class="MuiBox-root css-1xlzx9v"
+  >
+    <hr
+      class="MuiDivider-root MuiDivider-fullWidth nestedDivider css-1facvfi-MuiDivider-root"
+    />
+  </div>
+</div>
+`;

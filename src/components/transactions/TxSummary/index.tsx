@@ -1,3 +1,4 @@
+import TxProposalChip from '@/features/proposers/components/TxProposalChip'
 import StatusLabel from '@/features/swap/components/StatusLabel'
 import useIsExpiredSwap from '@/features/swap/hooks/useIsExpiredSwap'
 import { Box } from '@mui/material'
@@ -49,52 +50,98 @@ const TxSummary = ({ item, isConflictGroup, isBulkGroup }: TxSummaryProps): Reac
       id={tx.id}
     >
       {nonce !== undefined && !isConflictGroup && !isBulkGroup && (
-        <Box gridArea="nonce" data-testid="nonce" className={css.nonce}>
+        <Box
+          data-testid="nonce"
+          className={css.nonce}
+          sx={{
+            gridArea: 'nonce',
+          }}
+        >
           {nonce}
         </Box>
       )}
-
       {(isImitationTransaction || !isTrusted) && (
-        <Box data-testid="warning" gridArea="nonce">
+        <Box
+          data-testid="warning"
+          sx={{
+            gridArea: 'nonce',
+          }}
+        >
           <MaliciousTxWarning withTooltip={!isImitationTransaction} />
         </Box>
       )}
-
-      <Box gridArea="type" data-testid="tx-type">
+      <Box
+        data-testid="tx-type"
+        sx={{
+          gridArea: 'type',
+        }}
+      >
         <TxType tx={tx} />
       </Box>
-
-      <Box gridArea="info" data-testid="tx-info">
+      <Box
+        data-testid="tx-info"
+        sx={{
+          gridArea: 'info',
+        }}
+      >
         <TxInfo info={tx.txInfo} />
       </Box>
-
-      <Box gridArea="date" data-testid="tx-date" className={css.date}>
+      <Box
+        data-testid="tx-date"
+        className={css.date}
+        sx={{
+          gridArea: 'date',
+        }}
+      >
         <DateTime value={tx.timestamp} />
       </Box>
-
       {isQueue && executionInfo && (
-        <Box gridArea="confirmations">
-          <TxConfirmations
-            submittedConfirmations={executionInfo.confirmationsSubmitted}
-            requiredConfirmations={executionInfo.confirmationsRequired}
-          />
+        <Box
+          sx={{
+            gridArea: 'confirmations',
+          }}
+        >
+          {executionInfo.confirmationsSubmitted > 0 || isPending ? (
+            <TxConfirmations
+              submittedConfirmations={executionInfo.confirmationsSubmitted}
+              requiredConfirmations={executionInfo.confirmationsRequired}
+            />
+          ) : (
+            <TxProposalChip />
+          )}
         </Box>
       )}
-
       {isQueue && expiredSwap ? (
-        <Box gridArea="status" justifyContent="flex-end" display="flex" className={css.status}>
+        <Box
+          className={css.status}
+          sx={{
+            gridArea: 'status',
+            justifyContent: 'flex-end',
+            display: 'flex',
+          }}
+        >
           <StatusLabel status="expired" />
         </Box>
       ) : !isQueue || isPending ? (
-        <Box gridArea="status" justifyContent="flex-end" display="flex" className={css.status}>
+        <Box
+          className={css.status}
+          sx={{
+            gridArea: 'status',
+            justifyContent: 'flex-end',
+            display: 'flex',
+          }}
+        >
           <TxStatusLabel tx={tx} />
         </Box>
       ) : (
         ''
       )}
-
       {isQueue && !expiredSwap && (
-        <Box gridArea="actions">
+        <Box
+          sx={{
+            gridArea: 'actions',
+          }}
+        >
           <QueueActions tx={tx} />
         </Box>
       )}

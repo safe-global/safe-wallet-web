@@ -1,6 +1,7 @@
 import * as constants from '../../support/constants'
 import * as assets from '../pages/assets.pages'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import { acceptCookies2 } from '../pages/main.page.js'
 
 const TOKEN_AMOUNT_COLUMN = 1
 const FIAT_AMOUNT_COLUMN = 2
@@ -15,6 +16,7 @@ describe('[PROD] Prod tokens tests', () => {
   })
   beforeEach(() => {
     cy.visit(constants.prodbaseUrl + constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_2)
+    acceptCookies2()
   })
 
   it('Verify that non-native tokens are present and have balance', () => {

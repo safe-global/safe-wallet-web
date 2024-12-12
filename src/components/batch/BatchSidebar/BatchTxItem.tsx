@@ -49,10 +49,18 @@ const BatchTxItem = ({ id, count, timestamp, txDetails, onDelete }: BatchTxItemP
   return (
     <ListItem disablePadding sx={{ gap: 2, alignItems: 'flex-start' }}>
       <div className={css.number}>{count}</div>
-
       <Accordion elevation={0} sx={{ flex: 1 }} onChange={handleExpand}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} className={css.accordion}>
-          <Box flex={1} display="flex" alignItems="center" gap={2} py={0.4} width="100%">
+          <Box
+            sx={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              py: 0.4,
+              width: '100%',
+            }}
+          >
             <TxType tx={txSummary} />
 
             <Box flex={1}>

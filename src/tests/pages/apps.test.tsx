@@ -244,13 +244,13 @@ describe('AppsPage', () => {
         },
       })
 
-      fireEvent.click(screen.getByRole('button', { name: 'Add custom Safe App' }))
+      await userEvent.click(screen.getByRole('button', { name: 'Add custom Safe App' }))
 
       await waitFor(() => expect(screen.getByLabelText(/Safe App URL/)).toBeInTheDocument())
       const appURLInput = screen.getByLabelText(/Safe App URL/)
       fireEvent.change(appURLInput, { target: { value: APP_URL } })
       const riskCheckbox = await screen.findByRole('checkbox')
-      fireEvent.click(riskCheckbox)
+      await userEvent.click(riskCheckbox)
       await waitFor(() =>
         expect(
           screen.getByRole('heading', {
@@ -258,9 +258,7 @@ describe('AppsPage', () => {
           }),
         ).toBeInTheDocument(),
       )
-      act(() => {
-        fireEvent.click(screen.getByText('Add'))
-      })
+      await userEvent.click(screen.getByText('Add'))
 
       // modal is closed
       await waitForElementToBeRemoved(() => screen.queryByLabelText(/Safe App URL/))
@@ -272,9 +270,7 @@ describe('AppsPage', () => {
       expect(screen.queryByRole('presentation')).not.toBeInTheDocument()
 
       // clicks on Custom test Safe app Safe App
-      await waitFor(() => {
-        fireEvent.click(screen.getByRole('heading', { level: 5, name: 'Custom test Safe app' }))
-      })
+      await userEvent.click(screen.getByRole('heading', { level: 5, name: 'Custom test Safe app' }))
 
       await waitFor(() => {
         const safeAppPreviewDrawer = screen.getByRole('presentation')
@@ -384,13 +380,14 @@ describe('AppsPage', () => {
         },
       })
 
-      fireEvent.click(screen.getByRole('button', { name: 'Add custom Safe App' }))
+      await userEvent.click(screen.getByRole('button', { name: 'Add custom Safe App' }))
 
       await waitFor(() => expect(screen.getByLabelText(/Safe App URL/)).toBeInTheDocument())
       const appURLInput = screen.getByLabelText(/Safe App URL/)
       fireEvent.change(appURLInput, { target: { value: APP_URL } })
       const riskCheckbox = await screen.findByRole('checkbox')
-      fireEvent.click(riskCheckbox)
+      await userEvent.click(riskCheckbox)
+
       await waitFor(() =>
         expect(
           screen.getByRole('heading', {
@@ -398,32 +395,23 @@ describe('AppsPage', () => {
           }),
         ).toBeInTheDocument(),
       )
-      act(() => {
-        fireEvent.click(screen.getByText('Add'))
-      })
+
+      await userEvent.click(screen.getByText('Add'))
 
       // modal is closed
       await waitForElementToBeRemoved(() => screen.queryByLabelText(/Safe App URL/))
 
       const removeCustomSafeAppButton = screen.getByLabelText('Delete Custom test Safe app')
 
-      act(() => {
-        fireEvent.click(removeCustomSafeAppButton)
-      })
+      await userEvent.click(removeCustomSafeAppButton)
 
       await waitFor(() => expect(screen.getByText('Confirm Safe App removal')).toBeInTheDocument())
 
       const confirmRemovalButton = screen.getByRole('button', { name: 'Remove' })
-      act(() => {
-        fireEvent.click(confirmRemovalButton)
-      })
+      await userEvent.click(confirmRemovalButton)
 
       await waitForElementToBeRemoved(() => screen.getByRole('button', { name: 'Remove' }))
-
-      await waitFor(() =>
-        // custom safe app is not present in the list
-        expect(screen.queryByText('Custom test Safe app')).not.toBeInTheDocument(),
-      )
+      expect(screen.queryByText('Custom test Safe app')).not.toBeInTheDocument()
     })
   })
 

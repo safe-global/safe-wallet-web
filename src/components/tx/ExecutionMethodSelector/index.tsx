@@ -53,6 +53,7 @@ const _ExecutionMethodSelector = ({
 
           <RadioGroup row value={executionMethod} onChange={onChooseExecutionMethod}>
             <FormControlLabel
+              data-testid="relay-execution-method"
               sx={{ flex: 1 }}
               value={ExecutionMethod.RELAY}
               label={

@@ -24,7 +24,7 @@ import {
   isStakingTxExitInfo,
   isStakingTxWithdrawInfo,
 } from '@/utils/transaction-guards'
-import { ellipsis, shortenAddress } from '@/utils/formatters'
+import { ellipsis, maybePlural, shortenAddress } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
 import { SwapTx } from '@/features/swap/components/SwapTxInfo/SwapTx'
 import StakingTxExitInfo from '@/features/stake/components/StakingTxExitInfo'
@@ -104,7 +104,7 @@ const CreationTx = ({ info }: { info: Creation }): ReactElement => {
 const MultiSendTx = ({ info }: { info: MultiSend }): ReactElement => {
   return (
     <Box className={css.txInfo}>
-      {info.actionCount} {`action${info.actionCount > 1 ? 's' : ''}`}
+      {info.actionCount} {`action${maybePlural(info.actionCount)}`}
     </Box>
   )
 }

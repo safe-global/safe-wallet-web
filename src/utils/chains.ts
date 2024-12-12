@@ -34,8 +34,12 @@ export enum FEATURES {
   ZODIAC_ROLES = 'ZODIAC_ROLES',
   SAFE_141 = 'SAFE_141',
   STAKING = 'STAKING',
+  STAKING_BANNER = 'STAKING_BANNER',
   MULTI_CHAIN_SAFE_CREATION = 'MULTI_CHAIN_SAFE_CREATION',
   MULTI_CHAIN_SAFE_ADD_NETWORK = 'MULTI_CHAIN_SAFE_ADD_NETWORK',
+  PROPOSERS = 'PROPOSERS',
+  TARGETED_SURVEY = 'TARGETED_SURVEY',
+  BRIDGE = 'BRIDGE',
 }
 
 export const FeatureRoutes = {
@@ -44,6 +48,7 @@ export const FeatureRoutes = {
   [AppRoutes.stake]: FEATURES.STAKING,
   [AppRoutes.balances.nfts]: FEATURES.ERC721,
   [AppRoutes.settings.notifications]: FEATURES.PUSH_NOTIFICATIONS,
+  [AppRoutes.bridge]: FEATURES.BRIDGE,
 }
 
 export const hasFeature = (chain: ChainInfo, feature: FEATURES): boolean => {

@@ -9,7 +9,11 @@ type DataTableProps = {
 
 export const DataTable = ({ header, rows }: DataTableProps): ReactElement | null => {
   return (
-    <Stack gap="4px">
+    <Stack
+      sx={{
+        gap: '4px',
+      }}
+    >
       {header && (
         <Typography variant="body1">
           <b>{header}</b>

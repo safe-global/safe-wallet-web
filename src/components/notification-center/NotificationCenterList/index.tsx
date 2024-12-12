@@ -19,7 +19,13 @@ const NotificationCenterList = ({ notifications, handleClose }: NotificationCent
     return (
       <div className={css.wrapper}>
         <NoNotificationsIcon alt="No notifications" />
-        <Typography paddingTop="8px">No notifications</Typography>
+        <Typography
+          sx={{
+            paddingTop: '8px',
+          }}
+        >
+          No notifications
+        </Typography>
       </div>
     )
   }

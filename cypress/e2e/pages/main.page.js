@@ -194,6 +194,16 @@ export function acceptCookies(index = 0) {
     })
 }
 
+export function acceptCookies2() {
+  cy.wait(2000)
+  cy.get('body').then(($body) => {
+    if ($body.find('button:contains(' + acceptSelection + ')').length > 0) {
+      cy.contains('button', acceptSelection).click()
+      cy.wait(500)
+    }
+  })
+}
+
 export function verifyOwnerConnected(prefix = 'sep:') {
   cy.get(connectedOwnerBlock).should('contain', prefix)
 }
@@ -363,4 +373,14 @@ export function getAddedSafeAddressFromLocalStorage(chainId, index) {
     const safeAddress = Object.keys(addedSafesObj[chainId])[index]
     return safeAddress
   })
+}
+
+export function changeSafeChainName(originalChain, newChain) {
+  return originalChain.replace(/^[^:]+:/, newChain + ':')
+}
+
+export function getSafeAddressFromUrl(url) {
+  const addressPattern = /0x[a-fA-F0-9]{40}/
+  const match = url.match(addressPattern)
+  return match ? match[0] : null
 }

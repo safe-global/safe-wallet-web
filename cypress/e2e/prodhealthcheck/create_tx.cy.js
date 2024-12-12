@@ -2,6 +2,7 @@ import * as constants from '../../support/constants'
 import * as createtx from '../../e2e/pages/create_tx.pages'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
+import { acceptCookies2 } from '../pages/main.page.js'
 
 let staticSafes = []
 
@@ -25,6 +26,7 @@ describe('[PROD] Create transactions tests', () => {
   beforeEach(() => {
     cy.visit(constants.prodbaseUrl + constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_6)
     wallet.connectSigner(signer)
+    acceptCookies2()
     createtx.clickOnNewtransactionBtn()
     createtx.clickOnSendTokensBtn()
   })

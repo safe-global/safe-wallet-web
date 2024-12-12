@@ -103,3 +103,8 @@ export const formatDurationFromMilliseconds = (
   const duration = intervalToDuration({ start: 0, end: seconds })
   return formatDuration(duration, { format })
 }
+
+export const maybePlural = (quantity: number | unknown[]) => {
+  quantity = Array.isArray(quantity) ? quantity.length : quantity
+  return quantity > 1 ? 's' : ''
+}

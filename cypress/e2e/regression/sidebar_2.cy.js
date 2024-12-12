@@ -4,8 +4,11 @@ import * as sideBar from '../pages/sidebar.pages'
 import * as ls from '../../support/localstorage_data.js'
 import * as assets from '../pages/assets.pages.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import * as wallet from '../../support/utils/wallet.js'
 
 let staticSafes = []
+const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
+const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 const newSafeName = 'Added safe 3'
 const addedSafe900 = 'Added safe 900'
@@ -35,7 +38,8 @@ describe('Sidebar added sidebar tests', () => {
     sideBar.verifySafeNameExists(newSafeName)
   })
 
-  it('Verify a safe can be removed', () => {
+  // TODO: Waiting for new tests due to changed functionality
+  it.skip('Verify a safe can be removed', () => {
     sideBar.openSidebar()
     sideBar.removeSafeItem(addedSafe900)
     sideBar.verifySafeRemoved([addedSafe900])
@@ -47,6 +51,7 @@ describe('Sidebar added sidebar tests', () => {
   })
 
   it('Verify "wallet" tag counter if the safe has tx ready for execution', () => {
+    wallet.connectSigner(signer)
     sideBar.openSidebar()
     sideBar.verifyNumberOfPendingTxTag(1)
   })

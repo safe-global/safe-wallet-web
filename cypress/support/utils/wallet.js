@@ -8,12 +8,17 @@ const privateKeyStr = 'Private key'
 export function connectSigner(signer) {
   const actions = {
     privateKey: () => {
-      cy.get(onboardv2)
-        .shadow()
-        .find('button')
-        .contains(privateKeyStr)
-        .click()
-        .then(() => handlePkConnect())
+      cy.wait(2000)
+      cy.get('body').then(($body) => {
+        if ($body.find(onboardv2).length > 0) {
+          cy.get(onboardv2)
+            .shadow()
+            .find('button')
+            .contains(privateKeyStr)
+            .click()
+            .then(() => handlePkConnect())
+        }
+      })
     },
     retry: () => {
       cy.wait(1000).then(enterPrivateKey)
@@ -22,21 +27,35 @@ export function connectSigner(signer) {
 
   function handlePkConnect() {
     cy.get('body').then(($body) => {
-      if ($body.find(pkConnectBtn).length > 0) {
-        cy.get(pkInput).find('input').clear().type(signer, { log: false, force: true })
+      if ($body.find(pkInput).length > 0) {
+        cy.get(pkInput)
+          .find('input')
+          .then(($input) => {
+            $input.val(signer)
+            cy.wrap($input).trigger('input').trigger('change')
+          })
+
         cy.get(pkConnectBtn).click()
       }
     })
   }
 
   function enterPrivateKey() {
-    cy.wait(1000)
+    cy.wait(3000)
     cy.get('body').then(($body) => {
-      if ($body.find(connectWalletBtn).length > 0) {
+      if ($body.find(pkInput).length > 0) {
+        cy.get(pkInput)
+          .find('input')
+          .then(($input) => {
+            $input.val(signer)
+            cy.wrap($input).trigger('input').trigger('change')
+          })
+
+        cy.get(pkConnectBtn).click()
+      } else if ($body.find(connectWalletBtn).length > 0) {
         cy.get(connectWalletBtn)
           .eq(0)
           .should('be.enabled')
-          .and('be.visible')
           .click()
           .then(() => {
             const actionKey = $body.find(onboardv2).length > 0 ? 'privateKey' : 'retry'

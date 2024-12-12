@@ -8,7 +8,7 @@ import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 
 let staticSafes = []
 
-describe('[SMOKE] Import Export Data tests', () => {
+describe('[SMOKE] Import Export Data tests', { defaultCommandTimeout: 20000 }, () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })

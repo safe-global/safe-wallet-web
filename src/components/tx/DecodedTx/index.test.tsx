@@ -2,12 +2,110 @@ import { fireEvent, render } from '@/tests/test-utils'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import DecodedTx from '.'
 import { waitFor } from '@testing-library/react'
+import { createMockTransactionDetails } from '@/tests/transactions'
+import {
+  DetailedExecutionInfoType,
+  SettingsInfoType,
+  TransactionInfoType,
+} from '@safe-global/safe-gateway-typescript-sdk'
 import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
 
+const txDetails = createMockTransactionDetails({
+  txInfo: {
+    type: TransactionInfoType.SETTINGS_CHANGE,
+    humanDescription: 'Add new owner 0xd8dA...6045 with threshold 1',
+    dataDecoded: {
+      method: 'addOwnerWithThreshold',
+      parameters: [
+        {
+          name: 'owner',
+          type: 'address',
+          value: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+        },
+        {
+          name: '_threshold',
+          type: 'uint256',
+          value: '1',
+        },
+      ],
+    },
+    settingsInfo: {
+      type: SettingsInfoType.ADD_OWNER,
+      owner: {
+        value: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+        name: 'Nevinha',
+        logoUri: 'http://something.com',
+      },
+      threshold: 1,
+    },
+  },
+  txData: {
+    hexData:
+      '0x0d582f13000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa960450000000000000000000000000000000000000000000000000000000000000001',
+    dataDecoded: {
+      method: 'addOwnerWithThreshold',
+      parameters: [
+        {
+          name: 'owner',
+          type: 'address',
+          value: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+        },
+        {
+          name: '_threshold',
+          type: 'uint256',
+          value: '1',
+        },
+      ],
+    },
+    to: {
+      value: '0xE20CcFf2c38Ef3b64109361D7b7691ff2c7D5f67',
+      name: '',
+    },
+    value: '0',
+    operation: 0,
+    trustedDelegateCallTarget: false,
+    addressInfoIndex: {
+      '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045': {
+        value: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+        name: 'MetaMultiSigWallet',
+      },
+    },
+  },
+  detailedExecutionInfo: {
+    type: DetailedExecutionInfoType.MULTISIG,
+    submittedAt: 1726064794013,
+    nonce: 4,
+    safeTxGas: '0',
+    baseGas: '0',
+    gasPrice: '0',
+    gasToken: '0x0000000000000000000000000000000000000000',
+    refundReceiver: {
+      value: '0x0000000000000000000000000000000000000000',
+      name: 'MetaMultiSigWallet',
+    },
+    safeTxHash: '0x96a96c11b8d013ff5d7a6ce960b22e961046cfa42eff422ac71c1daf6adef2e0',
+    signers: [
+      {
+        value: '0xDa5e9FA404881Ff36DDa97b41Da402dF6430EE6b',
+        name: '',
+      },
+    ],
+    confirmationsRequired: 1,
+    confirmations: [],
+    rejectors: [],
+    trusted: false,
+    proposer: {
+      value: '0xDa5e9FA404881Ff36DDa97b41Da402dF6430EE6b',
+      name: '',
+    },
+  },
+})
 describe('DecodedTx', () => {
   it('should render a native transfer', async () => {
     const result = render(
       <DecodedTx
+        txDetails={txDetails}
+        showMultisend={false}
         tx={
           {
             data: {
@@ -48,8 +146,8 @@ describe('DecodedTx', () => {
     fireEvent.click(result.getByText('Advanced details'))
 
     await waitFor(() => {
-      expect(result.queryByText('safeTxGas:')).toBeInTheDocument()
-      expect(result.queryByText('Raw data:')).toBeInTheDocument()
+      expect(result.queryAllByText('safeTxGas:').length).toBeGreaterThan(0)
+      expect(result.queryAllByText('Raw data:').length).toBeGreaterThan(0)
     })
   })
 
@@ -95,6 +193,9 @@ describe('DecodedTx', () => {
   it('should render an ERC20 transfer', async () => {
     const result = render(
       <DecodedTx
+        txDetails={txDetails}
+        showMethodCall
+        showMultisend={false}
         tx={
           {
             data: {
@@ -126,7 +227,6 @@ describe('DecodedTx', () => {
             },
           ],
         }}
-        showMethodCall
       />,
     )
 
@@ -134,12 +234,12 @@ describe('DecodedTx', () => {
 
     await waitFor(() => {
       expect(result.queryByText('transfer')).toBeInTheDocument()
-      expect(result.queryByText('Parameters')).toBeInTheDocument()
+      expect(result.queryAllByText('Parameters').length).toBeGreaterThan(0)
       expect(result.queryByText('to')).toBeInTheDocument()
-      expect(result.queryByText('address')).toBeInTheDocument()
+      expect(result.queryAllByText('address').length).toBeGreaterThan(0)
       expect(result.queryByText('0x474e...78C8')).toBeInTheDocument()
       expect(result.queryByText('value')).toBeInTheDocument()
-      expect(result.queryByText('uint256')).toBeInTheDocument()
+      expect(result.queryAllByText('uint256').length).toBeGreaterThan(0)
       expect(result.queryByText('16745726664999765048')).toBeInTheDocument()
     })
   })
@@ -228,6 +328,7 @@ describe('DecodedTx', () => {
           ],
         }}
         showMethodCall
+        showMultisend
       />,
     )
 
@@ -237,6 +338,7 @@ describe('DecodedTx', () => {
   it('should render a function call without parameters', async () => {
     const result = render(
       <DecodedTx
+        txDetails={txDetails}
         tx={
           {
             data: {
@@ -253,6 +355,7 @@ describe('DecodedTx', () => {
             },
           } as SafeTransaction
         }
+        showMultisend={false}
         decodedData={{
           method: 'deposit',
           parameters: [],

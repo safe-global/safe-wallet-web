@@ -1,7 +1,7 @@
 import React from 'react'
 import { screen, fireEvent } from '@testing-library/react'
 import { act, render } from '@/tests/test-utils'
-import '@testing-library/jest-dom/extend-expect'
+import '@testing-library/jest-dom'
 import TxFilterForm from './index'
 import { useRouter } from 'next/router'
 
@@ -19,7 +19,7 @@ const toggleFilter = jest.fn()
 
 const fromDate = '20/01/2021'
 const toDate = '20/01/2020'
-const placeholder = 'dd/mm/yyyy'
+const placeholder = 'DD/MM/YYYY'
 const errorMsgFormat = 'Invalid address format'
 
 describe('TxFilterForm Component Tests', () => {

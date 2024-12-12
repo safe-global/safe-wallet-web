@@ -38,10 +38,17 @@ export const uniqueAddress =
   }
 
 export const addressIsNotCurrentSafe =
-  (safeAddress: string) =>
+  (safeAddress: string, message?: string) =>
   (address: string): string | undefined => {
-    const SIGNER_ADDRESS_IS_SAFE_ADDRESS_ERROR = 'Cannot use Safe Account itself as signer.'
+    const SIGNER_ADDRESS_IS_SAFE_ADDRESS_ERROR = message || 'Cannot use Safe Account itself as signer.'
     return sameAddress(safeAddress, address) ? SIGNER_ADDRESS_IS_SAFE_ADDRESS_ERROR : undefined
+  }
+
+export const addressIsNotOwner =
+  (owners: string[], message?: string) =>
+  (address: string): string | undefined => {
+    const ADDRESS_IS_OWNER_ERROR = message || 'Cannot use Owners.'
+    return owners.some((owner) => owner === address) ? ADDRESS_IS_OWNER_ERROR : undefined
   }
 
 export const FLOAT_REGEX = /^[0-9]+([,.][0-9]+)?$/

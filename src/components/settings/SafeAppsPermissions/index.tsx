@@ -101,7 +101,7 @@ const SafeAppsPermissions = (): ReactElement => {
       </Typography>
       <br />
       {!domains.length && (
-        <Typography variant="body1" color={({ palette }) => palette.primary.light}>
+        <Typography variant="body1" sx={{ color: ({ palette }) => palette.primary.light }}>
           There are no Safe Apps using permissions.
         </Typography>
       )}

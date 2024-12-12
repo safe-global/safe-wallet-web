@@ -16,6 +16,7 @@ import type { TxModalContextType } from '@/components/tx-flow'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import css from './styles.module.css'
+import { maybePlural } from '@/utils/formatters'
 
 type Props =
   | {
@@ -31,7 +32,12 @@ type Props =
       setTxFlow: TxModalContextType['setTxFlow']
     }
 
-export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe, setTxFlow }: Props): ReactElement {
+export function InternalRecoveryProposalCard({
+  orientation = 'vertical',
+  onClose,
+  safe,
+  setTxFlow,
+}: Props): ReactElement {
   const isDarkMode = useDarkMode()
 
   const onRecover = async () => {
@@ -47,9 +53,7 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
     />
   )
   const title = 'Recover this Account'
-  const desc = `The connected wallet was chosen as a trusted Recoverer. You can help the owner${
-    safe.owners.length > 1 ? 's' : ''
-  } regain access by resetting the Account setup.`
+  const desc = `The connected wallet was chosen as a trusted Recoverer. You can help the owner${maybePlural(safe.owners)} regain access by resetting the Account setup.`
 
   const link = (
     <Track {...RECOVERY_EVENTS.LEARN_MORE} label="proposal-card">
@@ -70,19 +74,32 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
       <Card data-testid="recovery-proposal-hr" sx={{ py: 3, px: 4 }}>
         <Grid
           container
-          display="flex"
-          alignItems={{ xs: 'flex-start', md: 'center' }}
-          gap={3}
-          flexDirection={{ xs: 'column', md: 'row' }}
+          sx={{
+            display: 'flex',
+            alignItems: { xs: 'flex-start', md: 'center' },
+            gap: 3,
+            flexDirection: { xs: 'column', md: 'row' },
+          }}
         >
           <Grid item>{icon}</Grid>
 
           <Grid item xs>
-            <Typography variant="h6" fontWeight={700} mb={1}>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 700,
+                mb: 1,
+              }}
+            >
               {title}
             </Typography>
 
-            <Typography color="primary.light" mb={1}>
+            <Typography
+              sx={{
+                color: 'primary.light',
+                mb: 1,
+              }}
+            >
               {desc}
             </Typography>
 
@@ -97,26 +114,58 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
 
   return (
     <Card data-testid="recovery-proposal" elevation={0} className={css.card}>
-      <Grid container display="flex" flexDirection="column" gap={4}>
-        <Grid item xs={12} display="flex" justifyContent="space-between">
+      <Grid
+        container
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 4,
+        }}
+      >
+        <Grid
+          item
+          xs={12}
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
+        >
           {icon}
 
           {link}
         </Grid>
 
         <Grid item xs={12}>
-          <Typography variant="h6" fontWeight={700} mb={2}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 700,
+              mb: 2,
+            }}
+          >
             {title}
           </Typography>
 
-          <Typography color="primary.light" mb={2}>
+          <Typography
+            sx={{
+              color: 'primary.light',
+              mb: 2,
+            }}
+          >
             {desc}
           </Typography>
         </Grid>
 
         <Divider flexItem sx={{ mx: -4 }} />
 
-        <Grid item container justifyContent="flex-end" gap={{ md: 1 }}>
+        <Grid
+          item
+          container
+          sx={{
+            justifyContent: 'flex-end',
+            gap: { md: 1 },
+          }}
+        >
           <Button
             data-testid="postpone-recovery-btn"
             onClick={() => {
@@ -134,10 +183,10 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
 }
 
 // Appease TypeScript
-const _useSafe = () => useSafeInfo().safe
-const _useSetTxFlow = () => useContext(TxModalContext).setTxFlow
+const InternalUseSafe = () => useSafeInfo().safe
+const InternalUseSetTxFlow = () => useContext(TxModalContext).setTxFlow
 
-export const RecoveryProposalCard = madProps(_RecoveryProposalCard, {
-  safe: _useSafe,
-  setTxFlow: _useSetTxFlow,
+export const RecoveryProposalCard = madProps(InternalRecoveryProposalCard, {
+  safe: InternalUseSafe,
+  setTxFlow: InternalUseSetTxFlow,
 })

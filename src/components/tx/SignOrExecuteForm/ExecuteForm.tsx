@@ -15,7 +15,7 @@ import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
 import { ExecutionMethod, ExecutionMethodSelector } from '../ExecutionMethodSelector'
 import { hasRemainingRelays } from '@/utils/relaying'
-import type { SignOrExecuteProps } from '.'
+import type { SignOrExecuteProps } from './SignOrExecuteForm'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { TxModalContext } from '@/components/tx-flow'
 import { SuccessScreenFlow } from '@/components/tx-flow/flows'
@@ -48,6 +48,7 @@ export const ExecuteForm = ({
   isExecutionLoop: ReturnType<typeof useIsExecutionLoop>
   txActions: ReturnType<typeof useTxActions>
   txSecurity: ReturnType<typeof useTxSecurityContext>
+  isCreation?: boolean
   safeTx?: SafeTransaction
 }): ReactElement => {
   // Form state
@@ -76,7 +77,10 @@ export const ExecuteForm = ({
   const [advancedParams, setAdvancedParams] = useAdvancedParams(gasLimit)
 
   // Check if transaction will fail
-  const { executionValidationError } = useIsValidExecution(safeTx, advancedParams.gasLimit)
+  const { executionValidationError } = useIsValidExecution(
+    safeTx,
+    advancedParams.gasLimit ? advancedParams.gasLimit : undefined,
+  )
 
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
@@ -110,7 +114,7 @@ export const ExecuteForm = ({
 
     // On success
     onSubmit?.(executedTxId, true)
-    setTxFlow(<SuccessScreenFlow txId={executedTxId} safeTx={safeTx} />, undefined, false)
+    setTxFlow(<SuccessScreenFlow txId={executedTxId} />, undefined, false)
   }
 
   const walletCanPay = useWalletCanPay({

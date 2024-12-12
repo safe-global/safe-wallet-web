@@ -117,3 +117,7 @@
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
 }
+
+.riskConfirmationBlock :global .MuiCheckbox-root {
+  color: var(--color-static-main);
+}

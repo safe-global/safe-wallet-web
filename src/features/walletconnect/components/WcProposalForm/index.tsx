@@ -15,7 +15,7 @@ import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
 
 import { asError } from '@/services/exceptions/utils'
 import { Button, Checkbox, CircularProgress, Divider, FormControlLabel, Typography } from '@mui/material'
-import type { Web3WalletTypes } from '@walletconnect/web3wallet'
+import type { WalletKitTypes } from '@reown/walletkit'
 import type { ChangeEvent, ReactElement } from 'react'
 import { type Dispatch, type SetStateAction, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { CompatibilityWarning } from './CompatibilityWarning'
@@ -25,8 +25,8 @@ import { useSanctionedAddress } from '@/hooks/useSanctionedAddress'
 import BlockedAddress from '@/components/common/BlockedAddress'
 
 type ProposalFormProps = {
-  proposal: Web3WalletTypes.SessionProposal
-  setProposal: Dispatch<SetStateAction<Web3WalletTypes.SessionProposal | undefined>>
+  proposal: WalletKitTypes.SessionProposal
+  setProposal: Dispatch<SetStateAction<WalletKitTypes.SessionProposal | undefined>>
   onApprove: () => void
 }
 

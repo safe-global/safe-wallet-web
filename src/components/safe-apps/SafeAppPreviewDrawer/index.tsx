@@ -18,6 +18,7 @@ import SafeAppSocialLinksCard from '@/components/safe-apps/SafeAppSocialLinksCar
 import CloseIcon from '@/public/images/common/close.svg'
 import { useOpenedSafeApps } from '@/hooks/safe-apps/useOpenedSafeApps'
 import css from './styles.module.css'
+import { SAFE_APPS_EVENTS, SAFE_APPS_LABELS, trackSafeAppEvent } from '@/services/analytics'
 
 type SafeAppPreviewDrawerProps = {
   safeApp?: SafeAppData
@@ -35,6 +36,7 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
   const onOpenSafe = () => {
     if (safeApp) {
       markSafeAppOpened(safeApp.id)
+      trackSafeAppEvent({ ...SAFE_APPS_EVENTS.OPEN_APP, label: SAFE_APPS_LABELS.apps_sidebar }, safeApp.name)
     }
   }
 

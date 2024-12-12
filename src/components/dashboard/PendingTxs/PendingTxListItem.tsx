@@ -35,15 +35,15 @@ const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
     <NextLink data-testid="tx-pending-item" href={url} passHref>
       <Box className={css.container}>
         <Box className={css.innerContainer}>
-          <Box minWidth={30}>
+          <Box sx={{ minWidth: 30 }}>
             {isMultisigExecutionInfo(transaction.executionInfo) && transaction.executionInfo.nonce}
           </Box>
 
-          <Box minWidth={62}>
+          <Box sx={{ minWidth: 62 }}>
             <TxType tx={transaction} />
           </Box>
 
-          <Box minWidth={0} flexGrow={1}>
+          <Box sx={{ minWidth: 0, flexGrow: 1 }}>
             <TxInfo info={transaction.txInfo} />
           </Box>
         </Box>

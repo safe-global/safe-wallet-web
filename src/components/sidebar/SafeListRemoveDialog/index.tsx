@@ -37,10 +37,10 @@ const SafeListRemoveDialog = ({
   }
 
   return (
-    <ModalDialog open onClose={handleClose} dialogTitle="Delete entry">
+    <ModalDialog open onClose={handleClose} dialogTitle="Delete entry" chainId={chainId}>
       <DialogContent sx={{ p: '24px !important' }}>
         <Typography>
-          Are you sure you want to remove <b>{safe}</b> from your Watchlist?
+          Are you sure you want to remove the <b>{safe}</b> account?
         </Typography>
       </DialogContent>
 

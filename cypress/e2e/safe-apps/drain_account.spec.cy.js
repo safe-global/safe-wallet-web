@@ -1,11 +1,10 @@
 import 'cypress-file-upload'
 import * as constants from '../../support/constants'
-import * as main from '../pages/main.page'
 import * as safeapps from '../pages/safeapps.pages'
 import * as navigation from '../pages/navigation.page'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
-import * as ls from '../../support/localstorage_data.js'
 import * as wallet from '../../support/utils/wallet.js'
+import { getMockAddress } from '../../support/utils/ethers.js'
 
 let safeAppSafes = []
 let iframeSelector
@@ -13,7 +12,7 @@ let iframeSelector
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
-describe('Drain Account tests', () => {
+describe('Drain Account tests', { defaultCommandTimeout: 40000 }, () => {
   before(async () => {
     safeAppSafes = await getSafes(CATEGORIES.safeapps)
   })
@@ -31,7 +30,7 @@ describe('Drain Account tests', () => {
   it('Verify drain can be created', () => {
     wallet.connectSigner(signer)
     cy.enter(iframeSelector).then((getBody) => {
-      getBody().findByLabelText(safeapps.recipientStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
+      getBody().findByLabelText(safeapps.recipientStr).type(getMockAddress())
       getBody().findAllByText(safeapps.transferEverythingStr).click()
     })
     cy.findByRole('button', { name: safeapps.testTransfer1 })
@@ -46,7 +45,7 @@ describe('Drain Account tests', () => {
       getBody().findByLabelText(safeapps.selectAllRowsChbxStr).click()
       getBody().findAllByLabelText(safeapps.selectRowChbxStr).eq(1).click()
       getBody().findAllByLabelText(safeapps.selectRowChbxStr).eq(2).click()
-      getBody().findByLabelText(safeapps.recipientStr).clear().type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
+      getBody().findByLabelText(safeapps.recipientStr).clear().type(getMockAddress())
       getBody().findAllByText(safeapps.transfer2AssetsStr).click()
     })
     cy.findByRole('button', { name: safeapps.testTransfer2 })
@@ -67,7 +66,7 @@ describe('Drain Account tests', () => {
 
   it('Verify when cancelling a drain, previous data is preserved', () => {
     cy.enter(iframeSelector).then((getBody) => {
-      getBody().findByLabelText(safeapps.recipientStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
+      getBody().findByLabelText(safeapps.recipientStr).type(getMockAddress())
       getBody().findAllByText(safeapps.transferEverythingStr).click()
     })
     navigation.clickOnModalCloseBtn(0)
@@ -85,7 +84,7 @@ describe('Drain Account tests', () => {
 
   it('Verify a drain cannot be created with invalid recipient selected', () => {
     cy.enter(iframeSelector).then((getBody) => {
-      getBody().findByLabelText(safeapps.recipientStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2.substring(1))
+      getBody().findByLabelText(safeapps.recipientStr).type(getMockAddress().substring(1))
       getBody().findAllByText(safeapps.transferEverythingStr).click()
       getBody().findByText(safeapps.validRecipientAddressStr)
     })
@@ -94,7 +93,7 @@ describe('Drain Account tests', () => {
   it('Verify a drain cannot be created when no assets are selected', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findByLabelText(safeapps.selectAllRowsChbxStr).click()
-      getBody().findByLabelText(safeapps.recipientStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
+      getBody().findByLabelText(safeapps.recipientStr).type(getMockAddress())
       getBody().findAllByText(safeapps.noTokensSelectedStr).should('be.visible')
     })
   })

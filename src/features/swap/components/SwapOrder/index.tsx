@@ -48,7 +48,11 @@ const AmountRow = ({ order }: { order: Order }) => {
   const isSellOrder = kind === 'sell'
   return (
     <DataRow key="Amount" title="Amount">
-      <Stack flexDirection={isSellOrder ? 'column' : 'column-reverse'}>
+      <Stack
+        sx={{
+          flexDirection: isSellOrder ? 'column' : 'column-reverse',
+        }}
+      >
         <div>
           <span className={css.value}>
             {isSellOrder ? 'Sell' : 'For at most'}{' '}
@@ -105,7 +109,12 @@ const ExpiryRow = ({ order }: { order: Order }) => {
       return (
         <DataRow key="Expiry" title="Expiry">
           <Typography>
-            <Typography fontWeight={700} component="span">
+            <Typography
+              component="span"
+              sx={{
+                fontWeight: 700,
+              }}
+            >
               {formatTimeInWords(validUntil * 1000)}
             </Typography>{' '}
             ({formatDateTime(validUntil * 1000)})
@@ -247,7 +256,12 @@ export const TwapOrder = ({ order }: { order: SwapTwapOrder }) => {
         status !== 'fulfilled' && compareAsc(now, expires) !== 1 ? (
           <DataRow key="Expiry" title="Expiry">
             <Typography>
-              <Typography fontWeight={700} component="span">
+              <Typography
+                component="span"
+                sx={{
+                  fontWeight: 700,
+                }}
+              >
                 {formatTimeInWords(validUntil * 1000)}
               </Typography>{' '}
               ({formatDateTime(validUntil * 1000)})

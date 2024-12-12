@@ -6,11 +6,11 @@ import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 import * as ls from '../../support/localstorage_data.js'
 import { getEvents, events, checkDataLayerEvents } from '../../support/utils/gtag.js'
+import { getMockAddress } from '../../support/utils/ethers.js'
 
 let staticSafes = []
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
-const signer2 = walletCredentials.OWNER_1_PRIVATE_KEY
 
 const ownerName = 'Replacement Signer Name'
 
@@ -51,7 +51,7 @@ describe('Replace Owners tests', () => {
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     owner.openReplaceOwnerWindow(0)
-    owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
+    owner.typeOwnerAddress(getMockAddress())
     owner.clickOnNextBtn()
     owner.verifyConfirmTransactionWindowDisplayed()
   })
@@ -63,13 +63,13 @@ describe('Replace Owners tests', () => {
     owner.typeOwnerAddress(main.generateRandomString(10))
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.invalidFormat)
 
-    owner.typeOwnerAddress(constants.addresBookContacts.user1.address.toUpperCase())
+    owner.typeOwnerAddress(getMockAddress().toUpperCase())
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.invalidChecksum)
 
     owner.typeOwnerAddress(staticSafes.SEP_STATIC_SAFE_4)
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.ownSafe)
 
-    owner.typeOwnerAddress(constants.addresBookContacts.user1.address.replace('F', 'f'))
+    owner.typeOwnerAddress(getMockAddress().replace('A', 'a'))
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.invalidChecksum)
 
     owner.typeOwnerAddress(constants.DEFAULT_OWNER_ADDRESS)

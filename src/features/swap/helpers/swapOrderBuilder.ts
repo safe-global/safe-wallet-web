@@ -5,9 +5,8 @@ import type {
   SwapOrder,
   TransactionInfoType,
   TwapOrder,
-  SwapOrderConfirmationView,
+  Order,
 } from '@safe-global/safe-gateway-typescript-sdk'
-import { ConfirmationViewTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import { DurationType, StartTimeValue } from '@safe-global/safe-gateway-typescript-sdk'
 
 export function appDataBuilder(
@@ -102,10 +101,10 @@ export function twapOrderBuilder(): IBuilder<TwapOrder> {
 }
 
 // create a builder for SwapOrderConfirmationView
-export function swapOrderConfirmationViewBuilder(): IBuilder<SwapOrderConfirmationView> {
+export function swapOrderConfirmationViewBuilder(): IBuilder<Order> {
   const ownerAndReceiver = faker.finance.ethereumAddress()
-  return Builder.new<SwapOrderConfirmationView>().with({
-    type: ConfirmationViewTypes.COW_SWAP_ORDER,
+  return Builder.new<Order>().with({
+    type: 'SwapOrder' as TransactionInfoType.SWAP_ORDER,
     uid: faker.string.uuid(),
     kind: faker.helpers.arrayElement(['buy', 'sell']),
     orderClass: faker.helpers.arrayElement(['limit', 'market', 'liquidity']),

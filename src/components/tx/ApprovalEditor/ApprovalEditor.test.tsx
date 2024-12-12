@@ -80,8 +80,8 @@ describe('ApprovalEditor', () => {
       tokenInfo: { symbol: 'TST', decimals: 18, address: tokenAddress, type: TokenType.ERC20 },
       tokenAddress,
       spender: spenderAddress,
-      amount: '4200000',
-      amountFormatted: '420.0',
+      amount: '9876456354200000',
+      amountFormatted: '987645635420.0',
       method: 'approve',
       transactionIndex: 0,
     } as const
@@ -98,7 +98,7 @@ describe('ApprovalEditor', () => {
 
     expect(amountInput).not.toBeInTheDocument()
     expect(result.getByText('TST', { exact: false }))
-    expect(result.getByText('420', { exact: false }))
+    expect(result.getByText('987,645,635,420', { exact: false }))
     expect(result.getByText(spenderAddress))
   })
 
@@ -109,8 +109,8 @@ describe('ApprovalEditor', () => {
       tokenInfo: { symbol: 'TST', decimals: 18, address: tokenAddress, type: TokenType.ERC20 },
       tokenAddress,
       spender: spenderAddress,
-      amount: '4200000',
-      amountFormatted: '420.0',
+      amount: '9876456354200000',
+      amountFormatted: '987645635420.0',
       method: 'approve',
       transactionIndex: 0,
     } as const
@@ -127,7 +127,7 @@ describe('ApprovalEditor', () => {
 
     expect(amountInput1).toBeInTheDocument
 
-    expect(amountInput1).toHaveValue('420.0')
+    expect(amountInput1).toHaveValue('987645635420.0')
     expect(result.getByText('TST', { exact: false }))
     expect(result.getByText(spenderAddress))
   })

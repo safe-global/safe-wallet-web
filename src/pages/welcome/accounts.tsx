@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import MyAccounts from '@/components/welcome/MyAccounts'
+import MyAccounts from '@/features/myAccounts'
 
 const Accounts: NextPage = () => {
   return (

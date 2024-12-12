@@ -3,10 +3,12 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import { MAX_DAY_RELAYS } from '@/hooks/useRemainingRelays'
 import css from '../BalanceInfo/styles.module.css'
 import type { RelayCountResponse } from '@safe-global/safe-gateway-typescript-sdk'
+import { maybePlural } from '@/utils/formatters'
 
 const RemainingRelays = ({ relays, tooltip }: { relays?: RelayCountResponse; tooltip?: string }) => {
   if (!tooltip) {
-    tooltip = `${relays?.limit ?? MAX_DAY_RELAYS} transactions per day for free`
+    const limit = relays?.limit ?? MAX_DAY_RELAYS
+    tooltip = `${limit} transaction${maybePlural(limit)} per day for free`
   }
 
   return (

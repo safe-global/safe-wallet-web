@@ -3,7 +3,7 @@ import { List, ListItem, Stack } from '@mui/material'
 import { type ApprovalInfo } from '@/components/tx/ApprovalEditor/hooks/useApprovalInfos'
 import css from './styles.module.css'
 import ApprovalItem from '@/components/tx/ApprovalEditor/ApprovalItem'
-import { groupBy } from 'lodash'
+import groupBy from 'lodash/groupBy'
 import { useMemo } from 'react'
 import { SpenderField } from './SpenderField'
 
@@ -13,7 +13,12 @@ const Approvals = ({ approvalInfos }: { approvalInfos: ApprovalInfo[] }) => {
   return (
     <List className={css.approvalsList}>
       {Object.entries(groupedApprovals).map(([spender, approvals]) => (
-        <Stack key={spender} gap={2}>
+        <Stack
+          key={spender}
+          sx={{
+            gap: 2,
+          }}
+        >
           <SpenderField address={spender} />
           {approvals.map((tx) => {
             if (!tx.tokenInfo) return <></>

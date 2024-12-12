@@ -15,11 +15,22 @@ import TokenAmountInput from '@/components/common/TokenAmountInput'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
-  <Grid container alignItems="center" gap={1}>
+  <Grid
+    container
+    sx={{
+      alignItems: 'center',
+      gap: 1,
+    }}
+  >
     <TokenIcon logoUri={item.tokenInfo.logoUri} key={item.tokenInfo.address} tokenSymbol={item.tokenInfo.symbol} />
 
     <Grid item xs>
-      <Typography variant="body2" whiteSpace="normal">
+      <Typography
+        variant="body2"
+        sx={{
+          whiteSpace: 'normal',
+        }}
+      >
         {item.tokenInfo.name}
       </Typography>
 
@@ -56,8 +67,8 @@ export const CreateTokenTransfer = ({
       [TokenTransferFields.type]: disableSpendingLimit
         ? TokenTransferType.multiSig
         : isOnlySpendingLimitBeneficiary
-        ? TokenTransferType.spendingLimit
-        : params.type,
+          ? TokenTransferType.spendingLimit
+          : params.type,
       [TokenTransferFields.tokenAddress]: isOnlySpendingLimitBeneficiary
         ? balancesItems[0]?.tokenInfo.address
         : params.tokenAddress,

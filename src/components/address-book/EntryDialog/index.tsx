@@ -52,6 +52,7 @@ function EntryDialog({
 
   return (
     <ModalDialog
+      data-testid="entry-dialog"
       open
       onClose={handleClose}
       dialogTitle={defaultValues.name ? 'Edit entry' : 'Create entry'}

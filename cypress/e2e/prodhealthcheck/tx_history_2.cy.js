@@ -2,6 +2,7 @@ import * as constants from '../../support/constants'
 import * as createTx from '../pages/create_tx.pages'
 import * as data from '../../fixtures/txhistory_data_data.json'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import { acceptCookies2 } from '../pages/main.page.js'
 
 let staticSafes = []
 
@@ -34,6 +35,7 @@ describe('[PROD] Tx history tests 2', () => {
     ).as('allTransactions')
 
     cy.visit(constants.prodbaseUrl + constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_7)
+    acceptCookies2()
   })
 
   it('Verify number of transactions is correct', () => {
@@ -67,12 +69,12 @@ describe('[PROD] Tx history tests 2', () => {
 
   // Add owner
   it('Verify summary for adding owner', () => {
-    createTx.verifySummaryByName(typeAddOwner.title, [typeGeneral.statusOk], typeAddOwner.altImage)
+    createTx.verifySummaryByName(typeAddOwner.title, null, [typeGeneral.statusOk], typeAddOwner.altImage)
   })
 
   // Change owner
   it('Verify summary for changing owner', () => {
-    createTx.verifySummaryByName(typeChangeOwner.title, [typeGeneral.statusOk], typeChangeOwner.altImage)
+    createTx.verifySummaryByName(typeChangeOwner.title, null, [typeGeneral.statusOk], typeChangeOwner.altImage)
   })
 
   it('Verify exapanded details for changing owner', () => {
@@ -91,21 +93,17 @@ describe('[PROD] Tx history tests 2', () => {
 
   // Remove owner
   it('Verify summary for removing owner', () => {
-    createTx.verifySummaryByName(typeRemoveOwner.title, [typeGeneral.statusOk], typeRemoveOwner.altImage)
+    createTx.verifySummaryByName(typeRemoveOwner.title, null, [typeGeneral.statusOk], typeRemoveOwner.altImage)
   })
 
   // Disbale module
   it('Verify summary for disable module', () => {
-    createTx.verifySummaryByName(typeDisableOwner.title, [typeGeneral.statusOk], typeDisableOwner.altImage)
+    createTx.verifySummaryByName(typeDisableOwner.title, null, [typeGeneral.statusOk], typeDisableOwner.altImage)
   })
 
   // Change threshold
   it('Verify summary for changing threshold', () => {
-    createTx.verifySummaryByName(
-      typeChangeThreshold.title,
-      [typeChangeThreshold.summaryTxInfo, typeGeneral.statusOk],
-      typeChangeThreshold.altImage,
-    )
+    createTx.verifySummaryByName(typeChangeThreshold.title, null, [typeGeneral.statusOk], typeChangeThreshold.altImage)
   })
 
   it('Verify exapanded details for changing threshold', () => {

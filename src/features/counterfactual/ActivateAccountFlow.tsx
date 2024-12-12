@@ -217,7 +217,7 @@ const ActivateAccountFlow = () => {
           <CheckWallet checkNetwork={!submitDisabled} allowNonOwner allowUndeployedSafe>
             {(isOk) => (
               <Button
-                data-testid="activate-account-btn"
+                data-testid="activate-account-flow-btn"
                 onClick={createSafe}
                 variant="contained"
                 size="stretched"

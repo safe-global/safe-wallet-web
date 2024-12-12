@@ -19,13 +19,27 @@ const NoMessages = (): ReactElement => {
     <PagePlaceholder
       img={<NoMessagesIcon />}
       text={
-        <Typography variant="body1" color="primary.light" m={2} maxWidth="600px">
+        <Typography
+          variant="body1"
+          sx={{
+            color: 'primary.light',
+            m: 2,
+            maxWidth: '600px',
+          }}
+        >
           Some applications allow you to interact with them via off-chain contract signatures (&ldquo;messages&ldquo;)
           that you can generate with your Safe Account.
         </Typography>
       }
     >
-      <Link rel="noopener noreferrer" target="_blank" href={HelpCenterArticle.SIGNED_MESSAGES} fontWeight={700}>
+      <Link
+        rel="noopener noreferrer"
+        target="_blank"
+        href={HelpCenterArticle.SIGNED_MESSAGES}
+        sx={{
+          fontWeight: 700,
+        }}
+      >
         Learn more about off-chain messages{' '}
         <SvgIcon component={LinkIcon} inheritViewBox fontSize="small" sx={{ verticalAlign: 'middle', ml: 0.5 }} />
       </Link>
@@ -45,15 +59,16 @@ const MsgPage = ({
   return (
     <>
       {page && page.results.length > 0 && <MsgList items={page.results} />}
-
       {page?.results.length === 0 && <NoMessages />}
-
       {error && <ErrorMessage>Error loading messages</ErrorMessage>}
-
       {loading && <SkeletonTxList />}
-
       {page?.next && onNextPage && (
-        <Box my={4} textAlign="center">
+        <Box
+          sx={{
+            my: 4,
+            textAlign: 'center',
+          }}
+        >
           <InfiniteScroll onLoadMore={() => onNextPage(page.next!)} />
         </Box>
       )}
@@ -76,7 +91,12 @@ const PaginatedMsgs = (): ReactElement => {
   }, [safe.chainId, safeAddress])
 
   return (
-    <Box mb={4} position="relative">
+    <Box
+      sx={{
+        mb: 4,
+        position: 'relative',
+      }}
+    >
       {pages.map((pageUrl, index) => (
         <MsgPage key={pageUrl} pageUrl={pageUrl} onNextPage={index === pages.length - 1 ? onNextPage : undefined} />
       ))}

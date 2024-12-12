@@ -4,7 +4,7 @@ import { type SafeOverview, getSafeOverviews } from '@safe-global/safe-gateway-t
 import { sameAddress } from '@/utils/addresses'
 import type { RootState } from '../..'
 import { selectCurrency } from '../../settingsSlice'
-import { type SafeItem } from '@/components/welcome/MyAccounts/useAllSafes'
+import { type SafeItem } from '@/features/myAccounts/hooks/useAllSafes'
 import { asError } from '@/services/exceptions/utils'
 
 type SafeOverviewQueueItem = {
@@ -35,7 +35,11 @@ class SafeOverviewFetcher {
     currency: string
   }) {
     return await getSafeOverviews(safeIds, {
-      trusted: true,
+      /**
+       * This flag can only be set once for all cross chain `safeIds`.
+       * If we set `trusted` to `true` we will get 0 as `fiatTotal` for all Safes on networks without Default tokenlists.
+       */
+      trusted: false,
       exclude_spam: true,
       currency,
       wallet_address: walletAddress,
@@ -113,7 +117,7 @@ type MultiOverviewQueryParams = {
   safes: SafeItem[]
 }
 
-export const safeOverviewEndpoints = (builder: EndpointBuilder<any, never, 'gatewayApi'>) => ({
+export const safeOverviewEndpoints = (builder: EndpointBuilder<any, 'Submissions', 'gatewayApi'>) => ({
   getSafeOverview: builder.query<SafeOverview | null, { safeAddress: string; walletAddress?: string; chainId: string }>(
     {
       async queryFn({ safeAddress, walletAddress, chainId }, { getState }) {

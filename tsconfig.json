@@ -41,7 +41,9 @@
     "src/definitions.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "./jest.setup.js",
+    "./eslint.config.mjs"
   ],
   "exclude": [
     "node_modules",

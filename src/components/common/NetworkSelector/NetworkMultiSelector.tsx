@@ -50,7 +50,7 @@ const NetworkMultiSelector = ({
       const currentValues: ChainInfo[] = getValues(name) || []
       const updatedValues = currentValues.filter((chain) => chain.chainId !== deletedChainId)
       updateCurrentNetwork(updatedValues)
-      setValue(name, updatedValues)
+      setValue(name, updatedValues, { shouldValidate: true })
     },
     [getValues, name, setValue, updateCurrentNetwork],
   )

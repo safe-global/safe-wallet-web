@@ -6,7 +6,15 @@ import TimeIcon from '@/public/images/settings/spending-limit/time.svg'
 
 export const NoSpendingLimits = () => {
   return (
-    <Grid mt={2} container direction="row" justifyContent="space-between" spacing={2}>
+    <Grid
+      container
+      direction="row"
+      spacing={2}
+      sx={{
+        mt: 2,
+        justifyContent: 'space-between',
+      }}
+    >
       <Grid item sm={2}>
         <BeneficiaryIcon data-testid="beneficiary-icon" />
       </Grid>
@@ -19,7 +27,6 @@ export const NoSpendingLimits = () => {
           Safe Account
         </Typography>
       </Grid>
-
       <Grid item sm={2}>
         <AssetAmountIcon data-testid="asset-icon" />
       </Grid>
@@ -29,7 +36,6 @@ export const NoSpendingLimits = () => {
         </Typography>
         <Typography>You can set allowances for any asset stored in your Safe Account</Typography>
       </Grid>
-
       <Grid item sm={2}>
         <TimeIcon data-testid="time-icon" />
       </Grid>

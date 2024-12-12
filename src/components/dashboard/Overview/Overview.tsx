@@ -23,14 +23,29 @@ import useIsSwapFeatureEnabled from '@/features/swap/hooks/useIsSwapFeatureEnabl
 
 const SkeletonOverview = (
   <>
-    <Grid container pb={2} mt={3} gap={2} alignItems="flex-end" justifyContent="space-between">
+    <Grid
+      container
+      sx={{
+        pb: 2,
+        mt: 3,
+        gap: 2,
+        alignItems: 'flex-end',
+        justifyContent: 'space-between',
+      }}
+    >
       <Grid item>
         <Skeleton variant="text" width={100} height={30} />
         <Skeleton variant="rounded" width={160} height={40} />
       </Grid>
 
       <Grid item>
-        <Grid container gap={1} flexWrap="wrap">
+        <Grid
+          container
+          sx={{
+            gap: 1,
+            flexWrap: 'wrap',
+          }}
+        >
           <Skeleton variant="rounded" width="115px" height="40px" />
           <Skeleton variant="rounded" width="115px" height="40px" />
         </Grid>
@@ -65,12 +80,34 @@ const Overview = (): ReactElement => {
           SkeletonOverview
         ) : (
           <>
-            <Grid container pb={2} mt={3} gap={2} alignItems="flex-end" justifyContent="space-between">
+            <Grid
+              container
+              sx={{
+                pb: 2,
+                mt: 3,
+                gap: 2,
+                alignItems: 'flex-end',
+                justifyContent: 'space-between',
+              }}
+            >
               <Grid item>
-                <Typography color="primary.light" fontWeight="bold" mb={1}>
+                <Typography
+                  sx={{
+                    color: 'primary.light',
+                    fontWeight: 'bold',
+                    mb: 1,
+                  }}
+                >
                   Total asset value
                 </Typography>
-                <Typography component="div" variant="h1" fontSize={44} lineHeight="40px">
+                <Typography
+                  component="div"
+                  variant="h1"
+                  sx={{
+                    fontSize: 44,
+                    lineHeight: '40px',
+                  }}
+                >
                   {safe.deployed ? (
                     <FiatValue value={balances.fiatTotal} maxLength={20} precise />
                   ) : (
@@ -90,8 +127,10 @@ const Overview = (): ReactElement => {
                   spacing={1}
                   xs={12}
                   sm
-                  justifyContent="flex-end"
-                  flexWrap={{ xs: 'wrap', sm: 'nowrap' }}
+                  sx={{
+                    justifyContent: 'flex-end',
+                    flexWrap: { xs: 'wrap', sm: 'nowrap' },
+                  }}
                 >
                   <Grid item xs={12} sm="auto">
                     <BuyCryptoButton />

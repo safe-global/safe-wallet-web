@@ -43,7 +43,7 @@ const ChainIcon = ({ chainId }: { chainId: string }) => {
 
 const SafeIcon = ({ address, threshold, owners, size, chainId, isSubItem = false }: SafeIconProps): ReactElement => {
   return (
-    <div className={css.container}>
+    <div data-testid="safe-icon" className={css.container}>
       {threshold && owners ? <Threshold threshold={threshold} owners={owners} /> : null}
       {isSubItem && chainId ? <ChainIcon chainId={chainId} /> : <Identicon address={address} size={size} />}
     </div>

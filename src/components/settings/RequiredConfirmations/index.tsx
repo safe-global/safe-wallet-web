@@ -10,18 +10,39 @@ export const RequiredConfirmation = ({ threshold, owners }: { threshold: number;
   const { setTxFlow } = useContext(TxModalContext)
 
   return (
-    <Box marginTop={6}>
+    <Box
+      sx={{
+        marginTop: 6,
+      }}
+    >
       <Grid container spacing={3}>
         <Grid item lg={4} xs={12}>
-          <Typography variant="h4" fontWeight={700}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 700,
+            }}
+          >
             Required confirmations
           </Typography>
         </Grid>
 
         <Grid item xs>
-          <Typography pb={2}>Any transaction requires the confirmation of:</Typography>
+          <Typography
+            sx={{
+              pb: 2,
+            }}
+          >
+            Any transaction requires the confirmation of:
+          </Typography>
 
-          <Typography pt={3} pr={2} component="span">
+          <Typography
+            component="span"
+            sx={{
+              pt: 3,
+              pr: 2,
+            }}
+          >
             <b>{threshold}</b> out of <b>{owners}</b> signers.
           </Typography>
 
@@ -29,7 +50,12 @@ export const RequiredConfirmation = ({ threshold, owners }: { threshold: number;
             <CheckWallet>
               {(isOk) => (
                 <Track {...SETTINGS_EVENTS.SETUP.CHANGE_THRESHOLD} as="span">
-                  <Button onClick={() => setTxFlow(<ChangeThresholdFlow />)} variant="contained" disabled={!isOk}>
+                  <Button
+                    onClick={() => setTxFlow(<ChangeThresholdFlow />)}
+                    variant="contained"
+                    disabled={!isOk}
+                    size="small"
+                  >
                     Change
                   </Button>
                 </Track>

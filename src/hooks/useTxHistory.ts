@@ -22,8 +22,8 @@ const useTxHistory = (
   const [filter] = useTxFilter()
   const { hideSuspiciousTransactions } = useAppSelector(selectSettings)
   const hasDefaultTokenlist = useHasFeature(FEATURES.DEFAULT_TOKENLIST)
-  const hideUntrustedTxs = (hasDefaultTokenlist && hideSuspiciousTransactions) || false
-  const hideImitationTxs = hideSuspiciousTransactions || false
+  const hideUntrustedTxs = (hasDefaultTokenlist && hideSuspiciousTransactions) ?? true
+  const hideImitationTxs = hideSuspiciousTransactions ?? true
 
   const {
     safe: { chainId },
