@@ -321,7 +321,8 @@ async function getLedgerSdk() {
   const device = await lastValueFrom(dmk.startDiscovering({ transport }))
   const sessionId = await dmk.connect({ device })
 
-  // TODO: Create a Safe-specific contextModule for clear signing
+  // TODO: Create a Safe-specific ContextModule for clear signing
+  // @see https://github.com/LedgerHQ/device-sdk-ts/tree/develop/packages/signer/context-module
   const signer = new SignerEthBuilder({ dmk, sessionId }).build()
 
   function mapOutput<T>(actionState: DeviceActionState<T, unknown, unknown>): T {
