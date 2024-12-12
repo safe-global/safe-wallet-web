@@ -11,11 +11,9 @@ const useRankedSafeApps = (safeApps: SafeAppData[], pinnedSafeApps: SafeAppData[
 
     // TODO: Remove assertion after migrating to new SDK
     const featuredApps = safeApps.filter((app) => (app as SafeAppData & { featured: boolean }).featured)
-    const mostUsedApps = rankSafeApps(safeApps)
     const rankedPinnedApps = rankSafeApps(pinnedSafeApps)
-    const randomApps = safeApps.slice().sort(() => Math.random() - 0.5)
 
-    const allRankedApps = featuredApps.concat(rankedPinnedApps, pinnedSafeApps, mostUsedApps, randomApps)
+    const allRankedApps = featuredApps.concat(rankedPinnedApps, pinnedSafeApps)
 
     // Use a Set to remove duplicates
     return [...new Set(allRankedApps)].slice(0, NUMBER_OF_SAFE_APPS)
