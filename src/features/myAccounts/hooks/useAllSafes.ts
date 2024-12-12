@@ -72,7 +72,7 @@ export const _buildSafeItem = (
 
 const useAllSafes = (): SafeItems | undefined => {
   const { address: walletAddress = '' } = useWallet() || {}
-  const [allOwned] = useAllOwnedSafes(walletAddress)
+  const [allOwned = {}] = useAllOwnedSafes(walletAddress)
   const { configs } = useChains()
   const allAdded = useAppSelector(selectAllAddedSafes)
   const allUndeployed = useAppSelector(selectUndeployedSafes)
@@ -80,12 +80,10 @@ const useAllSafes = (): SafeItems | undefined => {
   const allSafeNames = useAppSelector(selectAllAddressBooks)
 
   return useMemo<SafeItems>(() => {
-    if (walletAddress && allOwned === undefined) return []
-
     const allChainIds = configs.map((config) => config.chainId)
 
     return allChainIds.flatMap((chainId) => {
-      const uniqueAddresses = _prepareAddresses(chainId, allAdded, allOwned || {}, allUndeployed)
+      const uniqueAddresses = _prepareAddresses(chainId, allAdded, allOwned, allUndeployed)
 
       return uniqueAddresses.map((address) => {
         return _buildSafeItem(
@@ -93,7 +91,7 @@ const useAllSafes = (): SafeItems | undefined => {
           address,
           walletAddress,
           allAdded,
-          allOwned || {},
+          allOwned,
           allUndeployed,
           allVisitedSafes,
           allSafeNames,
