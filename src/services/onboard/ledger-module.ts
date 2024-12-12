@@ -42,10 +42,10 @@ export function ledgerModule(): WalletInit {
       getInterface: async ({ chains, EventEmitter }): Promise<WalletInterface> => {
         const DEFAULT_CHAIN = chains[0]
 
-        const { StaticJsonRpcProvider } = await import('@ethersproject/providers')
         const { createEIP1193Provider, ProviderRpcError, ProviderRpcErrorCode } = await import('@web3-onboard/common')
         const { accountSelect, getHardwareWalletProvider } = await import('@web3-onboard/hw-common')
-        const { Signature, toUtf8Bytes, Transaction } = await import('ethers-v6')
+        const { BigNumber } = await import('ethers-v5')
+        const { Signature, toUtf8Bytes, Transaction, JsonRpcProvider } = await import('ethers-v6')
 
         const eventEmitter = new EventEmitter()
         const ledgerSdk = await getLedgerSdk()
@@ -135,38 +135,18 @@ export function ledgerModule(): WalletInit {
             eth_signTransaction: async (args) => {
               const txParams = args.params[0]
 
-              // Cannot use Transaction.from with unsigned transaction
-              const transaction = new Transaction()
-
-              transaction.chainId = BigInt(currentChain.id)
-
-              // Transaction
-              transaction.to = txParams.to
-              if (txParams.data) {
-                transaction.data = txParams.data
-              }
-              if (txParams.value) {
-                transaction.value = BigInt(txParams.value)
-              }
-
-              if (txParams.nonce) {
-                transaction.nonce = parseInt(txParams.nonce, 16)
-              }
-
-              // Gas
               const gasLimit = txParams.gas ?? txParams.gasLimit
-              if (gasLimit) {
-                transaction.gasLimit = BigInt(gasLimit)
-              }
-              if (txParams.gasPrice) {
-                transaction.gasPrice = BigInt(txParams.gasPrice)
-              }
-              if (txParams.maxFeePerGas) {
-                transaction.maxFeePerGas = BigInt(txParams.maxFeePerGas)
-              }
-              if (txParams.maxPriorityFeePerGas) {
-                transaction.maxPriorityFeePerGas = BigInt(txParams.maxPriorityFeePerGas)
-              }
+              const transaction = Transaction.from({
+                chainId: BigInt(currentChain.id),
+                data: txParams.data,
+                gasLimit: gasLimit ? BigInt(gasLimit) : null,
+                gasPrice: txParams.gasPrice ? BigInt(txParams.gasPrice) : null,
+                maxFeePerGas: txParams.maxFeePerGas ? BigInt(txParams.maxFeePerGas) : null,
+                maxPriorityFeePerGas: txParams.maxPriorityFeePerGas ? BigInt(txParams.maxPriorityFeePerGas) : null,
+                nonce: txParams.nonce ? parseInt(txParams.nonce, 16) : null,
+                to: txParams.to,
+                value: txParams.value ? BigInt(txParams.value) : null,
+              })
 
               transaction.signature = await ledgerSdk.signTransaction(getAssertedDerivationPath(), transaction)
 
@@ -264,7 +244,7 @@ export function ledgerModule(): WalletInit {
 
           setCurrentChain(args.chainId)
 
-          const provider = new StaticJsonRpcProvider(currentChain.rpcUrl)
+          const provider = new JsonRpcProvider(currentChain.rpcUrl)
 
           // Only return exact account from custom derivation
           if (args.derivationPath !== LEDGER_LIVE_PATH && args.derivationPath !== LEDGER_DEFAULT_PATH) {
@@ -303,7 +283,7 @@ export function ledgerModule(): WalletInit {
         // Gets derived account from Ledger device for selection in Web3-Onboard
         async function deriveAccount(args: {
           derivationPath: string
-          provider: InstanceType<typeof StaticJsonRpcProvider>
+          provider: InstanceType<typeof JsonRpcProvider>
           asset: Asset
         }): Promise<Account> {
           const { address } = await ledgerSdk.getAddress(args.derivationPath)
@@ -314,7 +294,7 @@ export function ledgerModule(): WalletInit {
             address,
             balance: {
               asset: args.asset.label,
-              value: balance,
+              value: BigNumber.from(balance),
             },
           }
         }
