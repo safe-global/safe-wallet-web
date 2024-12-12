@@ -1,6 +1,6 @@
 import { buildQueryFn, gatewayApi } from '@/store/api/gateway/index'
-import { type fakeBaseQuery } from '@reduxjs/toolkit/dist/query/react'
-import type { EndpointBuilder } from '@reduxjs/toolkit/dist/query/react'
+import { type fakeBaseQuery } from '@reduxjs/toolkit/query/react'
+import type { EndpointBuilder } from '@reduxjs/toolkit/query/react'
 import { deleteDelegate, deleteDelegateV2, postDelegate, postDelegateV2 } from '@safe-global/safe-client-gateway-sdk'
 import { getDelegates } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Delegate, DelegateResponse } from '@safe-global/safe-gateway-typescript-sdk/dist/types/delegates'
