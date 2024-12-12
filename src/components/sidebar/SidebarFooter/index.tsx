@@ -10,7 +10,7 @@ import {
 import { BEAMER_SELECTOR, loadBeamer } from '@/services/beamer'
 import { useAppSelector } from '@/store'
 import { CookieAndTermType, hasConsentFor } from '@/store/cookiesAndTermsSlice'
-import { Link, ListItem, SvgIcon, Typography } from '@mui/material'
+import { ListItem, SvgIcon, Typography } from '@mui/material'
 import DebugToggle from '../DebugToggle'
 import { HELP_CENTER_URL, IS_PRODUCTION, NEW_SUGGESTION_FORM } from '@/config/constants'
 import Track from '@/components/common/Track'
