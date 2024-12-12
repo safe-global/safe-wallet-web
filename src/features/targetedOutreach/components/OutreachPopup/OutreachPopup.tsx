@@ -1,7 +1,7 @@
 import { useCreateSubmissionMutation, useGetSubmissionQuery } from '@/store/api/gateway'
 import { skipToken } from '@reduxjs/toolkit/query'
 import { useEffect, type ReactElement } from 'react'
-import { Avatar, Box, Button, Chip, IconButton, Link, Paper, Stack, ThemeProvider, Typography } from '@mui/material'
+import { Avatar, Box, Button, IconButton, Link, Paper, Stack, ThemeProvider, Typography } from '@mui/material'
 import { Close } from '@mui/icons-material'
 import type { Theme } from '@mui/material/styles'
 import { useAppDispatch, useAppSelector } from '@/store'
@@ -83,32 +83,27 @@ const OutreachPopup = (): ReactElement | null => {
           <Box className={css.popup}>
             <Paper className={css.container}>
               <Stack gap={2}>
-                <Box display="flex">
-                  <Avatar alt="Clem, product lead" src="/images/common/outreach-popup-avatar.png" />
+                <Box display="flex" alignItems="center">
+                  <Avatar
+                    alt="Product marketing lead avatar"
+                    src="/images/common/outreach-popup-avatar.png"
+                    className={css.avatar}
+                  />
                   <Box ml={1}>
-                    <Typography variant="body2">Clem</Typography>
+                    <Typography variant="body2">Danilo Pereira</Typography>
                     <Typography variant="body2" color="primary.light">
-                      Product Lead
+                      Product Marketing Lead
                     </Typography>
                   </Box>
                 </Box>
-                <Box>
-                  <Chip
-                    size="small"
-                    sx={{ backgroundColor: 'text.primary', color: 'background.paper', mt: '-2px' }}
-                    label={
-                      <Typography fontWeight={700} variant="overline">
-                        EARN REWARDS
-                      </Typography>
-                    }
-                  />
-                </Box>
                 <Typography variant="h4" fontWeight={700}>
-                  You&apos;re invited!
+                  Your voice matters!
+                  <br />
+                  Help us improve {'Safe{Wallet}'}.
                 </Typography>
                 <Typography>
-                  As one of our top users, we&apos;d love to hear your feedback on how we can enhance Safe. Share your
-                  contact info, and we&apos;ll reach out for a short interview.
+                  In 1 minute, tell us why you use {'Safe{Wallet}'}. Your input will help us create a better, smarter
+                  wallet experience for you!
                 </Typography>
                 <Track {...OUTREACH_EVENTS.OPEN_SURVEY}>
                   <Link rel="noreferrer noopener" target="_blank" href={outreachUrl}>
@@ -123,14 +118,14 @@ const OutreachPopup = (): ReactElement | null => {
                   </Button>
                 </Track>
                 <Typography variant="body2" color="primary.light" mx="auto">
-                  It&apos;ll only take 2 minutes.
+                  It&apos;ll only take 1 minute.
                 </Typography>
-                <Track {...OUTREACH_EVENTS.CLOSE_POPUP}>
-                  <IconButton className={css.close} aria-label="close" onClick={handleClose}>
-                    <Close />
-                  </IconButton>
-                </Track>
               </Stack>
+              <Track {...OUTREACH_EVENTS.CLOSE_POPUP}>
+                <IconButton className={css.close} aria-label="close" onClick={handleClose}>
+                  <Close />
+                </IconButton>
+              </Track>
             </Paper>
           </Box>
         </ThemeProvider>
