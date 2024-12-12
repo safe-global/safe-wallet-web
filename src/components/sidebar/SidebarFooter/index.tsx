@@ -18,8 +18,8 @@ import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import { useCurrentChain } from '@/hooks/useChains'
 import ProtofireLogo from '@/public/images/protofire-logo.svg'
 import SuggestionIcon from '@/public/images/sidebar/lightbulb_icon.svg'
-import darkPalette from '@/components/theme/darkPalette'
 import HelpCenterIcon from '@/public/images/sidebar/help-center.svg'
+import ExternalLink from '@/components/common/ExternalLink'
 
 const SidebarFooter = (): ReactElement => {
   const chain = useCurrentChain()
@@ -90,9 +90,9 @@ const SidebarFooter = (): ReactElement => {
               fontSize="small"
               sx={{ verticalAlign: 'middle', mx: 0.5 }}
             />
-            <Link href="https://protofire.io" sx={{ color: darkPalette.primary.main, textDecoration: 'none' }}>
+            <ExternalLink href="https://protofire.io" sx={{ textDecoration: 'none' }} noIcon>
               Protofire
-            </Link>
+            </ExternalLink>
           </Typography>
         </SidebarListItemText>
       </ListItem>
