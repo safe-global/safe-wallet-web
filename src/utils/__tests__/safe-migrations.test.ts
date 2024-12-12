@@ -10,11 +10,10 @@ import {
   getSafeL2SingletonDeployment,
   getSafeSingletonDeployment,
   getSafeToL2MigrationDeployment,
-  getSafeMigrationDeployment,
 } from '@safe-global/safe-deployments'
 import type Safe from '@safe-global/protocol-kit'
 import { encodeMultiSendData } from '@safe-global/protocol-kit'
-import { Multi_send__factory, Safe_to_l2_migration__factory, Safe_migration__factory } from '@/types/contracts'
+import { Multi_send__factory, Safe_to_l2_migration__factory } from '@/types/contracts'
 import { faker } from '@faker-js/faker'
 import { getAndValidateSafeSDK } from '@/services/tx/tx-sender/sdk'
 import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'

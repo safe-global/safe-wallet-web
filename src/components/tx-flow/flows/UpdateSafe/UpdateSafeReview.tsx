@@ -30,6 +30,10 @@ export const UpdateSafeReview = () => {
 
   return (
     <SignOrExecuteForm>
+      <Typography variant="h4" mb={2}>
+        Current version: <b>{safe.version}</b> → new version: <b>{latestSafeVersion}</b>
+      </Typography>
+
       <Typography mb={2}>
         Update now to take advantage of new features and the highest security standards available.
       </Typography>
