@@ -22,6 +22,7 @@ const ExternalLink = ({
         display: 'inline-flex',
         alignItems: 'center',
         gap: 0.2,
+        cursor: 'pointer',
       }}
     >
       {children}

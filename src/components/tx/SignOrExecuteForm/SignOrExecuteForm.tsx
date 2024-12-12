@@ -30,7 +30,7 @@ import { BlockaidBalanceChanges } from '../security/blockaid/BlockaidBalanceChan
 import { Blockaid } from '../security/blockaid'
 
 import { MigrateToL2Information } from './MigrateToL2Information'
-import { extractMigrationL2MasterCopyAddress } from '@/utils/transactions'
+import { extractMigrationL2MasterCopyAddress } from '@/utils/safe-migrations'
 
 import { useLazyGetTransactionDetailsQuery } from '@/store/api/gateway'
 import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'

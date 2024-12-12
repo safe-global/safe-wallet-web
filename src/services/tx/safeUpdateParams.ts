@@ -2,11 +2,13 @@ import type { SafeContractImplementationType } from '@safe-global/protocol-kit/d
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import semverSatisfies from 'semver/functions/satisfies'
 import { getReadOnlyFallbackHandlerContract, getReadOnlyGnosisSafeContract } from '@/services/contracts/safeContracts'
 import { assertValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 import { SAFE_FEATURES } from '@safe-global/protocol-kit/dist/src/utils/safeVersions'
 import { hasSafeFeature } from '@/utils/safe-versions'
 import { getLatestSafeVersion } from '@/utils/chains'
+import { createUpdateMigration } from '@/utils/safe-migrations'
 
 const getChangeFallbackHandlerCallData = async (
   safeContractInstance: SafeContractImplementationType,
@@ -31,6 +33,10 @@ const getChangeFallbackHandlerCallData = async (
  */
 export const createUpdateSafeTxs = async (safe: SafeInfo, chain: ChainInfo): Promise<MetaTransactionData[]> => {
   assertValidSafeVersion(safe.version)
+
+  if (semverSatisfies(safe.version, '>=1.3.0')) {
+    return [createUpdateMigration(chain)]
+  }
 
   const latestMasterCopyAddress = await (
     await getReadOnlyGnosisSafeContract(chain, getLatestSafeVersion(chain))
