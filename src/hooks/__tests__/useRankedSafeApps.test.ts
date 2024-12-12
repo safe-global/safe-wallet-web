@@ -51,4 +51,27 @@ describe('useRankedSafeApps', () => {
     expect(result.current[0]).toStrictEqual(mockPinnedApp1)
     expect(result.current[1]).toStrictEqual(mockPinnedApp2)
   })
+
+  it('returns featured apps first', () => {
+    const mockSafeApp1 = getMockSafeApp({ id: 1 })
+    const mockSafeApp2 = getMockSafeApp({ id: 2, featured: true } as Partial<SafeAppData>)
+    const mockSafeApp3 = getMockSafeApp({ id: 3, featured: true } as Partial<SafeAppData>)
+    const mockSafeApp4 = getMockSafeApp({ id: 4 })
+    const mockSafeApp5 = getMockSafeApp({ id: 5 })
+
+    const mockPinnedApp1 = getMockSafeApp({ id: 6 })
+    const mockPinnedApp2 = getMockSafeApp({ id: 7 })
+
+    const { result } = renderHook(() =>
+      useRankedSafeApps(
+        [mockSafeApp1, mockSafeApp2, mockSafeApp3, mockSafeApp4, mockSafeApp5],
+        [mockPinnedApp1, mockPinnedApp2],
+      ),
+    )
+
+    expect(result.current[0]).toStrictEqual(mockSafeApp2)
+    expect(result.current[1]).toStrictEqual(mockSafeApp3)
+    expect(result.current[2]).toStrictEqual(mockPinnedApp1)
+    expect(result.current[3]).toStrictEqual(mockPinnedApp2)
+  })
 })
