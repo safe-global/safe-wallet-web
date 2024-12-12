@@ -1,4 +1,5 @@
-import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
+import { type ChainInfo, ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
+import { OperationType } from '@safe-global/safe-core-sdk-types'
 import { extractMigrationL2MasterCopyAddress, prependSafeToL2Migration } from '../safe-migrations'
 import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { chainBuilder } from '@/tests/builders/chains'
@@ -9,14 +10,16 @@ import {
   getSafeL2SingletonDeployment,
   getSafeSingletonDeployment,
   getSafeToL2MigrationDeployment,
+  getSafeMigrationDeployment,
 } from '@safe-global/safe-deployments'
 import type Safe from '@safe-global/protocol-kit'
 import { encodeMultiSendData } from '@safe-global/protocol-kit'
-import { Multi_send__factory, Safe_to_l2_migration__factory } from '@/types/contracts'
+import { Multi_send__factory, Safe_to_l2_migration__factory, Safe_migration__factory } from '@/types/contracts'
 import { faker } from '@faker-js/faker'
 import { getAndValidateSafeSDK } from '@/services/tx/tx-sender/sdk'
 import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
 import { checksumAddress } from '../addresses'
+import { createUpdateMigration } from '../safe-migrations'
 
 jest.mock('@/services/tx/tx-sender/sdk')
 
@@ -317,5 +320,46 @@ describe('extractMigrationL2MasterCopyAddress', () => {
           .build(),
       ),
     ).toEqual(l2SingletonAddress)
+  })
+
+  describe('createUpdateMigration', () => {
+    const mockChain = {
+      chainId: '1',
+      l2: false,
+      recommendedMasterCopyVersion: '1.4.1',
+    } as unknown as ChainInfo
+
+    const mockChainOld = {
+      chainId: '1',
+      l2: false,
+      recommendedMasterCopyVersion: '1.3.0',
+    } as unknown as ChainInfo
+
+    it('should create a migration transaction for L1 chain', () => {
+      const result = createUpdateMigration(mockChain)
+
+      expect(result).toEqual({
+        operation: OperationType.DelegateCall,
+        data: '0xed007fc6',
+        to: '0x526643F69b81B008F46d95CD5ced5eC0edFFDaC6',
+        value: '0',
+      })
+    })
+
+    it('should create a migration transaction for L2 chain', () => {
+      const l2Chain = { ...mockChain, l2: true }
+      const result = createUpdateMigration(l2Chain)
+
+      expect(result).toEqual({
+        operation: OperationType.DelegateCall,
+        data: '0x68cb3d94',
+        to: '0x526643F69b81B008F46d95CD5ced5eC0edFFDaC6',
+        value: '0',
+      })
+    })
+
+    it('should throw an error if deployment is not found', () => {
+      expect(() => createUpdateMigration(mockChainOld)).toThrow('Migration deployment not found')
+    })
   })
 })
