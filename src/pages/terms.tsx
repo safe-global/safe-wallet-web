@@ -29,10 +29,12 @@ const Terms: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Terms and Conditions'}</title>
+        <title>Terms and Conditions</title>
       </Head>
 
-      <main>{<SafeTerms />}</main>
+      <main>
+        <SafeTerms />
+      </main>
     </>
   )
 }
