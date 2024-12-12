@@ -1,7 +1,7 @@
 import type { UndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 
 import * as allOwnedSafes from '@/features/myAccounts/hooks/useAllOwnedSafes'
-import useAllSafes from '@/features/myAccounts/hooks/useAllSafes'
+import useAllSafes, { _buildSafeItem, _prepareAddresses } from '@/features/myAccounts/hooks/useAllSafes'
 import * as useChains from '@/hooks/useChains'
 import * as useWallet from '@/hooks/wallets/useWallet'
 import { renderHook } from '@/tests/test-utils'
@@ -218,18 +218,174 @@ describe('useAllSafes hook', () => {
   })
 
   describe('buildSafeItem', () => {
-    it.todo('returns a pinned SafeItem if its an added safe')
-    it.todo('returns a SafeItem with lastVisited of 0 if there is no entry')
-    it.todo('returns a readOnly SafeItem if wallet is not owner of added safe')
-    it.todo('returns a readOnly SafeItem if it is not an owned safe')
-    it.todo('returns a SafeItem with name if it exists in the address book')
+    const mockAllAdded = {
+      '1': {
+        '0x123': {
+          owners: [],
+          threshold: 1,
+        },
+      },
+    }
+
+    const mockAllOwned = {
+      '1': ['0x456'],
+    }
+
+    const mockAllVisited = {}
+    const mockAllSafeNames = {}
+
+    it('returns a pinned SafeItem if its an added safe', () => {
+      const result = _buildSafeItem('1', '0x123', '0x111', mockAllAdded, mockAllOwned, mockAllVisited, mockAllSafeNames)
+
+      expect(result).toEqual({
+        address: '0x123',
+        chainId: '1',
+        isPinned: true,
+        isReadOnly: true,
+        lastVisited: 0,
+        name: undefined,
+      })
+    })
+
+    it('returns a SafeItem with lastVisited of non-zero if there is an entry', () => {
+      const mockAllVisited = {
+        '1': {
+          '0x123': {
+            lastVisited: 123456,
+          },
+        },
+      }
+
+      const result = _buildSafeItem('1', '0x123', '0x111', mockAllAdded, mockAllOwned, mockAllVisited, mockAllSafeNames)
+
+      expect(result.lastVisited).toEqual(123456)
+    })
+
+    it('returns a SafeItem with readOnly false if wallet is an owner of added safe', () => {
+      const mockAllAdded = {
+        '1': {
+          '0x123': {
+            owners: [{ value: '0x111' }],
+            threshold: 1,
+          },
+        },
+      }
+      const result = _buildSafeItem('1', '0x123', '0x111', mockAllAdded, mockAllOwned, mockAllVisited, mockAllSafeNames)
+
+      expect(result.isReadOnly).toEqual(false)
+    })
+
+    it('returns a SafeItem with readOnly false if it is an owned safe', () => {
+      const result = _buildSafeItem('1', '0x456', '0x111', mockAllAdded, mockAllOwned, mockAllVisited, mockAllSafeNames)
+
+      expect(result.isReadOnly).toEqual(false)
+    })
+
+    it('returns a SafeItem with name if it exists in the address book', () => {
+      const mockAllSafeNames = {
+        '1': {
+          '0x123': 'My test safe',
+        },
+      }
+      const result = _buildSafeItem('1', '0x123', '0x111', mockAllAdded, mockAllOwned, mockAllVisited, mockAllSafeNames)
+
+      expect(result.name).toEqual('My test safe')
+    })
   })
 
   describe('prepareAddresses', () => {
-    it.todo('returns added safe addresses')
-    it.todo('returns owned safe addresses')
-    it.todo('returns undeployed safe addresses')
-    it.todo('remove duplicates')
-    it.todo('concatenates safe addresses')
+    const mockAdded = {}
+    const mockOwned = {}
+    const mockUndeployed = {}
+
+    it('returns an empty array if there are no addresses', () => {
+      const result = _prepareAddresses('1', mockAdded, mockOwned, mockUndeployed)
+
+      expect(result).toEqual([])
+    })
+
+    it('returns added safe addresses', () => {
+      const mockAdded = {
+        '1': {
+          '0x123': {
+            owners: [{ value: '0x111' }],
+            threshold: 1,
+          },
+        },
+      }
+
+      const result = _prepareAddresses('1', mockAdded, mockOwned, mockUndeployed)
+
+      expect(result).toEqual(['0x123'])
+    })
+
+    it('returns owned safe addresses', () => {
+      const mockOwned = {
+        '1': ['0x456'],
+      }
+      const result = _prepareAddresses('1', mockAdded, mockOwned, mockUndeployed)
+
+      expect(result).toEqual(['0x456'])
+    })
+
+    it('returns undeployed safe addresses', () => {
+      const mockUndeployed = {
+        '1': {
+          '0x789': {} as UndeployedSafe,
+        },
+      }
+
+      const result = _prepareAddresses('1', mockAdded, mockOwned, mockUndeployed)
+
+      expect(result).toEqual(['0x789'])
+    })
+
+    it('remove duplicates', () => {
+      const mockAdded = {
+        '1': {
+          '0x123': {
+            owners: [{ value: '0x111' }],
+            threshold: 1,
+          },
+        },
+      }
+
+      const mockOwned = {
+        '1': ['0x123'],
+      }
+
+      const mockUndeployed = {
+        '1': {
+          '0x123': {} as UndeployedSafe,
+        },
+      }
+      const result = _prepareAddresses('1', mockAdded, mockOwned, mockUndeployed)
+
+      expect(result).toEqual(['0x123'])
+    })
+
+    it('concatenates safe addresses', () => {
+      const mockAdded = {
+        '1': {
+          '0x123': {
+            owners: [{ value: '0x111' }],
+            threshold: 1,
+          },
+        },
+      }
+
+      const mockOwned = {
+        '1': ['0x456'],
+      }
+
+      const mockUndeployed = {
+        '1': {
+          '0x789': {} as UndeployedSafe,
+        },
+      }
+      const result = _prepareAddresses('1', mockAdded, mockOwned, mockUndeployed)
+
+      expect(result).toEqual(['0x123', '0x456', '0x789'])
+    })
   })
 })
