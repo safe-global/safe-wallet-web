@@ -4376,14 +4376,14 @@
     ethers "^6.13.1"
     semver "^7.6.2"
 
-"@safe-global/protocol-kit@^4.1.2":
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/@safe-global/protocol-kit/-/protocol-kit-4.1.2.tgz#ba00eece4f302c25ae937e234895028d182aab85"
-  integrity sha512-SMl5vPezWJfOHvfMNdl+qsRLsjqWPSFwGEDpD/7g77suAOLL5OWcCDV9kQLm/LqaddzJLfC+pY+iw4Z+MZoreg==
+"@safe-global/protocol-kit@^4.1.3":
+  version "4.1.3"
+  resolved "https://registry.yarnpkg.com/@safe-global/protocol-kit/-/protocol-kit-4.1.3.tgz#e846263b684dbcbef2d160baf4ebe4e237e4a724"
+  integrity sha512-UOHNlAcuH1pi/Q5NLBru/EoaVQy7M5gYfVPVuKOCWM5J6riyGo4PVxMgCJgv2kv734gr0vjXYDOyZ0Hajjfp/w==
   dependencies:
     "@noble/hashes" "^1.3.3"
     "@safe-global/safe-core-sdk-types" "^5.1.0"
-    "@safe-global/safe-deployments" "^1.37.21"
+    "@safe-global/safe-deployments" "^1.37.22"
     "@safe-global/safe-modules-deployments" "^2.2.1"
     abitype "^1.0.2"
     ethereumjs-util "^7.1.5"
@@ -4419,10 +4419,10 @@
   dependencies:
     abitype "^1.0.2"
 
-"@safe-global/safe-deployments@^1.37.21":
-  version "1.37.21"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.37.21.tgz#9b194c08a5605bb012d0bc321a74d322d107e361"
-  integrity sha512-Q5qvcxXjAIcKOO8e3uQ/iNOSE5vRI+5jCO6JW/id5tEwMBtfyj5Ec2Vkk6nz0AM0uo2pyGROYjNTTuefoTthvQ==
+"@safe-global/safe-deployments@^1.37.22":
+  version "1.37.22"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.37.22.tgz#e26d4837a74ec92eb75cfb2066ccf237085eee6b"
+  integrity sha512-acUBJ22qqivSjHOwa8laQuHckqpWDjphjdC3zPhUN6G/swHe1WJHN5F2sodtNIjEyRxM73JRRJFsLYfb0EhSAQ==
   dependencies:
     semver "^7.6.2"
 
