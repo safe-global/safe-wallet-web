@@ -31,7 +31,7 @@ describe('useRankedSafeApps', () => {
     expect(result.current.length).toEqual(5)
   })
 
-  it('returns featured apps first', () => {
+  it('returns featured, then pinned apps', () => {
     const mockSafeApp1 = getMockSafeApp({ id: 1 })
     const mockSafeApp2 = getMockSafeApp({ id: 2, featured: true } as Partial<SafeAppData>)
     const mockSafeApp3 = getMockSafeApp({ id: 3, featured: true } as Partial<SafeAppData>)
@@ -52,27 +52,5 @@ describe('useRankedSafeApps', () => {
     expect(result.current[1]).toStrictEqual(mockSafeApp3)
     expect(result.current[2]).toStrictEqual(mockPinnedApp1)
     expect(result.current[3]).toStrictEqual(mockPinnedApp2)
-  })
-
-  it('returns pinned after featured apps', () => {
-    const mockSafeApp1 = getMockSafeApp({ id: 1, featured: true } as Partial<SafeAppData>)
-    const mockSafeApp2 = getMockSafeApp({ id: 2 })
-    const mockSafeApp3 = getMockSafeApp({ id: 3 })
-    const mockSafeApp4 = getMockSafeApp({ id: 4 })
-    const mockSafeApp5 = getMockSafeApp({ id: 5 })
-
-    const mockPinnedApp1 = getMockSafeApp({ id: 6 })
-    const mockPinnedApp2 = getMockSafeApp({ id: 7 })
-
-    const { result } = renderHook(() =>
-      useRankedSafeApps(
-        [mockSafeApp1, mockSafeApp2, mockSafeApp3, mockSafeApp4, mockSafeApp5],
-        [mockPinnedApp1, mockPinnedApp2],
-      ),
-    )
-
-    expect(result.current[0]).toStrictEqual(mockSafeApp1)
-    expect(result.current[1]).toStrictEqual(mockPinnedApp1)
-    expect(result.current[2]).toStrictEqual(mockPinnedApp2)
   })
 })
