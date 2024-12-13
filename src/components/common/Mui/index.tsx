@@ -95,6 +95,7 @@ export const Box = ({
         bgcolor,
         gridArea,
         lineHeight,
+        ...props.sx,
       }}
       {...props}
     />
@@ -175,6 +176,7 @@ export const Typography = ({
         letterSpacing,
         whiteSpace,
         width,
+        ...props.sx,
       }}
       {...props}
     />
