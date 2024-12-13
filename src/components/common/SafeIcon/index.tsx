@@ -20,7 +20,7 @@ interface SafeIconProps extends IdenticonProps {
   owners?: ThresholdProps['owners']
   size?: number
   chainId?: string
-  isSubItem?: boolean
+  isMultiChainItem?: boolean
 }
 
 const ChainIcon = ({ chainId }: { chainId: string }) => {
@@ -41,11 +41,18 @@ const ChainIcon = ({ chainId }: { chainId: string }) => {
   )
 }
 
-const SafeIcon = ({ address, threshold, owners, size, chainId, isSubItem = false }: SafeIconProps): ReactElement => {
+const SafeIcon = ({
+  address,
+  threshold,
+  owners,
+  size,
+  chainId,
+  isMultiChainItem = false,
+}: SafeIconProps): ReactElement => {
   return (
     <div data-testid="safe-icon" className={css.container}>
       {threshold && owners ? <Threshold threshold={threshold} owners={owners} /> : null}
-      {isSubItem && chainId ? <ChainIcon chainId={chainId} /> : <Identicon address={address} size={size} />}
+      {isMultiChainItem && chainId ? <ChainIcon chainId={chainId} /> : <Identicon address={address} size={size} />}
     </div>
   )
 }

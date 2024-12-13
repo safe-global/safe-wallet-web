@@ -1,5 +1,6 @@
 import { selectUndeployedSafes } from '@/features/counterfactual/store/undeployedSafesSlice'
 import NetworkLogosList from '@/features/multichain/components/NetworkLogosList'
+import SingleAccountItem from '@/features/myAccounts/components/AccountItems/SingleAccountItem'
 import type { SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
 import { useCallback, useMemo, useState } from 'react'
 import {
@@ -28,7 +29,6 @@ import FiatValue from '@/components/common/FiatValue'
 import { type MultiChainSafeItem } from '@/features/myAccounts/hooks/useAllSafesGrouped'
 import { shortenAddress } from '@/utils/formatters'
 import { type SafeItem } from '@/features/myAccounts/hooks/useAllSafes'
-import SubAccountItem from './SubAccountItem'
 import { getSafeSetups, getSharedSetup, hasMultiChainAddNetworkFeature } from '@/features/multichain/utils/utils'
 import { AddNetworkButton } from '../AddNetworkButton'
 import { isPredictedSafeProps } from '@/features/counterfactual/utils'
@@ -270,11 +270,11 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
         <AccordionDetails sx={{ padding: '0px 12px' }}>
           <Box data-testid="subacounts-container">
             {sortedSafes.map((safeItem) => (
-              <SubAccountItem
+              <SingleAccountItem
                 onLinkClick={onLinkClick}
                 safeItem={safeItem}
                 key={`${safeItem.chainId}:${safeItem.address}`}
-                safeOverview={findOverview(safeItem)}
+                isMultiChainItem
               />
             ))}
           </Box>
