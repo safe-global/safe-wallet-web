@@ -1,6 +1,5 @@
 import { proposerEndpoints } from '@/store/api/gateway/proposers'
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react'
-
 import {
   type AllOwnedSafes,
   getAllOwnedSafes,
