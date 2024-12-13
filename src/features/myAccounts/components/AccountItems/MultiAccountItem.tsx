@@ -1,6 +1,7 @@
 import { selectUndeployedSafes } from '@/features/counterfactual/store/undeployedSafesSlice'
 import NetworkLogosList from '@/features/multichain/components/NetworkLogosList'
 import { showNotification } from '@/store/notificationsSlice'
+import SingleAccountItem from '@/features/myAccounts/components/AccountItems/SingleAccountItem'
 import type { SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
 import { useCallback, useMemo, useState } from 'react'
 import {
@@ -29,7 +30,6 @@ import FiatValue from '@/components/common/FiatValue'
 import { type MultiChainSafeItem } from '@/features/myAccounts/hooks/useAllSafesGrouped'
 import { shortenAddress } from '@/utils/formatters'
 import { type SafeItem } from '@/features/myAccounts/hooks/useAllSafes'
-import SubAccountItem from './SubAccountItem'
 import { getSafeSetups, getSharedSetup, hasMultiChainAddNetworkFeature } from '@/features/multichain/utils/utils'
 import { AddNetworkButton } from '../AddNetworkButton'
 import { isPredictedSafeProps } from '@/features/counterfactual/utils'
@@ -57,20 +57,9 @@ const MultichainIndicator = ({ safes }: { safes: SafeItem[] }) => {
     <Tooltip
       title={
         <Box data-testid="multichain-tooltip">
-          <Typography
-            sx={{
-              fontSize: '14px',
-            }}
-          >
-            Multichain account on:
-          </Typography>
+          <Typography fontSize="14px">Multichain account on:</Typography>
           {safes.map((safeItem) => (
-            <Box
-              key={safeItem.chainId}
-              sx={{
-                p: '4px 0px',
-              }}
-            >
+            <Box key={safeItem.chainId} sx={{ p: '4px 0px' }}>
               <ChainIndicator chainId={safeItem.chainId} />
             </Box>
           ))}
@@ -85,68 +74,79 @@ const MultichainIndicator = ({ safes }: { safes: SafeItem[] }) => {
   )
 }
 
-const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountItemProps) => {
+function useMultiAccountItemData(multiSafeAccountItem: MultiChainSafeItem) {
   const { address, safes, isPinned, name } = multiSafeAccountItem
-  const undeployedSafes = useAppSelector(selectUndeployedSafes)
-  const safeAddress = useSafeAddress()
+
   const router = useRouter()
-  const isCurrentSafe = sameAddress(safeAddress, address)
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
-  const [expanded, setExpanded] = useState(isCurrentSafe)
-  const chains = useAppSelector(selectChains)
+  const safeAddress = useSafeAddress()
+  const isCurrentSafe = sameAddress(safeAddress, address)
+
   const { orderBy } = useAppSelector(selectOrderByPreference)
+  const sortComparator = useMemo(() => getComparator(orderBy), [orderBy])
+  const sortedSafes = useMemo(() => [...safes].sort(sortComparator), [safes, sortComparator])
 
-  const sortComparator = getComparator(orderBy)
-  const sortedSafes = useMemo(() => safes.sort(sortComparator), [safes, sortComparator])
-
-  const allAddedSafes = useAppSelector((state) => selectAllAddedSafes(state))
-  const dispatch = useAppDispatch()
-
-  const deployedChainIds = useMemo(() => safes.map((safe) => safe.chainId), [safes])
-
-  const isReadOnly = useMemo(
-    () => multiSafeAccountItem.safes.every((safe) => safe.isReadOnly),
-    [multiSafeAccountItem.safes],
+  const undeployedSafes = useAppSelector(selectUndeployedSafes)
+  const deployedSafes = useMemo(
+    () => sortedSafes.filter((safe) => !undeployedSafes[safe.chainId]?.[safe.address]),
+    [sortedSafes, undeployedSafes],
   )
-
-  const trackingLabel = isWelcomePage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
-
-  const toggleExpand = () => {
-    !expanded && trackEvent({ ...OVERVIEW_EVENTS.EXPAND_MULTI_SAFE, label: trackingLabel })
-    setExpanded((prev) => !prev)
-  }
 
   const currency = useAppSelector(selectCurrency)
-  const { address: walletAddress } = useWallet() ?? {}
-  const deployedSafes = useMemo(
-    () => safes.filter((safe) => undeployedSafes[safe.chainId]?.[safe.address] === undefined),
-    [safes, undeployedSafes],
-  )
+  const { address: walletAddress = '' } = useWallet() || {}
+
   const { data: safeOverviews } = useGetMultipleSafeOverviewsQuery({ currency, walletAddress, safes: deployedSafes })
 
   const safeSetups = useMemo(
-    () => getSafeSetups(safes, safeOverviews ?? [], undeployedSafes),
-    [safeOverviews, safes, undeployedSafes],
+    () => getSafeSetups(sortedSafes, safeOverviews ?? [], undeployedSafes),
+    [safeOverviews, sortedSafes, undeployedSafes],
   )
-  const sharedSetup = getSharedSetup(safeSetups)
+  const sharedSetup = useMemo(() => getSharedSetup(safeSetups), [safeSetups])
 
   const totalFiatValue = useMemo(
-    () => safeOverviews?.reduce((prev, current) => prev + Number(current.fiatTotal), 0),
+    () => safeOverviews?.reduce((sum, overview) => sum + Number(overview.fiatTotal), 0),
     [safeOverviews],
   )
 
-  const hasReplayableSafe = useMemo(
-    () =>
-      safes.some((safeItem) => {
-        const undeployedSafe = undeployedSafes[safeItem.chainId]?.[safeItem.address]
-        const chain = chains.data.find((chain) => chain.chainId === safeItem.chainId)
-        const addNetworkFeatureEnabled = hasMultiChainAddNetworkFeature(chain)
+  const chains = useAppSelector(selectChains)
+  const hasReplayableSafe = useMemo(() => {
+    return sortedSafes.some((safeItem) => {
+      const undeployedSafe = undeployedSafes[safeItem.chainId]?.[safeItem.address]
+      const chain = chains.data.find((chain) => chain.chainId === safeItem.chainId)
+      const addNetworkFeatureEnabled = hasMultiChainAddNetworkFeature(chain)
+      // Replayable if deployed or new counterfactual safe and the chain supports add network
+      return (!undeployedSafe || !isPredictedSafeProps(undeployedSafe.props)) && addNetworkFeatureEnabled
+    })
+  }, [chains.data, sortedSafes, undeployedSafes])
 
-        // We can only replay deployed Safes and new counterfactual Safes.
-        return (!undeployedSafe || !isPredictedSafeProps(undeployedSafe.props)) && addNetworkFeatureEnabled
-      }),
-    [chains.data, safes, undeployedSafes],
-  )
+  const isReadOnly = useMemo(() => sortedSafes.every((safe) => safe.isReadOnly), [sortedSafes])
+
+  const deployedChainIds = useMemo(() => sortedSafes.map((safe) => safe.chainId), [sortedSafes])
+
+  return {
+    address,
+    name,
+    sortedSafes,
+    safeOverviews,
+    sharedSetup,
+    totalFiatValue,
+    hasReplayableSafe,
+    isPinned,
+    isCurrentSafe,
+    isReadOnly,
+    isWelcomePage,
+    deployedChainIds,
+  }
+}
+
+function usePinActions(
+  address: string,
+  name: string | undefined,
+  safes: SafeItem[],
+  safeOverviews: SafeOverview[] | undefined,
+) {
+  const dispatch = useAppDispatch()
+  const allAddedSafes = useAppSelector(selectAllAddedSafes)
 
   const findOverview = useCallback(
     (item: SafeItem) => {
@@ -191,7 +191,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
     )
 
     trackEvent({ ...OVERVIEW_EVENTS.PIN_SAFE, label: PIN_SAFE_LABELS.pin })
-  }, [safes, allAddedSafes, dispatch, findOverview, address])
+  }, [name, safes, allAddedSafes, dispatch, findOverview, address])
 
   const removeFromPinnedList = useCallback(() => {
     for (const safe of safes) {
@@ -208,7 +208,39 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
     )
 
     trackEvent({ ...OVERVIEW_EVENTS.PIN_SAFE, label: PIN_SAFE_LABELS.unpin })
-  }, [safes, dispatch])
+  }, [dispatch, name, address, safes])
+
+  return { addToPinnedList, removeFromPinnedList }
+}
+
+const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountItemProps) => {
+  const {
+    address,
+    name,
+    sortedSafes,
+    safeOverviews,
+    sharedSetup,
+    totalFiatValue,
+    hasReplayableSafe,
+    isPinned,
+    isCurrentSafe,
+    isReadOnly,
+    isWelcomePage,
+    deployedChainIds,
+  } = useMultiAccountItemData(multiSafeAccountItem)
+  const { addToPinnedList, removeFromPinnedList } = usePinActions(address, name, sortedSafes, safeOverviews)
+
+  const [expanded, setExpanded] = useState(isCurrentSafe)
+  const trackingLabel = isWelcomePage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
+
+  const toggleExpand = () => {
+    setExpanded((prev) => {
+      if (!prev) {
+        trackEvent({ ...OVERVIEW_EVENTS.EXPAND_MULTI_SAFE, label: trackingLabel })
+      }
+      return !prev
+    })
+  }
 
   return (
     <ListItemButton
@@ -247,7 +279,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
                 {shortenAddress(address)}
               </Typography>
             </Typography>
-            <MultichainIndicator safes={safes} />
+            <MultichainIndicator safes={sortedSafes} />
             <Typography
               data-testid="group-balance"
               variant="body2"
@@ -291,11 +323,11 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
         <AccordionDetails sx={{ padding: '0px 12px' }}>
           <Box data-testid="subacounts-container">
             {sortedSafes.map((safeItem) => (
-              <SubAccountItem
+              <SingleAccountItem
                 onLinkClick={onLinkClick}
                 safeItem={safeItem}
                 key={`${safeItem.chainId}:${safeItem.address}`}
-                safeOverview={findOverview(safeItem)}
+                isMultiChainItem
               />
             ))}
           </Box>
@@ -314,7 +346,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
                 <AddNetworkButton
                   currentName={multiSafeAccountItem.name ?? ''}
                   safeAddress={address}
-                  deployedChains={safes.map((safe) => safe.chainId)}
+                  deployedChains={sortedSafes.map((safe) => safe.chainId)}
                 />
               </Box>
             </>

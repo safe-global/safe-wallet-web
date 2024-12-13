@@ -1,4 +1,4 @@
-import AccountItem from '@/features/myAccounts/components/AccountItems/SingleAccountItem'
+import SingleAccountItem from '@/features/myAccounts/components/AccountItems/SingleAccountItem'
 import type { SafeItem } from '@/features/myAccounts/hooks/useAllSafes'
 import type { MultiChainSafeItem } from '@/features/myAccounts/hooks/useAllSafesGrouped'
 import MultiAccountItem from '@/features/myAccounts/components/AccountItems/MultiAccountItem'
@@ -16,7 +16,7 @@ const renderSafeItem = (item: SafeItem | MultiChainSafeItem, onLinkClick?: () =>
   return isMultiChainSafeItem(item) ? (
     <MultiAccountItem onLinkClick={onLinkClick} multiSafeAccountItem={item} />
   ) : (
-    <AccountItem onLinkClick={onLinkClick} safeItem={item} />
+    <SingleAccountItem onLinkClick={onLinkClick} safeItem={item} />
   )
 }
 
