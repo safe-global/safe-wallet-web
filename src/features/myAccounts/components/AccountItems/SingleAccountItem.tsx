@@ -106,7 +106,7 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
     dispatch(
       showNotification({
         title: 'Pinned Safe',
-        message: address,
+        message: name ?? shortenAddress(address),
         groupKey: `pin-safe-success-${address}`,
         variant: 'success',
       }),
@@ -121,7 +121,7 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
     dispatch(
       showNotification({
         title: 'Unpinned Safe',
-        message: address,
+        message: name ?? shortenAddress(address),
         groupKey: `unpin-safe-success-${address}`,
         variant: 'success',
       }),

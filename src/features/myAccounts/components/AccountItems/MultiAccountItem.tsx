@@ -86,7 +86,7 @@ const MultichainIndicator = ({ safes }: { safes: SafeItem[] }) => {
 }
 
 const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountItemProps) => {
-  const { address, safes, isPinned } = multiSafeAccountItem
+  const { address, safes, isPinned, name } = multiSafeAccountItem
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
   const safeAddress = useSafeAddress()
   const router = useRouter()
@@ -183,8 +183,8 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
 
     dispatch(
       showNotification({
-        title: 'Pinned Multichain Safe',
-        message: address,
+        title: 'Pinned multi-chain Safe',
+        message: name ?? shortenAddress(address),
         groupKey: `pin-safe-success-${address}`,
         variant: 'success',
       }),
@@ -200,8 +200,8 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
 
     dispatch(
       showNotification({
-        title: 'Unpinned Multichain Safe',
-        message: address,
+        title: 'Unpinned multi-chain Safe',
+        message: name ?? shortenAddress(address),
         groupKey: `unpin-safe-success-${address}`,
         variant: 'success',
       }),
