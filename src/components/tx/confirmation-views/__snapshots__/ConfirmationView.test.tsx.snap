@@ -321,7 +321,6 @@ exports[`ConfirmationView should display a confirmation screen for a SETTINGS_CH
                           <img
                             alt="ETH"
                             class="image"
-                            crossorigin="anonymous"
                             height="26"
                             src="/images/common/token-placeholder.svg"
                           />
@@ -878,7 +877,6 @@ exports[`ConfirmationView should display a confirmation with method call when th
                           <img
                             alt="ETH"
                             class="image"
-                            crossorigin="anonymous"
                             height="26"
                             src="/images/common/token-placeholder.svg"
                           />

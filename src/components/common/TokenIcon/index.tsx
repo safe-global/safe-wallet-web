@@ -21,7 +21,6 @@ const TokenIcon = ({
       alt={tokenSymbol}
       fallbackSrc={fallbackSrc || FALLBACK_ICON}
       height={size}
-      crossOrigin="anonymous"
       className={css.image}
     />
   )
