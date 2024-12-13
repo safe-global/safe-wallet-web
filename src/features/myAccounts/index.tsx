@@ -129,6 +129,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
                 onChange={(e) => {
                   handleSearch(e.target.value)
                 }}
+                className={css.search}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">

@@ -1,5 +1,6 @@
 import { selectUndeployedSafes } from '@/features/counterfactual/store/undeployedSafesSlice'
 import NetworkLogosList from '@/features/multichain/components/NetworkLogosList'
+import { showNotification } from '@/store/notificationsSlice'
 import type { SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
 import { useCallback, useMemo, useState } from 'react'
 import {
@@ -179,6 +180,16 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
         dispatch(pinSafe({ chainId: safe.chainId, address: safe.address }))
       }
     }
+
+    dispatch(
+      showNotification({
+        title: 'Pinned Multichain Safe',
+        message: address,
+        groupKey: `pin-safe-success-${address}`,
+        variant: 'success',
+      }),
+    )
+
     trackEvent({ ...OVERVIEW_EVENTS.PIN_SAFE, label: PIN_SAFE_LABELS.pin })
   }, [safes, allAddedSafes, dispatch, findOverview, address])
 
@@ -186,6 +197,16 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
     for (const safe of safes) {
       dispatch(unpinSafe({ chainId: safe.chainId, address: safe.address }))
     }
+
+    dispatch(
+      showNotification({
+        title: 'Unpinned Multichain Safe',
+        message: address,
+        groupKey: `unpin-safe-success-${address}`,
+        variant: 'success',
+      }),
+    )
+
     trackEvent({ ...OVERVIEW_EVENTS.PIN_SAFE, label: PIN_SAFE_LABELS.unpin })
   }, [safes, dispatch])
 

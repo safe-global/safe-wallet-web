@@ -29,7 +29,7 @@ import { addOrUpdateSafe, unpinSafe } from '@/store/addedSafesSlice'
 import SafeIcon from '@/components/common/SafeIcon'
 import useOnceVisible from '@/hooks/useOnceVisible'
 import { skipToken } from '@reduxjs/toolkit/query'
-import { defaultSafeInfo, useGetSafeOverviewQuery } from '@/store/slices'
+import { defaultSafeInfo, showNotification, useGetSafeOverviewQuery } from '@/store/slices'
 import FiatValue from '@/components/common/FiatValue'
 import { AccountInfoChips } from '../AccountInfoChips'
 
@@ -102,11 +102,31 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
         },
       }),
     )
+
+    dispatch(
+      showNotification({
+        title: 'Pinned Safe',
+        message: address,
+        groupKey: `pin-safe-success-${address}`,
+        variant: 'success',
+      }),
+    )
+
     trackEvent({ ...OVERVIEW_EVENTS.PIN_SAFE, label: PIN_SAFE_LABELS.pin })
   }
 
   const removeFromPinnedList = () => {
     dispatch(unpinSafe({ chainId, address }))
+
+    dispatch(
+      showNotification({
+        title: 'Unpinned Safe',
+        message: address,
+        groupKey: `unpin-safe-success-${address}`,
+        variant: 'success',
+      }),
+    )
+
     trackEvent({ ...OVERVIEW_EVENTS.PIN_SAFE, label: PIN_SAFE_LABELS.unpin })
   }
 
