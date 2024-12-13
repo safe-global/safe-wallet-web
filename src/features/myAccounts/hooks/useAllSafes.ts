@@ -33,6 +33,7 @@ export const _prepareAddresses = (
 
   const combined = [...addedOnChain, ...ownedOnChain, ...undeployedOnChain]
 
+  // We need to sort to prevent potential jumps when pinning safes
   return [...new Set(combined)].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
 }
 
