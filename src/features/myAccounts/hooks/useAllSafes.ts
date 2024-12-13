@@ -33,7 +33,7 @@ export const _prepareAddresses = (
 
   const combined = [...addedOnChain, ...ownedOnChain, ...undeployedOnChain]
 
-  return [...new Set(combined)]
+  return [...new Set(combined)].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
 }
 
 export const _buildSafeItem = (
