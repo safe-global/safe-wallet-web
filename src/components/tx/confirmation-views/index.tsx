@@ -7,6 +7,7 @@ import {
   isExecTxData,
   isOnChainConfirmationTxData,
   isOrderTxInfo,
+  isSafeUpdateTxData,
   isSwapOrderTxInfo,
 } from '@/utils/transaction-guards'
 import { type ReactNode, useContext, useMemo } from 'react'
@@ -22,6 +23,7 @@ import { ExecTransaction } from '@/components/transactions/TxDetails/TxData/Nest
 import { type ReactElement } from 'react'
 import SwapOrder from './SwapOrder'
 import StakingTx from './StakingTx'
+import UpdateSafe from './UpdateSafe'
 
 type ConfirmationViewProps = {
   txDetails?: TransactionDetails
@@ -54,6 +56,8 @@ const getConfirmationViewComponent = ({
   if (isSwapOrderTxInfo(txInfo)) return <SwapOrder txDetails={txDetails} txInfo={txInfo} />
 
   if (isAnyStakingTxInfo(txInfo)) return <StakingTx txDetails={txDetails} txInfo={txInfo} />
+
+  if (isCustomTxInfo(txInfo) && isSafeUpdateTxData(txDetails.txData)) return <UpdateSafe />
 
   return null
 }
