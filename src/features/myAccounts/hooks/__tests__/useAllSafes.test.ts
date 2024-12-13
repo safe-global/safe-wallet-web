@@ -297,11 +297,11 @@ describe('useAllSafes hook', () => {
       expect(result.lastVisited).toEqual(123456)
     })
 
-    it('returns a SafeItem with readOnly false if wallet is an owner of added safe', () => {
+    it('returns a SafeItem with readOnly true if its an added safe', () => {
       const mockAllAdded = {
         '1': {
           '0x123': {
-            owners: [{ value: '0x111' }],
+            owners: [{ value: '0x222' }],
             threshold: 1,
           },
         },
@@ -317,7 +317,7 @@ describe('useAllSafes hook', () => {
         mockAllSafeNames,
       )
 
-      expect(result.isReadOnly).toEqual(false)
+      expect(result.isReadOnly).toEqual(true)
     })
 
     it('returns a SafeItem with readOnly false if wallet is an owner of undeployed safe', () => {

@@ -47,15 +47,13 @@ export const _buildSafeItem = (
   allSafeNames: AddressBookState,
 ): SafeItem => {
   const addedSafe = allAdded[chainId]?.[address]
-  const addedSafeOwners = addedSafe?.owners || []
-  const undeployedSafeOwners = allUndeployed[chainId]?.[address]?.props.safeAccountConfig.owners || []
   const isPinned = Boolean(addedSafe) // Pinning a safe means adding it to the added safes storage
+  const undeployedSafeOwners = allUndeployed[chainId]?.[address]?.props.safeAccountConfig.owners || []
 
   // Determine if the user is an owner
-  const isOwnerFromAdded = addedSafeOwners.some(({ value }) => sameAddress(walletAddress, value))
   const isOwnerFromCF = undeployedSafeOwners.some((ownedAddress) => sameAddress(walletAddress, ownedAddress))
   const isOwnedSafe = (allOwned[chainId] || []).includes(address)
-  const isOwned = isOwnedSafe || isOwnerFromAdded || isOwnerFromCF
+  const isOwned = isOwnedSafe || isOwnerFromCF
 
   const lastVisited = allVisitedSafes[chainId]?.[address]?.lastVisited || 0
   const name = allSafeNames[chainId]?.[address]
