@@ -1,10 +1,27 @@
-import { Alert, AlertTitle, Divider, Typography } from '@mui/material'
+import type { ReactNode } from 'react'
+import { Alert, AlertTitle, Box, Divider, Stack, Typography } from '@mui/material'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useQueuedTxsLength } from '@/hooks/useTxQueue'
 import ExternalLink from '@/components/common/ExternalLink'
 import { maybePlural } from '@/utils/formatters'
+
+function BgBox({ children, light }: { children: ReactNode; light?: boolean }) {
+  return (
+    <Box
+      flex={1}
+      bgcolor={light ? 'background.light' : 'border.background'}
+      p={2}
+      textAlign="center"
+      fontWeight={700}
+      fontSize={18}
+      borderRadius={1}
+    >
+      {children}
+    </Box>
+  )
+}
 
 function UpdateSafe() {
   const { safe } = useSafeInfo()
@@ -14,9 +31,11 @@ function UpdateSafe() {
 
   return (
     <>
-      <Typography variant="h4" mb={1}>
-        Current version: <b>{safe.version}</b> → new version: <b>{latestSafeVersion}</b>
-      </Typography>
+      <Stack direction="row" alignItems="center" spacing={2}>
+        <BgBox>Current version: {safe.version}</BgBox>
+        <Box fontSize={28}>→</Box>
+        <BgBox light>New version: {latestSafeVersion}</BgBox>
+      </Stack>
 
       <Typography mb={1}>
         Read about the updates in the new Safe contracts version in the{' '}
