@@ -37,9 +37,10 @@ type AccountItemProps = {
   safeItem: SafeItem
   safeOverview?: SafeOverview
   onLinkClick?: () => void
+  isMultiChainItem?: boolean
 }
 
-const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
+const SingleAccountItem = ({ onLinkClick, safeItem, isMultiChainItem = false }: AccountItemProps) => {
   const { chainId, address, isReadOnly, isPinned } = safeItem
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, address))
@@ -128,6 +129,7 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
               address={address}
               owners={safeOwners.length > 0 ? safeOwners.length : undefined}
               threshold={safeThreshold > 0 ? safeThreshold : undefined}
+              isMultiChainItem={isMultiChainItem}
               chainId={chainId}
             />
           </Box>
@@ -145,16 +147,30 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
                 {name}
               </Typography>
             )}
-            {chain?.shortName}:
-            <Typography
-              component="span"
-              sx={{
-                color: 'var(--color-primary-light)',
-                fontSize: 'inherit',
-              }}
-            >
-              {shortenAddress(address)}
-            </Typography>
+            {isMultiChainItem ? (
+              <Typography
+                component="span"
+                sx={{
+                  color: 'var(--color-primary-light)',
+                  fontSize: 'inherit',
+                }}
+              >
+                {chain?.chainName}
+              </Typography>
+            ) : (
+              <>
+                {chain?.shortName}:
+                <Typography
+                  component="span"
+                  sx={{
+                    color: 'var(--color-primary-light)',
+                    fontSize: 'inherit',
+                  }}
+                >
+                  {shortenAddress(address)}
+                </Typography>
+              </>
+            )}
             {!isMobile && (
               <AccountInfoChips
                 isActivating={isActivating}
@@ -170,7 +186,7 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
             )}
           </Typography>
 
-          <ChainIndicator chainId={chainId} responsive onlyLogo className={css.chainIndicator} />
+          {!isMultiChainItem && <ChainIndicator chainId={chainId} responsive onlyLogo className={css.chainIndicator} />}
 
           <Typography variant="body2" sx={{ fontWeight: 'bold', textAlign: 'right', pl: 2 }}>
             {undeployedSafe ? null : safeOverview ? (
@@ -181,29 +197,33 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
           </Typography>
         </Link>
       </Track>
-      <IconButton
-        data-testid="bookmark-icon"
-        edge="end"
-        size="medium"
-        sx={{ mx: 1 }}
-        onClick={isPinned ? removeFromPinnedList : addToPinnedList}
-      >
-        <SvgIcon
-          component={isPinned ? BookmarkedIcon : BookmarkIcon}
-          inheritViewBox
-          color={isPinned ? 'primary' : undefined}
-          fontSize="small"
-        />
-      </IconButton>
+      {!isMultiChainItem && (
+        <>
+          <IconButton
+            data-testid="bookmark-icon"
+            edge="end"
+            size="medium"
+            sx={{ mx: 1 }}
+            onClick={isPinned ? removeFromPinnedList : addToPinnedList}
+          >
+            <SvgIcon
+              component={isPinned ? BookmarkedIcon : BookmarkIcon}
+              inheritViewBox
+              color={isPinned ? 'primary' : undefined}
+              fontSize="small"
+            />
+          </IconButton>
 
-      <SafeListContextMenu
-        name={name}
-        address={address}
-        chainId={chainId}
-        addNetwork={isReplayable}
-        rename
-        undeployedSafe={!!undeployedSafe}
-      />
+          <SafeListContextMenu
+            name={name}
+            address={address}
+            chainId={chainId}
+            addNetwork={isReplayable}
+            rename
+            undeployedSafe={!!undeployedSafe}
+          />
+        </>
+      )}
 
       {isMobile && (
         <AccountInfoChips
@@ -222,4 +242,4 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
   )
 }
 
-export default AccountItem
+export default SingleAccountItem
