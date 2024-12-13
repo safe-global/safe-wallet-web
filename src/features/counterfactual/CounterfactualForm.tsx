@@ -1,9 +1,10 @@
 import { TxModalContext } from '@/components/tx-flow'
 import useDeployGasLimit from '@/features/counterfactual/hooks/useDeployGasLimit'
 import { deploySafeAndExecuteTx } from '@/features/counterfactual/utils'
+import useChainId from '@/hooks/useChainId'
 import { getTotalFeeFormatted } from '@/hooks/useGasPrice'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
+import useOnboard from '@/hooks/wallets/useOnboard'
 import useWallet from '@/hooks/wallets/useWallet'
 import { OVERVIEW_EVENTS, trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
@@ -18,7 +19,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useIsExecutionLoop } from '@/components/tx/SignOrExecuteForm/hooks'
-import type { SignOrExecuteProps } from '@/components/tx/SignOrExecuteForm/SignOrExecuteForm'
+import type { SignOrExecuteProps } from '@/components/tx/SignOrExecuteForm'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import AdvancedParams, { useAdvancedParams } from '@/components/tx/AdvancedParams'
 import { asError } from '@/services/exceptions/utils'
@@ -37,17 +38,16 @@ export const CounterfactualForm = ({
   isOwner,
   isExecutionLoop,
   txSecurity,
-  onSubmit,
 }: SignOrExecuteProps & {
   isOwner: ReturnType<typeof useIsSafeOwner>
   isExecutionLoop: ReturnType<typeof useIsExecutionLoop>
   txSecurity: ReturnType<typeof useTxSecurityContext>
   safeTx?: SafeTransaction
-  isCreation?: boolean
 }): ReactElement => {
   const wallet = useWallet()
+  const onboard = useOnboard()
   const chain = useCurrentChain()
-  const { safeAddress } = useSafeInfo()
+  const chainId = useChainId()
 
   // Form state
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -65,7 +65,6 @@ export const CounterfactualForm = ({
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
-    onSubmit?.(Math.random().toString())
 
     if (needsRiskConfirmation && !isRiskConfirmed) {
       setIsRiskIgnored(true)
@@ -80,7 +79,7 @@ export const CounterfactualForm = ({
     try {
       trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: TX_TYPES.activate_with_tx })
 
-      await deploySafeAndExecuteTx(txOptions, wallet, safeAddress, safeTx, wallet?.provider)
+      await deploySafeAndExecuteTx(txOptions, chainId, wallet, safeTx, onboard)
 
       trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.activate_with_tx })
       trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.activate_with_tx })
@@ -99,6 +98,7 @@ export const CounterfactualForm = ({
   const walletCanPay = useWalletCanPay({
     gasLimit: gasLimit?.totalGas,
     maxFeePerGas: advancedParams.maxFeePerGas,
+    maxPriorityFeePerGas: advancedParams.maxPriorityFeePerGas,
   })
 
   const cannotPropose = !isOwner && !onlyExecute
@@ -173,7 +173,7 @@ export const CounterfactualForm = ({
 
         <CardActions>
           {/* Submit button */}
-          <CheckWallet allowNonOwner={onlyExecute} checkNetwork={!submitDisabled}>
+          <CheckWallet allowNonOwner={onlyExecute}>
             {(isOk) => (
               <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} sx={{ minWidth: '112px' }}>
                 {!isSubmittable ? <CircularProgress size={20} /> : 'Execute'}

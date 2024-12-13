@@ -7,9 +7,8 @@ import { render } from '@/tests/test-utils'
 import ReviewStep, { NetworkFee } from '@/components/new-safe/create/steps/ReviewStep/index'
 import * as useWallet from '@/hooks/wallets/useWallet'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import { act, fireEvent, screen } from '@testing-library/react'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
-import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
+import * as socialLogin from '@/services/mpc/SocialLoginModule'
+import { act, fireEvent } from '@testing-library/react'
 
 const mockChainInfo = {
   chainId: '100',
@@ -21,12 +20,28 @@ const mockChainInfo = {
 } as ChainInfo
 
 describe('NetworkFee', () => {
-  it('should display the total fee', () => {
+  it('should display the total fee if not social login', () => {
     jest.spyOn(useWallet, 'default').mockReturnValue({ label: 'MetaMask' } as unknown as ConnectedWallet)
     const mockTotalFee = '0.0123'
-    const result = render(<NetworkFee totalFee={mockTotalFee} chain={mockChainInfo} isWaived={true} />)
+    const result = render(<NetworkFee totalFee={mockTotalFee} chain={mockChainInfo} willRelay={true} />)
 
     expect(result.getByText(`≈ ${mockTotalFee} ${mockChainInfo.nativeCurrency.symbol}`)).toBeInTheDocument()
+  })
+
+  it('displays a sponsored by message for social login', () => {
+    jest.spyOn(useWallet, 'default').mockReturnValue({ label: 'Social Login' } as unknown as ConnectedWallet)
+    const result = render(<NetworkFee totalFee="0" chain={mockChainInfo} willRelay={true} />)
+
+    expect(result.getByText(/Your account is sponsored by Gnosis/)).toBeInTheDocument()
+  })
+
+  it('displays an error message for social login if there are no relays left', () => {
+    jest.spyOn(useWallet, 'default').mockReturnValue({ label: 'Social Login' } as unknown as ConnectedWallet)
+    const result = render(<NetworkFee totalFee="0" chain={mockChainInfo} willRelay={false} />)
+
+    expect(
+      result.getByText(/You have used up your 5 free transactions per hour. Please try again later/),
+    ).toBeInTheDocument()
   })
 })
 
@@ -38,11 +53,9 @@ describe('ReviewStep', () => {
   it('should display a pay now pay later option for counterfactual safe setups', () => {
     const mockData: NewSafeFormData = {
       name: 'Test',
-      networks: [mockChainInfo],
       threshold: 1,
       owners: [{ name: '', address: '0x1' }],
       saltNonce: 0,
-      safeVersion: LATEST_SAFE_VERSION as SafeVersion,
     }
     jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
 
@@ -53,31 +66,12 @@ describe('ReviewStep', () => {
     expect(getByText('Pay now')).toBeInTheDocument()
   })
 
-  it('should display a pay later option as selected by default for counterfactual safe setups', () => {
-    const mockData: NewSafeFormData = {
-      name: 'Test',
-      networks: [mockChainInfo],
-      threshold: 1,
-      owners: [{ name: '', address: '0x1' }],
-      saltNonce: 0,
-      safeVersion: LATEST_SAFE_VERSION as SafeVersion,
-    }
-    jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
-
-    render(<ReviewStep data={mockData} onSubmit={jest.fn()} onBack={jest.fn()} setStep={jest.fn()} />)
-
-    const payLaterOption = screen.getByRole('radio', { name: /Pay later/i })
-    expect(payLaterOption).toBeChecked()
-  })
-
   it('should not display the network fee for counterfactual safes', () => {
     const mockData: NewSafeFormData = {
       name: 'Test',
-      networks: [mockChainInfo],
       threshold: 1,
       owners: [{ name: '', address: '0x1' }],
       saltNonce: 0,
-      safeVersion: LATEST_SAFE_VERSION as SafeVersion,
     }
     jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
 
@@ -91,11 +85,9 @@ describe('ReviewStep', () => {
   it('should not display the execution method for counterfactual safes', () => {
     const mockData: NewSafeFormData = {
       name: 'Test',
-      networks: [mockChainInfo],
       threshold: 1,
       owners: [{ name: '', address: '0x1' }],
       saltNonce: 0,
-      safeVersion: LATEST_SAFE_VERSION as SafeVersion,
     }
     jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
 
@@ -109,11 +101,9 @@ describe('ReviewStep', () => {
   it('should display the network fee for counterfactual safes if the user selects pay now', async () => {
     const mockData: NewSafeFormData = {
       name: 'Test',
-      networks: [mockChainInfo],
       threshold: 1,
       owners: [{ name: '', address: '0x1' }],
       saltNonce: 0,
-      safeVersion: LATEST_SAFE_VERSION as SafeVersion,
     }
     jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
 
@@ -133,14 +123,13 @@ describe('ReviewStep', () => {
   it('should display the execution method for counterfactual safes if the user selects pay now and there is relaying', async () => {
     const mockData: NewSafeFormData = {
       name: 'Test',
-      networks: [mockChainInfo],
       threshold: 1,
       owners: [{ name: '', address: '0x1' }],
       saltNonce: 0,
-      safeVersion: LATEST_SAFE_VERSION as SafeVersion,
     }
     jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
     jest.spyOn(relay, 'hasRemainingRelays').mockReturnValue(true)
+    jest.spyOn(socialLogin, 'isSocialLoginWallet').mockReturnValue(false)
 
     const { getByText } = render(
       <ReviewStep data={mockData} onSubmit={jest.fn()} onBack={jest.fn()} setStep={jest.fn()} />,
@@ -153,42 +142,5 @@ describe('ReviewStep', () => {
     })
 
     expect(getByText(/Who will pay gas fees:/)).toBeInTheDocument()
-  })
-
-  it('should display the execution method for counterfactual safes if the user selects pay now and there is relaying', async () => {
-    const mockMultiChainInfo = [
-      {
-        chainId: '100',
-        chainName: 'Gnosis Chain',
-        l2: false,
-        nativeCurrency: {
-          symbol: 'ETH',
-        },
-      },
-      {
-        chainId: '1',
-        chainName: 'Ethereum',
-        l2: false,
-        nativeCurrency: {
-          symbol: 'ETH',
-        },
-      },
-    ] as ChainInfo[]
-    const mockData: NewSafeFormData = {
-      name: 'Test',
-      networks: mockMultiChainInfo,
-      threshold: 1,
-      owners: [{ name: '', address: '0x1' }],
-      saltNonce: 0,
-      safeVersion: LATEST_SAFE_VERSION as SafeVersion,
-    }
-    jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
-    jest.spyOn(relay, 'hasRemainingRelays').mockReturnValue(true)
-
-    const { getByText } = render(
-      <ReviewStep data={mockData} onSubmit={jest.fn()} onBack={jest.fn()} setStep={jest.fn()} />,
-    )
-
-    expect(getByText(/activate your account/)).toBeInTheDocument()
   })
 })

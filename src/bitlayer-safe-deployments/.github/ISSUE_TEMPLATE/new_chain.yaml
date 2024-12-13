@@ -1,0 +1,51 @@
+name: Add new chain
+description: Template to provide information about the new chain
+title: "[New chain]: "
+labels: "[enhancement]"
+body: 
+  - type: markdown 
+    attributes:
+      value: Please fill the following form
+  - type: input
+    id: chainid
+    attributes:
+      label: ChainId
+      description: Provide the chainId 
+    validations:
+      required: true
+  - type: input
+    id: chainlist
+    attributes:
+      label: Chainlist
+      description: The chain should be listed on chainlist.org, provide the link. 
+    validations:
+      required: true
+  - type: checkboxes
+    id: deployed
+    attributes: 
+      label: Contract deployed
+      description: Confirm that the contracts are deployed on the chain, if not deploy with [safe-contracts](https://github.com/safe-global/safe-contracts) 
+      options:
+        - label: I confirm that the contracts are deployed 
+          required: true
+  - type: dropdown
+    id: versioning 
+    attributes: 
+      label: Version of contracts deployed
+      description: What version of contracts are deployed? NOTE:one issue per version and one pull request per version
+      multiple: false
+      options: 
+        - v1.0.0
+        - v1.1.0
+        - v1.1.1
+        - v1.2.0
+        - v1.3.0
+        - v1.4.1
+    validations:
+      required: true
+  - type: textarea
+    id: relevant
+    attributes:
+      label: Relevant information
+      description: Add relevant information like blockexplorer, any annotation...
+       

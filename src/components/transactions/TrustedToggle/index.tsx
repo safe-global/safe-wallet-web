@@ -1,13 +1,13 @@
 import { useHasFeature } from '@/hooks/useChains'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { selectSettings, hideSuspiciousTransactions } from '@/store/settingsSlice'
+import { selectSettings, setshowOnlyTrustedTransactions } from '@/store/settingsSlice'
 import { FEATURES } from '@/utils/chains'
 import madProps from '@/utils/mad-props'
 import _TrustedToggleButton from './TrustedToggleButton'
 
 const useOnlyTrusted = () => {
   const userSettings = useAppSelector(selectSettings)
-  return userSettings.hideSuspiciousTransactions || false
+  return userSettings.showOnlyTrustedTransactions || false
 }
 
 const useHasDefaultTokenList = () => {
@@ -17,7 +17,7 @@ const useHasDefaultTokenList = () => {
 const useSetOnlyTrusted = () => {
   const dispatch = useAppDispatch()
   return (isOn: boolean) => {
-    dispatch(hideSuspiciousTransactions(isOn))
+    dispatch(setshowOnlyTrustedTransactions(isOn))
   }
 }
 

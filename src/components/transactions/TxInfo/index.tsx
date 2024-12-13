@@ -1,16 +1,15 @@
 import { type ReactElement } from 'react'
 import type {
-  Creation,
+  Transfer,
   Custom,
+  Creation,
+  TransactionInfo,
   MultiSend,
   SettingsChange,
-  TransactionInfo,
-  Transfer,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { SettingsInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import TokenAmount from '@/components/common/TokenAmount'
 import {
-  isOrderTxInfo,
   isCreationTxInfo,
   isCustomTxInfo,
   isERC20Transfer,
@@ -19,30 +18,18 @@ import {
   isNativeTokenTransfer,
   isSettingsChangeTxInfo,
   isTransferTxInfo,
-  isMigrateToL2TxInfo,
-  isStakingTxDepositInfo,
-  isStakingTxExitInfo,
-  isStakingTxWithdrawInfo,
 } from '@/utils/transaction-guards'
 import { ellipsis, shortenAddress } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
-import { SwapTx } from '@/features/swap/components/SwapTxInfo/SwapTx'
-import StakingTxExitInfo from '@/features/stake/components/StakingTxExitInfo'
-import StakingTxWithdrawInfo from '@/features/stake/components/StakingTxWithdrawInfo'
-import { Box } from '@mui/material'
-import css from './styles.module.css'
-import StakingTxDepositInfo from '@/features/stake/components/StakingTxDepositInfo'
 
 export const TransferTx = ({
   info,
   omitSign = false,
   withLogo = true,
-  preciseAmount = false,
 }: {
   info: Transfer
   omitSign?: boolean
   withLogo?: boolean
-  preciseAmount?: boolean
 }): ReactElement => {
   const chainConfig = useCurrentChain()
   const { nativeCurrency } = chainConfig || {}
@@ -57,20 +44,12 @@ export const TransferTx = ({
         decimals={nativeCurrency?.decimals}
         tokenSymbol={nativeCurrency?.symbol}
         logoUri={withLogo ? nativeCurrency?.logoUri : undefined}
-        preciseAmount={preciseAmount}
       />
     )
   }
 
   if (isERC20Transfer(transfer)) {
-    return (
-      <TokenAmount
-        {...transfer}
-        direction={direction}
-        logoUri={withLogo ? transfer?.logoUri : undefined}
-        preciseAmount={preciseAmount}
-      />
-    )
+    return <TokenAmount {...transfer} direction={direction} logoUri={withLogo ? transfer?.logoUri : undefined} />
   }
 
   if (isERC721Transfer(transfer)) {
@@ -82,7 +61,6 @@ export const TransferTx = ({
           withLogo ? 16 : 100,
         )}
         value="1"
-        decimals={0}
         direction={undefined}
         logoUri={withLogo ? transfer?.logoUri : undefined}
         fallbackSrc="/images/common/nft-placeholder.png"
@@ -94,18 +72,18 @@ export const TransferTx = ({
 }
 
 const CustomTx = ({ info }: { info: Custom }): ReactElement => {
-  return <Box className={css.txInfo}>{info.methodName}</Box>
+  return <>{info.methodName}</>
 }
 
 const CreationTx = ({ info }: { info: Creation }): ReactElement => {
-  return <Box className={css.txInfo}>Created by {shortenAddress(info.creator.value)}</Box>
+  return <>Safe Account created by {shortenAddress(info.creator.value)}</>
 }
 
 const MultiSendTx = ({ info }: { info: MultiSend }): ReactElement => {
   return (
-    <Box className={css.txInfo}>
+    <>
       {info.actionCount} {`action${info.actionCount > 1 ? 's' : ''}`}
-    </Box>
+    </>
   )
 }
 
@@ -114,13 +92,10 @@ const SettingsChangeTx = ({ info }: { info: SettingsChange }): ReactElement => {
     info.settingsInfo?.type === SettingsInfoType.ENABLE_MODULE ||
     info.settingsInfo?.type === SettingsInfoType.DISABLE_MODULE
   ) {
-    return <Box className={css.txInfo}>{info.settingsInfo.module.name}</Box>
+    return <>{info.settingsInfo.module.name}</>
   }
-  return <></>
-}
 
-const MigrationToL2Tx = (): ReactElement => {
-  return <>Migrate base contract</>
+  return <></>
 }
 
 const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; withLogo?: boolean }): ReactElement => {
@@ -136,32 +111,12 @@ const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; 
     return <TransferTx info={info} {...rest} />
   }
 
-  if (isMigrateToL2TxInfo(info)) {
-    return <MigrationToL2Tx />
+  if (isCustomTxInfo(info)) {
+    return <CustomTx info={info} />
   }
 
   if (isCreationTxInfo(info)) {
     return <CreationTx info={info} />
-  }
-
-  if (isOrderTxInfo(info)) {
-    return <SwapTx info={info} />
-  }
-
-  if (isStakingTxDepositInfo(info)) {
-    return <StakingTxDepositInfo info={info} />
-  }
-
-  if (isStakingTxExitInfo(info)) {
-    return <StakingTxExitInfo info={info} />
-  }
-
-  if (isStakingTxWithdrawInfo(info)) {
-    return <StakingTxWithdrawInfo info={info} />
-  }
-
-  if (isCustomTxInfo(info)) {
-    return <CustomTx info={info} />
   }
 
   return <></>

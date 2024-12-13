@@ -1,25 +1,20 @@
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import type Safe from '@safe-global/protocol-kit'
-import { SafeProvider, SigningMethod } from '@safe-global/protocol-kit'
-import {
-  generatePreValidatedSignature,
-  isSafeMultisigTransactionResponse,
-  sameString,
-} from '@safe-global/protocol-kit/dist/src/utils'
-import type { Eip1193Provider, JsonRpcSigner } from 'ethers'
-import { isWalletRejection, isHardwareWallet, isWalletConnect } from '@/utils/wallets'
+import { EthersAdapter, SigningMethod } from '@safe-global/protocol-kit'
+import type { JsonRpcSigner } from 'ethers'
+import { ethers } from 'ethers'
+import { isWalletRejection, isHardwareWallet } from '@/utils/wallets'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { getChainConfig, type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { SAFE_FEATURES } from '@safe-global/protocol-kit/dist/src/utils/safeVersions'
 import { hasSafeFeature } from '@/utils/safe-versions'
-import { createWeb3, getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { createWeb3 } from '@/hooks/wallets/web3'
 import { toQuantity } from 'ethers'
 import { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { type OnboardAPI } from '@web3-onboard/core'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { asError } from '@/services/exceptions/utils'
 import { UncheckedJsonRpcSigner } from '@/utils/providers/UncheckedJsonRpcSigner'
-import get from 'lodash/get'
 
 export const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -31,68 +26,28 @@ export const getAndValidateSafeSDK = (): Safe => {
   return safeSDK
 }
 
-export const getSafeProvider = () => {
-  const provider = getWeb3ReadOnly()
-  if (!provider) {
-    throw new Error('Provider not found.')
-  }
-
-  return new SafeProvider({ provider: provider._getConnection().url })
-}
-
-async function switchOrAddChain(walletProvider: ConnectedWallet['provider'], chainId: string): Promise<void> {
-  const UNKNOWN_CHAIN_ERROR_CODE = 4902
-  const hexChainId = toQuantity(parseInt(chainId))
-
-  try {
-    return await walletProvider.request({
-      method: 'wallet_switchEthereumChain',
-      params: [{ chainId: hexChainId }],
-    })
-  } catch (error) {
-    const errorCode = get(error, 'code') as number | undefined
-
-    // Rabby emits the same error code as MM, but it is nested
-    const nestedErrorCode = get(error, 'data.originalError.code') as number | undefined
-
-    if (errorCode === UNKNOWN_CHAIN_ERROR_CODE || nestedErrorCode === UNKNOWN_CHAIN_ERROR_CODE) {
-      const chain = await getChainConfig(chainId)
-
-      return walletProvider.request({
-        method: 'wallet_addEthereumChain',
-        params: [
-          {
-            chainId: hexChainId,
-            chainName: chain.chainName,
-            nativeCurrency: chain.nativeCurrency,
-            rpcUrls: [chain.publicRpcUri.value],
-            blockExplorerUrls: [new URL(chain.blockExplorerUriTemplate.address).origin],
-          },
-        ],
-      })
-    }
-
-    throw error
-  }
-}
-
 export const switchWalletChain = async (onboard: OnboardAPI, chainId: string): Promise<ConnectedWallet | null> => {
   const currentWallet = getConnectedWallet(onboard.state.get().wallets)
-  if (!currentWallet) return null
 
-  // Onboard incorrectly returns WalletConnect's chainId, so it needs to be switched unconditionally
-  if (currentWallet.chainId === chainId && !isWalletConnect(currentWallet)) {
-    return currentWallet
+  if (!currentWallet) {
+    return null
   }
 
-  // Hardware wallets cannot switch chains
   if (isHardwareWallet(currentWallet)) {
     await onboard.disconnectWallet({ label: currentWallet.label })
     const wallets = await connectWallet(onboard, { autoSelect: currentWallet.label })
+
     return wallets ? getConnectedWallet(wallets) : null
   }
 
-  // Onboard doesn't update immediately and otherwise returns a stale wallet if we directly get its state
+  const didSwitch = await onboard.setChain({ chainId: toQuantity(parseInt(chainId)) })
+  if (!didSwitch) {
+    return currentWallet
+  }
+
+  /**
+   * Onboard doesn't update immediately and otherwise returns a stale wallet if we directly get its state
+   */
   return new Promise((resolve) => {
     const source$ = onboard.state.select('wallets').subscribe((newWallets) => {
       const newWallet = getConnectedWallet(newWallets)
@@ -100,12 +55,6 @@ export const switchWalletChain = async (onboard: OnboardAPI, chainId: string): P
         source$.unsubscribe()
         resolve(newWallet)
       }
-    })
-
-    // Switch chain for all other wallets
-    switchOrAddChain(currentWallet.provider, chainId).catch(() => {
-      source$.unsubscribe()
-      resolve(currentWallet)
     })
   })
 }
@@ -115,6 +64,10 @@ export const assertWalletChain = async (onboard: OnboardAPI, chainId: string): P
 
   if (!wallet) {
     throw new Error('No wallet connected.')
+  }
+
+  if (wallet.chainId === chainId) {
+    return wallet
   }
 
   const newWallet = await switchWalletChain(onboard, chainId)
@@ -130,20 +83,44 @@ export const assertWalletChain = async (onboard: OnboardAPI, chainId: string): P
   return newWallet
 }
 
-export const getAssertedChainSigner = async (provider: Eip1193Provider): Promise<JsonRpcSigner> => {
-  const browserProvider = createWeb3(provider)
-  return browserProvider.getSigner()
+export const getAssertedChainSigner = async (
+  onboard: OnboardAPI,
+  chainId: SafeInfo['chainId'],
+): Promise<JsonRpcSigner> => {
+  const wallet = await assertWalletChain(onboard, chainId)
+  const provider = createWeb3(wallet.provider)
+  return provider.getSigner()
 }
 
-export const getUncheckedSigner = async (provider: Eip1193Provider) => {
-  const browserProvider = createWeb3(provider)
-  return new UncheckedJsonRpcSigner(browserProvider, (await browserProvider.getSigner()).address)
-}
-
-export const getSafeSDKWithSigner = async (provider: Eip1193Provider): Promise<Safe> => {
+/**
+ * https://docs.ethers.io/v5/api/providers/jsonrpc-provider/#UncheckedJsonRpcSigner
+ * This resolves the promise sooner when executing a tx and mocks
+ * most of the values of transactionResponse which is needed when
+ * dealing with smart-contract wallet owners
+ */
+export const getUncheckedSafeSDK = async (onboard: OnboardAPI, chainId: SafeInfo['chainId']): Promise<Safe> => {
+  const signer = await getAssertedChainSigner(onboard, chainId)
+  const uncheckedJsonRpcSigner = new UncheckedJsonRpcSigner(signer.provider, await signer.getAddress())
   const sdk = getAndValidateSafeSDK()
 
-  return sdk.connect({ provider })
+  const ethAdapter = new EthersAdapter({
+    ethers,
+    signerOrProvider: uncheckedJsonRpcSigner,
+  })
+
+  return sdk.connect({ ethAdapter })
+}
+
+export const getSafeSDKWithSigner = async (onboard: OnboardAPI, chainId: SafeInfo['chainId']): Promise<Safe> => {
+  const signer = await getAssertedChainSigner(onboard, chainId)
+  const sdk = getAndValidateSafeSDK()
+
+  const ethAdapter = new EthersAdapter({
+    ethers,
+    signerOrProvider: signer,
+  })
+
+  return sdk.connect({ ethAdapter })
 }
 
 export const getSupportedSigningMethods = (safeVersion: SafeInfo['version']): SigningMethod[] => {
@@ -179,74 +156,4 @@ export const tryOffChainTxSigning = async (
 
 export const isDelegateCall = (safeTx: SafeTransaction): boolean => {
   return safeTx.data.operation === OperationType.DelegateCall
-}
-
-// TODO: This is a workaround and a duplication of sdk.executeTransaction but it returns the encoded tx instead of executing it.
-export const prepareTxExecution = async (safeTransaction: SafeTransaction, provider: Eip1193Provider) => {
-  const sdk = await getSafeSDKWithSigner(provider)
-
-  if (!sdk.getContractManager().safeContract) {
-    throw new Error('Safe is not deployed')
-  }
-
-  const transaction = isSafeMultisigTransactionResponse(safeTransaction)
-    ? await sdk.toSafeTransactionType(safeTransaction)
-    : safeTransaction
-
-  const signedSafeTransaction = await sdk.copyTransaction(transaction)
-
-  const txHash = await sdk.getTransactionHash(signedSafeTransaction)
-  const ownersWhoApprovedTx = await sdk.getOwnersWhoApprovedTx(txHash)
-  for (const owner of ownersWhoApprovedTx) {
-    signedSafeTransaction.addSignature(generatePreValidatedSignature(owner))
-  }
-  const owners = await sdk.getOwners()
-  const threshold = await sdk.getThreshold()
-  const signerAddress = await sdk.getSafeProvider().getSignerAddress()
-  if (threshold > signedSafeTransaction.signatures.size && signerAddress && owners.includes(signerAddress)) {
-    signedSafeTransaction.addSignature(generatePreValidatedSignature(signerAddress))
-  }
-
-  if (threshold > signedSafeTransaction.signatures.size) {
-    const signaturesMissing = threshold - signedSafeTransaction.signatures.size
-    throw new Error(
-      `There ${signaturesMissing > 1 ? 'are' : 'is'} ${signaturesMissing} signature${
-        signaturesMissing > 1 ? 's' : ''
-      } missing`,
-    )
-  }
-
-  const value = BigInt(signedSafeTransaction.data.value)
-  if (value !== 0n) {
-    const balance = await sdk.getBalance()
-    if (value > balance) {
-      throw new Error('Not enough Ether funds')
-    }
-  }
-
-  return sdk.getEncodedTransaction(signedSafeTransaction)
-}
-
-// TODO: This is a duplication of sdk.approveTransactionHash but it returns the encoded tx instead of executing it.
-export const prepareApproveTxHash = async (hash: string, provider: Eip1193Provider) => {
-  const sdk = await getSafeSDKWithSigner(provider)
-
-  const safeContract = sdk.getContractManager().safeContract
-
-  if (!safeContract) {
-    throw new Error('Safe is not deployed')
-  }
-
-  const owners = await sdk.getOwners()
-  const signerAddress = await sdk.getSafeProvider().getSignerAddress()
-  if (!signerAddress) {
-    throw new Error('SafeProvider must be initialized with a signer to use this method')
-  }
-  const addressIsOwner = owners.some((owner: string) => signerAddress && sameString(owner, signerAddress))
-  if (!addressIsOwner) {
-    throw new Error('Transaction hashes can only be approved by Safe owners')
-  }
-
-  // @ts-ignore
-  return safeContract.encode('approveHash', [hash])
 }

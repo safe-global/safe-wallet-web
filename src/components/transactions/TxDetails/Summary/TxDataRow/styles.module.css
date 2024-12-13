@@ -1,0 +1,35 @@
+.gridRow {
+  display: grid;
+  grid-template-columns: 35% auto;
+  gap: var(--space-1);
+  justify-content: flex-start;
+  max-width: 900px;
+}
+
+.title {
+  color: var(--color-primary-light);
+  font-weight: 400;
+  word-break: break-all;
+}
+
+.gridRow > * {
+  flex-shrink: 0;
+}
+
+.valueWrapper {
+  min-width: 50%;
+  flex-shrink: 0;
+}
+
+.rawData {
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 599.95px) {
+  .gridRow {
+    grid-template-columns: 1fr;
+    gap: 0;
+    margin-top: var(--space-1);
+  }
+}

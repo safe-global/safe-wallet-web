@@ -1,5 +1,6 @@
 import { type ReactElement } from 'react'
-import { FormControlLabel, Switch } from '@mui/material'
+import { Typography, Button, SvgIcon } from '@mui/material'
+import GhostIcon from '@/public/images/transactions/ghost.svg'
 import { TX_LIST_EVENTS } from '@/services/analytics'
 import Track from '@/components/common/Track'
 
@@ -10,7 +11,7 @@ const _TrustedToggleButton = ({
 }: {
   onlyTrusted: boolean
   setOnlyTrusted: (on: boolean) => void
-  hasDefaultTokenlist?: boolean
+  hasDefaultTokenlist: boolean
 }): ReactElement | null => {
   const onClick = () => {
     setOnlyTrusted(!onlyTrusted)
@@ -22,11 +23,22 @@ const _TrustedToggleButton = ({
 
   return (
     <Track {...TX_LIST_EVENTS.TOGGLE_UNTRUSTED} label={onlyTrusted ? 'show' : 'hide'}>
-      <FormControlLabel
+      <Button
+        sx={{
+          gap: 1,
+          height: '38px',
+          minWidth: '186px',
+        }}
+        onClick={onClick}
         data-testid="toggle-untrusted"
-        control={<Switch checked={onlyTrusted} onChange={onClick} />}
-        label={<>Hide suspicious</>}
-      />
+        variant="outlined"
+        size="small"
+      >
+        <>
+          <SvgIcon component={GhostIcon} fontSize="small" inheritViewBox />
+          <Typography fontSize="medium">{onlyTrusted ? 'Show' : 'Hide'} unknown</Typography>
+        </>
+      </Button>
     </Track>
   )
 }

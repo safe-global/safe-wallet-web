@@ -4,6 +4,7 @@ import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Box, Button, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { type ReactElement, useMemo, useState } from 'react'
 
+import { Chip } from '@/components/common/Chip'
 import ExternalLink from '@/components/common/ExternalLink'
 import { DelayModifierRow } from './DelayModifierRow'
 import useRecovery from '@/features/recovery/hooks/useRecovery'
@@ -117,6 +118,8 @@ function RecoverySettings(): ReactElement {
             <Typography variant="h4" fontWeight="bold">
               Account recovery
             </Typography>
+
+            <Chip label="New" />
           </Box>
         </Grid>
 

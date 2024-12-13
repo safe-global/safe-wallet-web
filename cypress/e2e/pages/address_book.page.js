@@ -1,6 +1,5 @@
-import * as constants from '../../support/constants.js'
-import * as main from './main.page.js'
-import staticSafes from '../../fixtures/safes/static.json'
+import * as constants from '../../support/constants'
+import * as main from '../pages/main.page'
 
 export const addressBookRecipient = '[data-testid="address-book-recipient"]'
 const beameriFrameContainer = '#beamerOverlay .iframeCointaner'
@@ -12,7 +11,7 @@ export const editEntryBtn = 'button[aria-label="Edit entry"]'
 export const deleteEntryBtn = 'button[aria-label="Delete entry"]'
 export const deleteEntryModalBtnSection = '.MuiDialogActions-root'
 export const tableContainer = '[data-testid="table-container"]'
-export const tableRow = '[data-testid="table-row"]'
+const tableRow = '[data-testid="table-row"]'
 const importBtn = '[data-testid="import-btn"]'
 const cancelImportBtn = '[data-testid="cancel-btn"]'
 const uploadErrorMsg = '[data-testid="error-message"]'
@@ -23,7 +22,6 @@ const exportSummary = '[data-testid="export-summary"]'
 const sendBtn = '[data-testid="send-btn"]'
 const nextPageBtn = 'button[aria-label="Go to next page"]'
 const previousPageBtn = 'button[aria-label="Go to previous page"]'
-export const entryDialog = '[data-testid="entry-dialog"]'
 
 //TODO Move to specific component
 const moreActionIcon = '[data-testid="MoreHorizIcon"]'
@@ -121,7 +119,7 @@ export function addEntryByENS(name, ens) {
   typeInName(name)
   typeInAddress(ens)
   clickOnSaveEntryBtn()
-  verifyNewEntryAdded(name, staticSafes.SEP_STATIC_SAFE_6)
+  verifyNewEntryAdded(name, constants.SEPOLIA_TEST_SAFE_7)
 }
 
 export function verifyModalSummaryMessage(entryCount, chainCount) {
@@ -225,7 +223,7 @@ export function verifyEditedNameNotExists(name) {
 }
 
 export function clickOnWhatsNewBtn(force = false) {
-  cy.contains(whatsNewBtnStr).click({ force })
+  cy.contains(whatsNewBtnStr).click({ force: force })
 }
 
 export function acceptBeamerCookies() {

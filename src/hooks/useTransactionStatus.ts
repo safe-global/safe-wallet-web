@@ -1,7 +1,7 @@
 import { ReplaceTxHoverContext } from '@/components/transactions/GroupedTxListItems/ReplaceTxHoverProvider'
 import { useAppSelector } from '@/store'
 import { PendingStatus, selectPendingTxById } from '@/store/pendingTxsSlice'
-import { isCancelledSwapOrder, isSignableBy } from '@/utils/transaction-guards'
+import { isSignableBy } from '@/utils/transaction-guards'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import { useContext } from 'react'
@@ -11,7 +11,7 @@ const ReplacedStatus = 'WILL_BE_REPLACED'
 
 type TxLocalStatus = TransactionStatus | PendingStatus | typeof ReplacedStatus
 
-export const STATUS_LABELS: Record<TxLocalStatus, string> = {
+const STATUS_LABELS: Record<TxLocalStatus, string> = {
   [TransactionStatus.AWAITING_CONFIRMATIONS]: 'Awaiting confirmations',
   [TransactionStatus.AWAITING_EXECUTION]: 'Awaiting execution',
   [TransactionStatus.CANCELLED]: 'Cancelled',
@@ -36,10 +36,6 @@ const useTransactionStatus = (txSummary: TransactionSummary): string => {
   const { replacedTxIds } = useContext(ReplaceTxHoverContext)
   const wallet = useWallet()
   const pendingTx = useAppSelector((state) => selectPendingTxById(state, id))
-
-  if (isCancelledSwapOrder(txSummary.txInfo)) {
-    return STATUS_LABELS['CANCELLED']
-  }
 
   if (replacedTxIds.includes(id)) {
     return STATUS_LABELS[ReplacedStatus]

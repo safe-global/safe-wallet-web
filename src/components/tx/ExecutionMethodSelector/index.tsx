@@ -5,12 +5,13 @@ import useWallet from '@/hooks/wallets/useWallet'
 import WalletIcon from '@/components/common/WalletIcon'
 import SponsoredBy from '../SponsoredBy'
 import RemainingRelays from '../RemainingRelays'
+import type { RelayResponse } from '@/services/tx/relaying'
 
 import css from './styles.module.css'
 import BalanceInfo from '@/components/tx/BalanceInfo'
 import madProps from '@/utils/mad-props'
 import { useCurrentChain } from '@/hooks/useChains'
-import type { ChainInfo, RelayCountResponse } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
 export const enum ExecutionMethod {
@@ -31,7 +32,7 @@ const _ExecutionMethodSelector = ({
   chain?: ChainInfo
   executionMethod: ExecutionMethod
   setExecutionMethod: Dispatch<SetStateAction<ExecutionMethod>>
-  relays?: RelayCountResponse
+  relays?: RelayResponse
   noLabel?: boolean
   tooltip?: string
 }): ReactElement | null => {
@@ -53,11 +54,10 @@ const _ExecutionMethodSelector = ({
 
           <RadioGroup row value={executionMethod} onChange={onChooseExecutionMethod}>
             <FormControlLabel
-              data-testid="relay-execution-method"
               sx={{ flex: 1 }}
               value={ExecutionMethod.RELAY}
               label={
-                <Typography className={css.radioLabel} whiteSpace="nowrap">
+                <Typography className={css.radioLabel}>
                   Sponsored by
                   <SponsoredBy chainId={chain?.chainId ?? ''} />
                 </Typography>

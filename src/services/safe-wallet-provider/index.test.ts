@@ -1,12 +1,8 @@
 // Unit tests for the SafeWalletProvider class
-import { faker } from '@faker-js/faker'
 import { SafeWalletProvider } from '.'
-import { ERC20__factory } from '@/types/contracts'
-import { numberToHex } from '@/utils/hex'
-import type { TransactionReceipt } from 'ethers'
 
 const safe = {
-  safeAddress: faker.finance.ethereumAddress(),
+  safeAddress: '0x123',
   chainId: 1,
 }
 
@@ -73,7 +69,7 @@ describe('SafeWalletProvider', () => {
       expect(result).toEqual({
         id: 1,
         jsonrpc: '2.0',
-        result: [safe.safeAddress],
+        result: ['0x123'],
       })
     })
   })
@@ -140,7 +136,7 @@ describe('SafeWalletProvider', () => {
 
       const result = await safeWalletProvider.request(
         1,
-        { method: 'personal_sign', params: ['message', safe.safeAddress] } as any,
+        { method: 'personal_sign', params: ['message', '0x123'] } as any,
         {} as any,
       )
 
@@ -161,7 +157,7 @@ describe('SafeWalletProvider', () => {
 
       const result = await safeWalletProvider.request(
         1,
-        { method: 'eth_sign', params: [safe.safeAddress, '0x345'] } as any,
+        { method: 'eth_sign', params: ['0x123', '0x123'] } as any,
         {} as any,
       )
 
@@ -218,7 +214,7 @@ describe('SafeWalletProvider', () => {
 
       const result = await safeWalletProvider.request(
         1,
-        { method: 'eth_sign', params: [safe.safeAddress, '0x123'] } as any,
+        { method: 'personal_sign', params: ['0x123', '0x123'] } as any,
         {} as any,
       )
 
@@ -242,7 +238,7 @@ describe('SafeWalletProvider', () => {
           {
             method,
             params: [
-              safe.safeAddress,
+              '0x123',
               {
                 domain: {
                   chainId: 1,
@@ -294,7 +290,7 @@ describe('SafeWalletProvider', () => {
           {
             method,
             params: [
-              safe.safeAddress,
+              '0x123',
               {
                 domain: {
                   chainId: 1,
@@ -324,23 +320,16 @@ describe('SafeWalletProvider', () => {
       const sdk = {
         send: jest.fn().mockResolvedValue({ safeTxHash: '0x456' }),
       }
-      const toAddress = faker.finance.ethereumAddress()
       const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
 
       const result = await safeWalletProvider.request(
         1,
-        {
-          method: 'eth_sendTransaction',
-          params: [{ from: safe.safeAddress, to: toAddress, value: '0x01', gas: 1000 }],
-        } as any,
+        { method: 'eth_sendTransaction', params: [{ from: '0x123', to: '0x123', value: '0x123', gas: 1000 }] } as any,
         appInfo,
       )
 
       expect(sdk.send).toHaveBeenCalledWith(
-        {
-          txs: [{ from: safe.safeAddress, to: toAddress, value: '0x01', gas: 1000, data: '0x' }],
-          params: { safeTxGas: 1000 },
-        },
+        { txs: [{ from: '0x123', to: '0x123', value: '0x123', gas: 1000, data: '0x' }], params: { safeTxGas: 1000 } },
         appInfo,
       )
 
@@ -437,15 +426,10 @@ describe('SafeWalletProvider', () => {
       }
       const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
 
-      const toAddress = faker.finance.ethereumAddress()
-
       // Send the transaction
       await safeWalletProvider.request(
         1,
-        {
-          method: 'eth_sendTransaction',
-          params: [{ from: safe.safeAddress, to: toAddress, value: '0x01', gas: 1000 }],
-        } as any,
+        { method: 'eth_sendTransaction', params: [{ from: '0x123', to: '0x123', value: '0x123', gas: 1000 }] } as any,
         appInfo,
       )
 
@@ -461,15 +445,15 @@ describe('SafeWalletProvider', () => {
         result: {
           blockHash: null,
           blockNumber: null,
-          from: safe.safeAddress,
+          from: '0x123',
           gas: 0,
           gasPrice: '0x00',
           hash: '0x777',
           input: '0x',
           nonce: 0,
-          to: toAddress,
+          to: '0x123',
           transactionIndex: null,
-          value: '0x01',
+          value: '0x123',
         },
       })
     })
@@ -511,7 +495,7 @@ describe('SafeWalletProvider', () => {
   })
 
   describe('EIP-5792', () => {
-    describe('wallet_sendCalls', () => {
+    describe('wallet_sendFunctionCallBundle', () => {
       it('should send a bundle', async () => {
         const sdk = {
           send: jest.fn(),
@@ -521,16 +505,15 @@ describe('SafeWalletProvider', () => {
         const params = [
           {
             chainId: 1,
-            version: '1.0',
-            from: faker.finance.ethereumAddress(),
+            from: '0x1234',
             calls: [
-              { data: '0x123', to: faker.finance.ethereumAddress(), value: '0x123' },
-              { data: '0x456', to: faker.finance.ethereumAddress(), value: '0x1' },
+              { gas: 1000, data: '0x123', to: '0x123', value: '0x123' },
+              { gas: 1000, data: '0x456', to: '0x789', value: '0x1' },
             ],
           },
         ]
 
-        await safeWalletProvider.request(1, { method: 'wallet_sendCalls', params } as any, appInfo)
+        await safeWalletProvider.request(1, { method: 'wallet_sendFunctionCallBundle', params } as any, appInfo)
 
         expect(sdk.send).toHaveBeenCalledWith(
           {
@@ -546,188 +529,14 @@ describe('SafeWalletProvider', () => {
           },
         )
       })
-
-      it('test contract deployment calls and calls without data / value', async () => {
-        const fakeCreateCallLib = faker.finance.ethereumAddress()
-        const sdk = {
-          send: jest.fn(),
-          getCreateCallTransaction: jest.fn().mockImplementation((data: string) => {
-            return {
-              to: fakeCreateCallLib,
-              data,
-              value: '0',
-            }
-          }),
-        }
-        const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
-        const transferReceiver = faker.finance.ethereumAddress()
-        const erc20Address = faker.finance.ethereumAddress()
-        const erc20TransferData = ERC20__factory.createInterface().encodeFunctionData('transfer', [
-          transferReceiver,
-          '100',
-        ])
-        const nativeTransferTo = faker.finance.ethereumAddress()
-
-        const params = [
-          {
-            chainId: 1,
-            version: '1.0',
-            from: safe.safeAddress,
-            calls: [
-              { data: '0x1234' },
-              { data: '0x', to: nativeTransferTo, value: '0x1' },
-              {
-                to: erc20Address,
-                data: erc20TransferData,
-              },
-            ],
-          },
-        ]
-
-        await safeWalletProvider.request(1, { method: 'wallet_sendCalls', params } as any, appInfo)
-
-        expect(sdk.send).toHaveBeenCalledWith(
-          {
-            txs: [
-              {
-                to: fakeCreateCallLib,
-                data: '0x1234',
-                value: '0',
-              },
-              {
-                to: nativeTransferTo,
-                data: '0x',
-                value: '0x1',
-              },
-              {
-                to: erc20Address,
-                data: erc20TransferData,
-                value: '0',
-              },
-            ],
-            params: { safeTxGas: 0 },
-          },
-          {
-            description: 'test',
-            iconUrl: 'test',
-            id: 1,
-            name: 'test',
-            url: 'test',
-          },
-        )
-      })
     })
 
-    describe('wallet_getCallsStatus', () => {
-      it('should return a confirmed transaction if blockNumber/gasUsed are hex', async () => {
-        const receipt: Pick<TransactionReceipt, 'logs' | 'blockHash' | 'blockNumber' | 'gasUsed'> = {
-          logs: [],
-          blockHash: faker.string.hexadecimal(),
-          // Typed as number/bigint; is hex
-          blockNumber: faker.string.hexadecimal() as unknown as number,
-          gasUsed: faker.string.hexadecimal() as unknown as bigint,
-        }
-        const sdk = {
-          getBySafeTxHash: jest.fn().mockResolvedValue({
-            txStatus: 'SUCCESS',
-            txHash: '0x123',
-            txData: {
-              dataDecoded: {
-                parameters: [{ valueDecoded: [1] }],
-              },
-            },
-          }),
-          proxy: jest.fn().mockImplementation((method) => {
-            if (method === 'eth_getTransactionReceipt') {
-              return Promise.resolve(receipt)
-            }
-            return Promise.reject('Unknown method')
-          }),
-        }
-        const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
-
-        const params = ['0x123']
-
-        const status = await safeWalletProvider.request(1, { method: 'wallet_getCallsStatus', params } as any, appInfo)
-
-        expect(sdk.getBySafeTxHash).toHaveBeenCalledWith(params[0])
-        expect(sdk.proxy).toHaveBeenCalledWith('eth_getTransactionReceipt', params)
-        expect(status).toStrictEqual({
-          id: 1,
-          jsonrpc: '2.0',
-          result: {
-            receipts: [
-              {
-                blockHash: numberToHex(Number(receipt.blockHash)),
-                blockNumber: numberToHex(Number(receipt.blockNumber)),
-                chainId: '0x1',
-                gasUsed: numberToHex(Number(receipt.gasUsed)),
-                logs: receipt.logs,
-                status: '0x1',
-                transactionHash: '0x123',
-              },
-            ],
-            status: 'CONFIRMED',
-          },
-        })
-      })
-
-      it('should return a confirmed transaction if blockNumber/gasUsed are number/bigint', async () => {
-        const receipt: Pick<TransactionReceipt, 'logs' | 'blockHash' | 'blockNumber' | 'gasUsed'> = {
-          logs: [],
-          blockHash: faker.string.hexadecimal(),
-          blockNumber: faker.number.int(),
-          gasUsed: faker.number.bigInt(),
-        }
-        const sdk = {
-          getBySafeTxHash: jest.fn().mockResolvedValue({
-            txStatus: 'SUCCESS',
-            txHash: '0x123',
-            txData: {
-              dataDecoded: {
-                parameters: [{ valueDecoded: [1] }],
-              },
-            },
-          }),
-          proxy: jest.fn().mockImplementation((method) => {
-            if (method === 'eth_getTransactionReceipt') {
-              return Promise.resolve(receipt)
-            }
-            return Promise.reject('Unknown method')
-          }),
-        }
-        const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
-
-        const params = ['0x123']
-
-        const status = await safeWalletProvider.request(1, { method: 'wallet_getCallsStatus', params } as any, appInfo)
-
-        expect(sdk.getBySafeTxHash).toHaveBeenCalledWith(params[0])
-        expect(sdk.proxy).toHaveBeenCalledWith('eth_getTransactionReceipt', params)
-        expect(status).toStrictEqual({
-          id: 1,
-          jsonrpc: '2.0',
-          result: {
-            receipts: [
-              {
-                blockHash: receipt.blockHash,
-                blockNumber: numberToHex(receipt.blockNumber),
-                chainId: '0x1',
-                gasUsed: numberToHex(receipt.gasUsed),
-                logs: receipt.logs,
-                status: '0x1',
-                transactionHash: '0x123',
-              },
-            ],
-            status: 'CONFIRMED',
-          },
-        })
-      })
-
-      it('should return a pending status w/o txHash', async () => {
+    describe('wallet_getBundleStatus', () => {
+      it('should look up a tx by txHash', async () => {
         const sdk = {
           getBySafeTxHash: jest.fn().mockResolvedValue({
             txStatus: 'AWAITING_EXECUTION',
+            txHash: '0x123',
             txData: {
               dataDecoded: {
                 parameters: [{ valueDecoded: [1] }],
@@ -740,56 +549,36 @@ describe('SafeWalletProvider', () => {
 
         const params = ['0x123']
 
-        const status = await safeWalletProvider.request(1, { method: 'wallet_getCallsStatus', params } as any, appInfo)
+        await safeWalletProvider.request(1, { method: 'wallet_getBundleStatus', params } as any, appInfo)
 
         expect(sdk.getBySafeTxHash).toHaveBeenCalledWith(params[0])
-        expect(sdk.proxy).not.toHaveBeenCalled()
-        expect(status).toStrictEqual({
-          id: 1,
-          jsonrpc: '2.0',
-          result: {
-            status: 'PENDING',
-          },
-        })
+        expect(sdk.proxy).toHaveBeenCalledWith('eth_getTransactionReceipt', params)
       })
 
-      it('should return a pending status w/o receipt', async () => {
+      it('should return a pending status w/o txHash', async () => {
         const sdk = {
           getBySafeTxHash: jest.fn().mockResolvedValue({
-            txStatus: 'AWAITING_EXECUTION',
-            txHash: '0x123',
+            txStatus: 'AWAITING_CONFIRMATION',
             txData: {
               dataDecoded: {
                 parameters: [{ valueDecoded: [1] }],
               },
             },
           }),
-          proxy: jest.fn().mockImplementation((method) => {
-            if (method === 'eth_getTransactionReceipt') {
-              return Promise.resolve(null)
-            }
-            return Promise.reject('Unknown method')
-          }),
+          proxy: jest.fn(),
         }
         const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
 
         const params = ['0x123']
 
-        const status = await safeWalletProvider.request(1, { method: 'wallet_getCallsStatus', params } as any, appInfo)
+        await safeWalletProvider.request(1, { method: 'wallet_getBundleStatus', params } as any, appInfo)
 
         expect(sdk.getBySafeTxHash).toHaveBeenCalledWith(params[0])
-        expect(sdk.proxy).toHaveBeenCalledWith('eth_getTransactionReceipt', params)
-        expect(status).toStrictEqual({
-          id: 1,
-          jsonrpc: '2.0',
-          result: {
-            status: 'PENDING',
-          },
-        })
+        expect(sdk.proxy).not.toHaveBeenCalled()
       })
     })
 
-    describe('wallet_showCallsStatus', () => {
+    describe('wallet_showBundleStatus', () => {
       it('should return the bundle status', async () => {
         const sdk = {
           showTxStatus: jest.fn(),
@@ -798,51 +587,9 @@ describe('SafeWalletProvider', () => {
 
         const params = ['0x123']
 
-        await safeWalletProvider.request(1, { method: 'wallet_showCallsStatus', params } as any, appInfo)
+        await safeWalletProvider.request(1, { method: 'wallet_showBundleStatus', params } as any, appInfo)
 
         expect(sdk.showTxStatus).toHaveBeenCalledWith(params[0])
-      })
-    })
-
-    describe('wallet_getCapabilities', () => {
-      it('should return atomic batch for the current chain', async () => {
-        const sdk = {
-          showTxStatus: jest.fn(),
-        }
-        const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
-
-        const params = [safe.safeAddress]
-
-        const result = await safeWalletProvider.request(1, { method: 'wallet_getCapabilities', params } as any, appInfo)
-
-        expect(result).toEqual({
-          id: 1,
-          jsonrpc: '2.0',
-          result: {
-            ['0x1']: {
-              atomicBatch: {
-                supported: true,
-              },
-            },
-          },
-        })
-      })
-
-      it('should return an empty object if the safe address does not match', async () => {
-        const sdk = {
-          showTxStatus: jest.fn(),
-        }
-        const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
-
-        const params = [faker.finance.ethereumAddress()]
-
-        const result = await safeWalletProvider.request(1, { method: 'wallet_getCapabilities', params } as any, appInfo)
-
-        expect(result).toEqual({
-          id: 1,
-          jsonrpc: '2.0',
-          result: {},
-        })
       })
     })
   })

@@ -11,19 +11,19 @@ import CloseIcon from '@mui/icons-material/Close'
 import useWallet from '@/hooks/wallets/useWallet'
 import SafeLogo from '@/public/images/logo-no-text.svg'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import { useIsWalletProposer } from '@/hooks/useProposers'
 
 const TxStatusWidget = ({
   step,
   txSummary,
   handleClose,
+  isReplacement = false,
   isBatch = false,
   isMessage = false,
 }: {
   step: number
   txSummary?: TransactionSummary
   handleClose: () => void
+  isReplacement?: boolean
   isBatch?: boolean
   isMessage?: boolean
 }) => {
@@ -31,18 +31,12 @@ const TxStatusWidget = ({
   const { safe } = useSafeInfo()
   const { nonceNeeded } = useContext(SafeTxContext)
   const { threshold } = safe
-  const isSafeOwner = useIsSafeOwner()
-  const isProposer = useIsWalletProposer()
-  const isProposing = isProposer && !isSafeOwner
 
   const { executionInfo = undefined } = txSummary || {}
   const { confirmationsSubmitted = 0 } = isMultisigExecutionInfo(executionInfo) ? executionInfo : {}
 
-  const canConfirm = txSummary
-    ? isConfirmableBy(txSummary, wallet?.address || '')
-    : safe.threshold === 1 && !isProposing
-
-  const canSign = txSummary ? isSignableBy(txSummary, wallet?.address || '') : !isProposing
+  const canConfirm = txSummary ? isConfirmableBy(txSummary, wallet?.address || '') : safe.threshold === 1
+  const canSign = txSummary ? isSignableBy(txSummary, wallet?.address || '') : true
 
   return (
     <Paper>
@@ -67,7 +61,7 @@ const TxStatusWidget = ({
             </ListItemIcon>
 
             <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
-              {isBatch ? 'Queue transactions' : 'Create'}
+              {isReplacement ? 'Create replacement transaction' : isBatch ? 'Queue transactions' : 'Create'}
             </ListItemText>
           </ListItem>
 
@@ -103,6 +97,16 @@ const TxStatusWidget = ({
 
             <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>{isMessage ? 'Done' : 'Execute'}</ListItemText>
           </ListItem>
+
+          {isReplacement && (
+            <ListItem className={css.incomplete}>
+              <ListItemIcon>
+                <SignedIcon />
+              </ListItemIcon>
+
+              <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>Transaction is replaced</ListItemText>
+            </ListItem>
+          )}
         </List>
       </div>
     </Paper>

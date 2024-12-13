@@ -12,15 +12,13 @@ import classNames from 'classnames'
 import { trackEvent, TX_LIST_EVENTS } from '@/services/analytics'
 
 type ExpandableTransactionItemProps = {
-  isConflictGroup?: boolean
-  isBulkGroup?: boolean
+  isGrouped?: boolean
   item: Transaction
   txDetails?: TransactionDetails
 }
 
 export const ExpandableTransactionItem = ({
-  isConflictGroup = false,
-  isBulkGroup = false,
+  isGrouped = false,
   item,
   txDetails,
   testId,
@@ -58,7 +56,7 @@ export const ExpandableTransactionItem = ({
           },
         }}
       >
-        <TxSummary item={item} isConflictGroup={isConflictGroup} isBulkGroup={isBulkGroup} />
+        <TxSummary item={item} isGrouped={isGrouped} />
       </AccordionSummary>
 
       <AccordionDetails data-testid="accordion-details" sx={{ padding: 0 }}>

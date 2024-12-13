@@ -17,7 +17,6 @@ declare module '@mui/material/styles' {
     backdrop: Palette['primary']
     static: Palette['primary']
   }
-
   export interface PaletteOptions {
     border: PaletteOptions['primary']
     logo: PaletteOptions['primary']
@@ -34,7 +33,6 @@ declare module '@mui/material/styles' {
   export interface PaletteColor {
     background?: string
   }
-
   export interface SimplePaletteColorOptions {
     background?: string
   }
@@ -49,21 +47,13 @@ declare module '@mui/material/SvgIcon' {
 declare module '@mui/material/Button' {
   export interface ButtonPropsSizeOverrides {
     stretched: true
-    compact: true
   }
 
   export interface ButtonPropsColorOverrides {
     background: true
   }
-
   export interface ButtonPropsVariantOverrides {
     danger: true
-  }
-}
-
-declare module '@mui/material/IconButton' {
-  export interface IconButtonPropsColorOverrides {
-    border: true
   }
 }
 
@@ -101,12 +91,6 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
       },
       MuiButton: {
         variants: [
-          {
-            props: { size: 'compact' },
-            style: {
-              padding: '8px 12px',
-            },
-          },
           {
             props: { size: 'stretched' },
             style: {
@@ -289,14 +273,6 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
           },
         },
       },
-      MuiChip: {
-        styleOverrides: {
-          colorSuccess: ({ theme }) => ({
-            backgroundColor: theme.palette.secondary.light,
-            height: '24px',
-          }),
-        },
-      },
       MuiAlert: {
         styleOverrides: {
           standardError: ({ theme }) => ({
@@ -306,6 +282,7 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
             '&.MuiPaper-root': {
               backgroundColor: theme.palette.error.background,
             },
+            border: `1px solid ${theme.palette.error.main}`,
           }),
           standardInfo: ({ theme }) => ({
             '& .MuiAlert-icon': {
@@ -314,6 +291,7 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
             '&.MuiPaper-root': {
               backgroundColor: theme.palette.info.background,
             },
+            border: `1px solid ${theme.palette.info.main}`,
           }),
           standardSuccess: ({ theme }) => ({
             '& .MuiAlert-icon': {
@@ -322,6 +300,7 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
             '&.MuiPaper-root': {
               backgroundColor: theme.palette.success.background,
             },
+            border: `1px solid ${theme.palette.success.main}`,
           }),
           standardWarning: ({ theme }) => ({
             '& .MuiAlert-icon': {
@@ -330,6 +309,7 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
             '&.MuiPaper-root': {
               backgroundColor: theme.palette.warning.background,
             },
+            border: `1px solid ${theme.palette.warning.main}`,
           }),
           root: ({ theme }) => ({
             color: theme.palette.text.primary,

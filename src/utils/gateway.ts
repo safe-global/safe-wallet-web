@@ -1,5 +1,6 @@
 import type { JsonRpcSigner } from 'ethers'
 import { type ChainInfo, deleteTransaction } from '@safe-global/safe-gateway-typescript-sdk'
+import { WC_APP_PROD, WC_APP_DEV } from '@/config/constants'
 import { signTypedData } from './web3'
 
 export const _replaceTemplate = (uri: string, data: Record<string, string>): string => {
@@ -27,6 +28,10 @@ export const getExplorerLink = (
   const title = `View on ${new URL(href).hostname}`
 
   return { href, title }
+}
+
+export const isWalletConnectSafeApp = (url: string): boolean => {
+  return url === WC_APP_PROD.url || url === WC_APP_DEV.url
 }
 
 const signTxServiceMessage = async (

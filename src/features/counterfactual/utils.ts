@@ -1,57 +1,46 @@
-import { getLatestSafeVersion } from '@/utils/chains'
-import { POLLING_INTERVAL } from '@/config/constants'
-import type { PayMethod } from '@/features/counterfactual/PayNowPayLater'
+import type { NewSafeFormData } from '@/components/new-safe/create'
+import { CREATION_MODAL_QUERY_PARM } from '@/components/new-safe/create/logic'
+import { LATEST_SAFE_VERSION, POLLING_INTERVAL } from '@/config/constants'
+import { AppRoutes } from '@/config/routes'
 import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
-import {
-  addUndeployedSafe,
-  type UndeployedSafeProps,
-  type ReplayedSafeProps,
-  type UndeployedSafe,
-  PendingSafeStatus,
-} from '@/features/counterfactual/store/undeployedSafesSlice'
+import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { createWeb3, getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
 import ExternalStore from '@/services/ExternalStore'
-import { getSafeSDKWithSigner, getUncheckedSigner, tryOffChainTxSigning } from '@/services/tx/tx-sender/sdk'
+import { assertWalletChain, getUncheckedSafeSDK, tryOffChainTxSigning } from '@/services/tx/tx-sender/sdk'
 import { getRelayTxStatus, TaskState } from '@/services/tx/txMonitor'
 import type { AppDispatch } from '@/store'
+import { addOrUpdateSafe } from '@/store/addedSafesSlice'
+import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import { didRevert, type EthersError } from '@/utils/ethers-utils'
-import { assertProvider, assertTx, assertWallet } from '@/utils/helpers'
-import { type DeploySafeProps, type PredictedSafeProps } from '@safe-global/protocol-kit'
+import { assertOnboard, assertTx, assertWallet } from '@/utils/helpers'
+import type { DeploySafeProps, PredictedSafeProps } from '@safe-global/protocol-kit'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import type { SafeTransaction, SafeVersion, TransactionOptions } from '@safe-global/safe-core-sdk-types'
 import {
   type ChainInfo,
   ImplementationVersionState,
   type SafeBalanceResponse,
+  type SafeInfo,
   TokenType,
 } from '@safe-global/safe-gateway-typescript-sdk'
-import type { BrowserProvider, ContractTransactionResponse, Eip1193Provider, Provider } from 'ethers'
-import { getSafeL2SingletonDeployments, getSafeSingletonDeployments } from '@safe-global/safe-deployments'
-import { sameAddress } from '@/utils/addresses'
+import type { OnboardAPI } from '@web3-onboard/core'
+import type { BrowserProvider, ContractTransactionResponse, Provider } from 'ethers'
+import type { NextRouter } from 'next/router'
 
-import { encodeSafeCreationTx } from '@/components/new-safe/create/logic'
-
-export const getUndeployedSafeInfo = (undeployedSafe: UndeployedSafe, address: string, chain: ChainInfo) => {
-  const safeSetup = extractCounterfactualSafeSetup(undeployedSafe, chain.chainId)
-
-  if (!safeSetup) {
-    throw Error('Could not determine Safe Setup.')
-  }
-  const latestSafeVersion = getLatestSafeVersion(chain)
-
+export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, address: string, chainId: string) => {
   return {
     ...defaultSafeInfo,
     address: { value: address },
-    chainId: chain.chainId,
-    owners: safeSetup.owners.map((owner) => ({ value: owner })),
+    chainId,
+    owners: undeployedSafe.safeAccountConfig.owners.map((owner) => ({ value: owner })),
     nonce: 0,
-    threshold: safeSetup.threshold,
+    threshold: undeployedSafe.safeAccountConfig.threshold,
     implementationVersionState: ImplementationVersionState.UP_TO_DATE,
-    fallbackHandler: { value: safeSetup.fallbackHandler! },
-    version: safeSetup?.safeVersion || latestSafeVersion,
+    fallbackHandler: { value: undeployedSafe.safeAccountConfig.fallbackHandler! },
+    version: undeployedSafe.safeDeploymentConfig?.safeVersion || LATEST_SAFE_VERSION,
     deployed: false,
   }
 }
@@ -61,18 +50,21 @@ export const CF_TX_GROUP_KEY = 'cf-tx'
 export const dispatchTxExecutionAndDeploySafe = async (
   safeTx: SafeTransaction,
   txOptions: TransactionOptions,
-  provider: Eip1193Provider,
-  safeAddress: string,
+  onboard: OnboardAPI,
+  chainId: SafeInfo['chainId'],
 ) => {
-  const sdk = await getSafeSDKWithSigner(provider)
+  const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
   const eventParams = { groupKey: CF_TX_GROUP_KEY }
 
   let result: ContractTransactionResponse | undefined
   try {
-    const signedTx = await tryOffChainTxSigning(safeTx, await sdk.getContractVersion(), sdk)
-    const signer = await getUncheckedSigner(provider)
+    const signedTx = await tryOffChainTxSigning(safeTx, await sdkUnchecked.getContractVersion(), sdkUnchecked)
 
-    const deploymentTx = await sdk.wrapSafeTransactionIntoDeploymentBatch(signedTx, txOptions)
+    const wallet = await assertWalletChain(onboard, chainId)
+    const provider = createWeb3(wallet.provider)
+    const signer = await provider.getSigner()
+
+    const deploymentTx = await sdkUnchecked.wrapSafeTransactionIntoDeploymentBatch(signedTx, txOptions)
 
     // We need to estimate the actual gasLimit after the user has signed since it is more accurate than what useDeployGasLimit returns
     const gas = await signer.estimateGas({ data: deploymentTx.data, value: deploymentTx.value, to: deploymentTx.to })
@@ -80,27 +72,27 @@ export const dispatchTxExecutionAndDeploySafe = async (
     // @ts-ignore TODO: Check why TransactionResponse type doesn't work
     result = await signer.sendTransaction({ ...deploymentTx, gasLimit: gas })
   } catch (error) {
-    safeCreationDispatch(SafeCreationEvent.FAILED, { ...eventParams, error: asError(error), safeAddress })
+    safeCreationDispatch(SafeCreationEvent.FAILED, { ...eventParams, error: asError(error) })
     throw error
   }
 
-  safeCreationDispatch(SafeCreationEvent.PROCESSING, { ...eventParams, txHash: result!.hash, safeAddress })
+  safeCreationDispatch(SafeCreationEvent.PROCESSING, { ...eventParams, txHash: result!.hash })
 
   return result!.hash
 }
 
 export const deploySafeAndExecuteTx = async (
   txOptions: TransactionOptions,
+  chainId: string,
   wallet: ConnectedWallet | null,
-  safeAddress: string,
   safeTx?: SafeTransaction,
-  provider?: Eip1193Provider,
+  onboard?: OnboardAPI,
 ) => {
   assertTx(safeTx)
   assertWallet(wallet)
-  assertProvider(provider)
+  assertOnboard(onboard)
 
-  return dispatchTxExecutionAndDeploySafe(safeTx, txOptions, provider, safeAddress)
+  return dispatchTxExecutionAndDeploySafe(safeTx, txOptions, onboard, chainId)
 }
 
 export const { getStore: getNativeBalance, setStore: setNativeBalance } = new ExternalStore<bigint>(0n)
@@ -143,36 +135,47 @@ export const getCounterfactualBalance = async (
   }
 }
 
-export const replayCounterfactualSafeDeployment = (
-  chainId: string,
+export const createCounterfactualSafe = (
+  chain: ChainInfo,
   safeAddress: string,
-  replayedSafeProps: ReplayedSafeProps,
-  name: string,
+  saltNonce: string,
+  data: NewSafeFormData,
   dispatch: AppDispatch,
-  payMethod: PayMethod,
+  props: DeploySafeProps,
+  router: NextRouter,
 ) => {
   const undeployedSafe = {
-    chainId,
+    chainId: chain.chainId,
     address: safeAddress,
-    type: payMethod,
-    safeProps: replayedSafeProps,
-  }
-
-  const setup = extractCounterfactualSafeSetup(
-    {
-      props: replayedSafeProps,
-      status: {
-        status: PendingSafeStatus.AWAITING_EXECUTION,
-        type: payMethod,
+    safeProps: {
+      safeAccountConfig: props.safeAccountConfig,
+      safeDeploymentConfig: {
+        saltNonce,
+        safeVersion: LATEST_SAFE_VERSION as SafeVersion,
       },
     },
-    chainId,
-  )
-  if (!setup) {
-    throw Error('Safe Setup could not be decoded')
   }
 
   dispatch(addUndeployedSafe(undeployedSafe))
+  dispatch(upsertAddressBookEntry({ chainId: chain.chainId, address: safeAddress, name: data.name }))
+  dispatch(
+    addOrUpdateSafe({
+      safe: {
+        ...defaultSafeInfo,
+        address: { value: safeAddress, name: data.name },
+        threshold: data.threshold,
+        owners: data.owners.map((owner) => ({
+          value: owner.address,
+          name: owner.name || owner.ens,
+        })),
+        chainId: chain.chainId,
+      },
+    }),
+  )
+  return router.push({
+    pathname: AppRoutes.home,
+    query: { safe: `${chain.shortName}:${safeAddress}`, [CREATION_MODAL_QUERY_PARM]: true },
+  })
 }
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -185,7 +188,7 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
  * @param txHash
  * @param maxAttempts
  */
-async function retryGetTransaction(provider: Provider, txHash: string, maxAttempts = 8) {
+async function retryGetTransaction(provider: Provider, txHash: string, maxAttempts = 6) {
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const txResponse = await provider.getTransaction(txHash)
     if (txResponse !== null) {
@@ -199,19 +202,20 @@ async function retryGetTransaction(provider: Provider, txHash: string, maxAttemp
   throw new Error('Transaction not found')
 }
 
+// TODO: Reuse this for safe creation flow instead of checkSafeCreationTx
 export const checkSafeActivation = async (
   provider: Provider,
   txHash: string,
   safeAddress: string,
-  type: PayMethod,
-  chainId: string,
   startBlock?: number,
 ) => {
+  const TIMEOUT_TIME = 2 * 60 * 1000 // 2 minutes
+
   try {
     const txResponse = await retryGetTransaction(provider, txHash)
 
     const replaceableTx = startBlock ? txResponse.replaceableTransaction(startBlock) : txResponse
-    const receipt = await replaceableTx?.wait(1)
+    const receipt = await replaceableTx?.wait(1, TIMEOUT_TIME)
 
     /** The receipt should always be non-null as we require 1 confirmation */
     if (receipt === null) {
@@ -222,15 +226,12 @@ export const checkSafeActivation = async (
       safeCreationDispatch(SafeCreationEvent.REVERTED, {
         groupKey: CF_TX_GROUP_KEY,
         error: new Error('Transaction reverted'),
-        safeAddress,
       })
     }
 
     safeCreationDispatch(SafeCreationEvent.SUCCESS, {
       groupKey: CF_TX_GROUP_KEY,
       safeAddress,
-      type,
-      chainId,
     })
   } catch (err) {
     const _err = err as EthersError
@@ -239,17 +240,6 @@ export const checkSafeActivation = async (
       safeCreationDispatch(SafeCreationEvent.SUCCESS, {
         groupKey: CF_TX_GROUP_KEY,
         safeAddress,
-        type,
-        chainId,
-      })
-      return
-    }
-
-    if (didRevert(_err.receipt)) {
-      safeCreationDispatch(SafeCreationEvent.REVERTED, {
-        groupKey: CF_TX_GROUP_KEY,
-        error: new Error('Transaction reverted'),
-        safeAddress,
       })
       return
     }
@@ -257,12 +247,12 @@ export const checkSafeActivation = async (
     safeCreationDispatch(SafeCreationEvent.FAILED, {
       groupKey: CF_TX_GROUP_KEY,
       error: _err,
-      safeAddress,
     })
   }
 }
 
-export const checkSafeActionViaRelay = (taskId: string, safeAddress: string, type: PayMethod, chainId: string) => {
+// TODO: Reuse this for safe creation flow instead of waitForCreateSafeTx
+export const checkSafeActionViaRelay = (taskId: string, safeAddress: string) => {
   const TIMEOUT_TIME = 2 * 60 * 1000 // 2 minutes
 
   let intervalId: NodeJS.Timeout
@@ -279,8 +269,6 @@ export const checkSafeActionViaRelay = (taskId: string, safeAddress: string, typ
         safeCreationDispatch(SafeCreationEvent.SUCCESS, {
           groupKey: CF_TX_GROUP_KEY,
           safeAddress,
-          type,
-          chainId,
         })
         break
       case TaskState.ExecReverted:
@@ -290,7 +278,6 @@ export const checkSafeActionViaRelay = (taskId: string, safeAddress: string, typ
         safeCreationDispatch(SafeCreationEvent.FAILED, {
           groupKey: CF_TX_GROUP_KEY,
           error: new Error('Transaction failed'),
-          safeAddress,
         })
         break
       default:
@@ -306,85 +293,8 @@ export const checkSafeActionViaRelay = (taskId: string, safeAddress: string, typ
     safeCreationDispatch(SafeCreationEvent.FAILED, {
       groupKey: CF_TX_GROUP_KEY,
       error: new Error('Transaction failed'),
-      safeAddress,
     })
 
     clearInterval(intervalId)
   }, TIMEOUT_TIME)
-}
-
-export const isReplayedSafeProps = (props: UndeployedSafeProps): props is ReplayedSafeProps =>
-  'safeAccountConfig' in props && 'masterCopy' in props && 'factoryAddress' in props && 'saltNonce' in props
-
-export const isPredictedSafeProps = (props: UndeployedSafeProps): props is PredictedSafeProps =>
-  'safeAccountConfig' in props && !('masterCopy' in props)
-
-export const determineMasterCopyVersion = (masterCopy: string, chainId: string): SafeVersion | undefined => {
-  const SAFE_VERSIONS: SafeVersion[] = ['1.4.1', '1.3.0', '1.2.0', '1.1.1', '1.0.0']
-  return SAFE_VERSIONS.find((version) => {
-    const isL1Singleton = () => {
-      const deployments = getSafeSingletonDeployments({ version })?.networkAddresses[chainId]
-
-      if (Array.isArray(deployments)) {
-        return deployments.some((deployment) => sameAddress(masterCopy, deployment))
-      }
-      return sameAddress(masterCopy, deployments)
-    }
-
-    const isL2Singleton = () => {
-      const deployments = getSafeL2SingletonDeployments({ version })?.networkAddresses[chainId]
-
-      if (Array.isArray(deployments)) {
-        return deployments.some((deployment) => sameAddress(masterCopy, deployment))
-      }
-      return sameAddress(masterCopy, deployments)
-    }
-
-    return isL1Singleton() || isL2Singleton()
-  })
-}
-
-export const extractCounterfactualSafeSetup = (
-  undeployedSafe: UndeployedSafe | undefined,
-  chainId: string | undefined,
-):
-  | {
-      owners: string[]
-      threshold: number
-      fallbackHandler: string | undefined
-      safeVersion: SafeVersion | undefined
-      saltNonce: string | undefined
-    }
-  | undefined => {
-  if (!undeployedSafe || !chainId || !undeployedSafe.props.safeAccountConfig) {
-    return undefined
-  }
-  const { owners, threshold, fallbackHandler } = undeployedSafe.props.safeAccountConfig
-  const { safeVersion, saltNonce } = isPredictedSafeProps(undeployedSafe.props)
-    ? undeployedSafe.props.safeDeploymentConfig ?? {}
-    : undeployedSafe.props
-
-  return {
-    owners,
-    threshold: Number(threshold),
-    fallbackHandler,
-    safeVersion,
-    saltNonce,
-  }
-}
-
-export const activateReplayedSafe = async (
-  chain: ChainInfo,
-  props: ReplayedSafeProps,
-  provider: BrowserProvider,
-  options: DeploySafeProps['options'],
-) => {
-  const data = encodeSafeCreationTx(props, chain)
-
-  return (await provider.getSigner()).sendTransaction({
-    ...options,
-    to: props.factoryAddress,
-    data,
-    value: '0',
-  })
 }

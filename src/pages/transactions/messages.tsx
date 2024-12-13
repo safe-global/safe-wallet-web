@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import Head from 'next/head'
-import { FEATURES } from '@/utils/chains'
+import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import { useRouter } from 'next/router'
 import type { NextPage } from 'next'
 
@@ -26,7 +26,7 @@ const Messages: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Messages'}</title>
+        <title>{'Bitlayer Safe – Messages'}</title>
       </Head>
 
       <TxHeader>

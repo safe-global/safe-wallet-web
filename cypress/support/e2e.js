@@ -17,8 +17,6 @@
 import '@testing-library/cypress/add-commands'
 import './commands'
 import './safe-apps-commands'
-import * as constants from './constants'
-import * as ls from './localstorage_data'
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
@@ -27,16 +25,7 @@ import * as ls from './localstorage_data'
   However, in cypress the cookie banner state is evaluated after the banner has been dismissed not before
   which displays the terms banner even though it shouldn't so we need to globally hide it in our tests.
  */
-const { addCompareSnapshotCommand } = require('cypress-visual-regression/dist/command')
-addCompareSnapshotCommand()
-
-const beamer = JSON.parse(Cypress.env('BEAMER_DATA_E2E') || '{}')
-const productID = beamer.PRODUCT_ID
-
 before(() => {
-  Cypress.on('uncaught:exception', (err, runnable) => {
-    return false
-  })
   cy.on('log:added', (ev) => {
     if (Cypress.config('hideXHR')) {
       const app = window.top
@@ -47,31 +36,5 @@ before(() => {
         app.document.head.appendChild(style)
       }
     }
-    const originalConsoleLog = console.log
-    console.log = (...args) => {
-      if (typeof args[0] === 'string' && !args[0].includes('Intercepted request with headers')) {
-        originalConsoleLog(...args)
-      }
-    }
-  })
-})
-
-beforeEach(() => {
-  cy.setupInterceptors()
-  cy.clearAllSessionStorage()
-  cy.clearLocalStorage()
-  cy.clearCookies()
-  cy.window().then((window) => {
-    const getDate = () => new Date().toISOString()
-    const beamerKey1 = `_BEAMER_FIRST_VISIT_${productID}`
-    const beamerKey2 = `_BEAMER_BOOSTED_ANNOUNCEMENT_DATE_${productID}`
-    const cookiesKey = 'SAFE_v2__cookies_terms'
-    window.localStorage.setItem(beamerKey1, getDate())
-    window.localStorage.setItem(beamerKey2, getDate())
-    window.localStorage.setItem(cookiesKey, ls.cookies.acceptedCookies)
-    window.localStorage.setItem(
-      constants.localStorageKeys.SAFE_v2__SafeApps__infoModal,
-      ls.appPermissions(constants.safeTestAppurl).infoModalAccepted,
-    )
   })
 })

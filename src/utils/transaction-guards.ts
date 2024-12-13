@@ -1,6 +1,5 @@
 import type {
   AddressEx,
-  BaselineConfirmationView,
   Cancellation,
   ConflictHeader,
   Creation,
@@ -17,52 +16,29 @@ import type {
   MultisigExecutionDetails,
   MultisigExecutionInfo,
   NativeCoinTransfer,
-  NativeStakingDepositConfirmationView,
-  Order,
-  AnyConfirmationView,
-  AnySwapOrderConfirmationView,
   SafeInfo,
   SettingsChange,
-  SwapOrder,
-  SwapOrderConfirmationView,
   Transaction,
   TransactionInfo,
   TransactionListItem,
   TransactionSummary,
   Transfer,
   TransferInfo,
-  TwapOrder,
-  TwapOrderConfirmationView,
-  AnyStakingConfirmationView,
-  StakingTxExitInfo,
-  StakingTxDepositInfo,
-  StakingTxWithdrawInfo,
-  NativeStakingWithdrawConfirmationView,
-  NativeStakingValidatorsExitConfirmationView,
-  StakingTxInfo,
-  TransactionData,
 } from '@safe-global/safe-gateway-typescript-sdk'
+import { TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
 import {
-  ConfirmationViewTypes,
   ConflictType,
   DetailedExecutionInfoType,
   TransactionInfoType,
   TransactionListItemType,
   TransactionStatus,
   TransactionTokenType,
-  TransferDirection,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import { sameAddress } from '@/utils/addresses'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 import { ethers } from 'ethers'
-import { getSafeToL2MigrationDeployment, getMultiSendDeployments } from '@safe-global/safe-deployments'
-import { Safe__factory, Safe_to_l2_migration__factory } from '@/types/contracts'
-import { hasMatchingDeployment } from '@/services/contracts/deployments'
-import { isMultiSendCalldata } from './transaction-calldata'
-import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
-import { OperationType } from '@safe-global/safe-core-sdk-types'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
@@ -91,63 +67,9 @@ export const isModuleDetailedExecutionInfo = (value?: DetailedExecutionInfo): va
   return value?.type === DetailedExecutionInfoType.MODULE
 }
 
-const isMigrateToL2CallData = (value: {
-  to: string
-  data: string | undefined
-  operation?: OperationType | undefined
-}) => {
-  const safeToL2MigrationDeployment = getSafeToL2MigrationDeployment()
-  const safeToL2MigrationAddress = safeToL2MigrationDeployment?.defaultAddress
-  const safeToL2MigrationInterface = Safe_to_l2_migration__factory.createInterface()
-
-  if (value.operation === OperationType.DelegateCall && sameAddress(value.to, safeToL2MigrationAddress)) {
-    const migrateToL2Selector = safeToL2MigrationInterface?.getFunction('migrateToL2')?.selector
-    return migrateToL2Selector && value.data ? value.data.startsWith(migrateToL2Selector) : false
-  }
-  return false
-}
-
-export const isMigrateToL2TxData = (value: TransactionData | undefined, chainId: string | undefined): boolean => {
-  if (!value) {
-    return false
-  }
-
-  if (
-    chainId &&
-    value?.hexData &&
-    isMultiSendCalldata(value?.hexData) &&
-    hasMatchingDeployment(getMultiSendDeployments, value.to.value, chainId, ['1.3.0', '1.4.1'])
-  ) {
-    // Its a multiSend to the MultiSend contract (not CallOnly)
-    const decodedMultiSend = decodeMultiSendData(value.hexData)
-    const firstTx = decodedMultiSend[0]
-
-    // We only trust the tx if the first tx is the only delegateCall
-    const hasMoreDelegateCalls = decodedMultiSend
-      .slice(1)
-      .some((value) => value.operation === OperationType.DelegateCall)
-
-    if (!hasMoreDelegateCalls && firstTx && isMigrateToL2CallData(firstTx)) {
-      return true
-    }
-  }
-
-  return isMigrateToL2CallData({ to: value.to.value, data: value.hexData, operation: value.operation as 0 | 1 })
-}
-
 // TransactionInfo type guards
 export const isTransferTxInfo = (value: TransactionInfo): value is Transfer => {
-  return value.type === TransactionInfoType.TRANSFER || isSwapTransferOrderTxInfo(value)
-}
-
-/**
- * A fulfillment transaction for swap, limit or twap order is always a SwapOrder
- * It cannot be a TWAP order
- *
- * @param value
- */
-export const isSwapTransferOrderTxInfo = (value: TransactionInfo): value is SwapOrder => {
-  return value.type === TransactionInfoType.SWAP_TRANSFER
+  return value.type === TransactionInfoType.TRANSFER
 }
 
 export const isSettingsChangeTxInfo = (value: TransactionInfo): value is SettingsChange => {
@@ -164,121 +86,6 @@ export const isMultiSendTxInfo = (value: TransactionInfo): value is MultiSend =>
     value.methodName === 'multiSend' &&
     typeof value.actionCount === 'number'
   )
-}
-
-export const isOrderTxInfo = (value: TransactionInfo): value is Order => {
-  return isSwapOrderTxInfo(value) || isTwapOrderTxInfo(value)
-}
-
-export const isMigrateToL2TxInfo = (value: TransactionInfo): value is Custom => {
-  const safeToL2MigrationDeployment = getSafeToL2MigrationDeployment()
-  const safeToL2MigrationAddress = safeToL2MigrationDeployment?.defaultAddress
-
-  return isCustomTxInfo(value) && sameAddress(value.to.value, safeToL2MigrationAddress)
-}
-
-export const isSwapOrderTxInfo = (value: TransactionInfo): value is SwapOrder => {
-  return value.type === TransactionInfoType.SWAP_ORDER
-}
-
-export const isTwapOrderTxInfo = (value: TransactionInfo): value is TwapOrder => {
-  return value.type === TransactionInfoType.TWAP_ORDER
-}
-
-export const isStakingTxDepositInfo = (value: TransactionInfo): value is StakingTxDepositInfo => {
-  return value.type === TransactionInfoType.NATIVE_STAKING_DEPOSIT
-}
-
-export const isStakingTxExitInfo = (value: TransactionInfo): value is StakingTxExitInfo => {
-  return value.type === TransactionInfoType.NATIVE_STAKING_VALIDATORS_EXIT
-}
-
-export const isStakingTxWithdrawInfo = (value: TransactionInfo): value is StakingTxWithdrawInfo => {
-  return value.type === TransactionInfoType.NATIVE_STAKING_WITHDRAW
-}
-
-export const isAnyStakingTxInfo = (value: TransactionInfo): value is StakingTxInfo => {
-  return isStakingTxDepositInfo(value) || isStakingTxExitInfo(value) || isStakingTxWithdrawInfo(value)
-}
-
-export const isTwapConfirmationViewOrder = (
-  decodedData: AnyConfirmationView | undefined,
-): decodedData is TwapOrderConfirmationView => {
-  if (decodedData && 'type' in decodedData) {
-    return decodedData.type === ConfirmationViewTypes.COW_SWAP_TWAP_ORDER
-  }
-
-  return false
-}
-
-export const isSwapConfirmationViewOrder = (
-  decodedData: AnyConfirmationView | undefined,
-): decodedData is SwapOrderConfirmationView => {
-  if (decodedData && 'type' in decodedData) {
-    return decodedData.type === ConfirmationViewTypes.COW_SWAP_ORDER
-  }
-
-  return false
-}
-
-export const isAnySwapConfirmationViewOrder = (
-  decodedData: AnyConfirmationView | undefined,
-): decodedData is AnySwapOrderConfirmationView => {
-  return isSwapConfirmationViewOrder(decodedData) || isTwapConfirmationViewOrder(decodedData)
-}
-
-export const isStakingDepositConfirmationView = (
-  decodedData: AnyConfirmationView | undefined,
-): decodedData is NativeStakingDepositConfirmationView => {
-  if (decodedData && 'type' in decodedData) {
-    return decodedData?.type === ConfirmationViewTypes.KILN_NATIVE_STAKING_DEPOSIT
-  }
-  return false
-}
-
-export const isStakingExitConfirmationView = (
-  decodedData: AnyConfirmationView | undefined,
-): decodedData is NativeStakingValidatorsExitConfirmationView => {
-  if (decodedData && 'type' in decodedData) {
-    return decodedData?.type === ConfirmationViewTypes.KILN_NATIVE_STAKING_VALIDATORS_EXIT
-  }
-  return false
-}
-
-export const isStakingWithdrawConfirmationView = (
-  decodedData: AnyConfirmationView | undefined,
-): decodedData is NativeStakingWithdrawConfirmationView => {
-  if (decodedData && 'type' in decodedData) {
-    return decodedData?.type === ConfirmationViewTypes.KILN_NATIVE_STAKING_WITHDRAW
-  }
-  return false
-}
-
-export const isAnyStakingConfirmationView = (
-  decodedData: AnyConfirmationView | undefined,
-): decodedData is AnyStakingConfirmationView => {
-  return (
-    isStakingDepositConfirmationView(decodedData) ||
-    isStakingExitConfirmationView(decodedData) ||
-    isStakingWithdrawConfirmationView(decodedData)
-  )
-}
-
-export const isGenericConfirmation = (
-  decodedData: AnyConfirmationView | undefined,
-): decodedData is BaselineConfirmationView => {
-  if (decodedData && 'type' in decodedData) {
-    return decodedData.type === ConfirmationViewTypes.GENERIC
-  }
-  return false
-}
-
-export const isCancelledSwapOrder = (value: TransactionInfo) => {
-  return isSwapOrderTxInfo(value) && value.status === 'cancelled'
-}
-
-export const isOpenSwapOrder = (value: TransactionInfo) => {
-  return isSwapOrderTxInfo(value) && value.status === 'open'
 }
 
 export const isCancellationTxInfo = (value: TransactionInfo): value is Cancellation => {
@@ -320,15 +127,11 @@ export function isRecoveryQueueItem(value: TransactionListItem | RecoveryQueueIt
 }
 
 // Narrows `Transaction`
-// TODO: Consolidate these types with the new sdk
-export const isMultisigExecutionInfo = (
-  value?: ExecutionInfo | DetailedExecutionInfo,
-): value is MultisigExecutionInfo => {
-  return value?.type === 'MULTISIG'
-}
+export const isMultisigExecutionInfo = (value?: ExecutionInfo): value is MultisigExecutionInfo =>
+  value?.type === DetailedExecutionInfoType.MULTISIG
 
-export const isModuleExecutionInfo = (value?: ExecutionInfo | DetailedExecutionInfo): value is ModuleExecutionInfo =>
-  value?.type === 'MODULE'
+export const isModuleExecutionInfo = (value?: ExecutionInfo): value is ModuleExecutionInfo =>
+  value?.type === DetailedExecutionInfoType.MODULE
 
 export const isSignableBy = (txSummary: TransactionSummary, walletAddress: string): boolean => {
   const executionInfo = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo : undefined
@@ -411,35 +214,4 @@ export const isERC20Transfer = (value: TransferInfo): value is Erc20Transfer => 
 
 export const isERC721Transfer = (value: TransferInfo): value is Erc721Transfer => {
   return value.type === TransactionTokenType.ERC721
-}
-
-const safeInterface = Safe__factory.createInterface()
-/**
- * True if the tx calls `approveHash`
- */
-export const isOnChainConfirmationTxData = (data?: TransactionData): boolean => {
-  const approveHashSelector = safeInterface.getFunction('approveHash').selector
-  return Boolean(data && data.hexData?.startsWith(approveHashSelector))
-}
-
-export const isOnChainConfirmationTxInfo = (info: TransactionInfo): info is Custom => {
-  if (isCustomTxInfo(info)) {
-    return info.methodName === 'approveHash' && info.dataSize === '36'
-  }
-  return false
-}
-
-/**
- * True if the tx calls `execTransaction`
- */
-export const isExecTxData = (data?: TransactionData): boolean => {
-  const execTransactionSelector = safeInterface.getFunction('execTransaction').selector
-  return Boolean(data && data.hexData?.startsWith(execTransactionSelector))
-}
-
-export const isExecTxInfo = (info: TransactionInfo): info is Custom => {
-  if (isCustomTxInfo(info)) {
-    return info.methodName === 'execTransaction'
-  }
-  return false
 }

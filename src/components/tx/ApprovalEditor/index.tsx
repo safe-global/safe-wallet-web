@@ -1,26 +1,30 @@
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-import Approvals from '@/components/tx/ApprovalEditor/Approvals'
 import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
-import { decodeSafeTxToBaseTransactions } from '@/utils/transactions'
-import { Alert, Box, Skeleton, Typography } from '@mui/material'
+import { Alert, Box, Divider, Skeleton, SvgIcon, Typography } from '@mui/material'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { type EIP712TypedData, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { useContext } from 'react'
-import { ApprovalEditorForm } from './ApprovalEditorForm'
-import { useApprovalInfos } from './hooks/useApprovalInfos'
 import css from './styles.module.css'
+import { ApprovalEditorForm } from './ApprovalEditorForm'
 import { updateApprovalTxs } from './utils/approvals'
+import { useApprovalInfos } from './hooks/useApprovalInfos'
+import { decodeSafeTxToBaseTransactions } from '@/utils/transactions'
+import EditIcon from '@/public/images/common/edit.svg'
+import commonCss from '@/components/tx-flow/common/styles.module.css'
+import Approvals from '@/components/tx/ApprovalEditor/Approvals'
+import { type EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 
-const Title = ({ isErc721 }: { isErc721: boolean }) => {
-  const title = 'Allow access to tokens?'
-  const subtitle = isErc721
-    ? 'This allows the spender to transfer the specified token.'
-    : 'This allows the spender to spend the specified amount of your tokens.'
-
+const Title = () => {
   return (
-    <div>
-      <Typography fontWeight={700}>{title}</Typography>
-      <Typography variant="body2">{subtitle}</Typography>
+    <div className={css.wrapper}>
+      <div className={css.icon}>
+        <SvgIcon component={EditIcon} inheritViewBox fontSize="small" />
+      </div>
+      <div>
+        <Typography fontWeight={700}>Approve access to</Typography>
+        <Typography variant="body2">
+          This allows contracts to spend the selected amounts of your asset balance.
+        </Typography>
+      </div>
     </div>
   )
 }
@@ -56,15 +60,11 @@ export const ApprovalEditor = ({
     createSafeTx().then(setSafeTx).catch(setSafeTxError)
   }
 
-  const isErc721Approval = !!readableApprovals?.some((approval) => approval.tokenInfo?.type === TokenType.ERC721)
-
-  const isReadOnly =
-    (safeTransaction && safeTransaction.signatures.size > 0) || safeMessage !== undefined || isErc721Approval
+  const isReadOnly = (safeTransaction && safeTransaction.signatures.size > 0) || safeMessage !== undefined
 
   return (
-    <Box display="flex" flexDirection="column" gap={2} className={css.container} mb={1}>
-      <Title isErc721={isErc721Approval} />
-
+    <Box display="flex" flexDirection="column" gap={2} mb={3}>
+      <Title />
       {error ? (
         <Alert severity="error">Error while decoding approval transactions.</Alert>
       ) : loading || !readableApprovals ? (
@@ -74,6 +74,10 @@ export const ApprovalEditor = ({
       ) : (
         <ApprovalEditorForm approvalInfos={readableApprovals} updateApprovals={updateApprovals} />
       )}
+
+      <Box mt={2}>
+        <Divider className={commonCss.nestedDivider} />
+      </Box>
     </Box>
   )
 }

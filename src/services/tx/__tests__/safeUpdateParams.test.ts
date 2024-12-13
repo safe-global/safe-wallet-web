@@ -1,34 +1,37 @@
-import * as sdkHelpers from '@/services/tx/tx-sender/sdk'
 import { sameAddress } from '@/utils/addresses'
-import type { SafeProvider } from '@safe-global/protocol-kit'
 import {
   getFallbackHandlerDeployment,
   getSafeL2SingletonDeployment,
   getSafeSingletonDeployment,
-} from '@safe-global/safe-deployments'
-import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { Interface, JsonRpcProvider } from 'ethers'
+} from '@/bitlayer-safe-deployments/src'
+import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { type Eip1193Provider, Interface, BrowserProvider, type JsonRpcProvider } from 'ethers'
 import { createUpdateSafeTxs } from '../safeUpdateParams'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
 import * as web3 from '@/hooks/wallets/web3'
-import { FEATURES, getLatestSafeVersion } from '@/utils/chains'
-import { chainBuilder } from '@/tests/builders/chains'
 
 const MOCK_SAFE_ADDRESS = '0x0000000000000000000000000000000000005AFE'
 
-const getMockSafeProviderForChain = (chainId: number) => {
+jest.mock('@safe-global/protocol-kit', () => {
+  const originalModule = jest.requireActual('@safe-global/protocol-kit')
+
+  // Mock class
+  class MockEthersAdapter extends originalModule.EthersAdapter {
+    getChainId = jest.fn().mockImplementation(() => Promise.resolve(BigInt(4)))
+  }
+
   return {
-    getExternalProvider: jest.fn(),
-    getExternalSigner: jest.fn(),
-    getChainId: jest.fn().mockReturnValue(BigInt(chainId)),
-  } as unknown as SafeProvider
-}
+    ...originalModule,
+    EthersAdapter: MockEthersAdapter,
+  }
+})
 
 describe('safeUpgradeParams', () => {
   jest
     .spyOn(web3, 'getWeb3ReadOnly')
-    .mockImplementation(() => new JsonRpcProvider(undefined, { name: 'ethereum', chainId: 1 }))
-
-  jest.spyOn(sdkHelpers, 'getSafeProvider').mockImplementation(() => getMockSafeProviderForChain(1))
+    .mockImplementation(
+      () => new BrowserProvider(jest.fn() as unknown as Eip1193Provider) as unknown as JsonRpcProvider,
+    )
 
   it('Should add empty setFallbackHandler transaction data for older Safes', async () => {
     const mockSafe = {
@@ -37,11 +40,7 @@ describe('safeUpgradeParams', () => {
       },
       version: '1.0.0',
     } as SafeInfo
-
-    const mockChainInfo = chainBuilder()
-      .with({ chainId: '1', l2: false, features: [FEATURES.SAFE_141 as any] })
-      .build()
-    const txs = await createUpdateSafeTxs(mockSafe, mockChainInfo)
+    const txs = await createUpdateSafeTxs(mockSafe, { chainId: '4', l2: false } as ChainInfo)
     const [masterCopyTx, fallbackHandlerTx] = txs
     // Safe upgrades mastercopy and fallbackhandler
     expect(txs).toHaveLength(2)
@@ -51,7 +50,7 @@ describe('safeUpgradeParams', () => {
     expect(
       sameAddress(
         decodeChangeMasterCopyAddress(masterCopyTx.data),
-        getSafeSingletonDeployment({ version: '1.4.1', network: '1' })?.defaultAddress,
+        getSafeSingletonDeployment({ version: '1.3.0', network: '4' })?.defaultAddress,
       ),
     ).toBeTruthy()
 
@@ -61,17 +60,14 @@ describe('safeUpgradeParams', () => {
     expect(fallbackHandlerTx.data).toEqual('0x')
   })
 
-  it('Should upgrade L1 safe to L1 1.4.1', async () => {
+  it('Should upgrade L1 safe to L1 1.3.0', async () => {
     const mockSafe = {
       address: {
         value: MOCK_SAFE_ADDRESS,
       },
       version: '1.1.1',
     } as SafeInfo
-    const mockChainInfo = chainBuilder()
-      .with({ chainId: '1', l2: false, features: [FEATURES.SAFE_141 as any] })
-      .build()
-    const txs = await createUpdateSafeTxs(mockSafe, mockChainInfo)
+    const txs = await createUpdateSafeTxs(mockSafe, { chainId: '4', l2: false } as ChainInfo)
     const [masterCopyTx, fallbackHandlerTx] = txs
     // Safe upgrades mastercopy and fallbackhandler
     expect(txs).toHaveLength(2)
@@ -81,7 +77,7 @@ describe('safeUpgradeParams', () => {
     expect(
       sameAddress(
         decodeChangeMasterCopyAddress(masterCopyTx.data),
-        getSafeSingletonDeployment({ version: '1.4.1', network: '1' })?.defaultAddress,
+        getSafeSingletonDeployment({ version: '1.3.0', network: '4' })?.defaultAddress,
       ),
     ).toBeTruthy()
 
@@ -91,25 +87,19 @@ describe('safeUpgradeParams', () => {
     expect(
       sameAddress(
         decodeSetFallbackHandlerAddress(fallbackHandlerTx.data),
-        getFallbackHandlerDeployment({ version: getLatestSafeVersion(mockChainInfo), network: '1' })?.defaultAddress,
+        getFallbackHandlerDeployment({ version: LATEST_SAFE_VERSION, network: '4' })?.defaultAddress,
       ),
     ).toBeTruthy()
   })
 
-  it('Should upgrade L2 safe to L2 1.4.1', async () => {
-    jest.spyOn(sdkHelpers, 'getSafeProvider').mockImplementation(() => getMockSafeProviderForChain(100))
-
+  it('Should upgrade L2 safe to L2 1.3.0', async () => {
     const mockSafe = {
       address: {
         value: MOCK_SAFE_ADDRESS,
       },
       version: '1.1.1',
     } as SafeInfo
-    const mockChainInfo = chainBuilder()
-      .with({ chainId: '100', l2: true, features: [FEATURES.SAFE_141 as any] })
-      .build()
-
-    const txs = await createUpdateSafeTxs(mockSafe, mockChainInfo)
+    const txs = await createUpdateSafeTxs(mockSafe, { chainId: '100', l2: true } as ChainInfo)
     const [masterCopyTx, fallbackHandlerTx] = txs
     // Safe upgrades mastercopy and fallbackhandler
     expect(txs).toHaveLength(2)
@@ -119,7 +109,7 @@ describe('safeUpgradeParams', () => {
     expect(
       sameAddress(
         decodeChangeMasterCopyAddress(masterCopyTx.data),
-        getSafeL2SingletonDeployment({ version: '1.4.1', network: '100' })?.defaultAddress,
+        getSafeL2SingletonDeployment({ version: '1.3.0', network: '100' })?.defaultAddress,
       ),
     ).toBeTruthy()
 
@@ -129,7 +119,7 @@ describe('safeUpgradeParams', () => {
     expect(
       sameAddress(
         decodeSetFallbackHandlerAddress(fallbackHandlerTx.data),
-        getFallbackHandlerDeployment({ version: '1.4.1', network: '100' })?.defaultAddress,
+        getFallbackHandlerDeployment({ version: '1.3.0', network: '100' })?.defaultAddress,
       ),
     ).toBeTruthy()
   })

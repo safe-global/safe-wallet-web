@@ -14,12 +14,10 @@ import { ReplaceTxFlow } from '@/components/tx-flow/flows'
 
 const RejectTxButton = ({
   txSummary,
-  safeTxHash,
-  proposer,
+  compact = false,
 }: {
   txSummary: TransactionSummary
-  safeTxHash?: string
-  proposer?: string
+  compact?: boolean
 }): ReactElement | null => {
   const { setTxFlow } = useContext(TxModalContext)
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
@@ -29,7 +27,7 @@ const RejectTxButton = ({
 
   const openReplacementModal = () => {
     if (txNonce === undefined) return
-    setTxFlow(<ReplaceTxFlow txNonce={txNonce} safeTxHash={safeTxHash} proposer={proposer} />, undefined, false)
+    setTxFlow(<ReplaceTxFlow txNonce={txNonce} />, undefined, false)
   }
 
   return (
@@ -37,13 +35,12 @@ const RejectTxButton = ({
       {(isOk) => (
         <Track {...TX_LIST_EVENTS.REJECT}>
           <Button
-            data-testid="reject-btn"
             onClick={openReplacementModal}
             variant="danger"
             disabled={!isOk || isDisabled}
-            size="stretched"
+            size={compact ? 'small' : 'stretched'}
           >
-            Reject
+            Replace
           </Button>
         </Track>
       )}

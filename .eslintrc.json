@@ -2,13 +2,8 @@
   "extends": [
     "next",
     "prettier",
-    "plugin:prettier/recommended",
-    "plugin:storybook/recommended"
+    "plugin:prettier/recommended"
   ],
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "project": ["./tsconfig.json"]
-  },
   "rules": {
     "@next/next/no-img-element": "off",
     "@next/next/google-font-display": "off",
@@ -16,9 +11,7 @@
     "@next/next/no-page-custom-font": "off",
     "unused-imports/no-unused-imports-ts": "error",
     "@typescript-eslint/consistent-type-imports": "error",
-    "@typescript-eslint/await-thenable": "error",
     "no-constant-condition": "warn",
-    "no-unused-vars": ["error", { "varsIgnorePattern": "^_" }],
     "react-hooks/exhaustive-deps": [
       "warn",
       {
@@ -26,16 +19,12 @@
       }
     ],
     "no-only-tests/no-only-tests": "error",
-    "object-shorthand": ["error", "properties"],
-    "jsx-quotes": ["error", "prefer-double"],
-    "react/jsx-curly-brace-presence": ["error", { "props": "never", "children": "never" }]
+    "prettier/prettier": "off"
   },
   "ignorePatterns": [
     "node_modules/",
     ".next/",
-    ".github/",
-    "cypress/",
-    "src/types/contracts/"
+    ".github/"
   ],
   "plugins": [
     "unused-imports",

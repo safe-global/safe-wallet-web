@@ -1,7 +1,6 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RootState } from '.'
-import { selectChainIdAndSafeAddress } from '@/store/common'
 
 export type DraftBatchItem = {
   id: string
@@ -21,6 +20,21 @@ export const batchSlice = createSlice({
   name: 'batch',
   initialState,
   reducers: {
+    // Set a batch (used for reordering)
+    setBatch: (
+      state,
+      action: PayloadAction<{
+        chainId: string
+        safeAddress: string
+        items: DraftBatchItem[]
+      }>,
+    ) => {
+      const { chainId, safeAddress, items } = action.payload
+      state[chainId] = state[chainId] || {}
+      // @ts-expect-error
+      state[chainId][safeAddress] = items
+    },
+
     // Add a tx to the batch
     addTx: (
       state,
@@ -33,11 +47,9 @@ export const batchSlice = createSlice({
       const { chainId, safeAddress, txDetails } = action.payload
       state[chainId] = state[chainId] || {}
       state[chainId][safeAddress] = state[chainId][safeAddress] || []
-      // @ts-expect-error
       state[chainId][safeAddress].push({
         id: Math.random().toString(36).slice(2),
         timestamp: Date.now(),
-        // @ts-expect-error
         txDetails,
       })
     },
@@ -59,14 +71,14 @@ export const batchSlice = createSlice({
   },
 })
 
-export const { addTx, removeTx } = batchSlice.actions
+export const { setBatch, addTx, removeTx } = batchSlice.actions
 
 const selectAllBatches = (state: RootState): BatchTxsState => {
   return state[batchSlice.name] || initialState
 }
 
 export const selectBatchBySafe = createSelector(
-  [selectAllBatches, selectChainIdAndSafeAddress],
+  [selectAllBatches, (_, chainId: string, safeAddress: string) => [chainId, safeAddress]],
   (allBatches, [chainId, safeAddress]): DraftBatchItem[] => {
     return allBatches[chainId]?.[safeAddress] || []
   },

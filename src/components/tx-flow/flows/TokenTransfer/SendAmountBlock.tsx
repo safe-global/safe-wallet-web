@@ -2,17 +2,17 @@ import { type ReactNode } from 'react'
 import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { Box, Typography } from '@mui/material'
 import TokenIcon from '@/components/common/TokenIcon'
+import { formatAmountPrecise } from '@/utils/formatNumber'
+import { PSEUDO_APPROVAL_VALUES } from '@/components/tx/ApprovalEditor/utils/approvals'
 import FieldsGrid from '@/components/tx/FieldsGrid'
-import { formatVisualAmount } from '@/utils/formatters'
 
 const SendAmountBlock = ({
-  amountInWei,
+  amount,
   tokenInfo,
   children,
-  title = 'Send:',
+  title = 'Send',
 }: {
-  /** Amount in WEI */
-  amountInWei: number | string
+  amount: number | string
   tokenInfo: Omit<TokenInfo, 'name' | 'logoUri'> & { logoUri?: string }
   children?: ReactNode
   title?: string
@@ -26,9 +26,11 @@ const SendAmountBlock = ({
 
         {children}
 
-        <Typography data-testid="token-amount">
-          {formatVisualAmount(amountInWei, tokenInfo.decimals, tokenInfo.decimals)}
-        </Typography>
+        {amount === PSEUDO_APPROVAL_VALUES.UNLIMITED ? (
+          <Typography>{PSEUDO_APPROVAL_VALUES.UNLIMITED}</Typography>
+        ) : (
+          <Typography data-testid="token-amount">{formatAmountPrecise(amount, tokenInfo.decimals)}</Typography>
+        )}
       </Box>
     </FieldsGrid>
   )

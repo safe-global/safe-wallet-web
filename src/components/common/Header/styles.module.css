@@ -36,16 +36,11 @@
   align-items: flex-start;
 }
 
-.logoMobile {
-  display: none;
-}
-
-.logo svg,
-.logoMobile svg {
-  width: auto;
+.logo svg {
+  width: 120px;
   display: block;
   color: var(--color-logo-main);
-  height: 20px;
+  height: 80px;
 }
 
 .logo {
@@ -69,22 +64,21 @@
     display: none;
   }
 
-  .logoMobile {
-    display: flex;
-    flex: 1;
-    border: none;
-    align-items: flex-start;
-    margin-left: var(--space-2);
-  }
-
   .menuButton {
     display: flex;
-    flex: 0;
   }
 }
 
 @media (max-width: 599.95px) {
+  .menuButton {
+    padding-left: var(--space-2);
+  }
+
   .hideMobile {
     display: none;
+  }
+
+  .hideSidebarMobile {
+    visibility: hidden;
   }
 }

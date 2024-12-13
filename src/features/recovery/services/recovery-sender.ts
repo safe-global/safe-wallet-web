@@ -1,29 +1,38 @@
 import { getModuleInstance, KnownContracts } from '@gnosis.pm/zodiac'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import type { OnboardAPI } from '@web3-onboard/core'
 import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
-import type { Eip1193Provider, TransactionResponse } from 'ethers'
+import type { TransactionResponse } from 'ethers'
 
+import { createWeb3 } from '@/hooks/wallets/web3'
 import { didReprice, didRevert } from '@/utils/ethers-utils'
 import { recoveryDispatch, RecoveryEvent, RecoveryTxType } from './recoveryEvents'
 import { asError } from '@/services/exceptions/utils'
-import { getUncheckedSigner } from '../../../services/tx/tx-sender/sdk'
+import { assertWalletChain } from '../../../services/tx/tx-sender/sdk'
 import { isSmartContractWallet } from '@/utils/wallets'
+import { UncheckedJsonRpcSigner } from '@/utils/providers/UncheckedJsonRpcSigner'
 
 async function getDelayModifierContract({
-  provider,
+  onboard,
   chainId,
   delayModifierAddress,
-  signerAddress,
 }: {
-  provider: Eip1193Provider
+  onboard: OnboardAPI
   chainId: string
   delayModifierAddress: string
-  signerAddress: string
 }) {
-  const isSmartContract = await isSmartContractWallet(chainId, signerAddress)
+  // Switch signer to chain of Safe
+  const wallet = await assertWalletChain(onboard, chainId)
 
-  const signer = await getUncheckedSigner(provider)
+  const provider = createWeb3(wallet.provider)
+  const isSmartContract = await isSmartContractWallet(wallet.chainId, wallet.address)
+
+  const originalSigner = await provider.getSigner()
+  // Use unchecked signer for smart contract wallets as transactions do not necessarily immediately execute
+  const signer = isSmartContract
+    ? new UncheckedJsonRpcSigner(provider, await originalSigner.getAddress())
+    : originalSigner
   const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, signer).connect(signer)
 
   return {
@@ -71,23 +80,20 @@ function waitForRecoveryTx({
 }
 
 export async function dispatchRecoveryProposal({
-  provider,
+  onboard,
   safe,
   safeTx,
   delayModifierAddress,
-  signerAddress,
 }: {
-  provider: Eip1193Provider
+  onboard: OnboardAPI
   safe: SafeInfo
   safeTx: SafeTransaction
   delayModifierAddress: string
-  signerAddress: string
 }) {
   const { delayModifier, isUnchecked } = await getDelayModifierContract({
-    provider,
+    onboard,
     chainId: safe.chainId,
     delayModifierAddress,
-    signerAddress,
   })
 
   const txType = RecoveryTxType.PROPOSAL
@@ -113,14 +119,14 @@ export async function dispatchRecoveryProposal({
       recoveryDispatch(RecoveryEvent.PROCESSING_BY_SMART_CONTRACT_WALLET, {
         moduleAddress: delayModifierAddress,
         recoveryTxHash,
-        txType,
+        txType: txType,
         txHash: tx.hash,
       })
     } else {
       waitForRecoveryTx({
         moduleAddress: delayModifierAddress,
         recoveryTxHash,
-        txType,
+        txType: txType,
         tx,
       })
     }
@@ -128,7 +134,7 @@ export async function dispatchRecoveryProposal({
     recoveryDispatch(RecoveryEvent.FAILED, {
       moduleAddress: delayModifierAddress,
       recoveryTxHash,
-      txType,
+      txType: txType,
       error: asError(error),
     })
 
@@ -137,23 +143,20 @@ export async function dispatchRecoveryProposal({
 }
 
 export async function dispatchRecoveryExecution({
-  provider,
+  onboard,
   chainId,
   args,
   delayModifierAddress,
-  signerAddress,
 }: {
-  provider: Eip1193Provider
+  onboard: OnboardAPI
   chainId: string
   args: TransactionAddedEvent.Log['args']
   delayModifierAddress: string
-  signerAddress: string
 }) {
   const { delayModifier, isUnchecked } = await getDelayModifierContract({
-    provider,
+    onboard,
     chainId,
     delayModifierAddress,
-    signerAddress,
   })
 
   const txType = RecoveryTxType.EXECUTION
@@ -165,14 +168,14 @@ export async function dispatchRecoveryExecution({
       recoveryDispatch(RecoveryEvent.PROCESSING_BY_SMART_CONTRACT_WALLET, {
         moduleAddress: delayModifierAddress,
         recoveryTxHash: args.txHash,
-        txType,
+        txType: txType,
         txHash: tx.hash,
       })
     } else {
       waitForRecoveryTx({
         moduleAddress: delayModifierAddress,
         recoveryTxHash: args.txHash,
-        txType,
+        txType: txType,
         tx,
       })
     }
@@ -180,7 +183,7 @@ export async function dispatchRecoveryExecution({
     recoveryDispatch(RecoveryEvent.FAILED, {
       moduleAddress: delayModifierAddress,
       recoveryTxHash: args.txHash,
-      txType,
+      txType: txType,
       error: asError(error),
     })
 
@@ -189,23 +192,20 @@ export async function dispatchRecoveryExecution({
 }
 
 export async function dispatchRecoverySkipExpired({
-  provider,
+  onboard,
   chainId,
   delayModifierAddress,
   recoveryTxHash,
-  signerAddress,
 }: {
-  provider: Eip1193Provider
+  onboard: OnboardAPI
   chainId: string
   delayModifierAddress: string
   recoveryTxHash: string
-  signerAddress: string
 }) {
   const { delayModifier, isUnchecked } = await getDelayModifierContract({
-    provider,
+    onboard,
     chainId,
     delayModifierAddress,
-    signerAddress,
   })
 
   const txType = RecoveryTxType.SKIP_EXPIRED

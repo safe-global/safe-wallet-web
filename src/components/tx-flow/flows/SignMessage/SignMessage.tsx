@@ -9,7 +9,6 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Link,
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -29,6 +28,7 @@ import useSafeMessage from '@/hooks/messages/useSafeMessage'
 import useOnboard, { switchWallet } from '@/hooks/wallets/useOnboard'
 import { TxModalContext } from '@/components/tx-flow'
 import CopyButton from '@/components/common/CopyButton'
+import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import MsgSigners from '@/components/safe-messages/MsgSigners'
 import useDecodedSafeMessage from '@/hooks/messages/useDecodedSafeMessage'
 import useSyncSafeMessageSigner from '@/hooks/messages/useSyncSafeMessageSigner'
@@ -42,21 +42,12 @@ import { trackEvent } from '@/services/analytics'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { SafeTxContext } from '../../SafeTxProvider'
 import RiskConfirmationError from '@/components/tx/SignOrExecuteForm/RiskConfirmationError'
+import { Redefine } from '@/components/tx/security/redefine'
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
-import { isBlindSigningPayload, isEIP712TypedData } from '@/utils/safe-messages'
+import { isEIP712TypedData } from '@/utils/safe-messages'
 import ApprovalEditor from '@/components/tx/ApprovalEditor'
 import { ErrorBoundary } from '@sentry/react'
 import { isWalletRejection } from '@/utils/wallets'
-import { useAppSelector } from '@/store'
-import { selectBlindSigning } from '@/store/settingsSlice'
-import NextLink from 'next/link'
-import { AppRoutes } from '@/config/routes'
-import { useRouter } from 'next/router'
-import MsgShareLink from '@/components/safe-messages/MsgShareLink'
-import LinkIcon from '@/public/images/messages/link.svg'
-import { Blockaid } from '@/components/tx/security/blockaid'
-import CheckWallet from '@/components/common/CheckWallet'
-import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   return {
@@ -82,7 +73,7 @@ const MessageHashField = ({ label, hashValue }: { label: string; hashValue: stri
     <Typography variant="body2" fontWeight={700} mt={2}>
       {label}:
     </Typography>
-    <Typography data-testid="message-hash" variant="body2" component="div">
+    <Typography variant="body2" component="div">
       <EthHashInfo address={hashValue} showAvatar={false} shortAddress={false} showCopyButton />
     </Typography>
   </>
@@ -152,43 +143,6 @@ const AlreadySignedByOwnerMessage = ({ hasSigned }: { hasSigned: boolean }) => {
   )
 }
 
-const BlindSigningWarning = ({
-  isBlindSigningEnabled,
-  isBlindSigningPayload,
-}: {
-  isBlindSigningEnabled: boolean
-  isBlindSigningPayload: boolean
-}) => {
-  const router = useRouter()
-  const query = router.query.safe ? { safe: router.query.safe } : undefined
-
-  if (!isBlindSigningPayload) {
-    return null
-  }
-
-  return (
-    <ErrorMessage level={isBlindSigningEnabled ? 'warning' : 'error'}>
-      This request involves{' '}
-      <Link component={NextLink} href={{ pathname: AppRoutes.settings.security, query }}>
-        blind signing
-      </Link>
-      , which can lead to unpredictable outcomes.
-      <br />
-      {isBlindSigningEnabled ? (
-        'Proceed with caution.'
-      ) : (
-        <>
-          If you wish to proceed, you must first{' '}
-          <Link component={NextLink} href={{ pathname: AppRoutes.settings.security, query }}>
-            enable blind signing
-          </Link>
-          .
-        </>
-      )}
-    </ErrorMessage>
-  )
-}
-
 const SuccessCard = ({ safeMessage, onContinue }: { safeMessage: SafeMessage; onContinue: () => void }) => {
   return (
     <TxCard>
@@ -235,14 +189,9 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
   const [safeMessage, setSafeMessage] = useSafeMessage(safeMessageHash)
   const isPlainTextMessage = typeof decodedMessage === 'string'
   const decodedMessageAsString = isPlainTextMessage ? decodedMessage : JSON.stringify(decodedMessage, null, 2)
-  const signedByCurrentSafe = !!safeMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
-  const hasSignature = safeMessage?.confirmations && safeMessage.confirmations.length > 0
+  const hasSigned = !!safeMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
   const isFullySigned = !!safeMessage?.preparedSignature
-  const isEip712 = isEIP712TypedData(decodedMessage)
-  const isBlindSigningRequest = isBlindSigningPayload(decodedMessage)
-  const isBlindSigningEnabled = useAppSelector(selectBlindSigning)
-  const isDisabled =
-    !isOwner || signedByCurrentSafe || !safe.deployed || (!isBlindSigningEnabled && isBlindSigningRequest)
+  const isDisabled = !isOwner || hasSigned || !safe.deployed
 
   const { onSign, submitError } = useSyncSafeMessageSigner(
     safeMessage,
@@ -290,35 +239,26 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
         <CardContent>
           <DialogHeader threshold={safe.threshold} />
 
-          {isEip712 && (
+          {isEIP712TypedData(decodedMessage) && (
             <ErrorBoundary fallback={<div>Error parsing data</div>}>
               <ApprovalEditor safeMessage={decodedMessage} />
             </ErrorBoundary>
           )}
-
-          <BlindSigningWarning
-            isBlindSigningEnabled={isBlindSigningEnabled}
-            isBlindSigningPayload={isBlindSigningRequest}
-          />
 
           <Typography fontWeight={700} mt={2} mb={1}>
             Message: <CopyButton text={decodedMessageAsString} />
           </Typography>
           <DecodedMsg message={decodedMessage} isInModal />
 
-          <Accordion sx={{ mt: 2 }}>
-            <AccordionSummary data-testid="message-details" expandIcon={<ExpandMoreIcon />}>
-              SafeMessage details
-            </AccordionSummary>
+          <Accordion sx={{ my: 2, '&.Mui-expanded': { mt: 2 } }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>SafeMessage details</AccordionSummary>
             <AccordionDetails>
               <MessageHashField label="SafeMessage" hashValue={safeMessageMessage} />
               <MessageHashField label="SafeMessage hash" hashValue={safeMessageHash} />
             </AccordionDetails>
           </Accordion>
 
-          <Box sx={{ '&:not(:empty)': { mt: 2 } }}>
-            <Blockaid />
-          </Box>
+          <Redefine />
         </CardContent>
       </TxCard>
 
@@ -327,14 +267,14 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
       ) : (
         <>
           <TxCard>
-            <AlreadySignedByOwnerMessage hasSigned={signedByCurrentSafe} />
+            <AlreadySignedByOwnerMessage hasSigned={hasSigned} />
 
             <InfoBox
               title="Collect all the confirmations"
               message={
-                requestId && !hasSignature
+                requestId
                   ? 'Please keep this modal open until all signers confirm this message. Closing the modal will abort the signing request.'
-                  : 'The signature will be submitted to the requesting app when the message is fully signed.'
+                  : 'The signature will be submitted to the Safe App when the message is fully signed.'
               }
             >
               <MsgSigners
@@ -345,23 +285,7 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
               />
             </InfoBox>
 
-            {hasSignature && (
-              <InfoBox
-                title="Share the link with other owners"
-                message={
-                  <>
-                    <Typography mb={2}>
-                      The owners will receive a notification about signing the message. You can also share the link with
-                      them to speed up the process.
-                    </Typography>
-                    <MsgShareLink safeMessageHash={safeMessageHash} button />
-                  </>
-                }
-                icon={LinkIcon}
-              />
-            )}
-
-            <NetworkWarning />
+            <WrongChainWarning />
 
             <MessageDialogError isOwner={isOwner} submitError={submitError} />
 
@@ -371,13 +295,9 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
           </TxCard>
           <TxCard>
             <CardActions>
-              <CheckWallet checkNetwork={!isDisabled}>
-                {(isOk) => (
-                  <Button variant="contained" color="primary" onClick={handleSign} disabled={!isOk || isDisabled}>
-                    Sign
-                  </Button>
-                )}
-              </CheckWallet>
+              <Button variant="contained" color="primary" onClick={handleSign} disabled={isDisabled}>
+                Sign
+              </Button>
             </CardActions>
           </TxCard>
         </>

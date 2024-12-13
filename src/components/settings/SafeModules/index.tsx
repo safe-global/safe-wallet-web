@@ -47,14 +47,7 @@ const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string
       />
       <CheckWallet>
         {(isOk) => (
-          <IconButton
-            data-testid="module-remove-btn"
-            onClick={onRemove}
-            color="error"
-            size="small"
-            disabled={!isOk}
-            title="Remove module"
-          >
+          <IconButton onClick={onRemove} color="error" size="small" disabled={!isOk} title="Remove module">
             <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
           </IconButton>
         )}
@@ -72,7 +65,7 @@ const SafeModules = () => {
       <Grid container direction="row" justifyContent="space-between" spacing={3}>
         <Grid item lg={4} xs={12}>
           <Typography variant="h4" fontWeight={700}>
-            Safe modules
+            Safe Account modules
           </Typography>
         </Grid>
 

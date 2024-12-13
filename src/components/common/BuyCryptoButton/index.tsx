@@ -1,7 +1,6 @@
-import { useTheme } from '@mui/material/styles'
 import { usePathname, useSearchParams } from 'next/navigation'
 import Link, { type LinkProps } from 'next/link'
-import { Alert, Box, Button, ButtonBase, Typography, useMediaQuery } from '@mui/material'
+import { Alert, Box, Button, ButtonBase, Typography } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import { SafeAppsTag } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
@@ -21,7 +20,7 @@ const useOnrampAppUrl = (): string | undefined => {
 
 const useBuyCryptoHref = (): LinkProps['href'] | undefined => {
   const query = useSearchParams()
-  const safe = query?.get('safe')
+  const safe = query.get('safe')
   const appUrl = useOnrampAppUrl()
 
   return useMemo(() => {
@@ -31,7 +30,7 @@ const useBuyCryptoHref = (): LinkProps['href'] | undefined => {
 }
 
 const buttonStyles = {
-  minHeight: '37.5px',
+  minHeight: '40px',
 }
 
 const BuyCryptoOption = ({ name, children }: { name: string; children: ReactNode }) => {
@@ -69,9 +68,6 @@ const _BuyCryptoOptions = ({ rampLink }: { rampLink?: LinkProps['href'] }) => {
 }
 
 const _BuyCryptoButton = ({ href, pagePath }: { href?: LinkProps['href']; pagePath: string }) => {
-  const theme = useTheme()
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
-
   if (!href) return null
 
   return (
@@ -80,7 +76,7 @@ const _BuyCryptoButton = ({ href, pagePath }: { href?: LinkProps['href']; pagePa
         <Link href={href} passHref>
           <Button
             variant="contained"
-            size={isSmallScreen ? 'medium' : 'small'}
+            size="small"
             sx={buttonStyles}
             startIcon={<AddIcon />}
             className={css.buyCryptoButton}

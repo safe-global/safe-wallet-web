@@ -1,8 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import ExternalStore from '../ExternalStore'
-import session from './session'
 import local from './local'
-import type Storage from './Storage'
 
 // The setter accepts T or a function that takes the old value and returns T
 // Mimics the behavior of useState
@@ -13,7 +11,7 @@ export type Setter<T> = (val: T | ((prevVal: Undefinable<T>) => Undefinable<T>))
 // External stores for each localStorage key which act as a shared cache for LS
 const externalStores: Record<string, ExternalStore<any>> = {}
 
-const useStorage = <T>(key: string, storage: Storage): [Undefinable<T>, Setter<T>] => {
+const useLocalStorage = <T>(key: string): [Undefinable<T>, Setter<T>] => {
   if (!externalStores[key]) {
     externalStores[key] = new ExternalStore<T>()
   }
@@ -27,31 +25,31 @@ const useStorage = <T>(key: string, storage: Storage): [Undefinable<T>, Setter<T
         const newValue = value instanceof Function ? value(oldValue) : value
 
         if (newValue !== oldValue) {
-          storage.setItem(key, newValue)
+          local.setItem(key, newValue)
         }
 
         return newValue
       })
     },
-    [key, setStore, storage],
+    [key, setStore],
   )
 
   // Set the initial value from LS on mount
   useEffect(() => {
     if (getStore() === undefined) {
-      const lsValue = storage.getItem<T>(key)
+      const lsValue = local.getItem<T>(key)
       if (lsValue !== null) {
         setStore(lsValue)
       }
     }
-  }, [key, getStore, setStore, storage])
+  }, [key, getStore, setStore])
 
   // Subscribe to changes in local storage and update the cache
   // This will work across tabs
   useEffect(() => {
     const onStorageEvent = (event: StorageEvent) => {
-      if (event.key === storage.getPrefixedKey(key)) {
-        const lsValue = storage.getItem<T>(key)
+      if (event.key === local.getPrefixedKey(key)) {
+        const lsValue = local.getItem<T>(key)
         if (lsValue !== null && lsValue !== getStore()) {
           setStore(lsValue)
         }
@@ -63,19 +61,9 @@ const useStorage = <T>(key: string, storage: Storage): [Undefinable<T>, Setter<T
     return () => {
       window.removeEventListener('storage', onStorageEvent)
     }
-  }, [key, getStore, setStore, storage])
+  }, [key, getStore, setStore])
 
   return [useStore(), setNewValue]
-}
-
-const useLocalStorage = <T>(key: string): [Undefinable<T>, Setter<T>] => {
-  const localStorage = useStorage<T>(key, local)
-  return localStorage
-}
-
-export const useSessionStorage = <T>(key: string): [Undefinable<T>, Setter<T>] => {
-  const localStorage = useStorage<T>(key, session)
-  return localStorage
 }
 
 export default useLocalStorage

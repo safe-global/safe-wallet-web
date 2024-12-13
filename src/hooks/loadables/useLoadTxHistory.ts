@@ -12,21 +12,19 @@ import { FEATURES } from '@/utils/chains'
 export const useLoadTxHistory = (): AsyncResult<TransactionListPage> => {
   const { safe, safeAddress, safeLoaded } = useSafeInfo()
   const { chainId, txHistoryTag } = safe
-  const { hideSuspiciousTransactions } = useAppSelector(selectSettings)
+  const { showOnlyTrustedTransactions } = useAppSelector(selectSettings)
   const hasDefaultTokenlist = useHasFeature(FEATURES.DEFAULT_TOKENLIST)
-  const hideUntrustedTxs = (hasDefaultTokenlist && hideSuspiciousTransactions) ?? true
-  const hideImitationTxs = hideSuspiciousTransactions ?? true
 
-  // Re-fetch when chainId, address, hideSuspiciousTransactions, or txHistoryTag changes
+  // Re-fetch when chainId, address, showOnlyTrustedTransactions, or txHistoryTag changes
   const [data, error, loading] = useAsync<TransactionListPage>(
     () => {
       if (!safeLoaded) return
       if (!safe.deployed) return Promise.resolve({ results: [] })
 
-      return getTxHistory(chainId, safeAddress, hideUntrustedTxs, hideImitationTxs)
+      return getTxHistory(chainId, safeAddress, hasDefaultTokenlist && showOnlyTrustedTransactions)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [safeLoaded, chainId, safeAddress, hideSuspiciousTransactions, hasDefaultTokenlist, txHistoryTag, safe.deployed],
+    [safeLoaded, chainId, safeAddress, showOnlyTrustedTransactions, hasDefaultTokenlist, txHistoryTag, safe.deployed],
     false,
   )
 

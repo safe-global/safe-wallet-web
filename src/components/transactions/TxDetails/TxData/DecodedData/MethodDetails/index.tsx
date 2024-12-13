@@ -4,6 +4,7 @@ import { isAddress, isArrayParameter, isByte } from '@/utils/transaction-guards'
 import type { AddressEx, DataDecoded } from '@safe-global/safe-gateway-typescript-sdk'
 import { Box, Typography } from '@mui/material'
 import { Value } from '@/components/transactions/TxDetails/TxData/DecodedData/ValueArray'
+import { camelCaseToSpaces } from '@/utils/formatters'
 
 type MethodDetailsProps = {
   data: DataDecoded
@@ -13,14 +14,10 @@ type MethodDetailsProps = {
 }
 
 export const MethodDetails = ({ data, addressInfoIndex }: MethodDetailsProps): ReactElement => {
-  if (!data.parameters?.length) {
-    return <Typography color="text.secondary">No parameters</Typography>
-  }
-
   return (
     <Box>
-      <Typography fontWeight="bold" pb={1}>
-        Parameters
+      <Typography variant="overline" fontWeight="bold" color="border.main">
+        {camelCaseToSpaces(data.method)}
       </Typography>
 
       {data.parameters?.map((param, index) => {
@@ -28,17 +25,8 @@ export const MethodDetails = ({ data, addressInfoIndex }: MethodDetailsProps): R
         const inlineType = isAddress(param.type) ? 'address' : isByte(param.type) ? 'bytes' : undefined
         const addressEx = typeof param.value === 'string' ? addressInfoIndex?.[param.value] : undefined
 
-        const title = (
-          <>
-            <Typography component="span">{param.name}</Typography>{' '}
-            <Typography component="span" color="text.secondary">
-              {param.type}
-            </Typography>
-          </>
-        )
-
         return (
-          <TxDataRow key={`${data.method}_param-${index}`} title={title}>
+          <TxDataRow key={`${data.method}_param-${index}`} title={`${param.name}(${param.type}):`}>
             {isArrayValueParam ? (
               <Value method={data.method} type={param.type} value={param.value as string} />
             ) : (

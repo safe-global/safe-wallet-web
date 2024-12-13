@@ -20,10 +20,8 @@ const useTxHistory = (
   // The latest page of the history is always in the store
   const historyState = useAppSelector(selectTxHistory)
   const [filter] = useTxFilter()
-  const { hideSuspiciousTransactions } = useAppSelector(selectSettings)
+  const { showOnlyTrustedTransactions } = useAppSelector(selectSettings)
   const hasDefaultTokenlist = useHasFeature(FEATURES.DEFAULT_TOKENLIST)
-  const hideUntrustedTxs = (hasDefaultTokenlist && hideSuspiciousTransactions) ?? true
-  const hideImitationTxs = hideSuspiciousTransactions ?? true
 
   const {
     safe: { chainId },
@@ -36,10 +34,10 @@ const useTxHistory = (
       if (!(filter || pageUrl)) return
 
       return filter
-        ? fetchFilteredTxHistory(chainId, safeAddress, filter, hideUntrustedTxs, hideImitationTxs, pageUrl)
-        : getTxHistory(chainId, safeAddress, hideUntrustedTxs, hideImitationTxs, pageUrl)
+        ? fetchFilteredTxHistory(chainId, safeAddress, filter, pageUrl)
+        : getTxHistory(chainId, safeAddress, hasDefaultTokenlist && showOnlyTrustedTransactions, pageUrl)
     },
-    [filter, pageUrl, chainId, safeAddress, hideUntrustedTxs, hideImitationTxs],
+    [chainId, safeAddress, pageUrl, filter, hasDefaultTokenlist, showOnlyTrustedTransactions],
     false,
   )
 

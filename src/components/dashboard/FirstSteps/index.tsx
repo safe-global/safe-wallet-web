@@ -1,12 +1,10 @@
 import { BuyCryptoOptions } from '@/components/common/BuyCryptoButton'
 import CheckWallet from '@/components/common/CheckWallet'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import ExternalLink from '@/components/common/ExternalLink'
 import ModalDialog from '@/components/common/ModalDialog'
 import QRCode from '@/components/common/QRCode'
 import Track from '@/components/common/Track'
 import FirstTxFlow from '@/features/counterfactual/FirstTxFlow'
-import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import useBalances from '@/hooks/useBalances'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -14,8 +12,6 @@ import { OVERVIEW_EVENTS } from '@/services/analytics'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectSettings, setQrShortName } from '@/store/settingsSlice'
 import { selectOutgoingTransactions } from '@/store/txHistorySlice'
-import { getExplorerLink } from '@/utils/gateway'
-import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 import { type ReactNode, useState } from 'react'
 import { Card, WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
@@ -23,10 +19,7 @@ import { Box, Button, CircularProgress, Divider, FormControlLabel, Grid, Switch,
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined'
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded'
-import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined'
 import css from './styles.module.css'
-import ActivateAccountButton from '@/features/counterfactual/ActivateAccountButton'
-import { isReplayedSafeProps } from '@/features/counterfactual/utils'
 
 const calculateProgress = (items: boolean[]) => {
   const totalNumberOfItems = items.length
@@ -41,15 +34,17 @@ const StatusCard = ({
   completed,
   children,
 }: {
-  badge: ReactNode
+  badge: string
   title: string
   content: string
   completed: boolean
-  children?: ReactNode
+  children: ReactNode
 }) => {
   return (
     <Card className={css.card}>
-      <div className={css.topBadge}>{badge}</div>
+      <div className={css.topBadge}>
+        <Typography variant="body2">{badge}</Typography>
+      </div>
       <div className={css.status}>
         {completed ? (
           <CheckCircleRoundedIcon color="success" fontSize="medium" />
@@ -60,51 +55,9 @@ const StatusCard = ({
       <Typography variant="h4" fontWeight="bold" mb={2}>
         {title}
       </Typography>
-      <Typography variant="body2" color="primary.light">
-        {content}
-      </Typography>
+      <Typography>{content}</Typography>
       {children}
     </Card>
-  )
-}
-
-const ActivationStatusWidget = ({ explorerLink }: { explorerLink?: string }) => {
-  return (
-    <StatusCard
-      badge={
-        <Typography
-          variant="body2"
-          sx={{ backgroundColor: 'border.light', borderRadius: '0 0 4px 4px', padding: '4px 8px' }}
-        >
-          Just submitted
-        </Typography>
-      }
-      title="Transaction pending"
-      content="Depending on network usage, it can take some time until the transaction is successfully processed and executed."
-      completed={false}
-    >
-      {explorerLink && (
-        <ExternalLink href={explorerLink} sx={{ mt: 2 }}>
-          View Explorer
-        </ExternalLink>
-      )}
-    </StatusCard>
-  )
-}
-
-const UsefulHintsWidget = () => {
-  return (
-    <StatusCard
-      badge={
-        <Typography variant="body2" className={classnames(css.badgeText, css.badgeTextInfo)}>
-          <LightbulbOutlinedIcon fontSize="small" sx={{ mr: 0.5 }} />
-          Did you know
-        </Typography>
-      }
-      title="Explore over 70+ dApps"
-      content="In our Safe App section you can connect your Safe to over 70 dApps directly or via Wallet Connect to interact with any application."
-      completed={false}
-    />
   )
 }
 
@@ -125,30 +78,25 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
   }
 
   return (
-    <StatusCard
-      badge={
-        <Typography variant="body2" className={css.badgeText}>
-          First interaction
-        </Typography>
-      }
-      title={title}
-      content={content}
-      completed={completed}
-    >
+    <StatusCard badge="First interaction" title={title} content={content} completed={completed}>
       {!completed && (
         <>
           <Box mt={2}>
-            <Track {...OVERVIEW_EVENTS.ADD_FUNDS}>
-              <Button
-                data-testid="add-funds-btn"
-                onClick={toggleDialog}
-                variant="contained"
-                size="small"
-                sx={{ minHeight: '40px' }}
-              >
-                Add funds
-              </Button>
-            </Track>
+            <CheckWallet>
+              {(isOk) => (
+                <Track {...OVERVIEW_EVENTS.ADD_FUNDS}>
+                  <Button
+                    onClick={toggleDialog}
+                    variant="contained"
+                    size="small"
+                    sx={{ minHeight: '40px' }}
+                    disabled={!isOk}
+                  >
+                    Add funds
+                  </Button>
+                </Track>
+              )}
+            </CheckWallet>
           </Box>
           <ModalDialog
             open={open}
@@ -158,7 +106,7 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
           >
             <Box px={4} pb={5} pt={4}>
               <Grid container spacing={2} alignItems="center" justifyContent="center" mb={4}>
-                <Grid data-testid="qr-code" item textAlign="center">
+                <Grid item textAlign="center">
                   <Box p={1} border={1} borderRadius="6px" borderColor="border.light" display="inline-flex">
                     <QRCode value={qrCode} size={132} />
                   </Box>
@@ -166,7 +114,6 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
                     <FormControlLabel
                       control={
                         <Switch
-                          data-testid="qr-code-switch"
                           checked={settings.shortName.qr}
                           onChange={(e) => dispatch(setQrShortName(e.target.checked))}
                         />
@@ -185,14 +132,7 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
                     account.
                   </Typography>
 
-                  <Box
-                    data-testid="address-info"
-                    bgcolor="background.main"
-                    p={2}
-                    borderRadius="6px"
-                    alignSelf="flex-start"
-                    fontSize="14px"
-                  >
+                  <Box bgcolor="background.main" p={2} borderRadius="6px" alignSelf="flex-start" fontSize="14px">
                     <EthHashInfo
                       address={safeAddress}
                       showName={false}
@@ -228,22 +168,12 @@ const FirstTransactionWidget = ({ completed }: { completed: boolean }) => {
 
   return (
     <>
-      <StatusCard
-        badge={
-          <Typography variant="body2" className={css.badgeText}>
-            First interaction
-          </Typography>
-        }
-        title={title}
-        content={content}
-        completed={completed}
-      >
+      <StatusCard badge="First interaction" title={title} content={content} completed={completed}>
         {!completed && (
           <CheckWallet>
             {(isOk) => (
               <Track {...OVERVIEW_EVENTS.NEW_TRANSACTION} label="onboarding">
                 <Button
-                  data-testid="create-tx-btn"
                   onClick={() => setOpen(true)}
                   variant="outlined"
                   size="small"
@@ -256,33 +186,6 @@ const FirstTransactionWidget = ({ completed }: { completed: boolean }) => {
             )}
           </CheckWallet>
         )}
-      </StatusCard>
-      <FirstTxFlow open={open} onClose={() => setOpen(false)} />
-    </>
-  )
-}
-
-const ActivateSafeWidget = ({ chain }: { chain: ChainInfo | undefined }) => {
-  const [open, setOpen] = useState<boolean>(false)
-
-  const title = `Activate account ${chain ? 'on ' + chain.chainName : ''}`
-  const content = 'Activate your account to start using all benefits of Safe'
-
-  return (
-    <>
-      <StatusCard
-        badge={
-          <Typography variant="body2" className={css.badgeText}>
-            First interaction
-          </Typography>
-        }
-        title={title}
-        completed={false}
-        content={content}
-      >
-        <Box mt={2}>
-          <ActivateAccountButton />
-        </Box>
       </StatusCard>
       <FirstTxFlow open={open} onClose={() => setOpen(false)} />
     </>
@@ -305,13 +208,8 @@ const AccountReadyWidget = () => {
 
 const FirstSteps = () => {
   const { balances } = useBalances()
-  const { safe, safeAddress } = useSafeInfo()
+  const { safe } = useSafeInfo()
   const outgoingTransactions = useAppSelector(selectOutgoingTransactions)
-  const chain = useCurrentChain()
-  const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, safe.chainId, safeAddress))
-
-  const isMultiSig = safe.threshold > 1
-  const isReplayedSafe = undeployedSafe && isReplayedSafeProps(undeployedSafe?.props)
 
   const hasNonZeroBalance = balances && (balances.items.length > 1 || BigInt(balances.items[0]?.balance || 0) > 0)
   const hasOutgoingTransactions = !!outgoingTransactions && outgoingTransactions.length > 0
@@ -321,8 +219,6 @@ const FirstSteps = () => {
   const stepsCompleted = completedItems.filter((item) => item).length
 
   if (safe.deployed) return null
-
-  const isActivating = undeployedSafe?.status.status !== 'AWAITING_EXECUTION'
 
   return (
     <WidgetContainer>
@@ -346,7 +242,7 @@ const FirstSteps = () => {
             </svg>
             <CircularProgress variant="determinate" value={100} className={css.circleBg} size={60} thickness={5} />
             <CircularProgress
-              variant={isActivating ? 'indeterminate' : 'determinate'}
+              variant="determinate"
               value={progress === 0 ? 3 : progress} // Just to give an indication of the progress even at 0%
               className={css.circleProgress}
               size={60}
@@ -356,46 +252,23 @@ const FirstSteps = () => {
           </Grid>
           <Grid item>
             <Typography component="div" variant="h2" fontWeight={700} mb={1}>
-              {isActivating ? 'Account is being activated...' : 'Activate your Safe Account'}
+              Activate your Safe Account
             </Typography>
-
-            {isActivating ? (
-              <Typography variant="body2">
-                <strong>This may take a few minutes.</strong> Once activated, your account will be up and running.
-              </Typography>
-            ) : (
-              <Typography variant="body2">
-                <strong>
-                  {stepsCompleted} of {completedItems.length} steps completed.
-                </strong>{' '}
-                Finish the next steps to start using all Safe Account features:
-              </Typography>
-            )}
+            <Typography variant="body2">
+              <strong>
+                {stepsCompleted} of {completedItems.length} steps completed.
+              </strong>{' '}
+              Finish the next steps to start using all Safe Account features:
+            </Typography>
           </Grid>
         </Grid>
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
-            {isActivating && chain ? (
-              <ActivationStatusWidget
-                explorerLink={
-                  undeployedSafe?.status.txHash
-                    ? getExplorerLink(undeployedSafe.status.txHash, chain.blockExplorerUriTemplate).href
-                    : undefined
-                }
-              />
-            ) : (
-              <AddFundsWidget completed={hasNonZeroBalance} />
-            )}
+            <AddFundsWidget completed={hasNonZeroBalance} />
           </Grid>
 
           <Grid item xs={12} md={4}>
-            {isActivating ? (
-              <UsefulHintsWidget />
-            ) : isMultiSig || isReplayedSafe ? (
-              <ActivateSafeWidget chain={chain} />
-            ) : (
-              <FirstTransactionWidget completed={hasOutgoingTransactions} />
-            )}
+            <FirstTransactionWidget completed={hasOutgoingTransactions} />
           </Grid>
 
           <Grid item xs={12} md={4}>

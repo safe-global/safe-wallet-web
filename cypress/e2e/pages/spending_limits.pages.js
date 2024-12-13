@@ -20,8 +20,7 @@ const reviewSpendingLimit = '[data-testid="spending-limit-label"]'
 const deleteBtn = '[data-testid="delete-btn"]'
 const resetTimeInfo = '[data-testid="reset-time"]'
 const spentAmountInfo = '[data-testid="spent-amount"]'
-export const spendingLimitTxOption = '[data-testid="spending-limit-tx"]'
-export const standardTx = '[data-testid="standard-tx"]'
+const spendingLimitTxOption = '[data-testid="spending-limit-tx"]'
 const tokenBalance = '[data-testid="token-balance"]'
 const tokenItem = '[data-testid="token-item"]'
 const maxBtn = '[data-testid="max-btn"]'
@@ -33,9 +32,6 @@ const oldTokenAmount = '[data-testid="old-token-amount"]'
 const oldResetTime = '[data-testid="old-reset-time"]'
 const slimitReplacementWarning = '[data-testid="limit-replacement-warning"]'
 const addressItem = '[data-testid="address-item"]'
-const allActionsSection = '[data-testid="all-actions"]'
-const actionItem = '[data-testid="action-item"]'
-const decodedTxSummary = '[data-testid="decoded-tx-summary"]'
 
 const actionSectionItem = () => {
   return cy.get('[data-testid="CodeIcon"]').parent()
@@ -51,12 +47,7 @@ export const timePeriodOptions = {
 const getBeneficiaryInput = () => cy.get(beneficiarySection).find('input').should('be.enabled')
 const automationOwner = ls.addressBookData.sepoliaAddress2[11155111]['0xC16Db0251654C0a72E91B190d81eAD367d2C6fED']
 
-export const actionNames = {
-  resetAllowance: 'resetAllowance',
-  setAllowance: 'setAllowance',
-}
-
-const expectedSpendOptions = ['0.02 of 0.17 ETH', '0.00001 of 0.05 ETH', '0 of 0.01 ETH']
+const expectedSpendOptions = ['0 of 0.17 ETH', '0.00001 of 0.05 ETH', '0 of 0.01 ETH']
 const expectedResetOptions = new Array(3).fill('One-time')
 
 const newTransactionStr = 'New transaction'
@@ -130,8 +121,8 @@ export function selectSpendingLimitOption() {
   main.checkRadioButtonState(input, constants.checkboxStates.checked)
 }
 
-export function verifyTxOptionExist(options) {
-  main.verifyElementsIsVisible(options)
+export function verifySpendingOptionExists() {
+  cy.get(spendingLimitTxOption).should('exist').and('be.visible')
 }
 
 export function verifySpendingOptionShowsBalance(balance) {
@@ -212,26 +203,4 @@ export function verifyCharErrorValidation() {
 
 export function verifyNumberAmountEntered(amount) {
   cy.get(tokenAmountFld).find('input').should('have.value', amount)
-}
-
-export function verifyActionCount(count) {
-  main.verifyElementsCount(actionItem, count)
-}
-
-export function verifyActionNames(names) {
-  cy.get(allActionsSection)
-    .parent()
-    .within(() => {
-      names.forEach((item) => {
-        cy.contains(item)
-      })
-    })
-}
-
-export function verifyDecodedTxSummary(names) {
-  cy.get(decodedTxSummary).within(() => {
-    names.forEach((item) => {
-      cy.contains(item)
-    })
-  })
 }

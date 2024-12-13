@@ -1,32 +1,12 @@
 import { Typography } from '@mui/material'
-import NamedAddressInfo from '@/components/common/NamedAddressInfo'
+import EthHashInfo from '@/components/common/EthHashInfo'
 import FieldsGrid from '../FieldsGrid'
 
-const SendToBlock = ({
-  address,
-  title = 'To:',
-  customAvatar,
-  avatarSize,
-  name,
-}: {
-  address: string
-  name?: string
-  title?: string
-  customAvatar?: string
-  avatarSize?: number
-}) => {
+const SendToBlock = ({ address, title = 'To' }: { address: string; title?: string }) => {
   return (
     <FieldsGrid title={title}>
       <Typography variant="body2" component="div">
-        <NamedAddressInfo
-          address={address}
-          name={name}
-          shortAddress={false}
-          hasExplorer
-          showCopyButton
-          avatarSize={avatarSize}
-          customAvatar={customAvatar}
-        />
+        <EthHashInfo address={address} shortAddress={false} hasExplorer showCopyButton />
       </Typography>
     </FieldsGrid>
   )

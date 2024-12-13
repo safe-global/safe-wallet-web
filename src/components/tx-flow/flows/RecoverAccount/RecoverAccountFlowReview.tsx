@@ -8,8 +8,10 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { getRecoveryProposalTransactions } from '@/features/recovery/services/transaction'
 import DecodedTx from '@/components/tx/DecodedTx'
 import ErrorMessage from '@/components/tx/ErrorMessage'
+import { RedefineBalanceChanges } from '@/components/tx/security/redefine/RedefineBalanceChange'
 import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
 import TxChecks from '@/components/tx/SignOrExecuteForm/TxChecks'
+import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import useDecodeTx from '@/hooks/useDecodeTx'
 import TxCard from '../../common/TxCard'
 import { SafeTxContext } from '../../SafeTxProvider'
@@ -32,10 +34,6 @@ import { isWalletRejection } from '@/utils/wallets'
 import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
-import { BlockaidBalanceChanges } from '@/components/tx/security/blockaid/BlockaidBalanceChange'
-import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
-import { useGetTransactionDetailsQuery } from '@/store/api/gateway'
-import { skipToken } from '@reduxjs/toolkit/query'
 
 export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlowProps }): ReactElement | null {
   // Form state
@@ -46,15 +44,13 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
   // Hooks
   const { setTxFlow } = useContext(TxModalContext)
   const { safeTx, safeTxError, setSafeTx, setSafeTxError } = useContext(SafeTxContext)
-  const [decodedData] = useDecodeTx(safeTx)
+  const [decodedData, decodedDataError, decodedDataLoading] = useDecodeTx(safeTx)
   const { safe } = useSafeInfo()
   const wallet = useWallet()
   const onboard = useOnboard()
   const [data] = useRecovery()
   const recovery = data && selectDelayModifierByRecoverer(data, wallet?.address ?? '')
   const [, executionValidationError] = useIsValidRecoveryExecTransactionFromModule(recovery?.address, safeTx)
-
-  const { data: txDetails } = useGetTransactionDetailsQuery(skipToken)
 
   // Proposal
   const newThreshold = Number(params[RecoverAccountFlowFields.threshold])
@@ -74,7 +70,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
   // On modal submit
   const onSubmit = async () => {
-    if (!recovery || !onboard || !wallet || !safeTx) {
+    if (!recovery || !onboard || !safeTx) {
       return
     }
 
@@ -84,11 +80,10 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
     try {
       await dispatchRecoveryProposal({
-        provider: wallet.provider,
+        onboard,
         safe,
         safeTx,
         delayModifierAddress: recovery.address,
-        signerAddress: wallet.address,
       })
       trackEvent({ ...RECOVERY_EVENTS.SUBMIT_RECOVERY_ATTEMPT })
     } catch (_err) {
@@ -131,12 +126,19 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
         <Divider className={commonCss.nestedDivider} />
 
-        <DecodedTx txDetails={txDetails} tx={safeTx} decodedData={decodedData} />
+        <DecodedTx
+          tx={safeTx}
+          decodedData={decodedData}
+          decodedDataError={decodedDataError}
+          decodedDataLoading={decodedDataLoading}
+        />
 
-        <BlockaidBalanceChanges />
+        <RedefineBalanceChanges />
       </TxCard>
 
-      <TxChecks executionOwner={safe.owners[0].value} />
+      <TxCard>
+        <TxChecks executionOwner={safe.owners[0].value} />
+      </TxCard>
 
       <TxCard>
         <>
@@ -158,7 +160,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
             <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
           )}
 
-          <NetworkWarning />
+          <WrongChainWarning />
 
           {recovery?.delay !== undefined && (
             <ErrorMessage level="info">
@@ -173,7 +175,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
           <Divider className={commonCss.nestedDivider} />
 
           <CardActions sx={{ mt: 'var(--space-1) !important' }}>
-            <CheckWallet allowNonOwner checkNetwork>
+            <CheckWallet allowNonOwner>
               {(isOk) => (
                 <Button
                   data-testid="execute-btn"

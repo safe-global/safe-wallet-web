@@ -22,7 +22,7 @@ const SafeAppsTxFlow = ({
   return (
     <TxLayout
       title="Confirm transaction"
-      subtitle={<AppTitle name={data.app?.name} logoUri={data.app?.iconUrl} txs={data.txs} />}
+      subtitle={<AppTitle name={data.app?.name} logoUri={data.app?.iconUrl} />}
       step={0}
     >
       <ReviewSafeAppsTx safeAppsTx={data} onSubmit={onSubmit} />

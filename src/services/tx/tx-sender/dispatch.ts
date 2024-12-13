@@ -1,42 +1,28 @@
-import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
-import { isHardwareWallet, isSmartContractWallet } from '@/utils/wallets'
-import type { MultiSendCallOnlyContractImplementationType } from '@safe-global/protocol-kit'
-import {
-  type ChainInfo,
-  relayTransaction,
-  type SafeInfo,
-  type TransactionDetails,
-} from '@safe-global/safe-gateway-typescript-sdk'
-import type {
-  SafeSignature,
-  SafeTransaction,
-  Transaction,
-  TransactionOptions,
-  TransactionResult,
-} from '@safe-global/safe-core-sdk-types'
-import { didRevert } from '@/utils/ethers-utils'
+import type { SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeTransaction, TransactionOptions, TransactionResult } from '@safe-global/safe-core-sdk-types'
+import type { EthersError } from '@/utils/ethers-utils'
+import { didReprice, didRevert } from '@/utils/ethers-utils'
+import type { MultiSendCallOnlyEthersContract } from '@safe-global/protocol-kit'
 import { type SpendingLimitTxParams } from '@/components/tx-flow/flows/TokenTransfer/ReviewSpendingLimitTx'
 import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
-import type { ContractTransactionResponse, Eip1193Provider, Overrides, TransactionResponse } from 'ethers'
+import type { ContractTransactionResponse, Overrides } from 'ethers'
 import type { RequestId } from '@safe-global/safe-apps-sdk'
 import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
-import { waitForRelayedTx } from '@/services/tx/txMonitor'
+import { waitForRelayedTx, waitForTx } from '@/services/tx/txMonitor'
 import { getReadOnlyCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
+import { sponsoredCall } from '@/services/tx/relaying'
 import {
   getAndValidateSafeSDK,
   getSafeSDKWithSigner,
+  getUncheckedSafeSDK,
+  assertWalletChain,
   tryOffChainTxSigning,
-  getUncheckedSigner,
-  prepareTxExecution,
-  prepareApproveTxHash,
 } from './sdk'
-import { createWeb3, getUserNonce } from '@/hooks/wallets/web3'
+import { createWeb3, getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { type OnboardAPI } from '@web3-onboard/core'
 import { asError } from '@/services/exceptions/utils'
 import chains from '@/config/chains'
-import { createExistingTx } from './create'
-import { getLatestSafeVersion } from '@/utils/chains'
 
 /**
  * Propose a transaction
@@ -59,7 +45,6 @@ export const dispatchTxProposal = async ({
 }): Promise<TransactionDetails> => {
   const safeSDK = getAndValidateSafeSDK()
   const safeTxHash = await safeSDK.getTransactionHash(safeTx)
-
   let proposedTx: TransactionDetails | undefined
   try {
     proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx, safeTxHash, origin)
@@ -78,7 +63,6 @@ export const dispatchTxProposal = async ({
     txDispatch(txId ? TxEvent.SIGNATURE_PROPOSED : TxEvent.PROPOSED, {
       txId: proposedTx.txId,
       signerAddress: txId ? sender : undefined,
-      nonce: safeTx.data.nonce,
     })
   }
 
@@ -91,10 +75,11 @@ export const dispatchTxProposal = async ({
 export const dispatchTxSigning = async (
   safeTx: SafeTransaction,
   safeVersion: SafeInfo['version'],
-  provider: Eip1193Provider,
+  onboard: OnboardAPI,
+  chainId: SafeInfo['chainId'],
   txId?: string,
 ): Promise<SafeTransaction> => {
-  const sdk = await getSafeSDKWithSigner(provider)
+  const sdk = await getSafeSDKWithSigner(onboard, chainId)
 
   let signedTx: SafeTransaction | undefined
   try {
@@ -112,23 +97,6 @@ export const dispatchTxSigning = async (
   return signedTx
 }
 
-// We have to manually sign because sdk.signTransaction doesn't support proposers
-export const dispatchProposerTxSigning = async (safeTx: SafeTransaction, wallet: ConnectedWallet) => {
-  const sdk = await getSafeSDKWithSigner(wallet.provider)
-
-  let signature: SafeSignature
-  if (isHardwareWallet(wallet)) {
-    const txHash = await sdk.getTransactionHash(safeTx)
-    signature = await sdk.signHash(txHash)
-  } else {
-    signature = await sdk.signTypedData(safeTx)
-  }
-
-  safeTx.addSignature(signature)
-
-  return safeTx
-}
-
 const ZK_SYNC_ON_CHAIN_SIGNATURE_GAS_LIMIT = 4_500_000
 
 /**
@@ -137,25 +105,19 @@ const ZK_SYNC_ON_CHAIN_SIGNATURE_GAS_LIMIT = 4_500_000
 export const dispatchOnChainSigning = async (
   safeTx: SafeTransaction,
   txId: string,
-  provider: Eip1193Provider,
+  onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
-  signerAddress: string,
-  safeAddress: string,
 ) => {
-  const sdk = await getSafeSDKWithSigner(provider)
-  const safeTxHash = await sdk.getTransactionHash(safeTx)
-  const eventParams = { txId, nonce: safeTx.data.nonce }
+  const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
+  const safeTxHash = await sdkUnchecked.getTransactionHash(safeTx)
+  const eventParams = { txId }
 
   const options = chainId === chains.zksync ? { gasLimit: ZK_SYNC_ON_CHAIN_SIGNATURE_GAS_LIMIT } : undefined
 
   try {
-    // TODO: This is a workaround until there is a fix for unchecked transactions in the protocol-kit
-    const encodedApproveHashTx = await prepareApproveTxHash(safeTxHash, provider)
-
-    await provider.request({
-      method: 'eth_sendTransaction',
-      params: [{ from: signerAddress, to: safeAddress, data: encodedApproveHashTx, gas: options?.gasLimit }],
-    })
+    // With the unchecked signer, the contract call resolves once the tx
+    // has been submitted in the wallet not when it has been executed
+    await sdkUnchecked.approveTransactionHash(safeTxHash, options)
 
     txDispatch(TxEvent.ONCHAIN_SIGNATURE_REQUESTED, eventParams)
   } catch (err) {
@@ -169,96 +131,6 @@ export const dispatchOnChainSigning = async (
   // signed so we don't return it
 }
 
-export const dispatchSafeTxSpeedUp = async (
-  txOptions: Omit<TransactionOptions, 'nonce'> & { nonce: number },
-  txId: string,
-  provider: Eip1193Provider,
-  chainId: SafeInfo['chainId'],
-  signerAddress: string,
-  safeAddress: string,
-  nonce: number,
-) => {
-  const sdk = await getSafeSDKWithSigner(provider)
-  const eventParams = { txId, nonce }
-  const signerNonce = txOptions.nonce
-  const isSmartAccount = await isSmartContractWallet(chainId, signerAddress)
-
-  // Execute the tx
-  let result: TransactionResult | undefined
-  try {
-    const safeTx = await createExistingTx(chainId, safeAddress, txId)
-
-    // TODO: This is a workaround until there is a fix for unchecked transactions in the protocol-kit
-    if (isSmartAccount) {
-      const encodedTx = await prepareTxExecution(safeTx, provider)
-      const txHash = await provider.request({
-        method: 'eth_sendTransaction',
-        params: [{ from: signerAddress, to: safeAddress, data: encodedTx }],
-      })
-
-      result = {
-        hash: txHash,
-        transactionResponse: null,
-      }
-    } else {
-      result = await sdk.executeTransaction(safeTx, txOptions)
-    }
-    txDispatch(TxEvent.EXECUTING, eventParams)
-  } catch (error) {
-    txDispatch(TxEvent.SPEEDUP_FAILED, { ...eventParams, error: asError(error) })
-    throw error
-  }
-
-  txDispatch(TxEvent.PROCESSING, {
-    ...eventParams,
-    txHash: result.hash,
-    signerAddress,
-    signerNonce,
-    gasLimit: txOptions.gasLimit,
-    txType: 'SafeTx',
-  })
-
-  return result.hash
-}
-
-export const dispatchCustomTxSpeedUp = async (
-  txOptions: Omit<TransactionOptions, 'nonce'> & { nonce: number },
-  txId: string,
-  to: string,
-  data: string,
-  provider: Eip1193Provider,
-  signerAddress: string,
-  safeAddress: string,
-  nonce: number,
-) => {
-  const eventParams = { txId, nonce }
-  const signerNonce = txOptions.nonce
-
-  // Execute the tx
-  let result: TransactionResponse | undefined
-  try {
-    const signer = await getUncheckedSigner(provider)
-    result = await signer.sendTransaction({ to, data, ...txOptions })
-    txDispatch(TxEvent.EXECUTING, eventParams)
-  } catch (error) {
-    txDispatch(TxEvent.SPEEDUP_FAILED, { ...eventParams, error: asError(error) })
-    throw error
-  }
-
-  txDispatch(TxEvent.PROCESSING, {
-    txHash: result.hash,
-    signerAddress,
-    signerNonce,
-    data,
-    to,
-    groupKey: result?.hash,
-    txType: 'Custom',
-    nonce,
-  })
-
-  return result.hash
-}
-
 /**
  * Execute a transaction
  */
@@ -266,158 +138,151 @@ export const dispatchTxExecution = async (
   safeTx: SafeTransaction,
   txOptions: TransactionOptions,
   txId: string,
-  provider: Eip1193Provider,
-  signerAddress: string,
+  onboard: OnboardAPI,
+  chainId: SafeInfo['chainId'],
   safeAddress: string,
-  isSmartAccount: boolean,
 ): Promise<string> => {
-  const sdk = await getSafeSDKWithSigner(provider)
-  const eventParams = { txId, nonce: safeTx.data.nonce }
-
-  const signerNonce = txOptions.nonce ?? (await getUserNonce(signerAddress))
+  const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
+  const eventParams = { txId }
 
   // Execute the tx
   let result: TransactionResult | undefined
   try {
-    // TODO: This is a workaround until there is a fix for unchecked transactions in the protocol-kit
-    if (isSmartAccount) {
-      const encodedTx = await prepareTxExecution(safeTx, provider)
-      const txHash = await provider.request({
-        method: 'eth_sendTransaction',
-        params: [{ from: signerAddress, to: safeAddress, data: encodedTx }],
-      })
-
-      result = {
-        hash: txHash,
-        transactionResponse: null,
-      }
-    } else {
-      result = await sdk.executeTransaction(safeTx, txOptions)
-    }
-    txDispatch(TxEvent.EXECUTING, { ...eventParams })
+    result = await sdkUnchecked.executeTransaction(safeTx, txOptions)
+    txDispatch(TxEvent.EXECUTING, eventParams)
   } catch (error) {
     txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
     throw error
   }
 
-  txDispatch(TxEvent.PROCESSING, {
-    ...eventParams,
-    nonce: safeTx.data.nonce,
-    txHash: result.hash,
-    signerAddress,
-    signerNonce,
-    gasLimit: txOptions.gasLimit,
-    txType: 'SafeTx',
-  })
+  txDispatch(TxEvent.PROCESSING, { ...eventParams, txHash: result.hash })
+
+  const provider = getWeb3ReadOnly()
+
+  // Asynchronously watch the tx to be mined/validated
+  Promise.race([
+    result.transactionResponse
+      ?.wait()
+      .then((receipt) => {
+        if (receipt === null) {
+          txDispatch(TxEvent.FAILED, { ...eventParams, error: new Error('No transaction receipt found') })
+        } else if (didRevert(receipt)) {
+          txDispatch(TxEvent.REVERTED, { ...eventParams, error: new Error('Transaction reverted by EVM') })
+        } else {
+          txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
+        }
+      })
+      .catch((err) => {
+        const error = err as EthersError
+
+        if (didReprice(error)) {
+          txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
+        } else {
+          txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
+        }
+      }),
+    provider ? waitForTx(provider, [txId], result.hash) : undefined,
+  ])
 
   return result.hash
 }
 
 export const dispatchBatchExecution = async (
   txs: TransactionDetails[],
-  multiSendContract: MultiSendCallOnlyContractImplementationType,
+  multiSendContract: MultiSendCallOnlyEthersContract,
   multiSendTxData: string,
-  provider: Eip1193Provider,
-  signerAddress: string,
+  onboard: OnboardAPI,
+  chainId: SafeInfo['chainId'],
   safeAddress: string,
-  overrides: Omit<Overrides, 'nonce'> & { nonce: number },
-  nonce: number,
+  overrides: Overrides,
 ) => {
   const groupKey = multiSendTxData
 
-  let result: ContractTransactionResponse
+  let result: TransactionResult | undefined
   const txIds = txs.map((tx) => tx.txId)
-  let signerNonce = overrides.nonce
-  let txData = multiSendContract.encode('multiSend', [multiSendTxData])
 
   try {
-    if (signerNonce === undefined || signerNonce === null) {
-      signerNonce = await getUserNonce(signerAddress)
-    }
-    const signer = await getUncheckedSigner(provider)
-    // @ts-ignore
-    result = await multiSendContract.contract.connect(signer).multiSend(multiSendTxData, overrides)
+    const wallet = await assertWalletChain(onboard, chainId)
+
+    const provider = createWeb3(wallet.provider)
+    result = await multiSendContract.contract.connect(await provider.getSigner()).multiSend(multiSendTxData, overrides)
 
     txIds.forEach((txId) => {
-      txDispatch(TxEvent.EXECUTING, { txId, groupKey, nonce })
+      txDispatch(TxEvent.EXECUTING, { txId, groupKey })
     })
   } catch (err) {
     txIds.forEach((txId) => {
-      txDispatch(TxEvent.FAILED, { txId, error: asError(err), groupKey, nonce })
+      txDispatch(TxEvent.FAILED, { txId, error: asError(err), groupKey })
     })
     throw err
   }
-  const txTo = await multiSendContract.getAddress()
 
   txIds.forEach((txId) => {
-    txDispatch(TxEvent.PROCESSING, {
-      txId,
-      txHash: result.hash,
-      groupKey,
-      signerNonce,
-      signerAddress,
-      txType: 'Custom',
-      data: txData,
-      to: txTo,
-      nonce,
-    })
+    txDispatch(TxEvent.PROCESSING, { txId, txHash: result!.hash, groupKey })
   })
+
+  const provider = getWeb3ReadOnly()
+
+  Promise.race([
+    result.transactionResponse
+      ?.wait()
+      .then((receipt) => {
+        if (receipt === null) {
+          txs.forEach(({ txId }) => {
+            txDispatch(TxEvent.FAILED, {
+              txId,
+              error: new Error('No transaction receipt found'),
+              groupKey,
+            })
+          })
+        } else if (didRevert(receipt)) {
+          txIds.forEach((txId) => {
+            txDispatch(TxEvent.REVERTED, {
+              txId,
+              error: new Error('Transaction reverted by EVM'),
+              groupKey,
+            })
+          })
+        } else {
+          txIds.forEach((txId) => {
+            txDispatch(TxEvent.PROCESSED, {
+              txId,
+              groupKey,
+              safeAddress,
+            })
+          })
+        }
+      })
+      .catch((err) => {
+        const error = err as EthersError
+
+        if (didReprice(error)) {
+          txIds.forEach((txId) => {
+            txDispatch(TxEvent.PROCESSED, {
+              txId,
+              safeAddress,
+            })
+          })
+        } else {
+          txIds.forEach((txId) => {
+            txDispatch(TxEvent.FAILED, {
+              txId,
+              error: asError(err),
+              groupKey,
+            })
+          })
+        }
+      }),
+    provider ? waitForTx(provider, txIds, result.hash) : undefined,
+  ])
 
   return result!.hash
-}
-
-/**
- * Execute a module transaction
- */
-export const dispatchModuleTxExecution = async (
-  tx: Transaction,
-  provider: Eip1193Provider,
-  safeAddress: string,
-): Promise<string> => {
-  const id = JSON.stringify(tx)
-
-  let result: TransactionResponse | undefined
-  try {
-    const browserProvider = createWeb3(provider)
-    const signer = await browserProvider.getSigner()
-
-    txDispatch(TxEvent.EXECUTING, { groupKey: id })
-    result = await signer.sendTransaction(tx)
-  } catch (error) {
-    txDispatch(TxEvent.FAILED, { groupKey: id, error: asError(error) })
-    throw error
-  }
-
-  txDispatch(TxEvent.PROCESSING_MODULE, {
-    groupKey: id,
-    txHash: result.hash,
-  })
-
-  result
-    ?.wait()
-    .then((receipt) => {
-      if (receipt === null) {
-        txDispatch(TxEvent.FAILED, { groupKey: id, error: new Error('No transaction receipt found') })
-      } else if (didRevert(receipt)) {
-        txDispatch(TxEvent.REVERTED, {
-          groupKey: id,
-          error: new Error('Transaction reverted by EVM'),
-        })
-      } else {
-        txDispatch(TxEvent.PROCESSED, { groupKey: id, safeAddress, txHash: result?.hash })
-      }
-    })
-    .catch((error) => {
-      txDispatch(TxEvent.FAILED, { groupKey: id, error: asError(error) })
-    })
-
-  return result?.hash
 }
 
 export const dispatchSpendingLimitTxExecution = async (
   txParams: SpendingLimitTxParams,
   txOptions: TransactionOptions,
-  provider: Eip1193Provider,
+  onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
   safeAddress: string,
 ) => {
@@ -425,8 +290,9 @@ export const dispatchSpendingLimitTxExecution = async (
 
   let result: ContractTransactionResponse | undefined
   try {
-    const signer = await getUncheckedSigner(provider)
-    const contract = getSpendingLimitContract(chainId, signer)
+    const wallet = await assertWalletChain(onboard, chainId)
+    const provider = createWeb3(wallet.provider)
+    const contract = getSpendingLimitContract(chainId, await provider.getSigner())
 
     result = await contract.executeAllowanceTransfer(
       txParams.safeAddress,
@@ -461,7 +327,7 @@ export const dispatchSpendingLimitTxExecution = async (
           error: new Error('Transaction reverted by EVM'),
         })
       } else {
-        txDispatch(TxEvent.PROCESSED, { groupKey: id, safeAddress, txHash: result?.hash })
+        txDispatch(TxEvent.PROCESSED, { groupKey: id, safeAddress })
       }
     })
     .catch((error) => {
@@ -474,10 +340,11 @@ export const dispatchSpendingLimitTxExecution = async (
 export const dispatchSafeAppsTx = async (
   safeTx: SafeTransaction,
   safeAppRequestId: RequestId,
-  provider: Eip1193Provider,
+  onboard: OnboardAPI,
+  chainId: SafeInfo['chainId'],
   txId?: string,
 ): Promise<string> => {
-  const sdk = await getSafeSDKWithSigner(provider)
+  const sdk = await getSafeSDKWithSigner(onboard, chainId)
   const safeTxHash = await sdk.getTransactionHash(safeTx)
   txDispatch(TxEvent.SAFE_APPS_REQUEST, { safeAppRequestId, safeTxHash, txId })
   return safeTxHash
@@ -487,7 +354,6 @@ export const dispatchTxRelay = async (
   safeTx: SafeTransaction,
   safe: SafeInfo,
   txId: string,
-  chain: ChainInfo,
   gasLimit?: string | number,
 ) => {
   const readOnlySafeContract = await getReadOnlyCurrentGnosisSafeContract(safe)
@@ -507,35 +373,29 @@ export const dispatchTxRelay = async (
   ])
 
   try {
-    const relayResponse = await relayTransaction(safe.chainId, {
-      to: safe.address.value,
-      data,
-      gasLimit: gasLimit?.toString(),
-      version: safe.version ?? getLatestSafeVersion(chain),
-    })
+    const relayResponse = await sponsoredCall({ chainId: safe.chainId, to: safe.address.value, data, gasLimit })
     const taskId = relayResponse.taskId
 
     if (!taskId) {
       throw new Error('Transaction could not be relayed')
     }
 
-    txDispatch(TxEvent.RELAYING, { taskId, txId, nonce: safeTx.data.nonce })
+    txDispatch(TxEvent.RELAYING, { taskId, txId })
 
     // Monitor relay tx
-    waitForRelayedTx(taskId, [txId], safe.address.value, safeTx.data.nonce)
+    waitForRelayedTx(taskId, [txId], safe.address.value)
   } catch (error) {
-    txDispatch(TxEvent.FAILED, { txId, error: asError(error), nonce: safeTx.data.nonce })
+    txDispatch(TxEvent.FAILED, { txId, error: asError(error) })
     throw error
   }
 }
 
 export const dispatchBatchExecutionRelay = async (
   txs: TransactionDetails[],
-  multiSendContract: MultiSendCallOnlyContractImplementationType,
+  multiSendContract: MultiSendCallOnlyEthersContract,
   multiSendTxData: string,
   chainId: string,
   safeAddress: string,
-  safeVersion: string,
 ) => {
   const to = await multiSendContract.getAddress()
   const data = multiSendContract.contract.interface.encodeFunctionData('multiSend', [multiSendTxData])
@@ -543,10 +403,10 @@ export const dispatchBatchExecutionRelay = async (
 
   let relayResponse
   try {
-    relayResponse = await relayTransaction(chainId, {
+    relayResponse = await sponsoredCall({
+      chainId,
       to,
       data,
-      version: safeVersion,
     })
   } catch (error) {
     txs.forEach(({ txId }) => {
@@ -560,10 +420,8 @@ export const dispatchBatchExecutionRelay = async (
   }
 
   const taskId = relayResponse.taskId
-  txs.forEach(({ txId, detailedExecutionInfo }) => {
-    if (isMultisigExecutionInfo(detailedExecutionInfo)) {
-      txDispatch(TxEvent.RELAYING, { taskId, txId, groupKey, nonce: detailedExecutionInfo.nonce })
-    }
+  txs.forEach(({ txId }) => {
+    txDispatch(TxEvent.RELAYING, { taskId, txId, groupKey })
   })
 
   // Monitor relay tx
@@ -571,7 +429,6 @@ export const dispatchBatchExecutionRelay = async (
     taskId,
     txs.map((tx) => tx.txId),
     safeAddress,
-    isMultisigExecutionInfo(txs[0].detailedExecutionInfo) ? txs[0].detailedExecutionInfo.nonce : 0,
     groupKey,
   )
 }

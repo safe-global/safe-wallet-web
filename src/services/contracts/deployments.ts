@@ -3,78 +3,36 @@ import {
   getSafeSingletonDeployment,
   getSafeL2SingletonDeployment,
   getMultiSendCallOnlyDeployment,
-  getMultiSendDeployment,
   getFallbackHandlerDeployment,
   getProxyFactoryDeployment,
   getSignMessageLibDeployment,
-  getCreateCallDeployment,
-} from '@safe-global/safe-deployments'
-import type { SingletonDeployment, DeploymentFilter, SingletonDeploymentV2 } from '@safe-global/safe-deployments'
+} from '@/bitlayer-safe-deployments/src'
+import type { SingletonDeployment, DeploymentFilter } from '@/bitlayer-safe-deployments/src'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { getLatestSafeVersion } from '@/utils/chains'
-import { sameAddress } from '@/utils/addresses'
-import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
 
-const toNetworkAddressList = (addresses: string | string[]) => (Array.isArray(addresses) ? addresses : [addresses])
-
-export const hasCanonicalDeployment = (deployment: SingletonDeploymentV2 | undefined, chainId: string) => {
-  const canonicalAddress = deployment?.deployments.canonical?.address
-
-  if (!canonicalAddress) {
-    return false
-  }
-
-  const networkAddresses = toNetworkAddressList(deployment.networkAddresses[chainId])
-
-  return networkAddresses.some((networkAddress) => sameAddress(canonicalAddress, networkAddress))
-}
-
-/**
- * Checks if any of the deployments returned by the `getDeployments` function for the given `network` and `versions` contain a deployment for the `contractAddress`
- *
- * @param getDeployments function to get the contract deployments
- * @param contractAddress address that should be included in the deployments
- * @param network chainId that is getting checked
- * @param versions supported Safe versions
- * @returns true if a matching deployment was found
- */
-export const hasMatchingDeployment = (
-  getDeployments: (filter?: DeploymentFilter) => SingletonDeploymentV2 | undefined,
-  contractAddress: string,
-  network: string,
-  versions: SafeVersion[],
-): boolean => {
-  return versions.some((version) => {
-    const deployments = getDeployments({ version, network })
-    if (!deployments) {
-      return false
-    }
-    const deployedAddresses = toNetworkAddressList(deployments.networkAddresses[network] ?? [])
-    return deployedAddresses.some((deployedAddress) => sameAddress(deployedAddress, contractAddress))
-  })
-}
+// import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 export const _tryDeploymentVersions = (
   getDeployment: (filter?: DeploymentFilter) => SingletonDeployment | undefined,
-  network: ChainInfo,
+  network: string,
   version: SafeInfo['version'],
 ): SingletonDeployment | undefined => {
   // Unsupported Safe version
   if (version === null) {
     // Assume latest version as fallback
     return getDeployment({
-      version: getLatestSafeVersion(network),
-      network: network.chainId,
+      version: LATEST_SAFE_VERSION,
+      network,
     })
   }
 
   // Supported Safe version
   return getDeployment({
     version,
-    network: network.chainId,
+    network,
   })
 }
-
 export const _isLegacy = (safeVersion: SafeInfo['version']): boolean => {
   const LEGACY_VERSIONS = '<=1.0.0'
   return !!safeVersion && semverSatisfies(safeVersion, LEGACY_VERSIONS)
@@ -103,29 +61,21 @@ export const getSafeContractDeployment = (
 
   const getDeployment = _isL2(chain, safeVersion) ? getSafeL2SingletonDeployment : getSafeSingletonDeployment
 
-  return _tryDeploymentVersions(getDeployment, chain, safeVersion)
+  return _tryDeploymentVersions(getDeployment, chain.chainId, safeVersion)
 }
 
-export const getMultiSendCallOnlyContractDeployment = (chain: ChainInfo, safeVersion: SafeInfo['version']) => {
-  return _tryDeploymentVersions(getMultiSendCallOnlyDeployment, chain, safeVersion)
+export const getMultiSendCallOnlyContractDeployment = (chainId: string, safeVersion: SafeInfo['version']) => {
+  return _tryDeploymentVersions(getMultiSendCallOnlyDeployment, chainId, safeVersion)
 }
 
-export const getMultiSendContractDeployment = (chain: ChainInfo, safeVersion: SafeInfo['version']) => {
-  return _tryDeploymentVersions(getMultiSendDeployment, chain, safeVersion)
+export const getFallbackHandlerContractDeployment = (chainId: string, safeVersion: SafeInfo['version']) => {
+  return _tryDeploymentVersions(getFallbackHandlerDeployment, chainId, safeVersion)
 }
 
-export const getFallbackHandlerContractDeployment = (chain: ChainInfo, safeVersion: SafeInfo['version']) => {
-  return _tryDeploymentVersions(getFallbackHandlerDeployment, chain, safeVersion)
+export const getProxyFactoryContractDeployment = (chainId: string, safeVersion: SafeInfo['version']) => {
+  return _tryDeploymentVersions(getProxyFactoryDeployment, chainId, safeVersion)
 }
 
-export const getProxyFactoryContractDeployment = (chain: ChainInfo, safeVersion: SafeInfo['version']) => {
-  return _tryDeploymentVersions(getProxyFactoryDeployment, chain, safeVersion)
-}
-
-export const getSignMessageLibContractDeployment = (chain: ChainInfo, safeVersion: SafeInfo['version']) => {
-  return _tryDeploymentVersions(getSignMessageLibDeployment, chain, safeVersion)
-}
-
-export const getCreateCallContractDeployment = (chain: ChainInfo, safeVersion: SafeInfo['version']) => {
-  return _tryDeploymentVersions(getCreateCallDeployment, chain, safeVersion)
+export const getSignMessageLibContractDeployment = (chainId: string, safeVersion: SafeInfo['version']) => {
+  return _tryDeploymentVersions(getSignMessageLibDeployment, chainId, safeVersion)
 }

@@ -1,13 +1,11 @@
-# <img src="https://github.com/user-attachments/assets/b8249113-d515-4c91-a12a-f134813614e8" height="60" valign="middle" alt="Safe{Wallet}" style="background: #fff; padding: 20px; margin: 0 -20px" />
+# <img src="/public/images/logo.svg" height="60" valign="middle" alt="Safe{Wallet}" style="background: #fff; padding: 20px; margin: 0 -20px" />
 
 [![License](https://img.shields.io/github/license/safe-global/safe-wallet-web)](https://github.com/safe-global/safe-wallet-web/blob/main/LICENSE)
 ![Tests](https://img.shields.io/github/actions/workflow/status/safe-global/safe-wallet-web/test.yml?branch=main&label=tests)
 ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/safe-global/safe-wallet-web)
 [![GitPOAP Badge](https://public-api.gitpoap.io/v1/repo/safe-global/safe-wallet-web/badge)](https://www.gitpoap.io/gh/safe-global/safe-wallet-web)
 
-Safe{Wallet} is a smart contract wallet for Ethereum and other EVM chains. Based on Gnosis Safe multisig contracts.
-
-This repository is the frontend of the Safe{Wallet} app.
+The default Safe web interface.
 
 ## Contributing
 
@@ -21,31 +19,35 @@ Create a `.env` file with environment variables. You can use the `.env.example` 
 
 Here's the list of all the environment variables:
 
-| Env variable                                      | Description                                                                                                                                                             |
-| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_INFURA_TOKEN`                        | [Infura](https://docs.infura.io/infura/networks/ethereum/how-to/secure-a-project/project-id) RPC API token                                                              |
-| `NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN`              | Infura token for Safe Apps, falls back to `NEXT_PUBLIC_INFURA_TOKEN`                                                                                                    |
-| `NEXT_PUBLIC_IS_PRODUCTION`                       | Set to `true` to build a minified production app                                                                                                                        |
-| `NEXT_PUBLIC_GATEWAY_URL_PRODUCTION`              | The base URL for the [Safe Client Gateway](https://github.com/safe-global/safe-client-gateway)                                                                          |
-| `NEXT_PUBLIC_GATEWAY_URL_STAGING`                 | The base CGW URL on staging                                                                                                                                             |
-| `NEXT_PUBLIC_SAFE_VERSION`                        | The latest version of the Safe contract, defaults to 1.4.1                                                                                                              |
-| `NEXT_PUBLIC_WC_PROJECT_ID`                       | [WalletConnect v2](https://docs.walletconnect.com/2.0/cloud/relay) project ID                                                                                           |
-| `NEXT_PUBLIC_TENDERLY_ORG_NAME`                   | [Tenderly](https://tenderly.co) org name for Transaction Simulation                                                                                                     |
-| `NEXT_PUBLIC_TENDERLY_PROJECT_NAME`               | Tenderly project name                                                                                                                                                   |
-| `NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL`      | Tenderly simulation URL                                                                                                                                                 |
-| `NEXT_PUBLIC_BEAMER_ID`                           | [Beamer](https://www.getbeamer.com) is a news feed for in-app announcements                                                                                             |
-| `NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID`               | [GTM](https://tagmanager.google.com) project id                                                                                                                         |
-| `NEXT_PUBLIC_GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH` | Dev GTM key                                                                                                                                                             |
-| `NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LATEST_AUTH`      | Preview GTM key                                                                                                                                                         |
-| `NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LIVE_AUTH`        | Production GTM key                                                                                                                                                      |
-| `NEXT_PUBLIC_SENTRY_DSN`                          | [Sentry](https://sentry.io) id for tracking runtime errors                                                                                                              |
-| `NEXT_PUBLIC_IS_OFFICIAL_HOST`                    | Whether it's the official distribution of the app, or a fork; has legal implications. Set to true only if you also update the legal pages like Imprint and Terms of use |
-| `NEXT_PUBLIC_REDEFINE_API`                        | Redefine API base URL                                                                                                                                                   |
-| `NEXT_PUBLIC_FIREBASE_OPTIONS_PRODUCTION`         | Firebase Cloud Messaging (FCM) `initializeApp` options on production                                                                                                    |
-| `NEXT_PUBLIC_FIREBASE_VAPID_KEY_PRODUCTION`       | FCM vapid key on production                                                                                                                                             |
-| `NEXT_PUBLIC_FIREBASE_OPTIONS_STAGING`            | FCM `initializeApp` options on staging                                                                                                                                  |
-| `NEXT_PUBLIC_FIREBASE_VAPID_KEY_STAGING`          | FCM vapid key on staging                                                                                                                                                |
-| `NEXT_PUBLIC_SPINDL_SDK_KEY`                      | [Spindl](http://spindl.xyz) SDK key                                                                                                                                     |
+| Env variable                                           | Description
+| ------------------------------------------------------ | -----------
+| `NEXT_PUBLIC_INFURA_TOKEN`                             | [Infura](https://docs.infura.io/infura/networks/ethereum/how-to/secure-a-project/project-id) RPC API token
+| `NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN`                   | Infura token for Safe Apps, falls back to `NEXT_PUBLIC_INFURA_TOKEN`
+| `NEXT_PUBLIC_IS_PRODUCTION`                            | Set to `true` to build a minified production app
+| `NEXT_PUBLIC_GATEWAY_URL_PRODUCTION`                   | The base URL for the [Safe Client Gateway](https://github.com/safe-global/safe-client-gateway)
+| `NEXT_PUBLIC_GATEWAY_URL_STAGING`                      | The base CGW URL on staging
+| `NEXT_PUBLIC_SAFE_VERSION`                             | The latest version of the Safe contract, defaults to 1.3.0
+| `NEXT_PUBLIC_WC_PROJECT_ID`                            | [WalletConnect v2](https://docs.walletconnect.com/2.0/cloud/relay) project ID
+| `NEXT_PUBLIC_TENDERLY_ORG_NAME`                        | [Tenderly](https://tenderly.co) org name for Transaction Simulation
+| `NEXT_PUBLIC_TENDERLY_PROJECT_NAME`                    | Tenderly project name
+| `NEXT_PUBLIC_TENDERLY_SIMULATE_ENDPOINT_URL`           | Tenderly simulation URL
+| `NEXT_PUBLIC_BEAMER_ID`                                | [Beamer](https://www.getbeamer.com) is a news feed for in-app announcements
+| `NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID`                    | [GTM](https://tagmanager.google.com) project id
+| `NEXT_PUBLIC_GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH`      | Dev GTM key
+| `NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LATEST_AUTH`           | Preview GTM key
+| `NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LIVE_AUTH`             | Production GTM key
+| `NEXT_PUBLIC_SENTRY_DSN`                               | [Sentry](https://sentry.io) id for tracking runtime errors
+| `NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL_PRODUCTION` | [Safe Gelato Relay Service](https://github.com/safe-global/safe-gelato-relay-service) URL to allow relaying transactions via Gelato
+| `NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL_STAGING`    | Relay URL on staging
+| `NEXT_PUBLIC_IS_OFFICIAL_HOST`                         | Whether it's the official distribution of the app, or a fork; has legal implications. Set to true only if you also update the legal pages like Imprint and Terms of use
+| `NEXT_PUBLIC_REDEFINE_API`                             | Redefine API base URL
+| `NEXT_PUBLIC_FIREBASE_OPTIONS_PRODUCTION`              | Firebase Cloud Messaging (FCM) `initializeApp` options on production
+| `NEXT_PUBLIC_FIREBASE_VAPID_KEY_PRODUCTION`            | FCM vapid key on production
+| `NEXT_PUBLIC_FIREBASE_OPTIONS_STAGING`                 | FCM `initializeApp` options on staging
+| `NEXT_PUBLIC_FIREBASE_VAPID_KEY_STAGING`               | FCM vapid key on staging
+| `NEXT_PUBLIC_SOCIAL_WALLET_OPTIONS_PRODUCTION`         | Web3Auth and Google credentials (production)
+| `NEXT_PUBLIC_SOCIAL_WALLET_OPTIONS_STAGING`            | Web3Auth and Google credentials (staging)
+| `NEXT_PUBLIC_SPINDL_SDK_KEY`                           | [Spindl](http://spindl.xyz) SDK key
 
 If you don't provide some of the variables, the corresponding features will be disabled in the UI.
 
@@ -58,12 +60,12 @@ yarn
 ```
 
 Generate types:
-
 ```bash
 yarn postinstall
 ```
 
 Run the development server:
+edit NEXT_PUBLIC_IS_PRODUCTION as false then yarn start
 
 ```bash
 yarn start
@@ -114,7 +116,6 @@ yarn cypress:open
 ```
 
 You can then choose which e2e tests to run.
-Some tests will require signer private keys, please include them in your .env file
 
 ## Component template
 
@@ -141,3 +142,7 @@ This app is built using the following frameworks:
 - MUI
 - ethers.js
 - web3-onboard
+
+## add chain
+
+One branch corresponds to one network. When adding a new network, the main branch should be used as the base branch for modifications. After the addition, merging back into the main branch is not required.

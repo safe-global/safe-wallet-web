@@ -1,5 +1,4 @@
-import useAddressBook from '@/hooks/useAddressBook'
-import useWallet from '@/hooks/wallets/useWallet'
+import CounterfactualHint from '@/features/counterfactual/CounterfactualHint'
 import { Button, SvgIcon, MenuItem, Tooltip, Typography, Divider, Box, Grid, TextField } from '@mui/material'
 import { Controller, FormProvider, useFieldArray, useForm } from 'react-hook-form'
 import type { ReactElement } from 'react'
@@ -38,19 +37,12 @@ const OwnerPolicyStep = ({
 }: StepRenderProps<NewSafeFormData> & {
   setDynamicHint: (hints: CreateSafeInfoItem | undefined) => void
 }): ReactElement => {
-  const wallet = useWallet()
-  const addressBook = useAddressBook()
-  const defaultOwnerAddressBookName = wallet?.address ? addressBook[wallet.address] : undefined
-  const defaultOwner: NamedAddress = {
-    name: defaultOwnerAddressBookName || wallet?.ens || '',
-    address: wallet?.address || '',
-  }
-  useSyncSafeCreationStep(setStep, data.networks)
+  useSyncSafeCreationStep(setStep)
 
   const formMethods = useForm<OwnerPolicyStepForm>({
     mode: 'onChange',
     defaultValues: {
-      [OwnerPolicyStepFields.owners]: data.owners.length > 0 ? data.owners : [defaultOwner],
+      [OwnerPolicyStepFields.owners]: data.owners,
       [OwnerPolicyStepFields.threshold]: data.threshold,
     },
   })
@@ -74,11 +66,11 @@ const OwnerPolicyStep = ({
 
   const isDisabled = !formState.isValid
 
-  useSafeSetupHints(setDynamicHint, threshold, ownerFields.length)
+  useSafeSetupHints(threshold, ownerFields.length, setDynamicHint)
 
   const handleBack = () => {
     const formData = getValues()
-    onBack({ ...data, ...formData })
+    onBack(formData)
   }
 
   const onFormSubmit = handleSubmit((data) => {
@@ -117,6 +109,21 @@ const OwnerPolicyStep = ({
           >
             Add new signer
           </Button>
+          <Box p={2} mt={3} sx={{ backgroundColor: 'background.main', borderRadius: '8px' }}>
+            <Typography variant="subtitle1" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
+              {'Safe{Wallet}'} mobile signer key (optional){' '}
+              <Tooltip
+                title="The Safe{Wallet} mobile app allows for the generation of signer keys that you can add to this or an existing Safe Account."
+                arrow
+                placement="top"
+              >
+                <span style={{ display: 'flex' }}>
+                  <SvgIcon component={InfoIcon} inheritViewBox color="border" fontSize="small" />
+                </span>
+              </Tooltip>
+            </Typography>
+            <Typography variant="body2">Use your mobile phone as an additional signer key</Typography>
+          </Box>
         </Box>
 
         <Divider />
@@ -142,9 +149,9 @@ const OwnerPolicyStep = ({
                 control={control}
                 name="threshold"
                 render={({ field }) => (
-                  <TextField data-testid="threshold-selector" select {...field}>
+                  <TextField select {...field}>
                     {ownerFields.map((_, idx) => (
-                      <MenuItem data-testid="threshold-item" key={idx + 1} value={idx + 1}>
+                      <MenuItem key={idx + 1} value={idx + 1}>
                         {idx + 1}
                       </MenuItem>
                     ))}
@@ -156,6 +163,8 @@ const OwnerPolicyStep = ({
               <Typography>out of {ownerFields.length} signer(s)</Typography>
             </Grid>
           </Grid>
+
+          {ownerFields.length > 1 && <CounterfactualHint />}
         </Box>
         <Divider />
         <Box className={layoutCss.row}>

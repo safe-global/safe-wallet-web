@@ -13,7 +13,6 @@ describe('WalletLogin', () => {
 
   it('should render continue with connected wallet', async () => {
     const mockOnLogin = jest.fn()
-    const mockOnContinue = jest.fn()
     const walletAddress = toBeHex('0x1', 20)
     jest.spyOn(useWallet, 'default').mockReturnValue({
       address: walletAddress,
@@ -23,7 +22,7 @@ describe('WalletLogin', () => {
     })
     jest.spyOn(useConnectWallet, 'default').mockReturnValue(jest.fn())
 
-    const result = render(<WalletLogin onLogin={mockOnLogin} onContinue={mockOnContinue} />)
+    const result = render(<WalletLogin onLogin={mockOnLogin} />)
 
     await waitFor(() => {
       expect(result.findByText(shortenAddress(walletAddress))).resolves.toBeDefined()
@@ -35,17 +34,16 @@ describe('WalletLogin', () => {
     const button = await result.findByRole('button')
     button.click()
 
-    expect(mockOnContinue).toHaveBeenCalled()
+    expect(mockOnLogin).toHaveBeenCalled()
   })
 
   it('should render connect wallet if no wallet is connected', async () => {
     const mockOnLogin = jest.fn()
-    const mockOnContinue = jest.fn()
     const walletAddress = toBeHex('0x1', 20)
     const mockUseWallet = jest.spyOn(useWallet, 'default').mockReturnValue(null)
     jest.spyOn(useConnectWallet, 'default').mockReturnValue(jest.fn().mockReturnValue([{}]))
 
-    const result = render(<WalletLogin onLogin={mockOnLogin} onContinue={mockOnContinue} />)
+    const result = render(<WalletLogin onLogin={mockOnLogin} />)
 
     await waitFor(() => {
       expect(result.findByText('Connect wallet')).resolves.toBeDefined()
@@ -73,12 +71,11 @@ describe('WalletLogin', () => {
 
   it('should invoke the callback if user actively connects', async () => {
     const mockOnLogin = jest.fn()
-    const mockOnContinue = jest.fn()
     jest.spyOn(useWallet, 'default').mockReturnValue(null)
 
     jest.spyOn(useConnectWallet, 'default').mockReturnValue(jest.fn().mockReturnValue([]))
 
-    const result = render(<WalletLogin onLogin={mockOnLogin} onContinue={mockOnContinue} />)
+    const result = render(<WalletLogin onLogin={mockOnLogin} />)
 
     await waitFor(() => {
       expect(result.findByText('Connect wallet')).resolves.toBeDefined()

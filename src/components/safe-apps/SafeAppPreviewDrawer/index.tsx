@@ -91,7 +91,6 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
         {/* Open Safe App button */}
         <Link href={safeAppUrl} passHref legacyBehavior>
           <Button
-            data-testid="open-safe-app-btn"
             fullWidth
             variant="contained"
             color="primary"

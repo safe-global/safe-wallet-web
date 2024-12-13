@@ -1,15 +1,14 @@
-import { TWAP_FALLBACK_HANDLER } from '@/features/swap/helpers/utils'
 import { chainBuilder } from '@/tests/builders/chains'
 import { render, waitFor } from '@/tests/test-utils'
 
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
-import * as useChains from '@/hooks/useChains'
+import * as useChainId from '@/hooks/useChainId'
 import * as useTxBuilderHook from '@/hooks/safe-apps/useTxBuilderApp'
 import { FallbackHandler } from '..'
 
 const GOERLI_FALLBACK_HANDLER = '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4'
 
-const mockChain = chainBuilder().with({ chainId: '1' }).build()
+const mockChain = chainBuilder().build()
 
 describe('FallbackHandler', () => {
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('FallbackHandler', () => {
       link: { href: 'https://mock.link/tx-builder' },
     }))
 
-    jest.spyOn(useChains, 'useCurrentChain').mockReturnValue(mockChain)
+    jest.spyOn(useChainId, 'default').mockImplementation(() => mockChain.chainId)
   })
 
   it('should render the Fallback Handler when one is set', async () => {
@@ -28,7 +27,7 @@ describe('FallbackHandler', () => {
         ({
           safe: {
             version: '1.3.0',
-            chainId: '1',
+            chainId: '5',
             fallbackHandler: {
               value: GOERLI_FALLBACK_HANDLER,
               name: 'FallbackHandlerName',
@@ -238,51 +237,5 @@ describe('FallbackHandler', () => {
     const fbHandler = render(<FallbackHandler />)
 
     expect(fbHandler.container).toBeEmptyDOMElement()
-  })
-
-  it('should display a message in case it is a TWAP fallback handler', () => {
-    jest.spyOn(useSafeInfoHook, 'default').mockImplementation(
-      () =>
-        ({
-          safe: {
-            version: '1.3.0',
-            chainId: '1',
-            fallbackHandler: {
-              value: TWAP_FALLBACK_HANDLER,
-            },
-          },
-        } as unknown as ReturnType<typeof useSafeInfoHook.default>),
-    )
-
-    const { getByText } = render(<FallbackHandler />)
-
-    expect(
-      getByText(
-        "This is CoW's fallback handler. It is needed for this Safe to be able to use the TWAP feature for Swaps.",
-      ),
-    ).toBeInTheDocument()
-  })
-
-  it('should not display a message in case it is a TWAP fallback handler on an unsupported network', () => {
-    jest.spyOn(useSafeInfoHook, 'default').mockImplementation(
-      () =>
-        ({
-          safe: {
-            version: '1.3.0',
-            chainId: '10',
-            fallbackHandler: {
-              value: TWAP_FALLBACK_HANDLER,
-            },
-          },
-        } as unknown as ReturnType<typeof useSafeInfoHook.default>),
-    )
-
-    const { queryByText } = render(<FallbackHandler />)
-
-    expect(
-      queryByText(
-        "This is CoW's fallback handler. It is needed for this Safe to be able to use the TWAP feature for Swaps.",
-      ),
-    ).not.toBeInTheDocument()
   })
 })

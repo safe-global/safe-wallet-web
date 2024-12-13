@@ -15,13 +15,13 @@ import type {
   GetTxBySafeTxHashParams,
   RequestId,
   RPCPayload,
+  SafeInfo,
   SendTransactionRequestParams,
   SendTransactionsParams,
   SignMessageParams,
   SignTypedMessageParams,
   ChainInfo,
   SafeBalances,
-  SafeInfoExtended,
 } from '@safe-global/safe-apps-sdk'
 import { Methods, RPC_CALLS } from '@safe-global/safe-apps-sdk'
 import type { Permission, PermissionRequest } from '@safe-global/safe-apps-sdk/dist/types/types/permissions'
@@ -33,7 +33,6 @@ import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 import { useAppSelector } from '@/store'
 import { selectRpc } from '@/store/settingsSlice'
 import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
-import { useDarkMode } from '@/hooks/useDarkMode'
 
 export enum CommunicatorMessages {
   REJECT_TRANSACTION_MESSAGE = 'Transaction was rejected',
@@ -57,7 +56,7 @@ export type UseAppCommunicatorHandlers = {
   onGetTxBySafeTxHash: (transactionId: string) => Promise<TransactionDetails>
   onGetEnvironmentInfo: () => EnvironmentInfo
   onGetSafeBalances: (currency: string) => Promise<SafeBalances>
-  onGetSafeInfo: () => SafeInfoExtended
+  onGetSafeInfo: () => SafeInfo
   onGetChainInfo: () => ChainInfo | undefined
   onGetPermissions: (origin: string) => Permission[]
   onSetPermissions: (permissionsRequest?: SafePermissionsRequest) => void
@@ -74,7 +73,6 @@ const useAppCommunicator = (
 ): AppCommunicator | undefined => {
   const [communicator, setCommunicator] = useState<AppCommunicator | undefined>(undefined)
   const customRpc = useAppSelector(selectRpc)
-  const isDarkMode = useDarkMode()
 
   const safeAppWeb3Provider = useMemo(() => {
     if (!chain) {
@@ -87,7 +85,7 @@ const useAppCommunicator = (
   useEffect(() => {
     let communicatorInstance: AppCommunicator
 
-    const initCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement | null>, app?: SafeAppData) => {
+    const initCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement>, app?: SafeAppData) => {
       communicatorInstance = new AppCommunicator(iframeRef, {
         onMessage: (msg) => {
           if (!msg.data) return
@@ -113,24 +111,13 @@ const useAppCommunicator = (
     }
 
     if (app) {
-      initCommunicator(iframeRef, app)
+      initCommunicator(iframeRef as MutableRefObject<HTMLIFrameElement>, app)
     }
 
     return () => {
       communicatorInstance?.clear()
     }
   }, [app, iframeRef])
-
-  useEffect(() => {
-    const id = Math.random().toString(36).slice(2)
-
-    communicator?.send(
-      {
-        darkMode: isDarkMode,
-      },
-      id,
-    )
-  }, [communicator, isDarkMode])
 
   // Adding communicator logic for the required SDK Methods
   // We don't need to unsubscribe from the events because there can be just one subscription
@@ -218,17 +205,7 @@ const useAppCommunicator = (
     communicator?.on(Methods.requestAddressBook, (msg) => {
       return handlers.onRequestAddressBook(msg.origin)
     })
-
-    // TODO: it will be moved to safe-apps-sdk soon
-    communicator?.on('getCurrentTheme' as Methods, (msg) => {
-      communicator.send(
-        {
-          darkMode: isDarkMode,
-        },
-        msg.data.id,
-      )
-    })
-  }, [safeAppWeb3Provider, handlers, chain, communicator, isDarkMode])
+  }, [safeAppWeb3Provider, handlers, chain, communicator])
 
   return communicator
 }

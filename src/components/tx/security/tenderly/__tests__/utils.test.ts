@@ -7,7 +7,7 @@ import {
   THRESHOLD_STORAGE_POSITION,
 } from '@/components/tx/security/tenderly/utils'
 import * as safeContracts from '@/services/contracts/safeContracts'
-import { getMultiSendCallOnlyDeployment, getSafeSingletonDeployment } from '@safe-global/safe-deployments'
+import { getMultiSendCallOnlyDeployment, getSafeSingletonDeployment } from '@/bitlayer-safe-deployments/src'
 import EthSafeTransaction from '@safe-global/protocol-kit/dist/src/utils/transactions/SafeTransaction'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { generatePreValidatedSignature } from '@safe-global/protocol-kit/dist/src/utils/signatures'
@@ -42,12 +42,12 @@ describe('simulation utils', () => {
 
     jest.spyOn(Web3, 'getWeb3ReadOnly').mockImplementation(
       () =>
-        ({
-          getBlock: () =>
-            Promise.resolve({
-              gasLimit: BigInt(30_000_000),
-            }),
-        } as any),
+      ({
+        getBlock: () =>
+          Promise.resolve({
+            gasLimit: BigInt(30_000_000),
+          }),
+      } as any),
     )
   })
   describe('getSimulationPayload', () => {

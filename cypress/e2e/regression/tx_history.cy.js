@@ -2,9 +2,6 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as createTx from '../pages/create_tx.pages'
 import * as data from '../../fixtures/txhistory_data_data.json'
-import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
-
-let staticSafes = []
 
 const typeCreateAccount = data.type.accountCreation
 const typeReceive = data.type.receive
@@ -15,27 +12,12 @@ const typeSideActions = data.type.sideActions
 const typeGeneral = data.type.general
 
 describe('Tx history tests 1', () => {
-  before(async () => {
-    staticSafes = await getSafes(CATEGORIES.static)
-  })
-
   beforeEach(() => {
-    cy.intercept(
-      'GET',
-      `**${constants.stagingCGWChains}${constants.networkKeys.sepolia}/${
-        constants.stagingCGWSafes
-      }${staticSafes.SEP_STATIC_SAFE_7.substring(4)}/transactions/history**`,
-      (req) => {
-        req.url = `https://safe-client.staging.5afe.dev/v1/chains/11155111/safes/0x5912f6616c84024cD1aff0D5b55bb36F5180fFdb/transactions/history?timezone=Europe/Berlin&trusted=false&cursor=limit=100&offset=1`
-        req.continue()
-      },
-    ).as('allTransactions')
-
-    cy.visit(constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_7)
-    cy.wait('@allTransactions')
+    cy.clearLocalStorage()
+    cy.visit(constants.transactionsHistoryUrl + constants.SEPOLIA_TEST_SAFE_8)
+    main.acceptCookies()
   })
 
-  // Added to prod
   // Account creation
   it('Verify summary for account creation', () => {
     createTx.verifySummaryByName(
@@ -45,7 +27,6 @@ describe('Tx history tests 1', () => {
     )
   })
 
-  // Added to prod
   it('Verify exapanded details for account creation', () => {
     createTx.clickOnTransactionItemByName(typeCreateAccount.title)
     createTx.verifyExpandedDetails([
@@ -61,12 +42,24 @@ describe('Tx history tests 1', () => {
     ])
   })
 
+  it('Verify copy bottons work as expected for account creation', () => {
+    createTx.clickOnTransactionItemByName(typeCreateAccount.title)
+    createTx.verifyNumberOfCopyIcons(4)
+    createTx.verifyCopyIconWorks(0, typeCreateAccount.creator.address)
+  })
+
   it('Verify external links exist for account creation', () => {
     createTx.clickOnTransactionItemByName(typeCreateAccount.title)
     createTx.verifyNumberOfExternalLinks(4)
   })
 
-  // Added to prod
+  // Token receipt
+  it('Verify copy button copies tx hash', () => {
+    createTx.clickOnTransactionItemByName(typeReceive.summaryTitle, typeReceive.summaryTxInfo)
+    createTx.verifyNumberOfCopyIcons(2)
+    createTx.verifyCopyIconWorks(1, typeReceive.transactionHashCopied)
+  })
+
   // Token send
   it('Verify exapanded details for token send', () => {
     createTx.clickOnTransactionItemByName(typeSend.title, typeSend.summaryTxInfo)
@@ -78,7 +71,6 @@ describe('Tx history tests 1', () => {
     ])
   })
 
-  // Added to prod
   // Spending limits
   it('Verify summary for setting spend limits', () => {
     createTx.verifySummaryByName(
@@ -89,13 +81,12 @@ describe('Tx history tests 1', () => {
     )
   })
 
-  // Added to prod
   it('Verify exapanded details for initial spending limits setup', () => {
     createTx.clickOnTransactionItemByName(typeSpendingLimits.title, typeSpendingLimits.summaryTxInfo)
     createTx.verifyExpandedDetails(
       [
-        typeSpendingLimits.contractTitle,
-        typeSpendingLimits.call_multiSend,
+        typeSpendingLimits.title,
+        typeSpendingLimits.description,
         typeSpendingLimits.transactionHash,
         typeSpendingLimits.safeTxHash,
       ],
@@ -103,7 +94,6 @@ describe('Tx history tests 1', () => {
     )
   })
 
-  // Added to prod
   it('Verify that 3 actions exist in initial spending limits setup', () => {
     createTx.clickOnTransactionItemByName(typeSpendingLimits.title, typeSpendingLimits.summaryTxInfo)
     createTx.verifyActions([
@@ -148,7 +138,6 @@ describe('Tx history tests 1', () => {
     ])
   })
 
-  // Added to prod
   it('Verify advanced details displayed in exapanded details for allowance deletion', () => {
     createTx.clickOnTransactionItemByName(typeDeleteAllowance.title, typeDeleteAllowance.summaryTxInfo)
     createTx.expandAdvancedDetails([typeDeleteAllowance.baseGas])

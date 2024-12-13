@@ -4,16 +4,6 @@ import CopyIcon from '@/public/images/common/copy.svg'
 import { IconButton, SvgIcon } from '@mui/material'
 import CopyTooltip from '../CopyTooltip'
 
-export interface ButtonProps {
-  text: string
-  className?: string
-  children?: ReactNode
-  initialToolTipText?: string
-  ariaLabel?: string
-  onCopy?: () => void
-  dialogContent?: ReactElement
-}
-
 const CopyButton = ({
   text,
   className,
@@ -21,7 +11,15 @@ const CopyButton = ({
   initialToolTipText = 'Copy to clipboard',
   onCopy,
   dialogContent,
-}: ButtonProps): ReactElement => {
+}: {
+  text: string
+  className?: string
+  children?: ReactNode
+  initialToolTipText?: string
+  ariaLabel?: string
+  onCopy?: () => void
+  dialogContent?: ReactElement
+}): ReactElement => {
   return (
     <CopyTooltip text={text} onCopy={onCopy} initialToolTipText={initialToolTipText} dialogContent={dialogContent}>
       {children ?? (

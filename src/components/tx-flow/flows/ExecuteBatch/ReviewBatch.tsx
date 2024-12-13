@@ -1,23 +1,25 @@
-import useWallet from '@/hooks/wallets/useWallet'
 import { CircularProgress, Typography, Button, CardActions, Divider, Alert } from '@mui/material'
 import useAsync from '@/hooks/useAsync'
-import { FEATURES } from '@/utils/chains'
+import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getReadOnlyMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { encodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils/transactions/utils'
 import { useState, useMemo, useContext } from 'react'
 import type { SyntheticEvent } from 'react'
+import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
 import DecodedTxs from '@/components/tx-flow/flows/ExecuteBatch/DecodedTxs'
 import { TxSimulation } from '@/components/tx/security/tenderly'
+import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { logError, Errors } from '@/services/exceptions'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
 import { hasRemainingRelays } from '@/utils/relaying'
-import { getMultiSendTxs } from '@/utils/transactions'
+import { getTxsWithDetails, getMultiSendTxs } from '@/utils/transactions'
 import TxCard from '../../common/TxCard'
 import CheckWallet from '@/components/common/CheckWallet'
 import type { ExecuteBatchFlowProps } from '.'
@@ -33,12 +35,6 @@ import { trackEvent } from '@/services/analytics'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { isWalletRejection } from '@/utils/wallets'
 import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
-import useUserNonce from '@/components/tx/AdvancedParams/useUserNonce'
-import { getLatestSafeVersion } from '@/utils/chains'
-import { HexEncodedData } from '@/components/transactions/HexEncodedData'
-import { useGetMultipleTransactionDetailsQuery } from '@/store/api/gateway'
-import { skipToken } from '@reduxjs/toolkit/query/react'
-import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -51,10 +47,6 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const { setTxFlow } = useContext(TxModalContext)
   const [gasPrice] = useGasPrice()
 
-  const userNonce = useUserNonce()
-
-  const latestSafeVersion = getLatestSafeVersion(chain)
-
   const maxFeePerGas = gasPrice?.maxFeePerGas
   const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
 
@@ -64,25 +56,16 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const canRelay = hasRemainingRelays(relays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
   const onboard = useOnboard()
-  const wallet = useWallet()
 
-  const {
-    data: txsWithDetails,
-    error,
-    isLoading: loading,
-  } = useGetMultipleTransactionDetailsQuery(
-    chain?.chainId && params.txs.length
-      ? {
-          chainId: chain.chainId,
-          txIds: params.txs.map((tx) => tx.transaction.id),
-        }
-      : skipToken,
-  )
+  const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
+    if (!chain?.chainId) return
+    return getTxsWithDetails(params.txs, chain.chainId)
+  }, [params.txs, chain?.chainId])
 
   const [multiSendContract] = useAsync(async () => {
-    if (!safe.version) return
-    return await getReadOnlyMultiSendCallOnlyContract(safe.version)
-  }, [safe.version])
+    if (!chain?.chainId || !safe.version) return
+    return await getReadOnlyMultiSendCallOnlyContract(chain.chainId, safe.version)
+  }, [chain?.chainId, safe.version])
 
   const [multisendContractAddress = ''] = useAsync(async () => {
     if (!multiSendContract) return ''
@@ -100,24 +83,20 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   }, [txsWithDetails, multiSendTxs])
 
   const onExecute = async () => {
-    if (!userNonce || !onboard || !wallet || !multiSendTxData || !multiSendContract || !txsWithDetails || !gasPrice)
-      return
+    if (!onboard || !multiSendTxData || !multiSendContract || !txsWithDetails || !gasPrice) return
 
     const overrides: Overrides = isEIP1559
       ? { maxFeePerGas: maxFeePerGas?.toString(), maxPriorityFeePerGas: maxPriorityFeePerGas?.toString() }
       : { gasPrice: maxFeePerGas?.toString() }
 
-    overrides.nonce = userNonce
-
     await dispatchBatchExecution(
       txsWithDetails,
       multiSendContract,
       multiSendTxData,
-      wallet.provider,
-      wallet.address,
+      onboard,
+      safe.chainId,
       safe.address.value,
-      overrides as Overrides & { nonce: number },
-      safe.nonce,
+      overrides,
     )
   }
 
@@ -130,7 +109,6 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       multiSendTxData,
       safe.chainId,
       safe.address.value,
-      safe.version ?? latestSafeVersion,
     )
   }
 
@@ -156,7 +134,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       return
     }
 
-    trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.bulk_execute })
+    trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.batch })
   }
 
   const submitDisabled = loading || !isSubmittable || !gasPrice
@@ -167,13 +145,20 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
         <Typography variant="body2">
           This transaction batches a total of {params.txs.length} transactions from your queue into a single Ethereum
           transaction. Please check every included transaction carefully, especially if you have rejection transactions,
-          and make sure you want to execute all of them. Included transactions are highlighted when you hover over the
-          execute button.
+          and make sure you want to execute all of them. Included transactions are highlighted in green when you hover
+          over the execute button.
         </Typography>
 
         {multiSendContract && <SendToBlock address={multisendContractAddress} title="Interact with" />}
 
-        {multiSendTxData && <HexEncodedData title="Data (hex-encoded)" hexData={multiSendTxData} />}
+        {multiSendTxData && (
+          <div>
+            <Typography variant="body2" color="text.secondary">
+              Data (hex encoded)
+            </Typography>
+            {generateDataRowValue(multiSendTxData, 'rawData')}
+          </div>
+        )}
 
         <div>
           <DecodedTxs txs={txsWithDetails} />
@@ -191,7 +176,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       <TxCard>
         <ConfirmationTitle variant={ConfirmationTitleTypes.execute} />
 
-        <NetworkWarning />
+        <WrongChainWarning />
 
         {canRelay ? (
           <>
@@ -210,7 +195,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
         </Alert>
 
         {error && (
-          <ErrorMessage error={asError(error)}>
+          <ErrorMessage error={error}>
             This transaction will most likely fail. To save gas costs, avoid creating the transaction.
           </ErrorMessage>
         )}
@@ -225,7 +210,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
           <Divider className={commonCss.nestedDivider} sx={{ pt: 2 }} />
 
           <CardActions>
-            <CheckWallet allowNonOwner={true} checkNetwork>
+            <CheckWallet allowNonOwner={true}>
               {(isOk) => (
                 <Button
                   variant="contained"

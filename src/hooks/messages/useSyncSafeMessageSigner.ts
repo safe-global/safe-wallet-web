@@ -1,4 +1,3 @@
-import useWallet from '@/hooks/wallets/useWallet'
 import { Errors, logError } from '@/services/exceptions'
 import { asError } from '@/services/exceptions/utils'
 import { dispatchPreparedSignature } from '@/services/safe-messages/safeMsgNotifications'
@@ -11,10 +10,11 @@ import {
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { useEffect, useCallback, useState } from 'react'
 import useSafeInfo from '../useSafeInfo'
+import useOnboard from '../wallets/useOnboard'
 
 const HIDE_DELAY = 3000
 
-export const fetchSafeMessage = async (safeMessageHash: string, chainId: string) => {
+const fetchSafeMessage = async (safeMessageHash: string, chainId: string) => {
   let message: SafeMessage | undefined
   try {
     // fetchedMessage does not have a type because it is explicitly a message
@@ -37,7 +37,7 @@ const useSyncSafeMessageSigner = (
   onClose: () => void,
 ) => {
   const [submitError, setSubmitError] = useState<Error | undefined>()
-  const wallet = useWallet()
+  const onboard = useOnboard()
   const { safe } = useSafeInfo()
 
   // If the message gets updated in the messageSlice we dispatch it if the signature is complete
@@ -51,7 +51,7 @@ const useSyncSafeMessageSigner = (
 
   const onSign = useCallback(async () => {
     // Error is shown when no wallet is connected, this appeases TypeScript
-    if (!wallet) {
+    if (!onboard) {
       return
     }
 
@@ -60,7 +60,7 @@ const useSyncSafeMessageSigner = (
     try {
       // When collecting the first signature
       if (!message) {
-        await dispatchSafeMsgProposal({ provider: wallet.provider, safe, message: decodedMessage, safeAppId })
+        await dispatchSafeMsgProposal({ onboard, safe, message: decodedMessage, safeAppId })
 
         // Fetch updated message
         const updatedMsg = await fetchSafeMessage(safeMessageHash, safe.chainId)
@@ -71,7 +71,7 @@ const useSyncSafeMessageSigner = (
         }
         return updatedMsg
       } else {
-        await dispatchSafeMsgConfirmation({ provider: wallet.provider, safe, message: decodedMessage })
+        await dispatchSafeMsgConfirmation({ onboard, safe, message: decodedMessage })
 
         // No requestID => we are in the confirm message dialog and do not need to leave the window open
         if (!requestId) {
@@ -86,7 +86,7 @@ const useSyncSafeMessageSigner = (
     } catch (e) {
       setSubmitError(asError(e))
     }
-  }, [wallet, safe, message, decodedMessage, safeAppId, safeMessageHash, onClose, requestId])
+  }, [onboard, requestId, message, safe, decodedMessage, safeAppId, safeMessageHash, onClose])
 
   return { submitError, onSign }
 }

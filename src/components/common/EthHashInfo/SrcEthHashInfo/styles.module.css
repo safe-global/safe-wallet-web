@@ -11,7 +11,7 @@
   position: relative;
 }
 
-.avatarContainer > * {
+.avatarContainer>* {
   width: 100% !important;
   height: 100% !important;
 }
@@ -19,10 +19,6 @@
 .addressContainer {
   display: flex;
   align-items: center;
+  gap: 0.25em;
   white-space: nowrap;
-}
-
-.inline {
-  display: flex;
-  align-items: center;
 }

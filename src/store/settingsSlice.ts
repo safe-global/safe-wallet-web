@@ -29,7 +29,7 @@ export type SettingsState = {
 
   tokenList: TOKEN_LISTS
 
-  hideSuspiciousTransactions?: boolean
+  showOnlyTrustedTransactions?: boolean
 
   shortName: {
     copy: boolean
@@ -41,7 +41,6 @@ export type SettingsState = {
   env: EnvState
   signing: {
     onChainSigning: boolean
-    blindSigning: boolean
   }
   transactionExecution: boolean
 }
@@ -53,7 +52,7 @@ export const initialState: SettingsState = {
 
   hiddenTokens: {},
 
-  hideSuspiciousTransactions: true,
+  showOnlyTrustedTransactions: false,
 
   shortName: {
     copy: true,
@@ -69,7 +68,6 @@ export const initialState: SettingsState = {
   },
   signing: {
     onChainSigning: false,
-    blindSigning: false,
   },
   transactionExecution: true,
 }
@@ -100,8 +98,8 @@ export const settingsSlice = createSlice({
     setTokenList: (state, { payload }: PayloadAction<SettingsState['tokenList']>) => {
       state.tokenList = payload
     },
-    hideSuspiciousTransactions: (state, { payload }: PayloadAction<boolean>) => {
-      state.hideSuspiciousTransactions = payload
+    setshowOnlyTrustedTransactions: (state, { payload }: PayloadAction<boolean>) => {
+      state.showOnlyTrustedTransactions = payload
     },
     setRpc: (state, { payload }: PayloadAction<{ chainId: string; rpc: string }>) => {
       const { chainId, rpc } = payload
@@ -116,9 +114,6 @@ export const settingsSlice = createSlice({
     },
     setOnChainSigning: (state, { payload }: PayloadAction<boolean>) => {
       state.signing.onChainSigning = payload
-    },
-    setBlindSigning: (state, { payload }: PayloadAction<boolean>) => {
-      state.signing.blindSigning = payload
     },
     setSettings: (_, { payload }: PayloadAction<SettingsState>) => {
       // We must return as we are overwriting the entire state
@@ -135,12 +130,11 @@ export const {
   setDarkMode,
   setHiddenTokensForChain,
   setTokenList,
-  hideSuspiciousTransactions,
+  setshowOnlyTrustedTransactions,
   setRpc,
   setTenderly,
   setOnChainSigning,
   setTransactionExecution,
-  setBlindSigning,
 } = settingsSlice.actions
 
 export const selectSettings = (state: RootState): SettingsState => state[settingsSlice.name]
@@ -169,4 +163,3 @@ export const isEnvInitialState = createSelector([selectSettings, (_, chainId) =>
 })
 
 export const selectOnChainSigning = createSelector(selectSettings, (settings) => settings.signing.onChainSigning)
-export const selectBlindSigning = createSelector(selectSettings, (settings) => settings.signing.blindSigning)

@@ -24,15 +24,8 @@ describe('SignForm', () => {
 
   const defaultProps = {
     onSubmit: jest.fn(),
-    txId: '0x01231',
     isOwner: true,
-    txActions: {
-      proposeTx: jest.fn(),
-      signTx: jest.fn(),
-      addToBatch: jest.fn(),
-      executeTx: jest.fn(),
-      signProposerTx: jest.fn(),
-    },
+    txActions: { signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn() },
     txSecurity: defaultSecurityContextValues,
   }
 
@@ -77,13 +70,7 @@ describe('SignForm', () => {
       <SignForm
         {...defaultProps}
         safeTx={safeTransaction}
-        txActions={{
-          proposeTx: jest.fn(),
-          signTx: mockSignTx,
-          addToBatch: jest.fn(),
-          signProposerTx: jest.fn(),
-          executeTx: jest.fn(),
-        }}
+        txActions={{ signTx: mockSignTx, addToBatch: jest.fn(), executeTx: jest.fn() }}
       />,
     )
 
@@ -103,13 +90,7 @@ describe('SignForm', () => {
       <SignForm
         {...defaultProps}
         safeTx={safeTransaction}
-        txActions={{
-          proposeTx: jest.fn(),
-          signTx: mockSignTx,
-          addToBatch: jest.fn(),
-          executeTx: jest.fn(),
-          signProposerTx: jest.fn(),
-        }}
+        txActions={{ signTx: mockSignTx, addToBatch: jest.fn(), executeTx: jest.fn() }}
       />,
     )
 
@@ -152,13 +133,7 @@ describe('SignForm', () => {
         safeTx={safeTransaction}
         isBatchable
         isCreation
-        txActions={{
-          proposeTx: jest.fn(),
-          signTx: jest.fn(),
-          addToBatch: mockAddToBatch,
-          executeTx: jest.fn(),
-          signProposerTx: jest.fn(),
-        }}
+        txActions={{ signTx: jest.fn(), addToBatch: mockAddToBatch, executeTx: jest.fn() }}
       />,
     )
 

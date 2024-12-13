@@ -8,6 +8,7 @@ const NO_SIDEBAR_ROUTES = [
   AppRoutes.newSafe.load,
   AppRoutes.index,
   AppRoutes.welcome.index,
+  AppRoutes.welcome.socialLogin,
   AppRoutes.welcome.accounts,
   AppRoutes.imprint,
   AppRoutes.privacy,
@@ -25,7 +26,7 @@ const TOGGLE_SIDEBAR_ROUTES = [AppRoutes.apps.open]
  */
 export function useIsSidebarRoute(pathname?: string): [boolean, boolean] {
   const clientPathname = usePathname()
-  const route = pathname || clientPathname || ''
+  const route = pathname || clientPathname
   const noSidebar = NO_SIDEBAR_ROUTES.includes(route)
   const toggledSidebar = TOGGLE_SIDEBAR_ROUTES.includes(route)
   const router = useRouter()

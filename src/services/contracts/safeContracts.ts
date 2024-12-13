@@ -1,34 +1,26 @@
-import { _isL2 } from '@/services/contracts/deployments'
-import { getSafeProvider } from '@/services/tx/tx-sender/sdk'
-import { type GetContractProps, SafeProvider } from '@safe-global/protocol-kit'
 import {
-  getCompatibilityFallbackHandlerContractInstance,
-  getMultiSendCallOnlyContractInstance,
-  getSafeContractInstance,
-  getSafeProxyFactoryContractInstance,
-  getSignMessageLibContractInstance,
-} from '@safe-global/protocol-kit/dist/src/contracts/contractInstances'
-import type SafeBaseContract from '@safe-global/protocol-kit/dist/src/contracts/Safe/SafeBaseContract'
-import { type ChainInfo, ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
-import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
-import { assertValidSafeVersion, getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+  getFallbackHandlerContractDeployment,
+  getMultiSendCallOnlyContractDeployment,
+  getProxyFactoryContractDeployment,
+  getSafeContractDeployment,
+  getSignMessageLibContractDeployment,
+} from './deployments'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
+import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { GetContractProps, SafeVersion } from '@safe-global/safe-core-sdk-types'
+import { assertValidSafeVersion, createEthersAdapter, createReadOnlyEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
+import type { BrowserProvider } from 'ethers'
+import type { EthersAdapter, SafeContractEthers, SignMessageLibEthersContract } from '@safe-global/protocol-kit'
 import semver from 'semver'
-import { getLatestSafeVersion } from '@/utils/chains'
-import { getSafeToL2MigrationDeployment } from '@safe-global/safe-deployments'
+
+import type CompatibilityFallbackHandlerEthersContract from '@safe-global/protocol-kit/dist/src/adapters/ethers/contracts/CompatibilityFallbackHandler/CompatibilityFallbackHandlerEthersContract'
 
 // `UNKNOWN` is returned if the mastercopy does not match supported ones
 // @see https://github.com/safe-global/safe-client-gateway/blob/main/src/routes/safes/handlers/safes.rs#L28-L31
 //      https://github.com/safe-global/safe-client-gateway/blob/main/src/routes/safes/converters.rs#L77-L79
 export const isValidMasterCopy = (implementationVersionState: SafeInfo['implementationVersionState']): boolean => {
   return implementationVersionState !== ImplementationVersionState.UNKNOWN
-}
-
-export const isMigrationToL2Possible = (safe: SafeInfo): boolean => {
-  return (
-    safe.nonce === 0 &&
-    Boolean(getSafeToL2MigrationDeployment({ network: safe.chainId })?.networkAddresses[safe.chainId])
-  )
 }
 
 export const _getValidatedGetContractProps = (
@@ -47,49 +39,33 @@ export const _getValidatedGetContractProps = (
 
 // GnosisSafe
 
-const getGnosisSafeContract = async (safe: SafeInfo, safeProvider: SafeProvider) => {
-  return getSafeContractInstance(
-    _getValidatedGetContractProps(safe.version).safeVersion,
-    safeProvider,
-    safe.address.value,
-  )
+const getGnosisSafeContractEthers = async (safe: SafeInfo, ethAdapter: EthersAdapter): Promise<SafeContractEthers> => {
+  return ethAdapter.getSafeContract({
+    customContractAddress: safe.address.value,
+    ..._getValidatedGetContractProps(safe.version),
+  })
 }
 
-export const getReadOnlyCurrentGnosisSafeContract = async (safe: SafeInfo): Promise<SafeBaseContract<any>> => {
-  const safeSDK = getSafeSDK()
-  if (!safeSDK) {
-    throw new Error('Safe SDK not found.')
-  }
-
-  const safeProvider = safeSDK.getSafeProvider()
-
-  return getGnosisSafeContract(safe, safeProvider)
+export const getReadOnlyCurrentGnosisSafeContract = async (safe: SafeInfo): Promise<SafeContractEthers> => {
+  const ethAdapter = createReadOnlyEthersAdapter()
+  return getGnosisSafeContractEthers(safe, ethAdapter)
 }
 
-export const getCurrentGnosisSafeContract = async (safe: SafeInfo, provider: string) => {
-  const safeProvider = new SafeProvider({ provider })
-
-  return getGnosisSafeContract(safe, safeProvider)
+export const getCurrentGnosisSafeContract = async (
+  safe: SafeInfo,
+  provider: BrowserProvider,
+): Promise<SafeContractEthers> => {
+  const ethAdapter = await createEthersAdapter(provider)
+  return getGnosisSafeContractEthers(safe, ethAdapter)
 }
 
-export const getReadOnlyGnosisSafeContract = async (
-  chain: ChainInfo,
-  safeVersion: SafeInfo['version'],
-  isL1?: boolean,
-) => {
-  const version = safeVersion ?? getLatestSafeVersion(chain)
+export const getReadOnlyGnosisSafeContract = async (chain: ChainInfo, safeVersion: string = LATEST_SAFE_VERSION) => {
+  const ethAdapter = createReadOnlyEthersAdapter()
 
-  const safeProvider = getSafeProvider()
-
-  const isL1SafeSingleton = isL1 ?? !_isL2(chain, _getValidatedGetContractProps(version).safeVersion)
-
-  return getSafeContractInstance(
-    _getValidatedGetContractProps(version).safeVersion,
-    safeProvider,
-    undefined,
-    undefined,
-    isL1SafeSingleton,
-  )
+  return ethAdapter.getSafeContract({
+    singletonDeployment: getSafeContractDeployment(chain, safeVersion),
+    ..._getValidatedGetContractProps(safeVersion),
+  })
 }
 
 // MultiSend
@@ -104,50 +80,64 @@ export const _getMinimumMultiSendCallOnlyVersion = (safeVersion: SafeInfo['versi
   return semver.gte(safeVersion, INITIAL_CALL_ONLY_VERSION) ? safeVersion : INITIAL_CALL_ONLY_VERSION
 }
 
-export const getReadOnlyMultiSendCallOnlyContract = async (safeVersion: SafeInfo['version']) => {
-  const safeSDK = getSafeSDK()
-  if (!safeSDK) {
-    throw new Error('Safe SDK not found.')
-  }
+export const getMultiSendCallOnlyContract = async (
+  chainId: string,
+  safeVersion: SafeInfo['version'],
+  provider: BrowserProvider,
+) => {
+  const ethAdapter = await createEthersAdapter(provider)
+  const multiSendVersion = _getMinimumMultiSendCallOnlyVersion(safeVersion)
 
-  const safeProvider = safeSDK.getSafeProvider()
+  return ethAdapter.getMultiSendCallOnlyContract({
+    singletonDeployment: getMultiSendCallOnlyContractDeployment(chainId, multiSendVersion),
+    ..._getValidatedGetContractProps(safeVersion),
+  })
+}
 
-  return getMultiSendCallOnlyContractInstance(_getValidatedGetContractProps(safeVersion).safeVersion, safeProvider)
+export const getReadOnlyMultiSendCallOnlyContract = async (chainId: string, safeVersion: SafeInfo['version']) => {
+  const ethAdapter = createReadOnlyEthersAdapter()
+  const multiSendVersion = _getMinimumMultiSendCallOnlyVersion(safeVersion)
+
+  return ethAdapter.getMultiSendCallOnlyContract({
+    singletonDeployment: getMultiSendCallOnlyContractDeployment(chainId, multiSendVersion),
+    ..._getValidatedGetContractProps(safeVersion),
+  })
 }
 
 // GnosisSafeProxyFactory
 
-export const getReadOnlyProxyFactoryContract = async (safeVersion: SafeInfo['version'], contractAddress?: string) => {
-  const safeProvider = getSafeProvider()
+export const getReadOnlyProxyFactoryContract = (chainId: string, safeVersion: SafeInfo['version']) => {
+  const ethAdapter = createReadOnlyEthersAdapter()
 
-  return getSafeProxyFactoryContractInstance(
-    _getValidatedGetContractProps(safeVersion).safeVersion,
-    safeProvider,
-    safeProvider.getExternalProvider(),
-    contractAddress,
-  )
+  return ethAdapter.getSafeProxyFactoryContract({
+    singletonDeployment: getProxyFactoryContractDeployment(chainId, safeVersion),
+    ..._getValidatedGetContractProps(safeVersion),
+  })
 }
 
 // Fallback handler
 
-export const getReadOnlyFallbackHandlerContract = async (safeVersion: SafeInfo['version']) => {
-  const safeProvider = getSafeProvider()
-
-  return getCompatibilityFallbackHandlerContractInstance(
-    _getValidatedGetContractProps(safeVersion).safeVersion,
-    safeProvider,
-  )
+export const getReadOnlyFallbackHandlerContract = async (
+  chainId: string,
+  safeVersion: SafeInfo['version'],
+): Promise<CompatibilityFallbackHandlerEthersContract> => {
+  const ethAdapter = createReadOnlyEthersAdapter()
+  return ethAdapter.getCompatibilityFallbackHandlerContract({
+    singletonDeployment: getFallbackHandlerContractDeployment(chainId, safeVersion),
+    ..._getValidatedGetContractProps(safeVersion),
+  })
 }
 
 // Sign messages deployment
 
-export const getReadOnlySignMessageLibContract = async (safeVersion: SafeInfo['version']) => {
-  const safeSDK = getSafeSDK()
-  if (!safeSDK) {
-    throw new Error('Safe SDK not found.')
-  }
+export const getReadOnlySignMessageLibContract = async (
+  chainId: string,
+  safeVersion: SafeInfo['version'],
+): Promise<SignMessageLibEthersContract> => {
+  const ethAdapter = createReadOnlyEthersAdapter()
 
-  const safeProvider = safeSDK.getSafeProvider()
-
-  return getSignMessageLibContractInstance(_getValidatedGetContractProps(safeVersion).safeVersion, safeProvider)
+  return ethAdapter.getSignMessageLibContract({
+    singletonDeployment: getSignMessageLibContractDeployment(chainId, safeVersion),
+    ..._getValidatedGetContractProps(safeVersion),
+  })
 }

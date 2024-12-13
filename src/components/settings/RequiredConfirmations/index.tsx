@@ -19,27 +19,23 @@ export const RequiredConfirmation = ({ threshold, owners }: { threshold: number;
         </Grid>
 
         <Grid item xs>
-          <Typography pb={2}>Any transaction requires the confirmation of:</Typography>
-
-          <Typography pt={3} pr={2} component="span">
+          <Typography>Any transaction requires the confirmation of:</Typography>
+          <Typography paddingTop={3}>
             <b>{threshold}</b> out of <b>{owners}</b> signers.
           </Typography>
 
           {owners > 1 && (
-            <CheckWallet>
-              {(isOk) => (
-                <Track {...SETTINGS_EVENTS.SETUP.CHANGE_THRESHOLD} as="span">
-                  <Button
-                    onClick={() => setTxFlow(<ChangeThresholdFlow />)}
-                    variant="contained"
-                    disabled={!isOk}
-                    size="small"
-                  >
-                    Change
-                  </Button>
-                </Track>
-              )}
-            </CheckWallet>
+            <Box pt={2}>
+              <CheckWallet>
+                {(isOk) => (
+                  <Track {...SETTINGS_EVENTS.SETUP.CHANGE_THRESHOLD}>
+                    <Button onClick={() => setTxFlow(<ChangeThresholdFlow />)} variant="contained" disabled={!isOk}>
+                      Change
+                    </Button>
+                  </Track>
+                )}
+              </CheckWallet>
+            </Box>
           )}
         </Grid>
       </Grid>

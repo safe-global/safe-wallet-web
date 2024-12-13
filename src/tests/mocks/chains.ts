@@ -1,25 +1,10 @@
-import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { FEATURES, GAS_PRICE_TYPE, RPC_AUTHENTICATION } from '@safe-global/safe-gateway-typescript-sdk'
 
-const contractAddresses = {
-  createCallAddress: null,
-  fallbackHandlerAddress: null,
-  multiSendAddress: null,
-  multiSendCallOnlyAddress: null,
-  safeProxyFactoryAddress: null,
-  safeSingletonAddress: null,
-  safeWebAuthnSignerFactoryAddress: null,
-  signMessageLibAddress: null,
-  simulateTxAccessorAddress: null,
-}
-
-const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
+const CONFIG_SERVICE_CHAINS: any[] = [
   {
     transactionService: 'https://safe-transaction.mainnet.gnosis.io',
-    contractAddresses,
     chainId: '1',
     chainName: 'Ethereum',
-    chainLogoUri: '',
     shortName: 'eth',
     l2: false,
     isTestnet: false,
@@ -56,6 +41,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
     ],
     disabledWallets: ['lattice'],
     features: [
+      FEATURES.CONTRACT_INTERACTION,
       FEATURES.DOMAIN_LOOKUP,
       FEATURES.EIP1559,
       FEATURES.ERC721,
@@ -64,17 +50,11 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       FEATURES.SPENDING_LIMIT,
       FEATURES.TX_SIMULATION,
     ],
-    balancesProvider: {
-      chainName: null,
-      enabled: false,
-    },
   },
   {
     transactionService: 'https://safe-transaction.xdai.gnosis.io',
-    contractAddresses,
     chainId: '100',
     chainName: 'Gnosis Chain',
-    chainLogoUri: '',
     shortName: 'gno',
     l2: true,
     isTestnet: false,
@@ -111,6 +91,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'walletLink',
     ],
     features: [
+      FEATURES.CONTRACT_INTERACTION,
       FEATURES.EIP1559,
       FEATURES.ERC721,
       FEATURES.SAFE_APPS,
@@ -118,17 +99,11 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       FEATURES.SPENDING_LIMIT,
       FEATURES.TX_SIMULATION,
     ],
-    balancesProvider: {
-      chainName: null,
-      enabled: false,
-    },
   },
   {
     transactionService: 'https://safe-transaction.polygon.gnosis.io',
-    contractAddresses,
     chainId: '137',
     chainName: 'Polygon',
-    chainLogoUri: '',
     shortName: 'matic',
     l2: true,
     isTestnet: false,
@@ -171,6 +146,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'walletLink',
     ],
     features: [
+      FEATURES.CONTRACT_INTERACTION,
       FEATURES.EIP1559,
       FEATURES.ERC721,
       FEATURES.SAFE_APPS,
@@ -178,17 +154,11 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       FEATURES.SPENDING_LIMIT,
       FEATURES.TX_SIMULATION,
     ],
-    balancesProvider: {
-      chainName: null,
-      enabled: false,
-    },
   },
   {
     transactionService: 'https://safe-transaction.bsc.gnosis.io',
-    contractAddresses,
     chainId: '56',
     chainName: 'BNB Smart Chain',
-    chainLogoUri: '',
     shortName: 'bnb',
     l2: true,
     isTestnet: false,
@@ -228,23 +198,18 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'walletLink',
     ],
     features: [
+      FEATURES.CONTRACT_INTERACTION,
       FEATURES.ERC721,
       FEATURES.SAFE_APPS,
       FEATURES.SAFE_TX_GAS_OPTIONAL,
       FEATURES.SPENDING_LIMIT,
       FEATURES.TX_SIMULATION,
     ],
-    balancesProvider: {
-      chainName: null,
-      enabled: false,
-    },
   },
   {
     transactionService: 'https://safe-transaction.ewc.gnosis.io',
-    contractAddresses,
     chainId: '246',
     chainName: 'Energy Web Chain',
-    chainLogoUri: '',
     shortName: 'ewt',
     l2: true,
     isTestnet: false,
@@ -282,23 +247,18 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'walletLink',
     ],
     features: [
+      FEATURES.CONTRACT_INTERACTION,
       FEATURES.DOMAIN_LOOKUP,
       FEATURES.ERC721,
       FEATURES.SAFE_APPS,
       FEATURES.SAFE_TX_GAS_OPTIONAL,
       FEATURES.SPENDING_LIMIT,
     ],
-    balancesProvider: {
-      chainName: null,
-      enabled: false,
-    },
   },
   {
     transactionService: 'https://safe-transaction.arbitrum.gnosis.io',
-    contractAddresses,
     chainId: '42161',
     chainName: 'Arbitrum',
-    chainLogoUri: '',
     shortName: 'arb1',
     l2: true,
     isTestnet: false,
@@ -334,18 +294,18 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'trust',
       'walletLink',
     ],
-    features: [FEATURES.ERC721, FEATURES.SAFE_APPS, FEATURES.SAFE_TX_GAS_OPTIONAL, FEATURES.TX_SIMULATION],
-    balancesProvider: {
-      chainName: null,
-      enabled: false,
-    },
+    features: [
+      FEATURES.CONTRACT_INTERACTION,
+      FEATURES.ERC721,
+      FEATURES.SAFE_APPS,
+      FEATURES.SAFE_TX_GAS_OPTIONAL,
+      FEATURES.TX_SIMULATION,
+    ],
   },
   {
     transactionService: 'https://safe-transaction.aurora.gnosis.io',
-    contractAddresses,
     chainId: '1313161554',
     chainName: 'Aurora',
-    chainLogoUri: '',
     shortName: 'aurora',
     l2: true,
     isTestnet: false,
@@ -383,17 +343,11 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'walletLink',
     ],
     features: [FEATURES.CONTRACT_INTERACTION, FEATURES.ERC721, FEATURES.SAFE_APPS, FEATURES.SAFE_TX_GAS_OPTIONAL],
-    balancesProvider: {
-      chainName: null,
-      enabled: false,
-    },
   },
   {
     transactionService: 'https://safe-transaction.avalanche.gnosis.io',
-    contractAddresses,
     chainId: '43114',
     chainName: 'Avalanche',
-    chainLogoUri: '',
     shortName: 'avax',
     l2: true,
     isTestnet: false,
@@ -435,6 +389,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'trust',
     ],
     features: [
+      FEATURES.CONTRACT_INTERACTION,
       FEATURES.EIP1559,
       FEATURES.ERC721,
       FEATURES.SAFE_APPS,
@@ -442,17 +397,11 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       FEATURES.SPENDING_LIMIT,
       FEATURES.TX_SIMULATION,
     ],
-    balancesProvider: {
-      chainName: null,
-      enabled: false,
-    },
   },
   {
     transactionService: 'https://safe-transaction.optimism.gnosis.io',
-    contractAddresses,
     chainId: '10',
     chainName: 'Optimism',
-    chainLogoUri: '',
     shortName: 'oeth',
     l2: true,
     isTestnet: false,
@@ -488,18 +437,18 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'trust',
       'walletLink',
     ],
-    features: [FEATURES.ERC721, FEATURES.SAFE_APPS, FEATURES.SAFE_TX_GAS_OPTIONAL, FEATURES.TX_SIMULATION],
-    balancesProvider: {
-      chainName: null,
-      enabled: false,
-    },
+    features: [
+      FEATURES.CONTRACT_INTERACTION,
+      FEATURES.ERC721,
+      FEATURES.SAFE_APPS,
+      FEATURES.SAFE_TX_GAS_OPTIONAL,
+      FEATURES.TX_SIMULATION,
+    ],
   },
   {
     transactionService: 'https://safe-transaction.goerli.gnosis.io/',
-    contractAddresses,
     chainId: '5',
     chainName: 'Goerli',
-    chainLogoUri: '',
     shortName: 'gor',
     l2: true,
     isTestnet: true,
@@ -536,6 +485,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'walletLink',
     ],
     features: [
+      FEATURES.CONTRACT_INTERACTION,
       FEATURES.DOMAIN_LOOKUP,
       FEATURES.EIP1559,
       FEATURES.ERC721,
@@ -544,17 +494,11 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       FEATURES.SPENDING_LIMIT,
       FEATURES.TX_SIMULATION,
     ],
-    balancesProvider: {
-      chainName: null,
-      enabled: false,
-    },
   },
   {
     transactionService: 'https://safe-transaction.rinkeby.gnosis.io',
-    contractAddresses,
     chainId: '4',
     chainName: 'Rinkeby',
-    chainLogoUri: '',
     shortName: 'rin',
     l2: false,
     isTestnet: true,
@@ -581,6 +525,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
     gasPrice: [{ type: GAS_PRICE_TYPE.FIXED, weiValue: '24000000000' }],
     disabledWallets: ['fortmatic', 'lattice', 'tally'],
     features: [
+      FEATURES.CONTRACT_INTERACTION,
       FEATURES.DOMAIN_LOOKUP,
       FEATURES.EIP1559,
       FEATURES.ERC721,
@@ -589,17 +534,11 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       FEATURES.SPENDING_LIMIT,
       FEATURES.TX_SIMULATION,
     ],
-    balancesProvider: {
-      chainName: null,
-      enabled: false,
-    },
   },
   {
     transactionService: 'https://safe-transaction.volta.gnosis.io',
-    contractAddresses,
     chainId: '73799',
     chainName: 'Volta',
-    chainLogoUri: '',
     shortName: 'vt',
     l2: true,
     isTestnet: false,
@@ -637,16 +576,13 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'walletLink',
     ],
     features: [
+      FEATURES.CONTRACT_INTERACTION,
       FEATURES.DOMAIN_LOOKUP,
       FEATURES.ERC721,
       FEATURES.SAFE_APPS,
       FEATURES.SAFE_TX_GAS_OPTIONAL,
       FEATURES.SPENDING_LIMIT,
     ],
-    balancesProvider: {
-      chainName: null,
-      enabled: false,
-    },
   },
 ]
 

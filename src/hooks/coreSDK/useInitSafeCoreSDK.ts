@@ -43,7 +43,7 @@ export const useInitSafeCoreSDK = () => {
         const e = asError(_e)
         dispatch(
           showNotification({
-            message: 'Error connecting to the blockchain. Please try reloading the page.',
+            message: 'Please try connecting your wallet again.',
             groupKey: 'core-sdk-init-error',
             variant: 'error',
             detailedMessage: e.message,

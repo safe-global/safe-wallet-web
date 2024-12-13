@@ -57,22 +57,12 @@ const extractTxInfo = (
         } else {
           return txDetails.txData?.value ?? '0'
         }
-      case 'TwapOrder':
-        return txDetails.txData?.value ?? '0'
-      case 'SwapOrder':
-        return txDetails.txData?.value ?? '0'
-      case 'NativeStakingDeposit':
-      case 'NativeStakingValidatorsExit':
-      case 'NativeStakingWithdraw':
-        return txDetails.txData?.value ?? '0'
       case 'Custom':
         return txDetails.txInfo.value
       case 'Creation':
       case 'SettingsChange':
+      default:
         return '0'
-      default: {
-        throw new Error(`Unknown transaction type: ${txDetails.txInfo.type}`)
-      }
     }
   })()
 
@@ -84,29 +74,12 @@ const extractTxInfo = (
         } else {
           return txDetails.txInfo.transferInfo.tokenAddress
         }
-      case 'SwapOrder':
-      case 'TwapOrder':
-        const orderTo = txDetails.txData?.to.value
-        if (!orderTo) {
-          throw new Error('Order tx data does not have a `to` field')
-        }
-        return orderTo
-      case 'NativeStakingDeposit':
-      case 'NativeStakingValidatorsExit':
-      case 'NativeStakingWithdraw':
-        const stakingTo = txDetails.txData?.to.value
-        if (!stakingTo) {
-          throw new Error('Staking tx data does not have a `to` field')
-        }
-        return stakingTo
       case 'Custom':
         return txDetails.txInfo.to.value
       case 'Creation':
       case 'SettingsChange':
+      default:
         return safeAddress
-      default: {
-        throw new Error(`Unknown transaction type: ${txDetails.txInfo.type}`)
-      }
     }
   })()
 

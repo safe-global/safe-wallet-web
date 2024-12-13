@@ -1,49 +1,49 @@
-import TokenIcon from '@/components/common/TokenIcon'
+import { type ReactElement } from 'react'
+import { Alert, Grid, Typography } from '@mui/material'
 import css from '@/components/tx/ApprovalEditor/styles.module.css'
+import EthHashInfo from '@/components/common/EthHashInfo'
 import type { Approval } from '@/services/security/modules/ApprovalModule'
-import { Box, Stack, Typography } from '@mui/material'
-import { TokenType } from '@safe-global/safe-gateway-typescript-sdk/dist/types/common'
-import type { ApprovalInfo } from './hooks/useApprovalInfos'
-import { PSEUDO_APPROVAL_VALUES } from './utils/approvals'
-import { formatAmountPrecise } from '@/utils/formatNumber'
 
-export const approvalMethodDescription: Record<Approval['method'], (symbol: string, type?: TokenType) => string> = {
-  approve: (symbol: string, type?: TokenType) =>
-    type === TokenType.ERC721 ? `Allow to transfer ${symbol}` : `Set ${symbol} allowance to`,
-  increaseAllowance: (symbol: string) => `Increase ${symbol} allowance by`,
-  Permit2: (symbol: string) => `Give permission to spend ${symbol}`,
+const approvalMethodDescription: Record<Approval['method'], string> = {
+  approve: 'Set allowance to',
+  increaseAllowance: 'Increase allowance by',
+  Permit2: 'Give permission to spend',
 }
 
 const ApprovalItem = ({
+  spender,
   method,
-  amount,
-  rawAmount,
-  tokenInfo,
+  children,
 }: {
   spender: string
-  amount: string
-  rawAmount: any
-  tokenInfo: NonNullable<ApprovalInfo['tokenInfo']>
   method: Approval['method']
+  children: ReactElement
 }) => {
   return (
-    <Stack direction="row" alignItems="center" gap={2} className={css.approvalField}>
-      <TokenIcon size={32} logoUri={tokenInfo?.logoUri} tokenSymbol={tokenInfo?.symbol} />
-      <Box sx={{ overflowX: 'auto' }}>
-        <Typography variant="body2" color="text.secondary">
-          {approvalMethodDescription[method](tokenInfo.symbol ?? '', tokenInfo.type)}
-        </Typography>
-        {amount === PSEUDO_APPROVAL_VALUES.UNLIMITED ? (
-          <Typography>{PSEUDO_APPROVAL_VALUES.UNLIMITED}</Typography>
-        ) : (
-          <Typography data-testid="token-amount">
-            {tokenInfo.type === TokenType.ERC20
-              ? formatAmountPrecise(amount, tokenInfo.decimals)
-              : `#${rawAmount.toString()}`}
-          </Typography>
-        )}
-      </Box>
-    </Stack>
+    <Alert icon={false} variant="outlined" severity="warning" className={css.alert}>
+      <Grid container gap={1} justifyContent="space-between">
+        <Grid item xs={12}>
+          <Typography variant="caption">{approvalMethodDescription[method]}</Typography>
+        </Grid>
+        <Grid item display="flex" xs={12} flexDirection="row" alignItems="center" gap={1}>
+          {children}
+        </Grid>
+
+        <Grid item container display="flex" xs={12} alignItems="center" gap={1}>
+          <Grid item xs={2}>
+            <Typography color="text.secondary" variant="body2">
+              Spender
+            </Typography>
+          </Grid>
+
+          <Grid item>
+            <Typography fontSize="14px">
+              <EthHashInfo address={spender} hasExplorer showAvatar={false} shortAddress={false} />
+            </Typography>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Alert>
   )
 }
 

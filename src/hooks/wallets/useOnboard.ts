@@ -3,15 +3,19 @@ import { type WalletState, type OnboardAPI } from '@web3-onboard/core'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Eip1193Provider } from 'ethers'
 import { getAddress } from 'ethers'
-import useChains, { useCurrentChain } from '@/hooks/useChains'
+import { useCurrentChain } from '@/hooks/useChains'
 import ExternalStore from '@/services/ExternalStore'
 import { logError, Errors } from '@/services/exceptions'
 import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { useAppSelector } from '@/store'
 import { type EnvState, selectRpc } from '@/store/settingsSlice'
+import { E2E_WALLET_NAME } from '@/tests/e2e-wallet'
+import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 import { formatAmount } from '@/utils/formatNumber'
 import { localItem } from '@/services/local-storage/local'
-import { isWalletConnect, isWalletUnlocked } from '@/utils/wallets'
+import { isWalletUnlocked } from '@/utils/wallets'
+
+const WALLETCONNECT = 'WalletConnect'
 
 export type ConnectedWallet = {
   label: string
@@ -21,20 +25,13 @@ export type ConnectedWallet = {
   provider: Eip1193Provider
   icon?: string
   balance?: string
-  isProposer?: boolean
 }
 
-const { getStore, setStore, useStore } = new ExternalStore<OnboardAPI>()
+const { setStore, useStore } = new ExternalStore<OnboardAPI>()
 
-export const initOnboard = async (
-  chainConfigs: ChainInfo[],
-  currentChain: ChainInfo,
-  rpcConfig: EnvState['rpc'] | undefined,
-) => {
+export const initOnboard = async (currentChain: ChainInfo, rpcConfig: EnvState['rpc'] | undefined) => {
   const { createOnboard } = await import('@/services/onboard')
-  if (!getStore()) {
-    setStore(createOnboard(chainConfigs, currentChain, rpcConfig))
-  }
+  setStore(createOnboard(currentChain, rpcConfig))
 }
 
 // Get the most recently connected wallet address
@@ -71,7 +68,6 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
       provider: primaryWallet.provider,
       icon: primaryWallet.icon,
       balance,
-      isProposer: false,
     }
   } catch (e) {
     logError(Errors._106, e)
@@ -81,7 +77,9 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
 
 const getWalletConnectLabel = async (wallet: ConnectedWallet): Promise<string | undefined> => {
   const UNKNOWN_PEER = 'Unknown'
-  if (!isWalletConnect(wallet)) return
+  const { label } = wallet
+  const isWalletConnect = label.startsWith(WALLETCONNECT)
+  if (!isWalletConnect) return
   const { connector } = wallet.provider as unknown as any
   const peerWalletV2 = connector.session?.peer?.metadata?.name
   return peerWalletV2 || UNKNOWN_PEER
@@ -132,7 +130,18 @@ export const connectWallet = async (
 }
 
 export const switchWallet = async (onboard: OnboardAPI) => {
-  await connectWallet(onboard)
+  const oldWalletLabel = getConnectedWallet(onboard.state.get().wallets)?.label
+  const newWallets = await connectWallet(onboard)
+  const newWalletLabel = newWallets ? getConnectedWallet(newWallets)?.label : undefined
+
+  // If the wallet actually changed we disconnect the old connected wallet.
+  if (!newWalletLabel || oldWalletLabel !== ONBOARD_MPC_MODULE_LABEL) {
+    return
+  }
+
+  if (newWalletLabel !== oldWalletLabel) {
+    await onboard.disconnectWallet({ label: oldWalletLabel })
+  }
 }
 
 const lastWalletStorage = localItem<string>('lastWallet')
@@ -156,28 +165,36 @@ const saveLastWallet = (walletLabel: string) => {
 
 // Disable/enable wallets according to chain
 export const useInitOnboard = () => {
-  const { configs } = useChains()
   const chain = useCurrentChain()
   const onboard = useStore()
   const customRpc = useAppSelector(selectRpc)
 
   useEffect(() => {
-    if (configs.length > 0 && chain) {
-      void initOnboard(configs, chain, customRpc)
+    if (chain) {
+      initOnboard(chain, customRpc).catch((e) => {
+        logError(Errors._302, e)
+      })
     }
-  }, [configs, chain, customRpc])
+  }, [chain, customRpc])
 
   // Disable unsupported wallets on the current chain
   useEffect(() => {
     if (!onboard || !chain) return
 
     const enableWallets = async () => {
-      const { getSupportedWallets } = await import('@/hooks/wallets/wallets')
-      const supportedWallets = getSupportedWallets(chain)
-      onboard.state.actions.setWalletModules(supportedWallets)
-    }
+      const { getSupportedWallets } = await import('@/hooks/wallets/wallets');
+      const supportedWallets = await getSupportedWallets(chain);
+      onboard.state.actions.setWalletModules(supportedWallets as any);
+    };
 
     enableWallets().then(() => {
+      // e2e wallet
+      if (typeof window !== 'undefined' && window.Cypress) {
+        connectWallet(onboard, {
+          autoSelect: { label: E2E_WALLET_NAME, disableModals: true },
+        })
+      }
+
       // Reconnect last wallet
       connectLastWallet(onboard)
     })

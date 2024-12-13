@@ -2,7 +2,7 @@
 
 set -ev
 
-if [[ -f $CHECKSUM_FILE ]]; then
+if [[ -n $CHECKSUM_FILE ]]; then
   cp ./$CHECKSUM_FILE ./out/$CHECKSUM_FILE
 fi
 

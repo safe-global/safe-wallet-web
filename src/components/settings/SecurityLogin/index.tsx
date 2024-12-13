@@ -1,20 +1,54 @@
-import { Box } from '@mui/material'
+import { Box, Grid, Paper, Typography } from '@mui/material'
+import SocialSignerMFA from './SocialSignerMFA'
+import SocialSignerExport from './SocialSignerExport'
+import useWallet from '@/hooks/wallets/useWallet'
+import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
+import SpendingLimits from '../SpendingLimits'
 import dynamic from 'next/dynamic'
 import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
-import SecuritySettings from '../SecuritySettings'
-import { useRouter } from 'next/router'
 
 const RecoverySettings = dynamic(() => import('@/features/recovery/components/RecoverySettings'))
 
 const SecurityLogin = () => {
   const isRecoverySupported = useIsRecoverySupported()
-  const router = useRouter()
+  const wallet = useWallet()
+  const isSocialLogin = isSocialLoginWallet(wallet?.label)
 
   return (
     <Box display="flex" flexDirection="column" gap={2}>
-      {isRecoverySupported && router.query.safe ? <RecoverySettings /> : null}
+      {isRecoverySupported && <RecoverySettings />}
 
-      <SecuritySettings />
+      {isSocialLogin && (
+        <>
+          <Paper sx={{ p: 4 }}>
+            <Grid container spacing={3}>
+              <Grid item lg={4} xs={12}>
+                <Typography variant="h4" fontWeight="bold" mb={1}>
+                  Multi-factor Authentication
+                </Typography>
+              </Grid>
+
+              <Grid item xs>
+                <SocialSignerMFA />
+              </Grid>
+            </Grid>
+          </Paper>
+          <Paper sx={{ p: 4, mt: 2 }}>
+            <Grid container spacing={3}>
+              <Grid item lg={4} xs={12}>
+                <Typography variant="h4" fontWeight="bold" mb={1}>
+                  Social login signer export
+                </Typography>
+              </Grid>
+              <Grid item xs>
+                <SocialSignerExport />
+              </Grid>
+            </Grid>
+          </Paper>
+        </>
+      )}
+
+      <SpendingLimits />
     </Box>
   )
 }

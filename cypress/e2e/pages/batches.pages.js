@@ -3,13 +3,12 @@ import * as constants from '../../support/constants'
 const tokenSelectorText = 'G(ö|oe)rli Ether'
 const noLaterString = 'No, later'
 const yesExecuteString = 'Yes, execute'
-export const newTransactionBtnStr = 'New transaction'
+const newTransactionTitle = 'New transaction'
 const sendTokensButn = 'Send tokens'
 const nextBtn = 'Next'
 const executeBtn = 'Execute'
-export const addToBatchBtn = 'Add to batch'
+const addToBatchBtn = 'Add to batch'
 const confirmBatchBtn = 'Confirm batch'
-export const batchedTxs = 'Batched transactions'
 
 export const closeModalBtnBtn = '[data-testid="CloseIcon"]'
 export const deleteTransactionbtn = '[title="Delete transaction"]'
@@ -36,7 +35,6 @@ export function addToBatch(EOA, currentNonce, amount, verify = false) {
     executeTransaction()
   }
   addToBatchButton()
-  cy.contains(transactionAddedToBatchStr).click().should('not.be.visible')
 }
 
 function fillTransactionData(EOA, amount) {
@@ -63,7 +61,7 @@ function executeTransaction() {
 }
 
 function addToBatchButton() {
-  cy.get('button').contains(addToBatchBtn).click()
+  cy.contains(addToBatchBtn).should('be.visible').and('not.be.disabled').click()
 }
 
 export function openBatchtransactionsModal() {
@@ -107,16 +105,4 @@ export function verifyTransactionAdded() {
 
 export function verifyBatchIconCount(count) {
   cy.get(batchTxCounter).contains(count)
-}
-
-export function verifyNewTxButtonStatus(param) {
-  cy.get('button').contains(newTransactionBtnStr).should(param)
-}
-
-export function isTxExpanded(index, option) {
-  cy.contains(batchedTxs)
-    .parent()
-    .within(() => {
-      cy.get('li').eq(index).find(`div[aria-expanded="${option}"]`)
-    })
 }

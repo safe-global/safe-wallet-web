@@ -1,16 +1,13 @@
-import Track from '@/components/common/Track'
-import { WCLoadingState } from '@/features/walletconnect/components/WalletConnectProvider'
-import { isPairingUri } from '@/features/walletconnect/services/utils'
+import { useCallback, useContext, useEffect, useState } from 'react'
+import { Button, InputAdornment, TextField } from '@mui/material'
 import { WalletConnectContext } from '@/features/walletconnect/WalletConnectContext'
-import useDebounce from '@/hooks/useDebounce'
-import { trackEvent } from '@/services/analytics'
-import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
 import { asError } from '@/services/exceptions/utils'
 import { getClipboard, isClipboardSupported } from '@/utils/clipboard'
-import { Button, CircularProgress, InputAdornment, TextField } from '@mui/material'
-import { useCallback, useContext, useEffect, useState } from 'react'
-
-const PROPOSAL_TIMEOUT = 30_000
+import { isPairingUri } from '@/features/walletconnect/services/utils'
+import Track from '@/components/common/Track'
+import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
+import { trackEvent } from '@/services/analytics'
+import useDebounce from '@/hooks/useDebounce'
 
 const useTrackErrors = (error?: Error) => {
   const debouncedErrorMessage = useDebounce(error?.message, 1000)
@@ -24,10 +21,11 @@ const useTrackErrors = (error?: Error) => {
 }
 
 const WcInput = ({ uri }: { uri: string }) => {
-  const { walletConnect, isLoading, setIsLoading, setError } = useContext(WalletConnectContext)
+  const { walletConnect } = useContext(WalletConnectContext)
   const [value, setValue] = useState('')
-  const [inputError, setInputError] = useState<Error>()
-  useTrackErrors(inputError)
+  const [error, setError] = useState<Error>()
+  const [connecting, setConnecting] = useState(false)
+  useTrackErrors(error)
 
   const onInput = useCallback(
     async (val: string) => {
@@ -36,30 +34,25 @@ const WcInput = ({ uri }: { uri: string }) => {
       setValue(val)
 
       if (val && !isPairingUri(val)) {
-        setInputError(new Error('Invalid pairing code'))
+        setError(new Error('Invalid pairing code'))
         return
       }
 
-      setInputError(undefined)
+      setError(undefined)
 
       if (!val) return
 
-      setIsLoading(WCLoadingState.CONNECT)
+      setConnecting(true)
 
       try {
         await walletConnect.connect(val)
       } catch (e) {
-        setInputError(asError(e))
-        setIsLoading(undefined)
+        setError(asError(e))
       }
-      setTimeout(() => {
-        if (isLoading && isLoading !== WCLoadingState.APPROVE) {
-          setIsLoading(undefined)
-          setError(new Error('Connection timed out'))
-        }
-      }, PROPOSAL_TIMEOUT)
+
+      setConnecting(false)
     },
-    [isLoading, setError, setIsLoading, walletConnect],
+    [walletConnect],
   )
 
   // Insert a pre-filled uri
@@ -83,9 +76,9 @@ const WcInput = ({ uri }: { uri: string }) => {
       fullWidth
       autoComplete="off"
       autoFocus
-      disabled={!!isLoading}
-      error={!!inputError}
-      label={inputError ? inputError.message : 'Pairing code'}
+      disabled={connecting}
+      error={!!error}
+      label={error ? error.message : 'Pairing code'}
       placeholder="wc:"
       spellCheck={false}
       InputProps={{
@@ -93,12 +86,8 @@ const WcInput = ({ uri }: { uri: string }) => {
         endAdornment: isClipboardSupported() ? undefined : (
           <InputAdornment position="end">
             <Track {...WALLETCONNECT_EVENTS.PASTE_CLICK}>
-              <Button variant="contained" onClick={onPaste} sx={{ py: 1 }} disabled={!!isLoading}>
-                {isLoading === WCLoadingState.CONNECT || isLoading === WCLoadingState.APPROVE ? (
-                  <CircularProgress size={20} />
-                ) : (
-                  'Paste'
-                )}
+              <Button variant="contained" onClick={onPaste} sx={{ py: 1 }} disabled={connecting}>
+                Paste
               </Button>
             </Track>
           </InputAdornment>

@@ -6,14 +6,14 @@ const darkPalette = {
   },
   primary: {
     dark: '#0cb259',
-    main: '#12FF80',
-    light: '#A1A3A7',
+    main: '#FF9500',
+    light: '#FFAD33',
   },
   secondary: {
     dark: '#636669',
-    main: '#FFFFFF',
-    light: '#B0FFC9',
-    background: '#1B2A22',
+    main: '#FFA500',
+    light: '#FFB74D',
+    background: '#303033',
   },
   border: {
     main: '#636669',
@@ -27,9 +27,9 @@ const darkPalette = {
     background: '#2F2527',
   },
   success: {
-    dark: '#028D4C',
-    main: '#00B460',
-    light: '#81C784',
+    dark: '#CD7F00',
+    main: '#FFA500',
+    light: '#FFC489',
     background: '#1F2920',
   },
   info: {
@@ -39,9 +39,9 @@ const darkPalette = {
     background: '#19252C',
   },
   warning: {
-    dark: '#C04C32',
+    dark: '#CD674E',
     main: '#FF8061',
-    light: '#FFBC9F',
+    light: '#FFB7A6',
     background: '#2F2318',
   },
   background: {
@@ -54,7 +54,7 @@ const darkPalette = {
     main: '#636669',
   },
   logo: {
-    main: '#FFFFFF',
+    main: '#FFA500',
     background: '#303033',
   },
   static: {

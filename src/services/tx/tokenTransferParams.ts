@@ -1,5 +1,5 @@
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
-import { ConfirmationViewTypes, type BaselineConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
+import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { safeParseUnits } from '@/utils/formatters'
 import { Interface } from 'ethers'
 import { sameAddress } from '@/utils/addresses'
@@ -64,23 +64,19 @@ export const createNftTransferParams = (
   }
 }
 
-export const getNativeTransferData = ({
-  to,
-  value,
-}: Pick<MetaTransactionData, 'to' | 'value'>): BaselineConfirmationView => {
+export const getNativeTransferData = (data: MetaTransactionData): DecodedDataResponse => {
   return {
-    type: ConfirmationViewTypes.GENERIC,
-    method: '',
+    method: 'Native token transfer',
     parameters: [
       {
         name: 'to',
         type: 'address',
-        value: to,
+        value: data.to,
       },
       {
         name: 'value',
         type: 'uint256',
-        value,
+        value: data.value,
       },
     ],
   }

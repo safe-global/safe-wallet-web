@@ -7,17 +7,14 @@ import { Box, Typography } from '@mui/material'
 import React from 'react'
 
 import TransferActions from '@/components/transactions/TxDetails/TxData/Transfer/TransferActions'
-import MaliciousTxWarning from '@/components/transactions/MaliciousTxWarning'
-import { ImitationTransactionWarning } from '@/components/transactions/ImitationTransactionWarning'
+import UntrustedTxWarning from '@/components/transactions/UntrustedTxWarning'
 
 type TransferTxInfoProps = {
   txInfo: Transfer
   txStatus: TransactionStatus
-  trusted: boolean
-  imitation: boolean
 }
 
-const TransferTxInfoMain = ({ txInfo, txStatus, trusted, imitation }: TransferTxInfoProps) => {
+const TransferTxInfoSummary = ({ txInfo, txStatus, trusted }: TransferTxInfoProps & { trusted: boolean }) => {
   const { direction } = txInfo
 
   return (
@@ -25,21 +22,21 @@ const TransferTxInfoMain = ({ txInfo, txStatus, trusted, imitation }: TransferTx
       <Typography>
         {direction === TransferDirection.INCOMING ? 'Received' : isTxQueued(txStatus) ? 'Send' : 'Sent'}{' '}
         <b>
-          <TransferTx info={txInfo} withLogo={false} omitSign preciseAmount />
+          <TransferTx info={txInfo} withLogo={false} omitSign />
         </b>
         {direction === TransferDirection.INCOMING ? ' from:' : ' to:'}
       </Typography>
-      {!trusted && !imitation && <MaliciousTxWarning />}
+      {!trusted && <UntrustedTxWarning />}
     </Box>
   )
 }
 
-const TransferTxInfo = ({ txInfo, txStatus, trusted, imitation }: TransferTxInfoProps) => {
+const TransferTxInfo = ({ txInfo, txStatus, trusted }: TransferTxInfoProps & { trusted: boolean }) => {
   const address = txInfo.direction.toUpperCase() === TransferDirection.INCOMING ? txInfo.sender : txInfo.recipient
 
   return (
     <Box display="flex" flexDirection="column" gap={1}>
-      <TransferTxInfoMain txInfo={txInfo} txStatus={txStatus} trusted={trusted} imitation={imitation} />
+      <TransferTxInfoSummary txInfo={txInfo} txStatus={txStatus} trusted={trusted} />
 
       <Box display="flex" alignItems="center" width="100%">
         <EthHashInfo
@@ -49,12 +46,11 @@ const TransferTxInfo = ({ txInfo, txStatus, trusted, imitation }: TransferTxInfo
           shortAddress={false}
           hasExplorer
           showCopyButton
-          trusted={trusted && !imitation}
+          trusted={trusted}
         >
           <TransferActions address={address.value} txInfo={txInfo} trusted={trusted} />
         </EthHashInfo>
       </Box>
-      {imitation && <ImitationTransactionWarning />}
     </Box>
   )
 }

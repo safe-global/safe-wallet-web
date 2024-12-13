@@ -106,7 +106,6 @@ describe('AssetsTable', () => {
           },
           signing: {
             onChainSigning: false,
-            blindSigning: false,
           },
           transactionExecution: true,
         },
@@ -212,7 +211,6 @@ describe('AssetsTable', () => {
           },
           signing: {
             onChainSigning: false,
-            blindSigning: false,
           },
           transactionExecution: true,
         },
@@ -314,7 +312,6 @@ describe('AssetsTable', () => {
           },
           signing: {
             onChainSigning: false,
-            blindSigning: false,
           },
           transactionExecution: true,
         },
@@ -413,7 +410,6 @@ describe('AssetsTable', () => {
           },
           signing: {
             onChainSigning: false,
-            blindSigning: false,
           },
           transactionExecution: true,
         },

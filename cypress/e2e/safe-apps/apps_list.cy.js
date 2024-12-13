@@ -1,30 +1,24 @@
 import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as safeapps from '../pages/safeapps.pages'
-import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
-import * as ls from '../../support/localstorage_data.js'
 
 const myCustomAppTitle = 'Cypress Test App'
 const myCustomAppDescrAdded = 'Cypress Test App Description'
 
-let staticSafes = []
-
 describe('Safe Apps list tests', () => {
-  before(async () => {
-    staticSafes = await getSafes(CATEGORIES.static)
-  })
-
   beforeEach(() => {
-    cy.visit(`${constants.appsUrl}?safe=${staticSafes.SEP_STATIC_SAFE_1}`, {
+    cy.clearLocalStorage()
+    cy.visit(`${constants.appsUrl}?safe=${constants.SEPOLIA_TEST_SAFE_4}`, {
       failOnStatusCode: false,
     })
+    main.acceptCookies()
   })
 
   it('Verify app list can be filtered by app name', () => {
     // Wait for /safe-apps response
     cy.intercept('GET', constants.appsEndpoint).then(() => {
-      safeapps.typeAppName(constants.appNames.txbuilder)
-      safeapps.verifyLinkName(safeapps.linkNames.txBuilderLogo)
+      safeapps.typeAppName(constants.appNames.walletConnect)
+      safeapps.verifyLinkName(safeapps.linkNames.wcLogo)
     })
   })
 
@@ -40,13 +34,13 @@ describe('Safe Apps list tests', () => {
 
   it('Verify apps can be pinned', () => {
     safeapps.clearSearchAppInput()
-    safeapps.pinApp(1, safeapps.transactionBuilderStr)
+    safeapps.pinApp(safeapps.transactionBuilderStr)
     safeapps.verifyPinnedAppCount(1)
   })
 
   it('Verify apps can be unpinned', () => {
-    safeapps.pinApp(1, safeapps.transactionBuilderStr)
-    safeapps.pinApp(0, safeapps.transactionBuilderStr, false)
+    safeapps.pinApp(safeapps.transactionBuilderStr)
+    safeapps.pinApp(safeapps.transactionBuilderStr, false)
     safeapps.verifyPinnedAppCount(0)
   })
 

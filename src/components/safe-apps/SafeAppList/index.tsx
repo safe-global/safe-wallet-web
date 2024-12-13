@@ -10,7 +10,6 @@ import useSafeAppPreviewDrawer from '@/hooks/safe-apps/useSafeAppPreviewDrawer'
 import css from './styles.module.css'
 import { Skeleton } from '@mui/material'
 import { useOpenedSafeApps } from '@/hooks/safe-apps/useOpenedSafeApps'
-import NativeSwapsCard from '@/components/safe-apps/NativeSwapsCard'
 
 type SafeAppListProps = {
   safeAppsList: SafeAppData[]
@@ -21,8 +20,6 @@ type SafeAppListProps = {
   removeCustomApp?: (safeApp: SafeAppData) => void
   title: string
   query?: string
-  isFiltered?: boolean
-  showNativeSwapsCard?: boolean
 }
 
 const SafeAppList = ({
@@ -34,8 +31,6 @@ const SafeAppList = ({
   removeCustomApp,
   title,
   query,
-  isFiltered = false,
-  showNativeSwapsCard = false,
 }: SafeAppListProps) => {
   const { isPreviewDrawerOpen, previewDrawerApp, openPreviewDrawer, closePreviewDrawer } = useSafeAppPreviewDrawer()
   const { openedSafeAppIds } = useOpenedSafeApps()
@@ -73,8 +68,6 @@ const SafeAppList = ({
               <Skeleton variant="rounded" height="271px" />
             </li>
           ))}
-
-        {!isFiltered && showNativeSwapsCard && <NativeSwapsCard />}
 
         {/* Flat list filtered by search query */}
         {safeAppsList.map((safeApp) => (

@@ -4,11 +4,11 @@ import NameInput from '@/components/common/NameInput'
 import Track from '@/components/common/Track'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 import { useAppDispatch } from '@/store'
+import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import EditIcon from '@/public/images/common/edit.svg'
 import { Box, Button, DialogActions, DialogContent, IconButton, Tooltip, SvgIcon } from '@mui/material'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { upsertAddressBookEntries } from '@/store/addressBookSlice'
 
 type EditOwnerValues = {
   name: string
@@ -24,9 +24,9 @@ export const EditOwnerDialog = ({ chainId, address, name }: { chainId: string; a
   const onSubmit = (data: EditOwnerValues) => {
     if (data.name !== name) {
       dispatch(
-        upsertAddressBookEntries({
-          chainIds: [chainId],
-          address,
+        upsertAddressBookEntry({
+          chainId: chainId,
+          address: address,
           name: data.name,
         }),
       )

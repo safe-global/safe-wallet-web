@@ -1,7 +1,6 @@
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import useOnboard from '@/hooks/wallets/useOnboard'
-import useWallet from '@/hooks/wallets/useWallet'
 import { getSafeSDKWithSigner } from '@/services/tx/tx-sender/sdk'
 import { estimateSafeDeploymentGas, estimateTxBaseGas } from '@safe-global/protocol-kit'
 import type Safe from '@safe-global/protocol-kit'
@@ -22,13 +21,11 @@ type DeployGasLimitProps = {
 
 const useDeployGasLimit = (safeTx?: SafeTransaction) => {
   const onboard = useOnboard()
-  const wallet = useWallet()
   const chainId = useChainId()
 
   const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<DeployGasLimitProps | undefined>(async () => {
-    if (!wallet || !onboard) return
-
-    const sdk = await getSafeSDKWithSigner(wallet.provider)
+    if (!onboard) return
+    const sdk = await getSafeSDKWithSigner(onboard, chainId)
 
     const [baseGas, batchTxGas, safeDeploymentGas] = await Promise.all([
       safeTx ? estimateTxBaseGas(sdk, safeTx) : '0',
@@ -40,7 +37,7 @@ const useDeployGasLimit = (safeTx?: SafeTransaction) => {
     const safeTxGas = totalGas - BigInt(safeDeploymentGas)
 
     return { safeTxGas, safeDeploymentGas, totalGas }
-  }, [onboard, wallet, chainId, safeTx])
+  }, [onboard, chainId, safeTx])
 
   return { gasLimit, gasLimitError, gasLimitLoading }
 }
@@ -66,15 +63,15 @@ export const estimateBatchDeploymentTransaction = async (
 ) => {
   const customContracts = sdk.getContractManager().contractNetworks?.[chainId]
   const safeVersion = await sdk.getContractVersion()
-  const safeProvider = sdk.getSafeProvider()
+  const ethAdapter = sdk.getEthAdapter()
   const fallbackHandlerContract = await getCompatibilityFallbackHandlerContract({
-    safeProvider,
+    ethAdapter,
     safeVersion,
     customContracts,
   })
 
   const simulateTxAccessorContract = await getSimulateTxAccessorContract({
-    safeProvider,
+    ethAdapter,
     safeVersion,
     customContracts,
   })
@@ -91,7 +88,7 @@ export const estimateBatchDeploymentTransaction = async (
   // 2. Add a simulate call to the predicted SafeProxy as second transaction
   const transactionDataToEstimate: string = simulateTxAccessorContract.encode('simulate', [
     safeTransaction.data.to,
-    BigInt(safeTransaction.data.value),
+    safeTransaction.data.value,
     safeTransaction.data.data,
     safeTransaction.data.operation,
   ])
@@ -113,10 +110,10 @@ export const estimateBatchDeploymentTransaction = async (
     simulateBatchTransaction,
   ])
 
-  const signerAddress = await safeProvider.getSignerAddress()
+  const signerAddress = await ethAdapter.getSignerAddress()
 
   // estimate the entire batch
-  const safeTxGas = await safeProvider.estimateGas({
+  const safeTxGas = await ethAdapter.estimateGas({
     ...safeDeploymentBatch,
     from: signerAddress || ZERO_ADDRESS, // This address should not really matter
   })

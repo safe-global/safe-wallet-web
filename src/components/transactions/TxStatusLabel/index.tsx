@@ -1,15 +1,10 @@
-import { isCancelledSwapOrder } from '@/utils/transaction-guards'
 import { CircularProgress, type Palette, Typography } from '@mui/material'
 import { TransactionStatus, type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import useIsPending from '@/hooks/useIsPending'
 import useTransactionStatus from '@/hooks/useTransactionStatus'
 
-const getStatusColor = (tx: TransactionSummary, palette: Palette) => {
-  if (isCancelledSwapOrder(tx.txInfo)) {
-    return palette.error.main
-  }
-
-  switch (tx.txStatus) {
+const getStatusColor = (value: TransactionStatus, palette: Palette) => {
+  switch (value) {
     case TransactionStatus.SUCCESS:
       return palette.success.main
     case TransactionStatus.FAILED:
@@ -34,8 +29,7 @@ const TxStatusLabel = ({ tx }: { tx: TransactionSummary }) => {
       display="flex"
       alignItems="center"
       gap={1}
-      color={({ palette }) => getStatusColor(tx, palette)}
-      data-testid="tx-status-label"
+      color={({ palette }) => getStatusColor(tx.txStatus, palette)}
     >
       {isPending && <CircularProgress size={14} color="inherit" />}
       {txStatusLabel}

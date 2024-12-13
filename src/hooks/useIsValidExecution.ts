@@ -69,7 +69,8 @@ const useIsValidExecution = (
     }
 
     try {
-      const safeContract = await getCurrentGnosisSafeContract(safe, readOnlyProvider._getConnection().url)
+      const provider = getPatchedSignerProvider(wallet, safe.chainId, readOnlyProvider)
+      const safeContract = await getCurrentGnosisSafeContract(safe, provider)
 
       /**
        * We need to call the contract directly instead of using `sdk.isValidTransaction`

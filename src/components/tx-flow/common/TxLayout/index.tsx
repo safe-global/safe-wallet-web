@@ -1,7 +1,6 @@
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { type ComponentType, type ReactElement, type ReactNode, useContext, useEffect, useState } from 'react'
 import { Box, Container, Grid, Typography, Button, Paper, SvgIcon, IconButton, useMediaQuery } from '@mui/material'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { useTheme } from '@mui/material/styles'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
@@ -62,6 +61,7 @@ type TxLayoutProps = {
   isBatch?: boolean
   isReplacement?: boolean
   isMessage?: boolean
+  isRecovery?: boolean
 }
 
 const TxLayout = ({
@@ -82,7 +82,6 @@ const TxLayout = ({
 
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
-  const isDesktop = useMediaQuery(theme.breakpoints.down('lg'))
 
   const steps = Array.isArray(children) ? children : [children]
   const progress = Math.round(((step + 1) / steps.length) * 100)
@@ -101,16 +100,14 @@ const TxLayout = ({
         <TxSecurityProvider>
           <>
             {/* Header status button */}
-            {!isReplacement && (
-              <IconButton
-                className={css.statusButton}
-                aria-label="Transaction status"
-                size="large"
-                onClick={toggleStatus}
-              >
-                <SafeLogo width={16} height={16} />
-              </IconButton>
-            )}
+            <IconButton
+              className={css.statusButton}
+              aria-label="Transaction status"
+              size="large"
+              onClick={toggleStatus}
+            >
+              <SafeLogo width={16} height={16} />
+            </IconButton>
 
             <Container className={css.container}>
               <Grid container gap={3} justifyContent="center">
@@ -146,10 +143,9 @@ const TxLayout = ({
                     {onBack && step > 0 && (
                       <Button
                         data-testid="modal-back-btn"
-                        variant={isDesktop ? 'text' : 'outlined'}
+                        variant="contained"
                         onClick={onBack}
                         className={css.backButton}
-                        startIcon={<ArrowBackIcon fontSize="small" />}
                       >
                         Back
                       </Button>
@@ -158,23 +154,22 @@ const TxLayout = ({
                 </Grid>
 
                 {/* Sidebar */}
-                {!isReplacement && (
-                  <Grid item xs={12} md={4} className={classnames(css.widget, { [css.active]: statusVisible })}>
-                    {statusVisible && (
-                      <TxStatusWidget
-                        step={step}
-                        txSummary={txSummary}
-                        handleClose={() => setStatusVisible(false)}
-                        isBatch={isBatch}
-                        isMessage={isMessage}
-                      />
-                    )}
+                <Grid item xs={12} md={4} className={classnames(css.widget, { [css.active]: statusVisible })}>
+                  {statusVisible && (
+                    <TxStatusWidget
+                      step={step}
+                      txSummary={txSummary}
+                      handleClose={() => setStatusVisible(false)}
+                      isReplacement={isReplacement}
+                      isBatch={isBatch}
+                      isMessage={isMessage}
+                    />
+                  )}
 
-                    <Box className={css.sticky}>
-                      <SecurityWarnings />
-                    </Box>
-                  </Grid>
-                )}
+                  <Box className={css.sticky}>
+                    <SecurityWarnings />
+                  </Box>
+                </Grid>
               </Grid>
             </Container>
           </>

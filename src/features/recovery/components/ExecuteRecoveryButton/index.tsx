@@ -3,12 +3,14 @@ import { useContext } from 'react'
 import type { SyntheticEvent, ReactElement } from 'react'
 
 import CheckWallet from '@/components/common/CheckWallet'
+import { dispatchRecoveryExecution } from '@/features/recovery/services/recovery-sender'
+import useOnboard from '@/hooks/wallets/useOnboard'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRecoveryTxState } from '@/features/recovery/hooks/useRecoveryTxState'
+import { Errors, trackError } from '@/services/exceptions'
+import { asError } from '@/services/exceptions/utils'
+import { RecoveryListItemContext } from '../RecoveryListItem/RecoveryListItemContext'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
-import { useCurrentChain } from '@/hooks/useChains'
-import { TxModalContext } from '@/components/tx-flow'
-import { RecoveryAttemptFlow } from '@/components/tx-flow/flows'
 
 export function ExecuteRecoveryButton({
   recovery,
@@ -17,29 +19,44 @@ export function ExecuteRecoveryButton({
   recovery: RecoveryQueueItem
   compact?: boolean
 }): ReactElement {
+  const { setSubmitError } = useContext(RecoveryListItemContext)
   const { isExecutable, isNext, isPending } = useRecoveryTxState(recovery)
-  const isDisabled = !isExecutable || isPending
-  const isWrongChain = useIsWrongChain()
-  const chain = useCurrentChain()
-  const { setTxFlow } = useContext(TxModalContext)
+  const onboard = useOnboard()
+  const { safe } = useSafeInfo()
 
   const onClick = async (e: SyntheticEvent) => {
     e.stopPropagation()
     e.preventDefault()
 
-    setTxFlow(<RecoveryAttemptFlow item={recovery} />)
+    if (!onboard) {
+      return
+    }
+
+    try {
+      await dispatchRecoveryExecution({
+        onboard,
+        chainId: safe.chainId,
+        args: recovery.args,
+        delayModifierAddress: recovery.address,
+      })
+    } catch (_err) {
+      const err = asError(_err)
+
+      trackError(Errors._812, e)
+      setSubmitError(err)
+    }
   }
 
   return (
-    <CheckWallet allowNonOwner checkNetwork={!isDisabled}>
+    <CheckWallet allowNonOwner>
       {(isOk) => {
+        const isDisabled = !isOk || !isExecutable || isPending
+
         return (
           <Tooltip
             title={
-              !isOk || isDisabled
-                ? isWrongChain
-                  ? `Switch your wallet network to ${chain?.chainName} to execute this transaction`
-                  : isNext
+              isDisabled
+                ? isNext
                   ? 'You can execute the recovery after the specified review window'
                   : 'Previous recovery proposals must be executed or cancelled first'
                 : null
@@ -50,8 +67,7 @@ export function ExecuteRecoveryButton({
                 data-testid="execute-btn"
                 onClick={onClick}
                 variant="contained"
-                disabled={!isOk || isDisabled}
-                sx={{ minWidth: '106.5px', py: compact ? 0.8 : undefined }}
+                disabled={isDisabled}
                 size={compact ? 'small' : 'stretched'}
               >
                 Execute

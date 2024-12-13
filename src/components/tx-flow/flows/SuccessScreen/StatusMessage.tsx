@@ -12,19 +12,16 @@ const getStep = (status: PendingStatus, error?: Error) => {
       return {
         description: 'Transaction is now processing',
         instruction: 'The transaction was confirmed and is now being processed.',
-        classNames: '',
       }
     case PendingStatus.INDEXING:
       return {
         description: 'Transaction was processed',
         instruction: 'It is now being indexed.',
-        classNames: classNames(css.instructions, error ? css.errorBg : css.infoBg),
       }
     default:
       return {
         description: error ? 'Transaction failed' : 'Transaction was successful',
         instruction: error ? (isTimeoutError(error) ? 'Transaction timed out' : error.message) : '',
-        classNames: classNames(css.instructions, error ? css.errorBg : css.infoBg),
       }
   }
 }
@@ -44,7 +41,7 @@ const StatusMessage = ({ status, error }: { status: PendingStatus; error?: Error
         </Typography>
       </Box>
       {stepInfo.instruction && (
-        <Box className={stepInfo.classNames}>
+        <Box className={classNames(css.instructions, error ? css.errorBg : css.infoBg)}>
           <Typography variant="body2">{stepInfo.instruction}</Typography>
         </Box>
       )}

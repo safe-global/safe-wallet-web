@@ -1,26 +1,26 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { formatError } from '@/utils/formatters'
+import type { LinkProps } from 'next/link'
 import { selectNotifications, showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
+import { AppRoutes } from '@/config/routes'
 import { useCurrentChain } from './useChains'
 import useTxQueue from './useTxQueue'
 import { isSignableBy, isTransactionListItem } from '@/utils/transaction-guards'
-import { TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
+import { type ChainInfo, TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import { selectPendingTxs } from '@/store/pendingTxsSlice'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from './wallets/useWallet'
 import useSafeAddress from './useSafeAddress'
 import { getExplorerLink } from '@/utils/gateway'
+import { getTxDetails } from '@/services/transactions'
 import { isWalletRejection } from '@/utils/wallets'
-import { getTxLink } from '@/utils/tx-link'
-import { useLazyGetTransactionDetailsQuery } from '@/store/api/gateway'
 
 const TxNotifications = {
   [TxEvent.SIGN_FAILED]: 'Failed to sign. Please try again.',
   [TxEvent.PROPOSED]: 'Successfully added to queue.',
   [TxEvent.PROPOSE_FAILED]: 'Failed to add to queue. Please try again.',
-  [TxEvent.DELETED]: 'Successfully deleted transaction.',
   [TxEvent.SIGNATURE_PROPOSED]: 'Successfully signed.',
   [TxEvent.SIGNATURE_PROPOSE_FAILED]: 'Failed to send signature. Please try again.',
   [TxEvent.EXECUTING]: 'Confirm the execution in your wallet.',
@@ -42,11 +42,24 @@ enum Variant {
 
 const successEvents = [TxEvent.PROPOSED, TxEvent.SIGNATURE_PROPOSED, TxEvent.ONCHAIN_SIGNATURE_SUCCESS, TxEvent.SUCCESS]
 
+export const getTxLink = (
+  txId: string,
+  chain: ChainInfo,
+  safeAddress: string,
+): { href: LinkProps['href']; title: string } => {
+  return {
+    href: {
+      pathname: AppRoutes.transactions.tx,
+      query: { id: txId, safe: `${chain?.shortName}:${safeAddress}` },
+    },
+    title: 'View transaction',
+  }
+}
+
 const useTxNotifications = (): void => {
   const dispatch = useAppDispatch()
   const chain = useCurrentChain()
   const safeAddress = useSafeAddress()
-  const [trigger] = useLazyGetTransactionDetailsQuery()
 
   /**
    * Show notifications of a transaction's lifecycle
@@ -71,8 +84,8 @@ const useTxNotifications = (): void => {
         const id = txId || txHash
         if (id) {
           try {
-            const { data: txDetails } = await trigger({ chainId: chain.chainId, txId: id })
-            humanDescription = txDetails?.txInfo.humanDescription || humanDescription
+            const txDetails = await getTxDetails(chain.chainId, id)
+            humanDescription = txDetails.txInfo.humanDescription || humanDescription
           } catch {}
         }
 
@@ -96,7 +109,7 @@ const useTxNotifications = (): void => {
     return () => {
       unsubFns.forEach((unsub) => unsub())
     }
-  }, [dispatch, safeAddress, chain, trigger])
+  }, [dispatch, safeAddress, chain])
 
   /**
    * If there's at least one transaction awaiting confirmations, show a notification for it

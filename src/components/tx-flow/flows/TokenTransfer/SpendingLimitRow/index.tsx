@@ -11,7 +11,7 @@ import { HelpCenterArticle } from '@/config/constants'
 
 import css from './styles.module.css'
 import { TokenAmountFields } from '@/components/common/TokenAmountInput'
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 
 const SpendingLimitRow = ({
@@ -21,18 +21,11 @@ const SpendingLimitRow = ({
   availableAmount: bigint
   selectedToken: TokenInfo | undefined
 }) => {
-  const { control, trigger, resetField } = useFormContext()
+  const { control, trigger } = useFormContext()
   const isOnlySpendLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
   const { setNonceNeeded } = useContext(SafeTxContext)
 
   const formattedAmount = safeFormatUnits(availableAmount, selectedToken?.decimals)
-
-  useEffect(() => {
-    return () => {
-      // reset the field value to default when the component is unmounted
-      resetField(TokenTransferFields.type)
-    }
-  }, [resetField])
 
   return (
     <FormControl>

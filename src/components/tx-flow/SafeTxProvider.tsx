@@ -1,15 +1,12 @@
-import { createContext, useState, useEffect, useCallback } from 'react'
+import { createContext, useState, useEffect } from 'react'
 import type { Dispatch, ReactNode, SetStateAction, ReactElement } from 'react'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { createTx } from '@/services/tx/tx-sender'
 import { useRecommendedNonce, useSafeTxGas } from '../tx/SignOrExecuteForm/hooks'
 import { Errors, logError } from '@/services/exceptions'
 import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import { useCurrentChain } from '@/hooks/useChains'
-import { prependSafeToL2Migration } from '@/utils/transactions'
 
-export type SafeTxContextParams = {
+export const SafeTxContext = createContext<{
   safeTx?: SafeTransaction
   setSafeTx: Dispatch<SetStateAction<SafeTransaction | undefined>>
 
@@ -28,9 +25,7 @@ export type SafeTxContextParams = {
   setSafeTxGas: Dispatch<SetStateAction<string | undefined>>
 
   recommendedNonce?: number
-}
-
-export const SafeTxContext = createContext<SafeTxContextParams>({
+}>({
   setSafeTx: () => {},
   setSafeMessage: () => {},
   setSafeTxError: () => {},
@@ -46,25 +41,6 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
   const [nonce, setNonce] = useState<number>()
   const [nonceNeeded, setNonceNeeded] = useState<boolean>(true)
   const [safeTxGas, setSafeTxGas] = useState<string>()
-
-  const { safe } = useSafeInfo()
-  const chain = useCurrentChain()
-
-  const setAndMigrateSafeTx: Dispatch<SetStateAction<SafeTransaction | undefined>> = useCallback(
-    (
-      value: SafeTransaction | undefined | ((prevState: SafeTransaction | undefined) => SafeTransaction | undefined),
-    ) => {
-      let safeTx: SafeTransaction | undefined
-      if (typeof value === 'function') {
-        safeTx = value(safeTx)
-      } else {
-        safeTx = value
-      }
-
-      prependSafeToL2Migration(safeTx, safe, chain).then(setSafeTx)
-    },
-    [chain, safe],
-  )
 
   // Signed txs cannot be updated
   const isSigned = safeTx && safeTx.signatures.size > 0
@@ -83,10 +59,7 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
     if (safeTx.data.nonce === finalNonce && safeTx.data.safeTxGas === finalSafeTxGas) return
 
     createTx({ ...safeTx.data, safeTxGas: String(finalSafeTxGas) }, finalNonce)
-      .then((tx) => {
-        console.log('SafeTxProvider: Updated tx with nonce and safeTxGas', tx)
-        setSafeTx(tx)
-      })
+      .then(setSafeTx)
       .catch(setSafeTxError)
   }, [isSigned, finalNonce, finalSafeTxGas, safeTx?.data])
 
@@ -100,7 +73,7 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
       value={{
         safeTx,
         safeTxError,
-        setSafeTx: setAndMigrateSafeTx,
+        setSafeTx,
         setSafeTxError,
         safeMessage,
         setSafeMessage,

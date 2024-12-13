@@ -1,77 +1,105 @@
-import SignOrExecute from '../index'
+import { SignOrExecuteForm } from '@/components/tx/SignOrExecuteForm'
+import * as hooks from '@/components/tx/SignOrExecuteForm/hooks'
+import { safeTxBuilder } from '@/tests/builders/safeTx'
 import { render } from '@/tests/test-utils'
-import * as hooks from '../hooks'
-import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import type { SafeTxContextParams } from '@/components/tx-flow/SafeTxProvider'
-import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-import { createSafeTx } from '@/tests/builders/safeTx'
-
-let isSafeOwner = true
-// mock useIsSafeOwner
-jest.mock('@/hooks/useIsSafeOwner', () => ({
-  __esModule: true,
-  default: jest.fn(() => isSafeOwner),
-}))
-
-// Mock proposeTx
-jest.mock('@/services/tx/proposeTransaction', () => ({
-  __esModule: true,
-  default: jest.fn(() => Promise.resolve({ txId: '123' })),
-}))
+import { fireEvent } from '@testing-library/react'
 
 describe('SignOrExecute', () => {
-  beforeEach(() => {
-    isSafeOwner = true
-    jest.clearAllMocks()
-  })
-
-  it('should display a loading component', () => {
-    const { container } = render(<SignOrExecute onSubmit={jest.fn()} isExecutable={true} />)
-
-    expect(container).toMatchSnapshot()
-  })
-
-  it('should display a confirmation screen', async () => {
-    jest.spyOn(hooks, 'useProposeTx').mockReturnValue([
-      {
-        txInfo: {},
-      } as TransactionDetails,
-      undefined,
-      false,
-    ])
-
-    const { container, getByTestId } = render(
-      <SafeTxContext.Provider
-        value={
-          {
-            safeTx: createSafeTx(),
-          } as SafeTxContextParams
-        }
-      >
-        <SignOrExecute onSubmit={jest.fn()} isExecutable={true} />
-      </SafeTxContext.Provider>,
+  it('should display a safeTxError', () => {
+    const { getByText } = render(
+      <SignOrExecuteForm
+        onSubmit={jest.fn()}
+        safeTxError={new Error('Safe transaction error')}
+        safeTx={safeTxBuilder().build()}
+        chainId="1"
+      />,
     )
 
-    expect(getByTestId('sign-btn')).toBeInTheDocument()
-    expect(container).toMatchSnapshot()
+    expect(
+      getByText('This transaction will most likely fail. To save gas costs, avoid confirming the transaction.'),
+    ).toBeInTheDocument()
   })
 
-  it('should display an error screen', async () => {
-    jest.spyOn(hooks, 'useProposeTx').mockReturnValue([undefined, new Error('This is a mock error message'), false])
+  describe('Existing transaction', () => {
+    it('should display radio options to sign or execute if both are possible', () => {
+      jest.spyOn(hooks, 'useValidateNonce').mockReturnValue(true)
 
-    const { container } = render(
-      <SafeTxContext.Provider
-        value={
-          {
-            safeTx: createSafeTx(),
-          } as SafeTxContextParams
-        }
-      >
-        <SignOrExecute onSubmit={jest.fn()} isExecutable={true} />
-      </SafeTxContext.Provider>,
+      const { getByText } = render(
+        <SignOrExecuteForm
+          safeTx={safeTxBuilder().build()}
+          onSubmit={jest.fn()}
+          safeTxError={undefined}
+          isExecutable={true}
+          chainId="1"
+        />,
+      )
+
+      expect(getByText('Would you like to execute the transaction immediately?')).toBeInTheDocument()
+    })
+  })
+
+  describe('New transaction', () => {
+    it('should display radio options to sign or execute if both are possible', () => {
+      jest.spyOn(hooks, 'useValidateNonce').mockReturnValue(true)
+      jest.spyOn(hooks, 'useImmediatelyExecutable').mockReturnValue(true)
+
+      const { getByText } = render(
+        <SignOrExecuteForm
+          safeTx={safeTxBuilder().build()}
+          onSubmit={jest.fn()}
+          safeTxError={undefined}
+          txId={undefined}
+          isExecutable={true}
+          chainId="1"
+        />,
+      )
+
+      expect(getByText('Would you like to execute the transaction immediately?')).toBeInTheDocument()
+    })
+  })
+
+  it('should not display radio options if execution is the only option', () => {
+    const { queryByText } = render(
+      <SignOrExecuteForm
+        safeTx={safeTxBuilder().build()}
+        onSubmit={jest.fn()}
+        safeTxError={undefined}
+        txId={undefined}
+        onlyExecute={true}
+        chainId="1"
+      />,
     )
 
-    expect(container.querySelector('sign-btn')).not.toBeInTheDocument()
-    expect(container).toMatchSnapshot()
+    expect(queryByText('Would you like to execute the transaction immediately?')).not.toBeInTheDocument()
+  })
+
+  it('should display a sign/execute title if that option is selected', () => {
+    jest.spyOn(hooks, 'useValidateNonce').mockReturnValue(true)
+
+    const { getByTestId, getByText } = render(
+      <SignOrExecuteForm
+        safeTx={safeTxBuilder().build()}
+        onSubmit={jest.fn()}
+        safeTxError={undefined}
+        txId={'someid'}
+        isExecutable={true}
+        chainId="1"
+      />,
+    )
+
+    expect(getByText('Would you like to execute the transaction immediately?')).toBeInTheDocument()
+
+    const executeCheckbox = getByTestId('execute-checkbox')
+    const signCheckbox = getByTestId('sign-checkbox')
+
+    expect(getByText("You're about to execute this transaction.")).toBeInTheDocument()
+
+    fireEvent.click(signCheckbox)
+
+    expect(getByText("You're about to confirm this transaction.")).toBeInTheDocument()
+
+    fireEvent.click(executeCheckbox)
+
+    expect(getByText("You're about to execute this transaction.")).toBeInTheDocument()
   })
 })

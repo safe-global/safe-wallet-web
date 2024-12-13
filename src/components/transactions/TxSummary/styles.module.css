@@ -1,22 +1,20 @@
 .gridContainer {
-  --grid-nonce: minmax(45px, 0.25fr);
+  --grid-nonce: minmax(50px, 0.25fr);
   --grid-type: minmax(150px, 3fr);
-  --grid-info: minmax(190px, 3fr);
+  --grid-info: minmax(150px, 3fr);
   --grid-date: minmax(200px, 3fr);
-  --grid-confirmations: minmax(120px, 1fr);
-
+  --grid-confirmations: minmax(150px, 1fr);
   --grid-status: minmax(120px, 1fr);
-  --grid-actions: minmax(100px, 1fr);
 
   width: 100%;
   display: grid;
   gap: var(--space-2);
   align-items: center;
   white-space: nowrap;
-  grid-template-columns:
-    var(--grid-nonce) var(--grid-type) var(--grid-info) var(--grid-date) var(--grid-confirmations)
-    var(--grid-status) var(--grid-actions);
-  grid-template-areas: 'nonce type info date confirmations status actions';
+  grid-template-columns: var(--grid-nonce) var(--grid-type) var(--grid-info) var(--grid-date) var(--grid-confirmations) var(
+      --grid-status
+    );
+  grid-template-areas: 'nonce type info date confirmations status';
 }
 
 .gridContainer > * {
@@ -28,41 +26,20 @@
   grid-template-areas: 'nonce type info date status';
 }
 
-.gridContainer.conflictGroup {
-  grid-template-columns: var(--grid-type) var(--grid-info) var(--grid-date) var(--grid-confirmations) var(--grid-status) var(
-      --grid-actions
-    );
-  grid-template-areas: 'type info date confirmations status actions';
+.gridContainer.grouped {
+  grid-template-columns: var(--grid-type) var(--grid-info) var(--grid-date) var(--grid-confirmations) var(--grid-status);
+  grid-template-areas: 'type info date confirmations status';
 }
 
-.gridContainer.bulkGroup {
-  grid-template-columns: var(--grid-type) var(--grid-info) var(--grid-date) var(--grid-status);
-  grid-template-areas: 'type info date status';
-}
-
-.gridContainer.bulkGroup.untrusted {
-  grid-template-columns: var(--grid-nonce) minmax(200px, 2.4fr) var(--grid-info) var(--grid-date) var(--grid-status);
-  grid-template-areas: 'nonce type info date status';
-}
-
-.gridContainer.message {
-  grid-template-columns: var(--grid-type) var(--grid-info) var(--grid-date) var(--grid-status) var(--grid-confirmations);
-  grid-template-areas: 'type info date status confirmations';
-}
-
-.gridContainer.untrusted :not(:first-child):is(div) {
+.gridContainer.untrusted {
   opacity: 0.4;
-}
-
-.gridContainer .status {
-  margin-right: var(--space-3);
 }
 
 .date {
   color: var(--color-text-secondary);
 }
 
-@media (max-width: 1350px) {
+@media (max-width: 1200px) {
   .gridContainer {
     gap: var(--space-1);
     display: flex;
@@ -75,9 +52,5 @@
 
   .date {
     width: 100%;
-  }
-
-  .status {
-    margin: 0 var(--space-1);
   }
 }

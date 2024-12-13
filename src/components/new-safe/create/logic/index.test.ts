@@ -1,354 +1,291 @@
-import { JsonRpcProvider } from 'ethers'
-import * as contracts from '@/services/contracts/safeContracts'
-import type { SafeProvider } from '@safe-global/protocol-kit'
-import type { CompatibilityFallbackHandlerContractImplementationType } from '@safe-global/protocol-kit/dist/src/types'
+import { JsonRpcProvider, type TransactionResponse } from 'ethers'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import * as web3 from '@/hooks/wallets/web3'
-import * as sdkHelpers from '@/services/tx/tx-sender/sdk'
+import type { TransactionReceipt } from 'ethers'
 import {
+  checkSafeCreationTx,
   relaySafeCreation,
-  getRedirect,
-  createNewUndeployedSafeWithoutSalt,
+  handleSafeCreationError,
 } from '@/components/new-safe/create/logic/index'
-import { relayTransaction } from '@safe-global/safe-gateway-typescript-sdk'
+import { type ErrorCode } from 'ethers'
+import { EthersTxReplacedReason } from '@/utils/ethers-utils'
+import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { toBeHex } from 'ethers'
+import * as relaying from '@/services/tx/relaying'
 import {
   Gnosis_safe__factory,
   Proxy_factory__factory,
-} from '@/types/contracts/factories/@safe-global/safe-deployments/dist/assets/v1.3.0'
+} from '@/bitlayer-safe-deployments/src/assets/v1.3.0'
 import {
   getReadOnlyFallbackHandlerContract,
   getReadOnlyGnosisSafeContract,
   getReadOnlyProxyFactoryContract,
 } from '@/services/contracts/safeContracts'
-import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
-import { FEATURES, getLatestSafeVersion } from '@/utils/chains'
-import { type FEATURES as GatewayFeatures } from '@safe-global/safe-gateway-typescript-sdk'
-import { chainBuilder } from '@/tests/builders/chains'
-import { type ReplayedSafeProps } from '@/store/slices'
-import { faker } from '@faker-js/faker'
-import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
-import {
-  getFallbackHandlerDeployment,
-  getProxyFactoryDeployment,
-  getSafeL2SingletonDeployment,
-  getSafeSingletonDeployment,
-  getSafeToL2SetupDeployment,
-} from '@safe-global/safe-deployments'
-import { Safe_to_l2_setup__factory } from '@/types/contracts'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
 
-const provider = new JsonRpcProvider(undefined, { name: 'ethereum', chainId: 1 })
+const provider = new JsonRpcProvider(undefined, { name: 'rinkeby', chainId: 4 })
 
-const latestSafeVersion = getLatestSafeVersion(
-  chainBuilder()
-    .with({ chainId: '1', features: [FEATURES.SAFE_141 as unknown as GatewayFeatures] })
-    .build(),
-)
+const mockTransaction = {
+  data: EMPTY_DATA,
+  nonce: 1,
+  from: '0x10',
+  to: '0x11',
+  value: BigInt(0),
+}
 
-const safeToL2SetupDeployment = getSafeToL2SetupDeployment()
-const safeToL2SetupAddress = safeToL2SetupDeployment?.defaultAddress
-const safeToL2SetupInterface = Safe_to_l2_setup__factory.createInterface()
+const mockPendingTx = {
+  data: EMPTY_DATA,
+  from: ZERO_ADDRESS,
+  to: ZERO_ADDRESS,
+  nonce: 0,
+  startBlock: 0,
+  value: BigInt(0),
+}
 
-describe('create/logic', () => {
-  describe('createNewSafeViaRelayer', () => {
-    const owner1 = toBeHex('0x1', 20)
-    const owner2 = toBeHex('0x2', 20)
+jest.mock('@safe-global/protocol-kit', () => {
+  const originalModule = jest.requireActual('@safe-global/protocol-kit')
 
-    const mockChainInfo = chainBuilder()
-      .with({
-        chainId: '1',
-        l2: false,
-        features: [FEATURES.SAFE_141 as unknown as GatewayFeatures],
-      })
-      .build()
+  // Mock class
+  class MockEthersAdapter extends originalModule.EthersAdapter {
+    getChainId = jest.fn().mockImplementation(() => Promise.resolve(BigInt(4)))
+  }
 
-    beforeAll(() => {
-      jest.resetAllMocks()
-      jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => provider)
-    })
+  return {
+    ...originalModule,
+    EthersAdapter: MockEthersAdapter,
+  }
+})
 
-    it('returns taskId if create Safe successfully relayed', async () => {
-      const mockSafeProvider = {
-        getExternalProvider: jest.fn(),
-        getExternalSigner: jest.fn(),
-        getChainId: jest.fn().mockReturnValue(BigInt(1)),
-      } as unknown as SafeProvider
+describe('checkSafeCreationTx', () => {
+  let waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
 
-      jest.spyOn(gateway, 'relayTransaction').mockResolvedValue({ taskId: '0x123' })
-      jest.spyOn(sdkHelpers, 'getSafeProvider').mockImplementation(() => mockSafeProvider)
+  beforeEach(() => {
+    jest.resetAllMocks()
 
-      jest.spyOn(contracts, 'getReadOnlyFallbackHandlerContract').mockResolvedValue({
-        getAddress: () => '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
-      } as unknown as CompatibilityFallbackHandlerContractImplementationType)
+    jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => provider)
 
-      const expectedSaltNonce = 69
-      const expectedThreshold = 1
-      const proxyFactoryAddress = await (await getReadOnlyProxyFactoryContract(latestSafeVersion)).getAddress()
-      const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(latestSafeVersion)
-      const safeContractAddress = await (
-        await getReadOnlyGnosisSafeContract(mockChainInfo, latestSafeVersion)
-      ).getAddress()
-
-      const undeployedSafeProps: ReplayedSafeProps = {
-        safeAccountConfig: {
-          owners: [owner1, owner2],
-          threshold: 1,
-          data: EMPTY_DATA,
-          to: ZERO_ADDRESS,
-          fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
-          paymentReceiver: ZERO_ADDRESS,
-          payment: 0,
-          paymentToken: ZERO_ADDRESS,
-        },
-        safeVersion: latestSafeVersion,
-        factoryAddress: proxyFactoryAddress,
-        masterCopy: safeContractAddress,
-        saltNonce: '69',
-      }
-
-      const expectedInitializer = Gnosis_safe__factory.createInterface().encodeFunctionData('setup', [
-        [owner1, owner2],
-        expectedThreshold,
-        ZERO_ADDRESS,
-        EMPTY_DATA,
-        await readOnlyFallbackHandlerContract.getAddress(),
-        ZERO_ADDRESS,
-        0,
-        ZERO_ADDRESS,
-      ])
-
-      const expectedCallData = Proxy_factory__factory.createInterface().encodeFunctionData('createProxyWithNonce', [
-        safeContractAddress,
-        expectedInitializer,
-        expectedSaltNonce,
-      ])
-
-      const taskId = await relaySafeCreation(mockChainInfo, undeployedSafeProps)
-
-      expect(taskId).toEqual('0x123')
-      expect(relayTransaction).toHaveBeenCalledTimes(1)
-      expect(relayTransaction).toHaveBeenCalledWith('1', {
-        to: proxyFactoryAddress,
-        data: expectedCallData,
-        version: latestSafeVersion,
-      })
-    })
-
-    it('should throw an error if relaying fails', () => {
-      const relayFailedError = new Error('Relay failed')
-      jest.spyOn(gateway, 'relayTransaction').mockRejectedValue(relayFailedError)
-
-      const undeployedSafeProps: ReplayedSafeProps = {
-        safeAccountConfig: {
-          owners: [owner1, owner2],
-          threshold: 1,
-          data: EMPTY_DATA,
-          to: ZERO_ADDRESS,
-          fallbackHandler: faker.finance.ethereumAddress(),
-          paymentReceiver: ZERO_ADDRESS,
-          payment: 0,
-          paymentToken: ZERO_ADDRESS,
-        },
-        safeVersion: latestSafeVersion,
-        factoryAddress: faker.finance.ethereumAddress(),
-        masterCopy: faker.finance.ethereumAddress(),
-        saltNonce: '69',
-      }
-
-      expect(relaySafeCreation(mockChainInfo, undeployedSafeProps)).rejects.toEqual(relayFailedError)
-    })
-  })
-  describe('getRedirect', () => {
-    it("should redirect to home for any redirect that doesn't start with /apps", () => {
-      const expected = {
-        pathname: '/home',
-        query: {
-          safe: 'sep:0x1234',
-        },
-      }
-      expect(getRedirect('sep', '0x1234', 'https://google.com')).toEqual(expected)
-      expect(getRedirect('sep', '0x1234', '/queue')).toEqual(expected)
-    })
-
-    it('should redirect to an app if an app URL is passed', () => {
-      expect(getRedirect('sep', '0x1234', '/apps?appUrl=https://safe-eth.everstake.one/?chain=eth')).toEqual(
-        '/apps?appUrl=https://safe-eth.everstake.one/?chain=eth&safe=sep:0x1234',
-      )
-
-      expect(getRedirect('sep', '0x1234', '/apps?appUrl=https://safe-eth.everstake.one')).toEqual(
-        '/apps?appUrl=https://safe-eth.everstake.one&safe=sep:0x1234',
-      )
-    })
+    waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
+    jest.spyOn(provider, 'getBlockNumber').mockReturnValue(Promise.resolve(4))
+    jest.spyOn(provider, 'getTransaction').mockReturnValue(Promise.resolve(mockTransaction as TransactionResponse))
   })
 
-  describe('createNewUndeployedSafeWithoutSalt', () => {
-    it('should throw errors if no deployments are found', () => {
-      expect(() =>
-        createNewUndeployedSafeWithoutSalt(
-          '1.4.1',
-          {
-            owners: [faker.finance.ethereumAddress()],
-            threshold: 1,
-          },
-          chainBuilder().with({ chainId: 'NON_EXISTING' }).build(),
-        ),
-      ).toThrowError(new Error('No Safe deployment found'))
-    })
+  it('returns SUCCESS if promise was resolved', async () => {
+    const receipt = {
+      status: 1,
+    } as TransactionReceipt
 
-    it('should use l1 masterCopy and no migration on l1s without multichain feature', () => {
-      const safeSetup = {
-        owners: [faker.finance.ethereumAddress()],
-        threshold: 1,
-      }
-      expect(
-        createNewUndeployedSafeWithoutSalt(
-          '1.4.1',
-          safeSetup,
-          chainBuilder()
-            .with({ chainId: '1' })
-            // Multichain creation is toggled off
-            .with({ features: [FEATURES.SAFE_141, FEATURES.COUNTERFACTUAL] as any })
-            .with({ l2: false })
-            .build(),
-        ),
-      ).toEqual({
-        safeAccountConfig: {
-          ...safeSetup,
-          fallbackHandler: getFallbackHandlerDeployment({ version: '1.4.1', network: '1' })?.defaultAddress,
-          to: ZERO_ADDRESS,
-          data: EMPTY_DATA,
-          paymentReceiver: ECOSYSTEM_ID_ADDRESS,
-        },
-        safeVersion: '1.4.1',
-        masterCopy: getSafeSingletonDeployment({ version: '1.4.1', network: '1' })?.defaultAddress,
-        factoryAddress: getProxyFactoryDeployment({ version: '1.4.1', network: '1' })?.defaultAddress,
-      })
-    })
+    waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
 
-    it('should use l2 masterCopy and no migration on l2s without multichain feature', () => {
-      const safeSetup = {
-        owners: [faker.finance.ethereumAddress()],
-        threshold: 1,
-      }
-      expect(
-        createNewUndeployedSafeWithoutSalt(
-          '1.4.1',
-          safeSetup,
-          chainBuilder()
-            .with({ chainId: '137' })
-            // Multichain creation is toggled off
-            .with({ features: [FEATURES.SAFE_141, FEATURES.COUNTERFACTUAL] as any })
-            .with({ l2: true })
-            .build(),
-        ),
-      ).toEqual({
-        safeAccountConfig: {
-          ...safeSetup,
-          fallbackHandler: getFallbackHandlerDeployment({ version: '1.4.1', network: '137' })?.defaultAddress,
-          to: ZERO_ADDRESS,
-          data: EMPTY_DATA,
-          paymentReceiver: ECOSYSTEM_ID_ADDRESS,
-        },
-        safeVersion: '1.4.1',
-        masterCopy: getSafeL2SingletonDeployment({ version: '1.4.1', network: '137' })?.defaultAddress,
-        factoryAddress: getProxyFactoryDeployment({ version: '1.4.1', network: '137' })?.defaultAddress,
-      })
-    })
+    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0', jest.fn())
 
-    it('should use l2 masterCopy and no migration on l2s with multichain feature but on old version', () => {
-      const safeSetup = {
-        owners: [faker.finance.ethereumAddress()],
-        threshold: 1,
-      }
-      expect(
-        createNewUndeployedSafeWithoutSalt(
-          '1.3.0',
-          safeSetup,
-          chainBuilder()
-            .with({ chainId: '137' })
-            // Multichain creation is toggled on
-            .with({ features: [FEATURES.SAFE_141, FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
-            .with({ l2: true })
-            .build(),
-        ),
-      ).toEqual({
-        safeAccountConfig: {
-          ...safeSetup,
-          fallbackHandler: getFallbackHandlerDeployment({ version: '1.3.0', network: '137' })?.defaultAddress,
-          to: ZERO_ADDRESS,
-          data: EMPTY_DATA,
-          paymentReceiver: ECOSYSTEM_ID_ADDRESS,
-        },
-        safeVersion: '1.3.0',
-        masterCopy: getSafeL2SingletonDeployment({ version: '1.3.0', network: '137' })?.defaultAddress,
-        factoryAddress: getProxyFactoryDeployment({ version: '1.3.0', network: '137' })?.defaultAddress,
-      })
-    })
+    expect(result).toBe(SafeCreationStatus.SUCCESS)
+  })
 
-    it('should use l1 masterCopy and migration on l2s with multichain feature', () => {
-      const safeSetup = {
-        owners: [faker.finance.ethereumAddress()],
-        threshold: 1,
-      }
-      const safeL2SingletonDeployment = getSafeL2SingletonDeployment({
-        version: '1.4.1',
-        network: '137',
-      })?.defaultAddress
-      expect(
-        createNewUndeployedSafeWithoutSalt(
-          '1.4.1',
-          safeSetup,
-          chainBuilder()
-            .with({ chainId: '137' })
-            // Multichain creation is toggled on
-            .with({ features: [FEATURES.SAFE_141, FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
-            .with({ l2: true })
-            .build(),
-        ),
-      ).toEqual({
-        safeAccountConfig: {
-          ...safeSetup,
-          fallbackHandler: getFallbackHandlerDeployment({ version: '1.4.1', network: '137' })?.defaultAddress,
-          to: safeToL2SetupAddress,
-          data:
-            safeL2SingletonDeployment &&
-            safeToL2SetupInterface.encodeFunctionData('setupToL2', [safeL2SingletonDeployment]),
-          paymentReceiver: ECOSYSTEM_ID_ADDRESS,
-        },
-        safeVersion: '1.4.1',
-        masterCopy: getSafeSingletonDeployment({ version: '1.4.1', network: '137' })?.defaultAddress,
-        factoryAddress: getProxyFactoryDeployment({ version: '1.4.1', network: '137' })?.defaultAddress,
-      })
-    })
+  it('returns REVERTED if transaction was reverted', async () => {
+    const receipt = {
+      status: 0,
+    } as TransactionReceipt
 
-    it('should use l2 masterCopy and no migration on zkSync', () => {
-      const safeSetup = {
-        owners: [faker.finance.ethereumAddress()],
-        threshold: 1,
-      }
-      expect(
-        createNewUndeployedSafeWithoutSalt(
-          '1.3.0',
-          safeSetup,
-          chainBuilder()
-            .with({ chainId: '324' })
-            // Multichain and 1.4.1 creation is toggled off
-            .with({ features: [FEATURES.COUNTERFACTUAL] as any })
-            .with({ l2: true })
-            .build(),
-        ),
-      ).toEqual({
-        safeAccountConfig: {
-          ...safeSetup,
-          fallbackHandler: getFallbackHandlerDeployment({ version: '1.3.0', network: '324' })?.networkAddresses['324'],
-          to: ZERO_ADDRESS,
-          data: EMPTY_DATA,
-          paymentReceiver: ECOSYSTEM_ID_ADDRESS,
-        },
-        safeVersion: '1.3.0',
-        masterCopy: getSafeL2SingletonDeployment({ version: '1.3.0', network: '324' })?.networkAddresses['324'],
-        factoryAddress: getProxyFactoryDeployment({ version: '1.3.0', network: '324' })?.networkAddresses['324'],
-      })
+    waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
+
+    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0', jest.fn())
+
+    expect(result).toBe(SafeCreationStatus.REVERTED)
+  })
+
+  it('returns TIMEOUT if transaction could not be found within the timeout limit', async () => {
+    const mockEthersError = {
+      ...new Error(),
+      code: 'TIMEOUT' as ErrorCode,
+    }
+
+    waitForTxSpy.mockImplementationOnce(() => Promise.reject(mockEthersError))
+
+    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0', jest.fn())
+
+    expect(result).toBe(SafeCreationStatus.TIMEOUT)
+  })
+
+  it('returns SUCCESS if transaction was replaced', async () => {
+    const mockEthersError = {
+      ...new Error(),
+      code: 'TRANSACTION_REPLACED',
+      reason: 'repriced',
+    }
+    waitForTxSpy.mockImplementationOnce(() => Promise.reject(mockEthersError))
+
+    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0', jest.fn())
+
+    expect(result).toBe(SafeCreationStatus.SUCCESS)
+  })
+
+  it('returns ERROR if transaction was cancelled', async () => {
+    const mockEthersError = {
+      ...new Error(),
+      code: 'TRANSACTION_REPLACED',
+      reason: 'cancelled',
+    }
+    waitForTxSpy.mockImplementationOnce(() => Promise.reject(mockEthersError))
+
+    const result = await checkSafeCreationTx(provider, mockPendingTx, '0x0', jest.fn())
+
+    expect(result).toBe(SafeCreationStatus.ERROR)
+  })
+})
+
+describe('handleSafeCreationError', () => {
+  it('returns WALLET_REJECTED if the tx was rejected in the wallet', () => {
+    const mockEthersError = {
+      ...new Error(),
+      code: 'ACTION_REJECTED' as ErrorCode,
+      reason: '' as EthersTxReplacedReason,
+      receipt: {} as TransactionReceipt,
+    }
+
+    const result = handleSafeCreationError(mockEthersError)
+
+    expect(result).toEqual(SafeCreationStatus.WALLET_REJECTED)
+  })
+
+  it('returns WALLET_REJECTED if the tx was rejected via WC', () => {
+    const mockEthersError = {
+      ...new Error(),
+      code: 'UNKNOWN_ERROR' as ErrorCode,
+      reason: '' as EthersTxReplacedReason,
+      receipt: {} as TransactionReceipt,
+      message: 'rejected',
+    }
+
+    const result = handleSafeCreationError(mockEthersError)
+
+    expect(result).toEqual(SafeCreationStatus.WALLET_REJECTED)
+  })
+
+  it('returns ERROR if the tx was cancelled', () => {
+    const mockEthersError = {
+      ...new Error(),
+      code: 'TRANSACTION_REPLACED' as ErrorCode,
+      reason: EthersTxReplacedReason.cancelled,
+      receipt: {} as TransactionReceipt,
+    }
+
+    const result = handleSafeCreationError(mockEthersError)
+
+    expect(result).toEqual(SafeCreationStatus.ERROR)
+  })
+
+  it('returns SUCCESS if the tx was replaced', () => {
+    const mockEthersError = {
+      ...new Error(),
+      code: 'TRANSACTION_REPLACED' as ErrorCode,
+      reason: EthersTxReplacedReason.replaced,
+      receipt: {} as TransactionReceipt,
+    }
+
+    const result = handleSafeCreationError(mockEthersError)
+
+    expect(result).toEqual(SafeCreationStatus.SUCCESS)
+  })
+
+  it('returns SUCCESS if the tx was repriced', () => {
+    const mockEthersError = {
+      ...new Error(),
+      code: 'TRANSACTION_REPLACED' as ErrorCode,
+      reason: EthersTxReplacedReason.repriced,
+      receipt: {} as TransactionReceipt,
+    }
+
+    const result = handleSafeCreationError(mockEthersError)
+
+    expect(result).toEqual(SafeCreationStatus.SUCCESS)
+  })
+
+  it('returns ERROR if the tx was not rejected, cancelled or replaced', () => {
+    const mockEthersError = {
+      ...new Error(),
+      code: 'UNKNOWN_ERROR' as ErrorCode,
+      reason: '' as EthersTxReplacedReason,
+      receipt: {} as TransactionReceipt,
+    }
+
+    const result = handleSafeCreationError(mockEthersError)
+
+    expect(result).toEqual(SafeCreationStatus.ERROR)
+  })
+
+  it('returns REVERTED if the tx failed', () => {
+    const mockEthersError = {
+      ...new Error(),
+      code: 'UNKNOWN_ERROR' as ErrorCode,
+      reason: '' as EthersTxReplacedReason,
+      receipt: {
+        status: 0,
+      } as TransactionReceipt,
+    }
+
+    const result = handleSafeCreationError(mockEthersError)
+
+    expect(result).toEqual(SafeCreationStatus.REVERTED)
+  })
+})
+
+describe('createNewSafeViaRelayer', () => {
+  const owner1 = toBeHex('0x1', 20)
+  const owner2 = toBeHex('0x2', 20)
+
+  const mockChainInfo = {
+    chainId: '5',
+    l2: false,
+  } as ChainInfo
+
+  beforeAll(() => {
+    jest.resetAllMocks()
+    jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => provider)
+  })
+
+  it('returns taskId if create Safe successfully relayed', async () => {
+    const sponsoredCallSpy = jest.spyOn(relaying, 'sponsoredCall').mockResolvedValue({ taskId: '0x123' })
+
+    const expectedSaltNonce = 69
+    const expectedThreshold = 1
+    const proxyFactoryAddress = await (await getReadOnlyProxyFactoryContract('5', LATEST_SAFE_VERSION)).getAddress()
+    const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract('5', LATEST_SAFE_VERSION)
+    const safeContractAddress = await (await getReadOnlyGnosisSafeContract(mockChainInfo)).getAddress()
+
+    const expectedInitializer = Gnosis_safe__factory.createInterface().encodeFunctionData('setup', [
+      [owner1, owner2],
+      expectedThreshold,
+      ZERO_ADDRESS,
+      EMPTY_DATA,
+      await readOnlyFallbackHandlerContract.getAddress(),
+      ZERO_ADDRESS,
+      0,
+      ZERO_ADDRESS,
+    ])
+
+    const expectedCallData = Proxy_factory__factory.createInterface().encodeFunctionData('createProxyWithNonce', [
+      safeContractAddress,
+      expectedInitializer,
+      expectedSaltNonce,
+    ])
+
+    const taskId = await relaySafeCreation(mockChainInfo, [owner1, owner2], expectedThreshold, expectedSaltNonce)
+
+    expect(taskId).toEqual('0x123')
+    expect(sponsoredCallSpy).toHaveBeenCalledTimes(1)
+    expect(sponsoredCallSpy).toHaveBeenCalledWith({
+      chainId: '5',
+      to: proxyFactoryAddress,
+      data: expectedCallData,
     })
+  })
+
+  it('should throw an error if relaying fails', () => {
+    const relayFailedError = new Error('Relay failed')
+
+    jest.spyOn(relaying, 'sponsoredCall').mockRejectedValue(relayFailedError)
+
+    expect(relaySafeCreation(mockChainInfo, [owner1, owner2], 1, 69)).rejects.toEqual(relayFailedError)
   })
 })

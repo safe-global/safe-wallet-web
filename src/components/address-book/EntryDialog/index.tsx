@@ -7,8 +7,8 @@ import ModalDialog from '@/components/common/ModalDialog'
 import NameInput from '@/components/common/NameInput'
 import useChainId from '@/hooks/useChainId'
 import { useAppDispatch } from '@/store'
+import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import madProps from '@/utils/mad-props'
-import { upsertAddressBookEntries } from '@/store/addressBookSlice'
 
 export type AddressEntry = {
   name: string
@@ -22,13 +22,13 @@ function EntryDialog({
     address: '',
   },
   disableAddressInput = false,
-  chainIds,
+  chainId,
   currentChainId,
 }: {
   handleClose: () => void
   defaultValues?: AddressEntry
   disableAddressInput?: boolean
-  chainIds?: string[]
+  chainId?: string
   currentChainId: string
 }): ReactElement {
   const dispatch = useAppDispatch()
@@ -41,7 +41,7 @@ function EntryDialog({
   const { handleSubmit, formState } = methods
 
   const submitCallback = handleSubmit((data: AddressEntry) => {
-    dispatch(upsertAddressBookEntries({ ...data, chainIds: chainIds ?? [currentChainId] }))
+    dispatch(upsertAddressBookEntry({ ...data, chainId: chainId || currentChainId }))
     handleClose()
   })
 
@@ -51,13 +51,7 @@ function EntryDialog({
   }
 
   return (
-    <ModalDialog
-      data-testid="entry-dialog"
-      open
-      onClose={handleClose}
-      dialogTitle={defaultValues.name ? 'Edit entry' : 'Create entry'}
-      hideChainIndicator={chainIds && chainIds.length > 1}
-    >
+    <ModalDialog open onClose={handleClose} dialogTitle={defaultValues.name ? 'Edit entry' : 'Create entry'}>
       <FormProvider {...methods}>
         <form onSubmit={onSubmit}>
           <DialogContent>

@@ -23,7 +23,6 @@ const mockTransferInfo: TransferInfo = {
   tokenAddress: 'string',
   value: 'string',
   trusted: true,
-  imitation: false,
 }
 
 const mockTxInfo: TransactionInfo = {
@@ -45,7 +44,6 @@ export const defaultTx: TransactionSummary = {
     confirmationsRequired: 2,
     confirmationsSubmitted: 2,
   },
-  txHash: null,
 }
 
 export const getMockTx = ({ nonce }: { nonce?: number }): Transaction => {

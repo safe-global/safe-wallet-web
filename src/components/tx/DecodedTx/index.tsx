@@ -1,136 +1,144 @@
 import { type SyntheticEvent, type ReactElement, memo } from 'react'
-import { ErrorBoundary } from '@sentry/react'
 import {
-  isCustomTxInfo,
-  isMultisigDetailedExecutionInfo,
-  isNativeTokenTransfer,
-  isTransferTxInfo,
-} from '@/utils/transaction-guards'
-import { Accordion, AccordionDetails, AccordionSummary, Box, Stack } from '@mui/material'
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Skeleton,
+  SvgIcon,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import type { DataDecoded, DecodedDataResponse, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { Operation } from '@safe-global/safe-gateway-typescript-sdk'
+import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
+import { getTransactionDetails, type TransactionDetails, Operation } from '@safe-global/safe-gateway-typescript-sdk'
+import useChainId from '@/hooks/useChainId'
+import useAsync from '@/hooks/useAsync'
+import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
+import ErrorMessage from '../ErrorMessage'
 import Summary, { PartialSummary } from '@/components/transactions/TxDetails/Summary'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import ExternalLink from '@/components/common/ExternalLink'
+import { HelpCenterArticle } from '@/config/constants'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 import accordionCss from '@/styles/accordion.module.css'
-import HelpToolTip from './HelpTooltip'
 
 type DecodedTxProps = {
   tx?: SafeTransaction
   txId?: string
-  txDetails?: TransactionDetails
   showMultisend?: boolean
-  decodedData?: DecodedDataResponse | DataDecoded
-  showMethodCall?: boolean
-  showAdvancedDetails?: boolean
+  decodedData?: DecodedDataResponse
+  decodedDataError?: Error
+  decodedDataLoading?: boolean
 }
-
-export const Divider = () => (
-  <Box
-    borderBottom="1px solid var(--color-border-light)"
-    width="calc(100% + 32px)"
-    my={2}
-    sx={{ ml: '-16px !important' }}
-  />
-)
 
 const DecodedTx = ({
   tx,
-  txDetails,
-  decodedData,
+  txId,
   showMultisend = true,
-  showMethodCall = false,
-  showAdvancedDetails = true,
-}: DecodedTxProps): ReactElement => {
-  const isMultisend = decodedData?.parameters && !!decodedData?.parameters[0]?.valueDecoded
-  const isMethodCallInAdvanced = showAdvancedDetails && (!showMethodCall || (isMultisend && showMultisend))
+  decodedData,
+  decodedDataError,
+  decodedDataLoading = false,
+}: DecodedTxProps): ReactElement | null => {
+  const chainId = useChainId()
+
+  const isMultisend = !!decodedData?.parameters?.[0]?.valueDecoded
+
+  const [txDetails, txDetailsError, txDetailsLoading] = useAsync<TransactionDetails>(() => {
+    if (!txId) return
+    return getTransactionDetails(chainId, txId)
+  }, [chainId, txId])
+
+  const addressInfoIndex = txDetails?.txData?.addressInfoIndex
 
   const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
     trackEvent({ ...MODALS_EVENTS.TX_DETAILS, label: expanded ? 'Open' : 'Close' })
   }
-  const addressInfoIndex = txDetails?.txData?.addressInfoIndex
 
-  const isCreation =
-    txDetails &&
-    isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo) &&
-    txDetails.detailedExecutionInfo.confirmations.length === 0
-
-  const txData = {
-    dataDecoded: decodedData,
-    to: { value: tx?.data.to || '' },
-    value: tx?.data.value,
-    hexData: tx?.data.data,
-    operation: tx?.data.operation === OperationType.DelegateCall ? Operation.DELEGATE : Operation.CALL,
-    trustedDelegateCallTarget: txDetails?.txData?.trustedDelegateCallTarget ?? true,
-    addressInfoIndex,
-  }
-
-  let toInfo = tx && {
-    value: tx.data.to,
-  }
-  if (txDetails && isCustomTxInfo(txDetails?.txInfo)) {
-    toInfo = txDetails?.txInfo.to
-  }
-
-  const decodedDataBlock = <DecodedData txData={txData} toInfo={toInfo} />
-  const showDecodedData = isMethodCallInAdvanced && decodedData?.method
+  if (!decodedData) return null
 
   return (
-    <Stack spacing={2}>
-      {!isMethodCallInAdvanced && (
-        <Box border="1px solid var(--color-border-light)" borderRadius={1} p={2}>
-          {decodedDataBlock}
+    <div>
+      {isMultisend && showMultisend && (
+        <Box my={2}>
+          <Multisend
+            txData={{
+              dataDecoded: decodedData,
+              to: { value: tx?.data.to || '' },
+              value: tx?.data.value,
+              operation: tx?.data.operation === OperationType.DelegateCall ? Operation.DELEGATE : Operation.CALL,
+              trustedDelegateCallTarget: false,
+              addressInfoIndex,
+            }}
+            compact
+          />
         </Box>
       )}
 
-      {isMultisend && showMultisend && <Multisend txData={txDetails?.txData || txData} compact />}
+      <Accordion elevation={0} onChange={onChangeExpand} sx={!tx ? { pointerEvents: 'none' } : undefined}>
+        <AccordionSummary
+          data-testid="decoded-tx-summary"
+          expandIcon={<ExpandMoreIcon />}
+          className={accordionCss.accordion}
+        >
+          <span style={{ flex: 1 }}>Transaction details</span>
 
-      {showAdvancedDetails && (
-        <Box>
-          <Accordion elevation={0} onChange={onChangeExpand} sx={!tx ? { pointerEvents: 'none' } : undefined}>
-            <AccordionSummary
-              data-testid="decoded-tx-summary"
-              expandIcon={<ExpandMoreIcon />}
-              className={accordionCss.accordion}
-            >
+          {decodedData ? decodedData.method : tx?.data.operation === OperationType.DelegateCall ? 'Delegate call' : ''}
+        </AccordionSummary>
+
+        <AccordionDetails data-testid="decoded-tx-details">
+          {decodedData ? (
+            <MethodDetails data={decodedData} addressInfoIndex={addressInfoIndex} />
+          ) : decodedDataError ? (
+            <ErrorMessage error={decodedDataError}>Failed decoding transaction data</ErrorMessage>
+          ) : (
+            decodedDataLoading && <Skeleton />
+          )}
+
+          <Box mt={2}>
+            <Typography variant="overline" fontWeight="bold" color="border.main" display="flex" alignItems="center">
               Advanced details
-              <HelpToolTip />
-              <Box flexGrow={1} />
-              {isMethodCallInAdvanced && decodedData?.method}
-              {txDetails &&
-                isTransferTxInfo(txDetails.txInfo) &&
-                isNativeTokenTransfer(txDetails.txInfo.transferInfo) &&
-                'native transfer'}
-            </AccordionSummary>
-            <AccordionDetails data-testid="decoded-tx-details">
-              {showDecodedData && (
-                <>
-                  {decodedDataBlock}
-                  <Divider />
-                </>
-              )}
+              <Tooltip
+                title={
+                  <>
+                    We recommend not changing the default values unless necessary.{' '}
+                    <ExternalLink href={HelpCenterArticle.ADVANCED_PARAMS} title="Learn more about advanced details">
+                      Learn more about advanced details
+                    </ExternalLink>
+                    .
+                  </>
+                }
+                arrow
+                placement="top"
+              >
+                <span>
+                  <SvgIcon
+                    component={InfoIcon}
+                    inheritViewBox
+                    color="border"
+                    fontSize="small"
+                    sx={{
+                      verticalAlign: 'middle',
+                      ml: 0.5,
+                    }}
+                  />
+                </span>
+              </Tooltip>
+            </Typography>
 
-              {txDetails && !showDecodedData && !isCreation ? (
-                <Summary
-                  txDetails={txDetails}
-                  defaultExpanded
-                  hideDecodedData={isMethodCallInAdvanced && !!decodedData?.method}
-                />
-              ) : (
-                tx && (
-                  <ErrorBoundary>
-                    <PartialSummary safeTx={tx} />
-                  </ErrorBoundary>
-                )
-              )}
-            </AccordionDetails>
-          </Accordion>
-        </Box>
-      )}
-    </Stack>
+            {txDetails ? <Summary txDetails={txDetails} defaultExpanded /> : tx && <PartialSummary safeTx={tx} />}
+
+            {txDetailsLoading && <Skeleton />}
+
+            {txDetailsError && (
+              <ErrorMessage error={txDetailsError}>Failed loading all transaction details</ErrorMessage>
+            )}
+          </Box>
+        </AccordionDetails>
+      </Accordion>
+    </div>
   )
 }
 

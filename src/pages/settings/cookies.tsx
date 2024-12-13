@@ -1,4 +1,4 @@
-import { CookieAndTermBanner } from 'src/components/common/CookieAndTermBanner'
+import { CookieBanner } from '@/components/common/CookieBanner'
 import SettingsHeader from '@/components/settings/SettingsHeader'
 import { Grid, Paper, Typography } from '@mui/material'
 import type { NextPage } from 'next'
@@ -8,7 +8,7 @@ const Cookies: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Settings – Cookies'}</title>
+        <title>{'Bitlayer Safe – Settings – Cookies'}</title>
       </Head>
 
       <SettingsHeader />
@@ -23,7 +23,7 @@ const Cookies: NextPage = () => {
             </Grid>
 
             <Grid item container xs>
-              <CookieAndTermBanner />
+              <CookieBanner />
             </Grid>
           </Grid>
         </Paper>

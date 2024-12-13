@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react'
+import { useEffect, useState } from 'react'
 import { IconButton, Link, SvgIcon } from '@mui/material'
 import ShareIcon from '@/public/images/common/share.svg'
 import { AppRoutes } from '@/config/routes'
@@ -7,7 +8,17 @@ import Track from '@/components/common/Track'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import React from 'react'
 import CopyTooltip from '@/components/common/CopyTooltip'
-import useOrigin from '@/hooks/useOrigin'
+
+const useOrigin = () => {
+  const [origin, setOrigin] = useState('')
+
+  useEffect(() => {
+    if (typeof location !== 'undefined') {
+      setOrigin(location.origin)
+    }
+  }, [])
+  return origin
+}
 
 const TxShareLink = ({ id }: { id: string }): ReactElement => {
   const router = useRouter()

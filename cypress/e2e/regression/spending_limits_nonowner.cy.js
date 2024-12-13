@@ -1,17 +1,14 @@
 import * as constants from '../../support/constants.js'
 import * as main from '../pages/main.page.js'
 import * as spendinglimit from '../pages/spending_limits.pages.js'
-import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
-
-let staticSafes = []
+import * as owner from '../pages/owners.pages.js'
 
 describe('Spending limits non-owner tests', () => {
-  before(async () => {
-    staticSafes = await getSafes(CATEGORIES.static)
-  })
-
   beforeEach(() => {
-    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_3)
+    cy.visit(constants.securityUrl + constants.SEPOLIA_TEST_SAFE_2)
+    cy.clearLocalStorage()
+    main.acceptCookies()
+    owner.waitForConnectionStatus()
     cy.get(spendinglimit.spendingLimitsSection).should('be.visible')
   })
 

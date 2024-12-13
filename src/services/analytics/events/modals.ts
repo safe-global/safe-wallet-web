@@ -53,25 +53,6 @@ export const MODALS_EVENTS = {
     category: MODALS_CATEGORY,
     event: EventType.META,
   },
-  BLOCKAID_RESULT: {
-    action: 'Blockaid scan result',
-    category: MODALS_CATEGORY,
-    event: EventType.META,
-  },
-  OPEN_SPEED_UP_MODAL: {
-    action: 'Open speed-up modal',
-    category: MODALS_CATEGORY,
-    event: EventType.CLICK,
-  },
-  CANCEL_SPEED_UP: {
-    action: 'Cancel speed-up',
-    category: MODALS_CATEGORY,
-    event: EventType.CLICK,
-  },
-  SWAP: {
-    action: 'Swap',
-    category: MODALS_CATEGORY,
-  },
 }
 
 export enum MODAL_NAVIGATION {

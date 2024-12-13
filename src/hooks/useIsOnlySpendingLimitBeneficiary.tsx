@@ -1,4 +1,3 @@
-import { useIsWalletProposer } from '@/hooks/useProposers'
 import { FEATURES } from '@/utils/chains'
 import { useAppSelector } from '@/store'
 import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
@@ -11,9 +10,8 @@ const useIsOnlySpendingLimitBeneficiary = (): boolean => {
   const spendingLimits = useAppSelector(selectSpendingLimits)
   const wallet = useWallet()
   const isSafeOwner = useIsSafeOwner()
-  const isProposer = useIsWalletProposer()
 
-  if (isSafeOwner || !isEnabled || spendingLimits.length === 0 || isProposer) {
+  if (isSafeOwner || !isEnabled || spendingLimits.length === 0) {
     return false
   }
 

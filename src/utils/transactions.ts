@@ -4,6 +4,7 @@ import type {
   MultisigExecutionDetails,
   MultisigExecutionInfo,
   SafeAppData,
+  SafeInfo,
   Transaction,
   TransactionDetails,
   TransactionListPage,
@@ -21,24 +22,18 @@ import {
 } from './transaction-guards'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types/dist/src/types'
 import { OperationType } from '@safe-global/safe-core-sdk-types/dist/src/types'
-import { getReadOnlyGnosisSafeContract, isValidMasterCopy } from '@/services/contracts/safeContracts'
+import { getReadOnlyGnosisSafeContract } from '@/services/contracts/safeContracts'
 import extractTxInfo from '@/services/tx/extractTxInfo'
 import type { AdvancedParameters } from '@/components/tx/AdvancedParams'
 import type { SafeTransaction, TransactionOptions } from '@safe-global/safe-core-sdk-types'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import uniqBy from 'lodash/uniqBy'
 import { Errors, logError } from '@/services/exceptions'
-import { Safe_to_l2_migration__factory } from '@/types/contracts'
+import { Multi_send__factory } from '@/types/contracts'
+import { toBeHex, AbiCoder } from 'ethers'
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
+import { id } from 'ethers'
 import { isEmptyHexData } from '@/utils/hex'
-import { type ExtendedSafeInfo } from '@/store/safeInfoSlice'
-import { getSafeContractDeployment } from '@/services/contracts/deployments'
-import { sameAddress } from './addresses'
-import { isMultiSendCalldata } from './transaction-calldata'
-import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
-import { __unsafe_createMultiSendTx } from '@/services/tx/tx-sender'
-import { getOriginPath } from './url'
-import { getSafeToL2MigrationDeployment } from '@safe-global/safe-deployments'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -91,7 +86,6 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
       txInfo: txDetails.txInfo,
       executionInfo,
       safeAppInfo: txDetails?.safeAppInfo,
-      txHash: txDetails?.txHash || null,
     },
     conflictType: ConflictType.NONE,
   }
@@ -99,9 +93,9 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
 
 const getSignatures = (confirmations: Record<string, string>) => {
   return Object.entries(confirmations)
-    .filter(([, signature]) => Boolean(signature))
+    .filter(([_, signature]) => Boolean(signature))
     .sort(([signerA], [signerB]) => signerA.toLowerCase().localeCompare(signerB.toLowerCase()))
-    .reduce((prev, [, signature]) => {
+    .reduce((prev, [_, signature]) => {
       return prev + signature.slice(2)
     }, '0x')
 }
@@ -121,7 +115,6 @@ export const getMultiSendTxs = async (
       const args = extractTxInfo(tx, safeAddress)
       const sigs = getSignatures(args.signatures)
 
-      // @ts-ignore
       const data = readOnlySafeContract.encode('execTransaction', [
         args.txParams.to,
         args.txParams.value,
@@ -143,6 +136,14 @@ export const getMultiSendTxs = async (
       }
     })
     .filter(Boolean) as MetaTransactionData[]
+}
+
+export const getTxsWithDetails = (txs: Transaction[], chainId: string) => {
+  return Promise.all(
+    txs.map(async (tx) => {
+      return await getTransactionDetails(chainId, tx.transaction.id)
+    }),
+  )
 }
 
 export const getTxOptions = (params: AdvancedParameters, currentChain: ChainInfo | undefined): TransactionOptions => {
@@ -191,7 +192,7 @@ export const getTxOrigin = (app?: Partial<SafeAppData>): string | undefined => {
   try {
     // Must include empty string to avoid including the length of `undefined`
     const maxUrlLength = MAX_ORIGIN_LENGTH - JSON.stringify({ url: '', name: '' }).length
-    const trimmedUrl = getOriginPath(url).slice(0, maxUrlLength)
+    const trimmedUrl = url.slice(0, maxUrlLength)
 
     const maxNameLength = Math.max(0, maxUrlLength - trimmedUrl.length)
     const trimmedName = name.slice(0, maxNameLength)
@@ -204,11 +205,19 @@ export const getTxOrigin = (app?: Partial<SafeAppData>): string | undefined => {
   return origin
 }
 
+export const hasEnoughSignatures = (tx: SafeTransaction, safe: SafeInfo) => tx.signatures.size >= safe.threshold
+
+const multiSendInterface = Multi_send__factory.createInterface()
+
+const multiSendFragment = multiSendInterface.getFunction('multiSend')
+
+const MULTISEND_SIGNATURE_HASH = id('multiSend(bytes)').slice(0, 10)
+
 export const decodeSafeTxToBaseTransactions = (safeTx: SafeTransaction): BaseTransaction[] => {
   const txs: BaseTransaction[] = []
   const safeTxData = safeTx.data.data
-  if (isMultiSendCalldata(safeTxData)) {
-    txs.push(...decodeMultiSendData(safeTxData))
+  if (safeTxData.startsWith(MULTISEND_SIGNATURE_HASH)) {
+    txs.push(...decodeMultiSendTxs(safeTxData))
   } else {
     txs.push({
       data: safeTxData,
@@ -216,6 +225,62 @@ export const decodeSafeTxToBaseTransactions = (safeTx: SafeTransaction): BaseTra
       to: safeTx.data.to,
     })
   }
+  return txs
+}
+
+/**
+ * TODO: Use core-sdk
+ * Decodes the transactions contained in `multiSend` call data
+ *
+ * @param encodedMultiSendData `multiSend` call data
+ * @returns array of individual transaction data
+ */
+export const decodeMultiSendTxs = (encodedMultiSendData: string): BaseTransaction[] => {
+  // uint8 operation, address to, uint256 value, uint256 dataLength
+  const INDIVIDUAL_TX_DATA_LENGTH = 2 + 40 + 64 + 64
+
+  const [decodedMultiSendData] = multiSendInterface.decodeFunctionData(multiSendFragment, encodedMultiSendData)
+
+  const txs: BaseTransaction[] = []
+
+  // Decode after 0x
+  let index = 2
+
+  while (index < decodedMultiSendData.length) {
+    const txDataEncoded = `0x${decodedMultiSendData.slice(
+      index,
+      // Traverse next transaction
+      (index += INDIVIDUAL_TX_DATA_LENGTH),
+    )}`
+
+    // Decode operation, to, value, dataLength
+    let txTo, txValue, txDataBytesLength
+    try {
+      ;[, txTo, txValue, txDataBytesLength] = AbiCoder.defaultAbiCoder().decode(
+        ['uint8', 'address', 'uint256', 'uint256'],
+        toBeHex(txDataEncoded, 32 * 4),
+      )
+    } catch (e) {
+      logError(Errors._809, e)
+      continue
+    }
+
+    // Each byte is represented by two characters
+    const dataLength = Number(txDataBytesLength) * 2
+
+    const txData = `0x${decodedMultiSendData.slice(
+      index,
+      // Traverse data length
+      (index += dataLength),
+    )}`
+
+    txs.push({
+      to: txTo,
+      value: txValue.toString(),
+      data: txData,
+    })
+  }
+
   return txs
 }
 
@@ -231,132 +296,4 @@ export const isTrustedTx = (tx: TransactionSummary) => {
     !isERC20Transfer(tx.txInfo.transferInfo) ||
     Boolean(tx.txInfo.transferInfo.trusted)
   )
-}
-
-export const isImitation = ({ txInfo }: TransactionSummary): boolean => {
-  return isTransferTxInfo(txInfo) && isERC20Transfer(txInfo.transferInfo) && Boolean(txInfo.transferInfo.imitation)
-}
-
-/**
- *
- * If the Safe is using a invalid masterCopy this function will modify the passed in `safeTx` by making it a MultiSend that migrates the Safe to L2 as the first action.
- *
- * This only happens under the conditions that
- * - The Safe's nonce is 0
- * - The SafeTx's nonce is 0
- * - The Safe is using an invalid masterCopy
- * - The SafeTx is not already including a Migration
- *
- * @param safeTx original SafeTx
- * @param safe
- * @param chain
- * @returns
- */
-export const prependSafeToL2Migration = (
-  safeTx: SafeTransaction | undefined,
-  safe: ExtendedSafeInfo,
-  chain: ChainInfo | undefined,
-): Promise<SafeTransaction | undefined> => {
-  if (!chain) {
-    throw new Error('No Network information available')
-  }
-
-  const safeL2Deployment = getSafeContractDeployment(chain, safe.version)
-  const safeL2DeploymentAddress = safeL2Deployment?.networkAddresses[chain.chainId]
-  const safeToL2MigrationDeployment = getSafeToL2MigrationDeployment({ network: chain.chainId })
-  const safeToL2MigrationAddress = safeToL2MigrationDeployment?.networkAddresses[chain.chainId]
-
-  if (
-    !safeTx ||
-    safeTx.signatures.size > 0 ||
-    !chain.l2 ||
-    safeTx.data.nonce > 0 ||
-    isValidMasterCopy(safe.implementationVersionState) ||
-    !safeToL2MigrationAddress ||
-    !safeL2DeploymentAddress
-  ) {
-    // We do not migrate on L1s
-    // We cannot migrate if the nonce is > 0
-    // We do not modify already signed txs
-    // We do not modify supported masterCopies
-    // We cannot migrate if no migration contract or L2 contract exists
-    return Promise.resolve(safeTx)
-  }
-
-  const safeToL2MigrationInterface = Safe_to_l2_migration__factory.createInterface()
-
-  if (sameAddress(safe.implementation.value, safeL2DeploymentAddress)) {
-    // Safe already has the correct L2 masterCopy
-    // This should in theory never happen if the implementationState is valid
-    return Promise.resolve(safeTx)
-  }
-
-  // If the Safe is a L1 masterCopy on a L2 network and still has nonce 0, we prepend a call to the migration contract to the safeTx.
-  const txData = safeTx.data.data
-
-  let internalTxs: MetaTransactionData[]
-  if (isMultiSendCalldata(txData)) {
-    // Check if the first tx is already a call to the migration contract
-    internalTxs = decodeMultiSendData(txData)
-  } else {
-    internalTxs = [{ to: safeTx.data.to, operation: safeTx.data.operation, value: safeTx.data.value, data: txData }]
-  }
-
-  if (sameAddress(internalTxs[0]?.to, safeToL2MigrationAddress)) {
-    // We already migrate. Nothing to do.
-    return Promise.resolve(safeTx)
-  }
-
-  // Prepend the migration tx
-  const newTxs: MetaTransactionData[] = [
-    {
-      operation: 1, // DELEGATE CALL REQUIRED
-      data: safeToL2MigrationInterface.encodeFunctionData('migrateToL2', [safeL2DeploymentAddress]),
-      to: safeToL2MigrationAddress,
-      value: '0',
-    },
-    ...internalTxs,
-  ]
-
-  return __unsafe_createMultiSendTx(newTxs)
-}
-
-export const extractMigrationL2MasterCopyAddress = (safeTx: SafeTransaction | undefined): string | undefined => {
-  if (!safeTx) {
-    return undefined
-  }
-
-  if (!isMultiSendCalldata(safeTx.data.data)) {
-    return undefined
-  }
-
-  const innerTxs = decodeMultiSendData(safeTx.data.data)
-  const firstInnerTx = innerTxs[0]
-  if (!firstInnerTx) {
-    return undefined
-  }
-
-  const safeToL2MigrationDeployment = getSafeToL2MigrationDeployment()
-  const safeToL2MigrationAddress = safeToL2MigrationDeployment?.defaultAddress
-  const safeToL2MigrationInterface = Safe_to_l2_migration__factory.createInterface()
-
-  if (
-    firstInnerTx.data.startsWith(safeToL2MigrationInterface.getFunction('migrateToL2').selector) &&
-    sameAddress(firstInnerTx.to, safeToL2MigrationAddress)
-  ) {
-    const callParams = safeToL2MigrationInterface.decodeFunctionData('migrateToL2', firstInnerTx.data)
-    return callParams[0]
-  }
-
-  return undefined
-}
-
-export const getSafeTransaction = async (safeTxHash: string, chainId: string, safeAddress: string) => {
-  const txId = `multisig_${safeAddress}_${safeTxHash}`
-
-  try {
-    return await getTransactionDetails(chainId, txId)
-  } catch (e) {
-    return undefined
-  }
 }

@@ -3,7 +3,7 @@ export const setupSection = '[data-testid="setup-section"]'
 export const modalBackBtn = '[data-testid="modal-back-btn"]'
 export const newTxBtn = '[data-testid="new-tx-btn"]'
 const modalCloseIcon = '[data-testid="CloseIcon"]'
-export const expandMoreIcon = 'svg[data-testid="ExpandMoreIcon"]'
+const expandMoreIcon = 'svg[data-testid="ExpandMoreIcon"]'
 const sentinelStart = 'div[data-testid="sentinelStart"]'
 
 const disconnectBtnStr = 'Disconnect'
@@ -16,16 +16,12 @@ export function clickOnSideNavigation(option) {
   cy.get(option).should('exist').click()
 }
 
-export function clickOnModalCloseBtn(index) {
-  cy.get(modalCloseIcon).eq(index).trigger('click')
+export function clickOnModalCloseBtn() {
+  cy.get(modalCloseIcon).eq(0).trigger('click')
 }
 
 export function clickOnNewTxBtn() {
   cy.get(newTxBtn).click()
-}
-
-export function clickOnNewTxBtnS() {
-  cy.get('button').contains('Next').click()
 }
 
 export function clickOnWalletExpandMoreIcon() {

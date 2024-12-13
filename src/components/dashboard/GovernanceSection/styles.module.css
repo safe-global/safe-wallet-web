@@ -1,11 +1,31 @@
-.lazyWrapper {
-  height: 300px;
-  overflow: hidden;
+.accordion {
+  box-shadow: none;
+  border: none;
+  background: transparent;
+}
+
+.accordion :global .MuiAccordionSummary-root,
+.accordion :global .MuiAccordionDetails-root {
+  padding: 0;
+}
+
+.accordion:hover :global .MuiAccordionSummary-root,
+.accordion :global .MuiAccordionSummary-root:hover,
+.accordion :global .Mui-expanded.MuiAccordionSummary-root {
+  background: inherit;
+}
+
+.accordion :global .MuiAccordionSummary-root {
+  pointer-events: none;
+}
+
+.accordion :global .MuiAccordionSummary-expandIconWrapper {
+  pointer-events: auto;
 }
 
 .widgetWrapper {
-  height: 300px;
   border: none;
+  height: 300px;
 }
 
 /* iframe sm breakpoint + paddings */

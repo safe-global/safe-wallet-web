@@ -1,12 +1,11 @@
-import { act } from 'react'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
-import { renderHook, waitFor } from '@/tests/test-utils'
+import { act, renderHook, waitFor } from '@/tests/test-utils'
 import { useSimulation } from '@/components/tx/security/tenderly/useSimulation'
 import * as utils from '@/components/tx/security/tenderly/utils'
 import { FETCH_STATUS, type TenderlySimulation } from '@/components/tx/security/tenderly/types'
 
-const setupFetchStub = (data: any) => () => {
+const setupFetchStub = (data: any) => (_url: string) => {
   return Promise.resolve({
     json: () => Promise.resolve(data),
     status: 200,

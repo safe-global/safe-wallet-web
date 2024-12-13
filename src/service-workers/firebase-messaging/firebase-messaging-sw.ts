@@ -67,7 +67,7 @@ export function firebaseMessagingSw() {
     self.registration.showNotification(notification.title || '', {
       icon: ICON_PATH,
       body: notification.body,
-      image: notification.image,
+      // image: notification.image,
       data,
     })
   })

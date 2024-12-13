@@ -4,7 +4,7 @@ import * as useSafeInfo from '@/hooks/useSafeInfo'
 import * as useChains from '@/hooks/useChains'
 import { chainBuilder } from '@/tests/builders/chains'
 import { FEATURES } from '@/utils/chains'
-import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
+import { SAFE_RELAY_SERVICE_URL } from '@/services/tx/relaying'
 
 const SAFE_ADDRESS = '0x0000000000000000000000000000000000000001'
 
@@ -13,9 +13,7 @@ describe('fetch remaining relays hooks', () => {
     // @ts-expect-error - using local FEATURES enum
     .with({ features: [FEATURES.RELAYING] })
     .build()
-
   beforeEach(() => {
-    jest.clearAllMocks()
     jest.spyOn(useChains, 'useCurrentChain').mockReturnValue(mockChain)
     jest.spyOn(useSafeInfo, 'default').mockReturnValue({
       safe: {
@@ -26,17 +24,45 @@ describe('fetch remaining relays hooks', () => {
   })
 
   describe('useRelaysBySafe hook', () => {
+    it('should not call fetch if empty safe address', () => {
+      jest.spyOn(useSafeInfo, 'default').mockReturnValue({
+        safe: {
+          txHistoryTag: '0',
+        },
+        safeAddress: '',
+      } as ReturnType<typeof useSafeInfo.default>)
+
+      global.fetch = jest.fn()
+      const mockFetch = jest.spyOn(global, 'fetch')
+
+      renderHook(() => useRelaysBySafe())
+      expect(mockFetch).not.toHaveBeenCalled()
+    })
+
+    it('should call fetch with the right path params', () => {
+      global.fetch = jest.fn()
+      const mockFetch = jest.spyOn(global, 'fetch')
+
+      const url = `${SAFE_RELAY_SERVICE_URL}/${mockChain.chainId}/${SAFE_ADDRESS}`
+
+      renderHook(() => useRelaysBySafe())
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+      expect(mockFetch).toHaveBeenCalledWith(url)
+    })
+
     it('should not do a network request if chain does not support relay', () => {
       jest.spyOn(useChains, 'useCurrentChain').mockReturnValue(chainBuilder().with({ features: [] }).build())
 
-      const mockFetch = jest.spyOn(gateway, 'getRelayCount')
+      global.fetch = jest.fn()
+      const mockFetch = jest.spyOn(global, 'fetch')
 
       renderHook(() => useRelaysBySafe())
       expect(mockFetch).toHaveBeenCalledTimes(0)
     })
 
     it('refetch if the txHistoryTag changes', () => {
-      const mockFetch = jest.spyOn(gateway, 'getRelayCount')
+      global.fetch = jest.fn()
+      const mockFetch = jest.spyOn(global, 'fetch')
 
       const render = renderHook(() => useRelaysBySafe())
       expect(mockFetch).toHaveBeenCalledTimes(1)
@@ -58,11 +84,20 @@ describe('fetch remaining relays hooks', () => {
     const ownerAddresses = ['0x00', '0x01', '0x02']
 
     it('should return 0 if one of the owners has no remaining relays', async () => {
-      jest
-        .spyOn(gateway, 'getRelayCount')
-        .mockResolvedValue({ limit: 5, remaining: 3 })
-        .mockResolvedValueOnce({ limit: 5, remaining: 0 })
-        .mockResolvedValueOnce({ limit: 5, remaining: 5 })
+      global.fetch = jest
+        .fn()
+        .mockResolvedValue({
+          ok: true,
+          json: () => Promise.resolve({ remaining: 3 }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ remaining: 0 }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ remaining: 5 }),
+        })
 
       const { result } = renderHook(() => useLeastRemainingRelays(ownerAddresses))
 
@@ -72,11 +107,20 @@ describe('fetch remaining relays hooks', () => {
     })
 
     it('should return the minimum number of relays amongst owners', async () => {
-      jest
-        .spyOn(gateway, 'getRelayCount')
-        .mockResolvedValue({ limit: 5, remaining: 3 })
-        .mockResolvedValueOnce({ limit: 5, remaining: 2 })
-        .mockResolvedValueOnce({ limit: 5, remaining: 5 })
+      global.fetch = jest
+        .fn()
+        .mockResolvedValue({
+          ok: true,
+          json: () => Promise.resolve({ remaining: 3 }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ remaining: 2 }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ remaining: 5 }),
+        })
 
       const { result } = renderHook(() => useLeastRemainingRelays(ownerAddresses))
 
@@ -86,11 +130,20 @@ describe('fetch remaining relays hooks', () => {
     })
 
     it('should return 0 if there is an error fetching the remaining relays', async () => {
-      jest
-        .spyOn(gateway, 'getRelayCount')
-        .mockResolvedValue({ limit: 5, remaining: 3 })
-        .mockRejectedValueOnce('Failed to fetch')
-        .mockResolvedValueOnce({ limit: 5, remaining: 2 })
+      global.fetch = jest
+        .fn()
+        .mockResolvedValue({
+          ok: true,
+          json: () => Promise.resolve({ remaining: 3 }),
+        })
+        .mockRejectedValueOnce({
+          ok: false,
+          json: () => Promise.reject('Failed to fetch'),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ remaining: 2 }),
+        })
 
       const { result } = renderHook(() => useLeastRemainingRelays(ownerAddresses))
 
@@ -101,18 +154,32 @@ describe('fetch remaining relays hooks', () => {
 
     it('should not do a network request if chain does not support relay', () => {
       jest.spyOn(useChains, 'useCurrentChain').mockReturnValue(chainBuilder().with({ features: [] }).build())
-      const mockFetch = jest
-        .spyOn(gateway, 'getRelayCount')
-        .mockResolvedValue({ limit: 5, remaining: 3 })
-        .mockRejectedValueOnce('Failed to fetch')
-        .mockResolvedValueOnce({ limit: 5, remaining: 2 })
+      global.fetch = jest
+        .fn()
+        .mockResolvedValue({
+          ok: true,
+          json: () => Promise.resolve({ remaining: 3 }),
+        })
+        .mockRejectedValueOnce({
+          ok: false,
+          json: () => Promise.reject('Failed to fetch'),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ remaining: 2 }),
+        })
+      const mockFetch = jest.spyOn(global, 'fetch')
 
       renderHook(() => useLeastRemainingRelays(ownerAddresses))
       expect(mockFetch).toHaveBeenCalledTimes(0)
     })
 
     it('refetch if the txHistoryTag changes', () => {
-      const mockFetch = jest.spyOn(gateway, 'getRelayCount')
+      global.fetch = jest.fn().mockResolvedValue({
+        json: () => Promise.resolve({ remaining: 3 }),
+      })
+
+      const mockFetch = jest.spyOn(global, 'fetch')
 
       const render = renderHook(() => useLeastRemainingRelays(ownerAddresses))
       expect(mockFetch).toHaveBeenCalledTimes(3)

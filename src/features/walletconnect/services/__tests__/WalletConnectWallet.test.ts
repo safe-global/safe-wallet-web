@@ -155,13 +155,21 @@ describe('WalletConnectWallet', () => {
 
       await wallet.approveSession(
         proposal,
-        '43114', // Not in proposal, therefore not supported
+        '69420', // Not in proposal, therefore not supported
         toBeHex('0x123', 20),
       )
 
       const namespaces = {
         eip155: {
-          chains: ['eip155:1', 'eip155:43114'],
+          chains: [
+            'eip155:1',
+            'eip155:43114',
+            'eip155:42161',
+            'eip155:8453',
+            'eip155:100',
+            'eip155:137',
+            'eip155:1101',
+          ],
           methods: [
             'eth_sendTransaction',
             'personal_sign',
@@ -172,7 +180,15 @@ describe('WalletConnectWallet', () => {
             'wallet_switchEthereumChain',
           ],
           events: ['chainChanged', 'accountsChanged'],
-          accounts: [`eip155:1:${toBeHex('0x123', 20)}`, `eip155:43114:${toBeHex('0x123', 20)}`],
+          accounts: [
+            `eip155:1:${toBeHex('0x123', 20)}`,
+            `eip155:43114:${toBeHex('0x123', 20)}`,
+            `eip155:42161:${toBeHex('0x123', 20)}`,
+            `eip155:8453:${toBeHex('0x123', 20)}`,
+            `eip155:100:${toBeHex('0x123', 20)}`,
+            `eip155:137:${toBeHex('0x123', 20)}`,
+            `eip155:1101:${toBeHex('0x123', 20)}`,
+          ],
         },
       }
 
@@ -210,16 +226,23 @@ describe('WalletConnectWallet', () => {
 
       await wallet.approveSession(
         proposal,
-        '43114', // Not in proposal, therefore not supported
+        '69420', // Not in proposal, therefore not supported
         toBeHex('0x123', 20),
       )
 
       const namespaces = {
         eip155: {
-          chains: ['eip155:43114'],
+          chains: ['eip155:43114', 'eip155:42161', 'eip155:8453', 'eip155:100', 'eip155:137', 'eip155:1101'],
           methods: ['eth_accounts', 'personal_sign', 'eth_sendTransaction'],
           events: ['chainChanged', 'accountsChanged'],
-          accounts: [`eip155:43114:${toBeHex('0x123', 20)}`],
+          accounts: [
+            `eip155:43114:${toBeHex('0x123', 20)}`,
+            `eip155:42161:${toBeHex('0x123', 20)}`,
+            `eip155:8453:${toBeHex('0x123', 20)}`,
+            `eip155:100:${toBeHex('0x123', 20)}`,
+            `eip155:137:${toBeHex('0x123', 20)}`,
+            `eip155:1101:${toBeHex('0x123', 20)}`,
+          ],
         },
       }
 
@@ -249,7 +272,6 @@ describe('WalletConnectWallet', () => {
               publicKey: '123',
               metadata: {} as SignClientTypes.Metadata,
             },
-            pairingTopic: '0x3456',
             requiredNamespaces: {} as ProposalTypes.RequiredNamespaces,
             optionalNamespaces: {} as ProposalTypes.OptionalNamespaces,
             expiryTimestamp: 2,
@@ -284,7 +306,6 @@ describe('WalletConnectWallet', () => {
             id: 1,
             expiry: 1,
             relays: [],
-            pairingTopic: '0x3456',
             proposer: {
               publicKey: '123',
               metadata: {} as SignClientTypes.Metadata,

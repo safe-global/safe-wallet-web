@@ -74,44 +74,6 @@ export const SETTINGS_EVENTS = {
       category: SETTINGS_CATEGORY,
     },
   },
-  PROPOSERS: {
-    ADD_PROPOSER: {
-      action: 'Add safe proposer',
-      category: SETTINGS_CATEGORY,
-    },
-    REMOVE_PROPOSER: {
-      action: 'Remove safe proposer',
-      category: SETTINGS_CATEGORY,
-    },
-    EDIT_PROPOSER: {
-      action: 'Edit safe proposer',
-      category: SETTINGS_CATEGORY,
-    },
-    SUBMIT_ADD_PROPOSER: {
-      action: 'Submit add safe proposer',
-      category: SETTINGS_CATEGORY,
-    },
-    SUBMIT_REMOVE_PROPOSER: {
-      action: 'Submit remove safe proposer',
-      category: SETTINGS_CATEGORY,
-    },
-    SUBMIT_EDIT_PROPOSER: {
-      action: 'Submit edit safe proposer',
-      category: SETTINGS_CATEGORY,
-    },
-    CANCEL_ADD_PROPOSER: {
-      action: 'Cancel add safe proposer',
-      category: SETTINGS_CATEGORY,
-    },
-    CANCEL_REMOVE_PROPOSER: {
-      action: 'Cancel remove safe proposer',
-      category: SETTINGS_CATEGORY,
-    },
-    CANCEL_EDIT_PROPOSER: {
-      action: 'Cancel edit safe proposer',
-      category: SETTINGS_CATEGORY,
-    },
-  },
   DATA: {
     IMPORT_ADDRESS_BOOK: {
       action: 'Imported address book via Import all',
@@ -123,10 +85,6 @@ export const SETTINGS_EVENTS = {
     },
     IMPORT_SAFE_APPS: {
       action: 'Imported Safe apps via Import all',
-      category: SETTINGS_CATEGORY,
-    },
-    IMPORT_UNDEPLOYED_SAFES: {
-      action: 'Imported counterfactual safes via Import all',
       category: SETTINGS_CATEGORY,
     },
   },

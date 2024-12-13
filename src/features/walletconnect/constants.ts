@@ -21,10 +21,9 @@ export const SAFE_COMPATIBLE_METHODS = [
   'eth_getLogs',
   'eth_gasPrice',
   'wallet_switchEthereumChain',
-  'wallet_sendCalls',
-  'wallet_getCallsStatus',
-  'wallet_showCallsStatus',
-  'wallet_getCapabilities',
+  'wallet_sendFunctionCallBundle',
+  'wallet_getBundleStatus',
+  'wallet_showBundleStatus',
   'safe_setSettings',
 ]
 
@@ -47,11 +46,13 @@ export const BlockedBridges = [
   'zksync-era.l2scan.co',
   'www.portalbridge.com',
   'wallet.polygon.technology',
+  'app.rhino.fi',
 
   // Unsupported chain bridges
   'bridge.zora.energy',
   'bridge.mantle.xyz',
   'bridge.metis.io',
+  'scroll.io',
   'pacific-bridge.manta.network',
   'tokenbridge.rsk.co',
   'canto.io',
@@ -64,10 +65,8 @@ export const BlockedBridges = [
 
 // Bridges that initially select the same address on the destination chain but allow changing it
 export const WarnedBridges = [
-  'core.app',
   'across.to', // doesn't send their URL in the session proposal
   'app.allbridge.io',
-  'app.rhino.fi',
   'bridge.arbitrum.io',
   'bridge.base.org',
   'bridge.linea.build',
@@ -90,7 +89,6 @@ export const WarnedBridges = [
   'portal.txsync.io',
   'bridge.wanchain.org',
   'app.xy.finance',
-  'scroll.io',
 ]
 
 export const WarnedBridgeNames = ['Across Bridge', 'Hop']

@@ -4,8 +4,5 @@
   display: flex;
   flex-direction: column;
   padding-right: 60px; /* to not overlap with the share link */
-}
-
-.txSummary {
-  border-top: 1px solid var(--color-border-light);
+  border-top: 2px solid var(--color-border-light);
 }

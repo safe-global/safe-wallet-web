@@ -1,4 +1,6 @@
 import { TX_TYPES } from '@/services/analytics/events/transactions'
+import { getTxDetails } from '@/services/transactions'
+import { isWalletConnectSafeApp } from '@/utils/gateway'
 import { SettingsInfoType, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   isERC721Transfer,
@@ -7,36 +9,22 @@ import {
   isTransferTxInfo,
   isCustomTxInfo,
   isCancellationTxInfo,
-  isSwapOrderTxInfo,
-  isAnyStakingTxInfo,
 } from '@/utils/transaction-guards'
-import { BRIDGE_WIDGET_URL } from '@/features/bridge/components/BridgeWidget'
 
-export const getTransactionTrackingType = (details: TransactionDetails | undefined, origin?: string): string => {
-  if (!details) {
+export const getTransactionTrackingType = async (chainId: string, txId: string): Promise<string> => {
+  let details: TransactionDetails
+  try {
+    details = await getTxDetails(chainId, txId)
+  } catch {
     return TX_TYPES.custom
   }
-
   const { txInfo } = details
-
-  const isNativeBridge = origin?.includes(BRIDGE_WIDGET_URL)
-  if (isNativeBridge) {
-    return TX_TYPES.native_bridge
-  }
 
   if (isTransferTxInfo(txInfo)) {
     if (isERC721Transfer(txInfo.transferInfo)) {
       return TX_TYPES.transfer_nft
     }
     return TX_TYPES.transfer_token
-  }
-
-  if (isSwapOrderTxInfo(txInfo)) {
-    return TX_TYPES.native_swap
-  }
-
-  if (isAnyStakingTxInfo(txInfo)) {
-    return txInfo.type
   }
 
   if (isSettingsChangeTxInfo(txInfo)) {
@@ -68,14 +56,12 @@ export const getTransactionTrackingType = (details: TransactionDetails | undefin
     }
 
     if (details.safeAppInfo) {
-      return details.safeAppInfo.url
+      return isWalletConnectSafeApp(details.safeAppInfo.url) ? TX_TYPES.walletconnect : details.safeAppInfo.url
     }
 
     if (isMultiSendTxInfo(txInfo)) {
       return TX_TYPES.batch
     }
-
-    return TX_TYPES.walletconnect
   }
 
   return TX_TYPES.custom

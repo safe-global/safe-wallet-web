@@ -1,6 +1,9 @@
 import { AppRoutes } from '@/config/routes'
-import { Paper, SvgIcon, Typography, Divider, Box, Button, Link } from '@mui/material'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
+import { Paper, SvgIcon, Typography, Divider, Box, Skeleton, Button, Link } from '@mui/material'
 import SafeLogo from '@/public/images/logo-text.svg'
+import dynamic from 'next/dynamic'
 import css from './styles.module.css'
 import { useRouter } from 'next/router'
 import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
@@ -11,22 +14,16 @@ import Track from '@/components/common/Track'
 import { useCallback, useEffect, useState } from 'react'
 import WalletLogin from './WalletLogin'
 
+const SocialSigner = dynamic(() => import('@/components/common/SocialSigner'), {
+  loading: () => <Skeleton variant="rounded" height={42} width="100%" />,
+})
+
 const WelcomeLogin = () => {
   const router = useRouter()
   const wallet = useWallet()
+  const isSocialLoginEnabled = useHasFeature(FEATURES.SOCIAL_LOGIN)
   const { isLoaded, hasSafes } = useHasSafes()
   const [shouldRedirect, setShouldRedirect] = useState(false)
-
-  const redirect = useCallback(() => {
-    if (wallet) {
-      if (isLoaded && !hasSafes) {
-        trackEvent(CREATE_SAFE_EVENTS.OPEN_SAFE_CREATION)
-        router.push({ pathname: AppRoutes.newSafe.create, query: router.query })
-      } else {
-        router.push({ pathname: AppRoutes.welcome.accounts, query: router.query })
-      }
-    }
-  }, [hasSafes, isLoaded, router, wallet])
 
   const onLogin = useCallback(() => {
     setShouldRedirect(true)
@@ -34,13 +31,21 @@ const WelcomeLogin = () => {
 
   useEffect(() => {
     if (!shouldRedirect) return
-    redirect()
-  }, [redirect, shouldRedirect])
+
+    if (wallet && isLoaded) {
+      if (hasSafes) {
+        router.push({ pathname: AppRoutes.welcome.accounts, query: router.query })
+      } else {
+        trackEvent(CREATE_SAFE_EVENTS.OPEN_SAFE_CREATION)
+        router.push({ pathname: AppRoutes.newSafe.create, query: router.query })
+      }
+    }
+  }, [hasSafes, isLoaded, router, wallet, shouldRedirect])
 
   return (
     <Paper className={css.loginCard} data-testid="welcome-login">
       <Box className={css.loginContent}>
-        <SvgIcon component={SafeLogo} inheritViewBox sx={{ height: '24px', width: '80px', ml: '-8px' }} />
+        <SvgIcon component={SafeLogo} inheritViewBox sx={{ height: '80px', width: '80px', ml: '-8px' }} />
 
         <Typography variant="h6" mt={6} fontWeight={700}>
           Get started
@@ -53,8 +58,20 @@ const WelcomeLogin = () => {
         </Typography>
 
         <Track {...OVERVIEW_EVENTS.OPEN_ONBOARD} label={OVERVIEW_LABELS.welcome_page}>
-          <WalletLogin onLogin={onLogin} onContinue={redirect} />
+          <WalletLogin onLogin={onLogin} />
         </Track>
+
+        {isSocialLoginEnabled && (
+          <>
+            <Divider sx={{ mt: 2, mb: 2, width: '100%' }}>
+              <Typography color="text.secondary" fontWeight={700} variant="overline">
+                or
+              </Typography>
+            </Divider>
+
+            <SocialSigner />
+          </>
+        )}
 
         {!wallet && (
           <>

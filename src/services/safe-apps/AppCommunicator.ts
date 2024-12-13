@@ -1,4 +1,4 @@
-import type { RefObject } from 'react'
+import type { MutableRefObject } from 'react'
 import type { SDKMessageEvent, MethodToResponse, ErrorResponse, RequestId } from '@safe-global/safe-apps-sdk'
 import { getSDKVersion, Methods, MessageFormatter } from '@safe-global/safe-apps-sdk'
 import { asError } from '../exceptions/utils'
@@ -13,11 +13,11 @@ type AppCommunicatorConfig = {
 }
 
 class AppCommunicator {
-  private iframeRef: RefObject<HTMLIFrameElement | undefined>
+  private iframeRef: MutableRefObject<HTMLIFrameElement | null>
   private handlers = new Map<Methods, MessageHandler>()
   private config: AppCommunicatorConfig
 
-  constructor(iframeRef: RefObject<HTMLIFrameElement | undefined>, config?: AppCommunicatorConfig) {
+  constructor(iframeRef: MutableRefObject<HTMLIFrameElement | null>, config?: AppCommunicatorConfig) {
     this.iframeRef = iframeRef
     this.config = config || {}
 
@@ -37,15 +37,11 @@ class AppCommunicator {
     const sentFromIframe = this.iframeRef.current?.contentWindow === msg.source
     const knownMethod = Object.values(Methods).includes(msg.data.method)
 
-    // TODO: move it to safe-app Methods types
-    const isThemeInfoMethod = (msg.data.method as string) === 'getCurrentTheme'
-
-    return sentFromIframe && (knownMethod || isThemeInfoMethod)
+    return sentFromIframe && knownMethod
   }
 
   private canHandleMessage = (msg: SDKMessageEvent): boolean => {
     if (!msg.data) return false
-
     return Boolean(this.handlers.get(msg.data.method))
   }
 

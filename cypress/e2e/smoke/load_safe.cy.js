@@ -3,20 +3,15 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as safe from '../pages/load_safe.pages'
 import * as createwallet from '../pages/create_wallet.pages'
-import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
-
-let staticSafes = []
 
 const testSafeName = 'Test safe name'
 const testOwnerName = 'Test Owner Name'
 
 describe('[SMOKE] Load Safe tests', () => {
-  before(async () => {
-    staticSafes = await getSafes(CATEGORIES.static)
-  })
-
   beforeEach(() => {
+    cy.clearLocalStorage()
     cy.visit(constants.loadNewSafeSepoliaUrl)
+    main.acceptCookies()
     cy.wait(2000)
   })
 
@@ -34,9 +29,9 @@ describe('[SMOKE] Load Safe tests', () => {
 
     createwallet.verifyDefaultWalletName(createwallet.defaultSepoliaPlaceholder)
     safe.verifyIncorrectAddressErrorMessage()
-    safe.inputNameAndAddress(testSafeName, staticSafes.SEP_STATIC_SAFE_4)
+    safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_1)
 
-    safe.verifyAddressInputValue(staticSafes.SEP_STATIC_SAFE_4)
+    safe.verifyAddressInputValue(constants.SEPOLIA_TEST_SAFE_1)
     safe.verifyNextButtonStatus('be.enabled')
     safe.clickOnNextBtn()
   })
@@ -49,13 +44,13 @@ describe('[SMOKE] Load Safe tests', () => {
   it('[SMOKE] Verify ENS name is translated to a valid address', () => {
     // cy.visit(constants.loadNewSafeEthUrl)
     safe.inputAddress(constants.ENS_TEST_SEPOLIA)
-    safe.verifyAddressInputValue(staticSafes.SEP_STATIC_SAFE_6)
+    safe.verifyAddressInputValue(constants.SEPOLIA_TEST_SAFE_7)
     safe.verifyNextButtonStatus('be.enabled')
     safe.clickOnNextBtn()
   })
 
   it('[SMOKE] Verify the custom Safe name is successfully loaded', () => {
-    safe.inputNameAndAddress(testSafeName, staticSafes.SEP_STATIC_SAFE_3)
+    safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_2)
     safe.clickOnNextBtn()
     createwallet.typeOwnerName(testOwnerName, 0)
     safe.clickOnNextBtn()
@@ -67,7 +62,7 @@ describe('[SMOKE] Load Safe tests', () => {
       constants.SEPOLIA_OWNER_2,
     )
     safe.clickOnAddBtn()
-    main.verifyHomeSafeUrl(staticSafes.SEP_STATIC_SAFE_3)
+    main.verifyHomeSafeUrl(constants.SEPOLIA_TEST_SAFE_2)
     safe.veriySidebarSafeNameIsVisible(testSafeName)
     safe.verifyOwnerNamePresentInSettings(testOwnerName)
   })
@@ -79,7 +74,7 @@ describe('[SMOKE] Load Safe tests', () => {
   })
 
   it('[SMOKE] Verify that after loading existing Safe, its name input is not empty', () => {
-    safe.inputNameAndAddress(testSafeName, staticSafes.SEP_STATIC_SAFE_4)
+    safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_1)
     safe.clickOnNextBtn()
     safe.verifyOnwerInputIsNotEmpty(0)
   })

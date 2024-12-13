@@ -1,10 +1,11 @@
-import { useMemo, type ReactElement } from 'react'
 import { Accordion, AccordionSummary, Typography, AccordionDetails, Box } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import CodeIcon from '@mui/icons-material/Code'
 import classNames from 'classnames'
-import { SafeMessageStatus, type SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
-import { ErrorBoundary } from '@sentry/react'
+import { SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
+import { useMemo } from 'react'
+import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ReactElement } from 'react'
 
 import { formatDateTime } from '@/utils/date'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -13,34 +14,24 @@ import { generateDataRowValue, TxDataRow } from '@/components/transactions/TxDet
 import MsgSigners from '@/components/safe-messages/MsgSigners'
 import useWallet from '@/hooks/wallets/useWallet'
 import SignMsgButton from '@/components/safe-messages/SignMsgButton'
-import { generateSafeMessageMessage, isEIP712TypedData } from '@/utils/safe-messages'
+import { generateSafeMessageMessage } from '@/utils/safe-messages'
 
 import txDetailsCss from '@/components/transactions/TxDetails/styles.module.css'
 import singleTxDecodedCss from '@/components/transactions/TxDetails/TxData/DecodedData/SingleTxDecoded/styles.module.css'
 import infoDetailsCss from '@/components/transactions/InfoDetails/styles.module.css'
 import { DecodedMsg } from '../DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
-import NamedAddressInfo from '@/components/common/NamedAddressInfo'
-import MsgShareLink from '../MsgShareLink'
 
 const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
   const wallet = useWallet()
   const isConfirmed = msg.status === SafeMessageStatus.CONFIRMED
   const safeMessage = useMemo(() => {
-    try {
-      return generateSafeMessageMessage(msg.message)
-    } catch (e) {
-      return ''
-    }
+    return generateSafeMessageMessage(msg.message)
   }, [msg.message])
-  const verifyingContract = isEIP712TypedData(msg.message) ? msg.message.domain.verifyingContract : undefined
 
   return (
     <div className={txDetailsCss.container}>
       <div className={txDetailsCss.details}>
-        <div className={txDetailsCss.shareLink}>
-          <MsgShareLink safeMessageHash={msg.messageHash} />
-        </div>
         <div className={txDetailsCss.txData}>
           <InfoDetails title="Created by:">
             <EthHashInfo
@@ -53,15 +44,6 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
             />
           </InfoDetails>
         </div>
-
-        {verifyingContract && (
-          <div className={txDetailsCss.txData}>
-            <InfoDetails title="Verifying contract:">
-              <NamedAddressInfo address={verifyingContract} shortAddress={false} showCopyButton hasExplorer />
-            </InfoDetails>
-          </div>
-        )}
-
         <div className={txDetailsCss.txData}>
           <InfoDetails
             title={
@@ -70,9 +52,7 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
               </>
             }
           >
-            <ErrorBoundary fallback={<div>Error decoding message</div>}>
-              <DecodedMsg message={msg.message} />
-            </ErrorBoundary>
+            <DecodedMsg message={msg.message} />
           </InfoDetails>
         </div>
 
@@ -80,7 +60,7 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
           <TxDataRow title="Created:">{formatDateTime(msg.creationTimestamp)}</TxDataRow>
           <TxDataRow title="Last modified:">{formatDateTime(msg.modifiedTimestamp)}</TxDataRow>
           <TxDataRow title="Message hash:">{generateDataRowValue(msg.messageHash, 'hash')}</TxDataRow>
-          {safeMessage && <TxDataRow title="SafeMessage:">{generateDataRowValue(safeMessage, 'hash')}</TxDataRow>}
+          <TxDataRow title="SafeMessage:">{generateDataRowValue(safeMessage, 'hash')}</TxDataRow>
         </div>
 
         {msg.preparedSignature && (

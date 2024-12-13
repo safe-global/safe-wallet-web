@@ -1,4 +1,3 @@
-import useWallet from '@/hooks/wallets/useWallet'
 import { useState } from 'react'
 import {
   Dialog,
@@ -15,6 +14,7 @@ import {
 } from '@mui/material'
 import { Close } from '@mui/icons-material'
 import madProps from '@/utils/mad-props'
+import useOnboard from '@/hooks/wallets/useOnboard'
 import useChainId from '@/hooks/useChainId'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { deleteTx } from '@/utils/gateway'
@@ -24,37 +24,32 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import ExternalLink from '@/components/common/ExternalLink'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
-import { REJECT_TX_EVENTS } from '@/services/analytics/events/reject-tx'
-import { trackEvent } from '@/services/analytics'
-import { isWalletRejection } from '@/utils/wallets'
 
 type DeleteTxModalProps = {
   safeTxHash: string
   onClose: () => void
   onSuccess: () => void
-  wallet: ReturnType<typeof useWallet>
+  onboard: ReturnType<typeof useOnboard>
   chainId: ReturnType<typeof useChainId>
   safeAddress: ReturnType<typeof useSafeAddress>
 }
 
-const _DeleteTxModal = ({ safeTxHash, onSuccess, onClose, wallet, safeAddress, chainId }: DeleteTxModalProps) => {
+const _DeleteTxModal = ({ safeTxHash, onSuccess, onClose, onboard, safeAddress, chainId }: DeleteTxModalProps) => {
   const [error, setError] = useState<Error>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const onConfirm = async () => {
     setError(undefined)
     setIsLoading(true)
-    trackEvent(REJECT_TX_EVENTS.DELETE_CONFIRM)
 
-    if (!wallet?.provider || !safeAddress || !chainId || !safeTxHash) {
+    if (!onboard || !safeAddress || !chainId || !safeTxHash) {
       setIsLoading(false)
       setError(new Error('Please connect your wallet first'))
-      trackEvent(REJECT_TX_EVENTS.DELETE_FAIL)
       return
     }
 
     try {
-      const signer = await getAssertedChainSigner(wallet.provider)
+      const signer = await getAssertedChainSigner(onboard, chainId)
 
       await deleteTx({
         safeTxHash,
@@ -65,19 +60,12 @@ const _DeleteTxModal = ({ safeTxHash, onSuccess, onClose, wallet, safeAddress, c
     } catch (error) {
       setIsLoading(false)
       setError(error as Error)
-      trackEvent(isWalletRejection(error as Error) ? REJECT_TX_EVENTS.DELETE_CANCEL : REJECT_TX_EVENTS.DELETE_FAIL)
       return
     }
 
     setIsLoading(false)
     txDispatch(TxEvent.DELETED, { safeTxHash })
     onSuccess()
-    trackEvent(REJECT_TX_EVENTS.DELETE_SUCCESS)
-  }
-
-  const onCancel = () => {
-    trackEvent(REJECT_TX_EVENTS.DELETE_CANCEL)
-    onClose()
   }
 
   return (
@@ -125,12 +113,11 @@ const _DeleteTxModal = ({ safeTxHash, onSuccess, onClose, wallet, safeAddress, c
       <Divider />
 
       <DialogActions sx={{ padding: 3, justifyContent: 'space-between' }}>
-        <Button size="small" variant="text" onClick={onCancel}>
+        <Button size="small" variant="text" onClick={onClose}>
           Keep it
         </Button>
 
         <Button
-          data-testid="delete-tx-btn"
           size="small"
           variant="contained"
           color="primary"
@@ -146,7 +133,7 @@ const _DeleteTxModal = ({ safeTxHash, onSuccess, onClose, wallet, safeAddress, c
 }
 
 const DeleteTxModal = madProps(_DeleteTxModal, {
-  wallet: useWallet,
+  onboard: useOnboard,
   chainId: useChainId,
   safeAddress: useSafeAddress,
 })

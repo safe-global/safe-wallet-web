@@ -1,4 +1,5 @@
 import { Typography, Link } from '@mui/material'
+import type { FallbackRender } from '@sentry/react'
 
 import { HELP_CENTER_URL, IS_PRODUCTION } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
@@ -7,12 +8,8 @@ import WarningIcon from '@/public/images/notifications/warning.svg'
 import css from '@/components/common/ErrorBoundary/styles.module.css'
 import CircularIcon from '../icons/CircularIcon'
 import ExternalLink from '../ExternalLink'
-interface ErrorBoundaryProps {
-  error: Error
-  componentStack: string
-}
 
-const ErrorBoundary = ({ error, componentStack }: ErrorBoundaryProps) => {
+const ErrorBoundary: FallbackRender = ({ error, componentStack }) => {
   return (
     <div className={css.container}>
       <div className={css.wrapper}>

@@ -11,8 +11,8 @@ import {
   type SafeMessage,
   type EIP712TypedData,
   type ChainInfo,
+  FEATURES,
 } from '@safe-global/safe-gateway-typescript-sdk'
-import { FEATURES } from '@/utils/chains'
 
 import { hasFeature } from './chains'
 import { asError } from '@/services/exceptions/utils'
@@ -27,17 +27,13 @@ const EIP1271_SUPPORTED_SAFE_VERSION = '1.0.0'
 
 const EIP1271_OFFCHAIN_SUPPORTED_SAFE_APPS_SDK_VERSION = '7.11.0'
 
-const isHash = (payload: string) => /^0x[a-f0-9]+$/i.test(payload)
-
-/*
+/**
  * Typeguard for EIP712TypedData
  *
  */
 export const isEIP712TypedData = (obj: any): obj is EIP712TypedData => {
   return typeof obj === 'object' && obj != null && 'domain' in obj && 'types' in obj && 'message' in obj
 }
-
-export const isBlindSigningPayload = (obj: EIP712TypedData | string): boolean => !isEIP712TypedData(obj) && isHash(obj)
 
 export const generateSafeMessageMessage = (message: SafeMessage['message']): string => {
   return typeof message === 'string' ? hashMessage(message) : hashTypedData(message)
@@ -62,7 +58,7 @@ export const generateSafeMessageTypedData = (
   return {
     domain: isHandledByFallbackHandler
       ? {
-          chainId,
+          chainId: chainId,
           verifyingContract: address.value,
         }
       : { verifyingContract: address.value },

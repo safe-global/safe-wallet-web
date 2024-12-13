@@ -1,53 +1,41 @@
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import { useIsWalletProposer } from '@/hooks/useProposers'
 import type { Dispatch, SetStateAction } from 'react'
 import { type ReactElement } from 'react'
 import { useRouter } from 'next/router'
-import type { Url } from 'next/dist/shared/lib/router/router'
 import { IconButton, Paper } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import classnames from 'classnames'
 import css from './styles.module.css'
 import ConnectWallet from '@/components/common/ConnectWallet'
 import NetworkSelector from '@/components/common/NetworkSelector'
-import SafeTokenWidget from '@/components/common/SafeTokenWidget'
+import SafeTokenWidget, { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
 import NotificationCenter from '@/components/notification-center/NotificationCenter'
 import { AppRoutes } from '@/config/routes'
+import useChainId from '@/hooks/useChainId'
 import SafeLogo from '@/public/images/logo.svg'
-import SafeLogoMobile from '@/public/images/logo-no-text.svg'
 import Link from 'next/link'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import BatchIndicator from '@/components/batch/BatchIndicator'
 import WalletConnect from '@/features/walletconnect/components'
+import { PushNotificationsBanner } from '@/components/settings/PushNotifications/PushNotificationsBanner'
 import { FEATURES } from '@/utils/chains'
 import { useHasFeature } from '@/hooks/useChains'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
-import { useSafeTokenEnabled } from '@/hooks/useSafeTokenEnabled'
 
 type HeaderProps = {
   onMenuToggle?: Dispatch<SetStateAction<boolean>>
   onBatchToggle?: Dispatch<SetStateAction<boolean>>
 }
 
-function getLogoLink(router: ReturnType<typeof useRouter>): Url {
-  return router.pathname === AppRoutes.home || !router.query.safe
-    ? router.pathname === AppRoutes.welcome.accounts
-      ? AppRoutes.welcome.index
-      : AppRoutes.welcome.accounts
-    : { pathname: AppRoutes.home, query: { safe: router.query.safe } }
-}
-
 const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
+  const chainId = useChainId()
   const safeAddress = useSafeAddress()
-  const showSafeToken = useSafeTokenEnabled()
-  const isProposer = useIsWalletProposer()
-  const isSafeOwner = useIsSafeOwner()
+  const showSafeToken = safeAddress && !!getSafeTokenAddress(chainId)
   const router = useRouter()
   const enableWc = useHasFeature(FEATURES.NATIVE_WALLETCONNECT)
 
-  // If on the home page, the logo should link to the Accounts or Welcome page, otherwise to the home page
-  const logoHref = getLogoLink(router)
+  // Logo link: if on Dashboard, link to Welcome, otherwise to the root (which redirects to either Dashboard or Welcome)
+  const logoHref = router.pathname === AppRoutes.home ? AppRoutes.welcome.index : AppRoutes.index
 
   const handleMenuToggle = () => {
     if (onMenuToggle) {
@@ -63,22 +51,12 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
     }
   }
 
-  const showBatchButton = safeAddress && (!isProposer || isSafeOwner)
-
   return (
     <Paper className={css.container}>
-      <div className={classnames(css.element, css.menuButton)}>
-        {onMenuToggle && (
-          <IconButton onClick={handleMenuToggle} size="large" color="default" aria-label="menu">
-            <MenuIcon />
-          </IconButton>
-        )}
-      </div>
-
-      <div className={classnames(css.element, css.logoMobile)}>
-        <Link href={logoHref} passHref>
-          <SafeLogoMobile alt="Safe logo" />
-        </Link>
+      <div className={classnames(css.element, css.menuButton, !onMenuToggle ? css.hideSidebarMobile : null)}>
+        <IconButton onClick={handleMenuToggle} size="large" edge="start" color="default" aria-label="menu">
+          <MenuIcon />
+        </IconButton>
       </div>
 
       <div className={classnames(css.element, css.hideMobile, css.logo)}>
@@ -94,10 +72,12 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
       )}
 
       <div className={css.element}>
-        <NotificationCenter />
+        <PushNotificationsBanner>
+          <NotificationCenter />
+        </PushNotificationsBanner>
       </div>
 
-      {showBatchButton && (
+      {safeAddress && (
         <div className={classnames(css.element, css.hideMobile)}>
           <BatchIndicator onClick={handleBatchToggle} />
         </div>
@@ -115,11 +95,9 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
         </Track>
       </div>
 
-      {safeAddress && (
-        <div className={classnames(css.element, css.networkSelector)}>
-          <NetworkSelector offerSafeCreation />
-        </div>
-      )}
+      <div className={classnames(css.element, css.networkSelector)}>
+        <NetworkSelector />
+      </div>
     </Paper>
   )
 }

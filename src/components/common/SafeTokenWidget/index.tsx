@@ -1,104 +1,82 @@
-import UnreadBadge from '@/components/common/UnreadBadge'
-import { IS_PRODUCTION, SAFE_TOKEN_ADDRESSES, SAFE_LOCKING_ADDRESS } from '@/config/constants'
+import { IS_PRODUCTION, SAFE_TOKEN_ADDRESSES } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
 import useChainId from '@/hooks/useChainId'
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import type { Vesting } from '@/hooks/useSafeTokenAllocation'
-import useSafeTokenAllocation, { useSafeVotingPower } from '@/hooks/useSafeTokenAllocation'
+import useSafeTokenAllocation, { useSafeVotingPower, type Vesting } from '@/hooks/useSafeTokenAllocation'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
 import { formatVisualAmount } from '@/utils/formatters'
-import { Box, ButtonBase, Divider, Skeleton, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { Box, Button, ButtonBase, Skeleton, Tooltip, Typography } from '@mui/material'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import Track from '../Track'
 import SafeTokenIcon from '@/public/images/common/safe-token.svg'
-import SafePassStar from '@/public/images/common/safe-pass-star.svg'
 import css from './styles.module.css'
-import { useSanctionedAddress } from '@/hooks/useSanctionedAddress'
-import useSafeAddress from '@/hooks/useSafeAddress'
-import { skipToken } from '@reduxjs/toolkit/query/react'
-import { useDarkMode } from '@/hooks/useDarkMode'
-import { useGetOwnGlobalCampaignRankQuery } from '@/store/api/safePass'
-import { formatAmount } from '@/utils/formatNumber'
+import UnreadBadge from '../UnreadBadge'
+import classnames from 'classnames'
 
 const TOKEN_DECIMALS = 18
 
-const canRedeemSAPUnboostedAllocation = (allocation?: Vesting[]): boolean => {
-  const sapUnboostedAllocation = allocation?.find(({ tag }) => tag === 'sap_unboosted')
-
-  if (!sapUnboostedAllocation) {
-    return false
-  }
-
-  return !sapUnboostedAllocation.isRedeemed && !sapUnboostedAllocation.isExpired
+export const useSafeTokenAddress = () => {
+  const chainId = useChainId()
+  return getSafeTokenAddress(chainId)
 }
-
-const SAP_REDEEM_DEADLINE = '06.12.2025'
 
 export const getSafeTokenAddress = (chainId: string): string | undefined => {
   return SAFE_TOKEN_ADDRESSES[chainId]
 }
 
-export const getSafeLockingAddress = (chainId: string): string | undefined => {
-  return SAFE_LOCKING_ADDRESS[chainId]
+const canRedeemSep5Airdrop = (allocation?: Vesting[]): boolean => {
+  const sep5Allocation = allocation?.find(({ tag }) => tag === 'user_v2')
+
+  if (!sep5Allocation) {
+    return false
+  }
+
+  return !sep5Allocation.isRedeemed && !sep5Allocation.isExpired
 }
 
-const GOVERNANCE_APP_URL = IS_PRODUCTION ? 'https://community.safe.global' : 'https://safe-dao-governance.dev.5afe.dev'
+const GOVERNANCE_APP_URL = IS_PRODUCTION ? 'https://governance.safe.global' : 'https://safe-dao-governance.dev.5afe.dev'
 
 const SafeTokenWidget = () => {
   const chainId = useChainId()
-  const safeAddress = useSafeAddress()
   const query = useSearchParams()
-  const darkMode = useDarkMode()
-  const isSafeOwner = useIsSafeOwner()
 
   const [allocationData, , allocationDataLoading] = useSafeTokenAllocation()
   const [allocation, , allocationLoading] = useSafeVotingPower(allocationData)
 
-  const sanctionedAddress = useSanctionedAddress()
-  const { data: ownGlobalRank, isLoading: ownGlobalRankLoading } = useGetOwnGlobalCampaignRankQuery(
-    chainId !== '1' && chainId !== '11155111' ? skipToken : { chainId, safeAddress },
-    { refetchOnFocus: false },
-  )
-
   const tokenAddress = getSafeTokenAddress(chainId)
-  if (!tokenAddress || Boolean(sanctionedAddress)) {
+  if (!tokenAddress) {
     return null
   }
 
   const url = {
     pathname: AppRoutes.apps.open,
-    query: { safe: query?.get('safe'), appUrl: GOVERNANCE_APP_URL },
+    query: { safe: query.get('safe'), appUrl: GOVERNANCE_APP_URL },
   }
 
-  const flooredSafeBalance = formatVisualAmount(allocation || BigInt(0), TOKEN_DECIMALS, 0)
-  const canRedeemSAPUnboosted = canRedeemSAPUnboostedAllocation(allocationData) && isSafeOwner
+  const canRedeemSep5 = canRedeemSep5Airdrop(allocationData)
+  const flooredSafeBalance = formatVisualAmount(allocation || BigInt(0), TOKEN_DECIMALS, 2)
 
   return (
     <Box className={css.container}>
-      <Tooltip
-        title={
-          url
-            ? canRedeemSAPUnboosted
-              ? `Redeem your allocation before ${SAP_REDEEM_DEADLINE} to be eligible!`
-              : 'Go to Safe{DAO} Governance'
-            : ''
-        }
-      >
+      <Tooltip title="Go to Safe{DAO} Governance">
         <span>
           <Track {...OVERVIEW_EVENTS.SAFE_TOKEN_WIDGET}>
             <Link href={url} passHref legacyBehavior>
-              <ButtonBase aria-describedby="safe-token-widget" className={css.tokenButton} disabled={url === undefined}>
+              <ButtonBase
+                aria-describedby="safe-token-widget"
+                className={classnames(css.tokenButton, { [css.sep5]: canRedeemSep5 })}
+                disabled={url === undefined}
+              >
                 <SafeTokenIcon width={24} height={24} />
                 <Typography
                   component="div"
-                  variant="body2"
-                  lineHeight={1}
+                  lineHeight="16px"
+                  fontWeight={700}
                   // Badge does not accept className so must be here
                   className={css.allocationBadge}
                 >
                   <UnreadBadge
-                    invisible={!canRedeemSAPUnboosted}
+                    invisible={!canRedeemSep5}
                     anchorOrigin={{
                       vertical: 'bottom',
                       horizontal: 'right',
@@ -111,30 +89,13 @@ const SafeTokenWidget = () => {
                     )}
                   </UnreadBadge>
                 </Typography>
-
-                <Divider orientation="vertical" />
-                <SvgIcon
-                  component={SafePassStar}
-                  width={24}
-                  height={24}
-                  inheritViewBox
-                  color={darkMode ? 'primary' : undefined}
-                />
-                <Typography
-                  component="div"
-                  variant="body2"
-                  // Badge does not accept className so must be here
-                  className={css.allocationBadge}
-                  sx={{
-                    lineHeight: '20px',
-                  }}
-                >
-                  {ownGlobalRankLoading ? (
-                    <Skeleton width="16px" animation="wave" />
-                  ) : (
-                    formatAmount(Math.floor(ownGlobalRank?.totalBoostedPoints ?? 0), 0)
-                  )}
-                </Typography>
+                {canRedeemSep5 && (
+                  <Track {...OVERVIEW_EVENTS.SEP5_ALLOCATION_BUTTON}>
+                    <Button variant="contained" className={css.redeemButton}>
+                      New allocation
+                    </Button>
+                  </Track>
+                )}
               </ButtonBase>
             </Link>
           </Track>

@@ -13,26 +13,19 @@ import {
 } from '../recovery-state'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { encodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils/transactions/utils'
-import { getMultiSendCallOnlyDeployment, getSafeSingletonDeployment } from '@safe-global/safe-deployments'
+import { getMultiSendCallOnlyDeployment, getSafeSingletonDeployment } from '@/bitlayer-safe-deployments/src'
 import { Interface } from 'ethers'
-import { FEATURES, getLatestSafeVersion } from '@/utils/chains'
-import { type FEATURES as GatewayFeatures } from '@safe-global/safe-gateway-typescript-sdk'
-import { chainBuilder } from '@/tests/builders/chains'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 jest.mock('@/hooks/wallets/web3')
 
 const mockUseWeb3ReadOnly = useWeb3ReadOnly as jest.MockedFunction<typeof useWeb3ReadOnly>
 
-const latestSafeVersion = getLatestSafeVersion(
-  chainBuilder()
-    .with({ chainId: '1', features: [FEATURES.SAFE_141 as unknown as GatewayFeatures] })
-    .build(),
-)
 const PRE_MULTI_SEND_CALL_ONLY_VERSIONS = ['1.0.0', '1.1.1']
 const SUPPORTED_MULTI_SEND_CALL_ONLY_VERSIONS = [
   '1.3.0',
   // '1.4.1', TODO: Uncomment when safe-deployments is updated >1.25.0
-  latestSafeVersion,
+  LATEST_SAFE_VERSION,
 ]
 
 describe('recovery-state', () => {
@@ -44,8 +37,8 @@ describe('recovery-state', () => {
   describe('isMaliciousRecovery', () => {
     describe('non-MultiSend', () => {
       it('should return true if the transaction is not calling the Safe itself', () => {
-        const chainId = '1'
-        const version = latestSafeVersion
+        const chainId = '5'
+        const version = LATEST_SAFE_VERSION
         const safeAddress = faker.finance.ethereumAddress()
 
         const transaction = {
@@ -57,8 +50,8 @@ describe('recovery-state', () => {
       })
 
       it('should return false if the transaction is calling the Safe itself', () => {
-        const chainId = '1'
-        const version = latestSafeVersion
+        const chainId = '5'
+        const version = LATEST_SAFE_VERSION
         const safeAddress = faker.finance.ethereumAddress()
 
         const transaction = {
@@ -73,7 +66,7 @@ describe('recovery-state', () => {
     describe('MultiSend', () => {
       ;[...PRE_MULTI_SEND_CALL_ONLY_VERSIONS, ...SUPPORTED_MULTI_SEND_CALL_ONLY_VERSIONS].forEach((version) => {
         it(`should return true if the transaction is not an official MultiSend address for Safe version ${version}`, () => {
-          const chainId = '1'
+          const chainId = '5'
           const safeAddress = faker.finance.ethereumAddress()
 
           const safeAbi = getSafeSingletonDeployment({ network: chainId, version })!.abi
@@ -107,47 +100,47 @@ describe('recovery-state', () => {
           expect(_isMaliciousRecovery({ chainId, version, safeAddress, transaction })).toBe(true)
         })
       })
-      ;[...PRE_MULTI_SEND_CALL_ONLY_VERSIONS, ...SUPPORTED_MULTI_SEND_CALL_ONLY_VERSIONS].forEach((version) => {
-        it(`should return true if the transaction is an official MultiSend call and not every transaction in the batch calls the Safe itself for Safe version ${version}`, () => {
-          const chainId = '1'
-          const version = latestSafeVersion
-          const safeAddress = faker.finance.ethereumAddress()
+        ;[...PRE_MULTI_SEND_CALL_ONLY_VERSIONS, ...SUPPORTED_MULTI_SEND_CALL_ONLY_VERSIONS].forEach((version) => {
+          it(`should return true if the transaction is an official MultiSend call and not every transaction in the batch calls the Safe itself for Safe version ${version}`, () => {
+            const chainId = '5'
+            const version = LATEST_SAFE_VERSION
+            const safeAddress = faker.finance.ethereumAddress()
 
-          const safeAbi = getSafeSingletonDeployment({ network: chainId, version })!.abi
-          const safeInterface = new Interface(safeAbi)
+            const safeAbi = getSafeSingletonDeployment({ network: chainId, version })!.abi
+            const safeInterface = new Interface(safeAbi)
 
-          const multiSendDeployment =
-            getMultiSendCallOnlyDeployment({ network: chainId, version }) ??
-            getMultiSendCallOnlyDeployment({ network: chainId, version: '1.3.0' })
-          const multiSendInterface = new Interface(multiSendDeployment!.abi)
+            const multiSendDeployment =
+              getMultiSendCallOnlyDeployment({ network: chainId, version }) ??
+              getMultiSendCallOnlyDeployment({ network: chainId, version: '1.3.0' })
+            const multiSendInterface = new Interface(multiSendDeployment!.abi)
 
-          const multiSendData = encodeMultiSendData([
-            {
-              to: faker.finance.ethereumAddress(), // Not Safe
-              value: '0',
-              data: safeInterface.encodeFunctionData('addOwnerWithThreshold', [faker.finance.ethereumAddress(), 1]),
-              operation: 0,
-            },
-            {
-              to: faker.finance.ethereumAddress(), // Not Safe
-              value: '0',
-              data: safeInterface.encodeFunctionData('addOwnerWithThreshold', [faker.finance.ethereumAddress(), 2]),
-              operation: 0,
-            },
-          ])
+            const multiSendData = encodeMultiSendData([
+              {
+                to: faker.finance.ethereumAddress(), // Not Safe
+                value: '0',
+                data: safeInterface.encodeFunctionData('addOwnerWithThreshold', [faker.finance.ethereumAddress(), 1]),
+                operation: 0,
+              },
+              {
+                to: faker.finance.ethereumAddress(), // Not Safe
+                value: '0',
+                data: safeInterface.encodeFunctionData('addOwnerWithThreshold', [faker.finance.ethereumAddress(), 2]),
+                operation: 0,
+              },
+            ])
 
-          const transaction = {
-            to: multiSendDeployment!.networkAddresses[chainId],
-            data: multiSendInterface.encodeFunctionData('multiSend', [multiSendData]),
-          }
+            const transaction = {
+              to: multiSendDeployment!.networkAddresses[chainId],
+              data: multiSendInterface.encodeFunctionData('multiSend', [multiSendData]),
+            }
 
-          expect(_isMaliciousRecovery({ chainId, version, safeAddress, transaction })).toBe(true)
+            expect(_isMaliciousRecovery({ chainId, version, safeAddress, transaction })).toBe(true)
+          })
         })
-      })
 
       SUPPORTED_MULTI_SEND_CALL_ONLY_VERSIONS.forEach((version) => {
         it(`should return false if the transaction is an official MultiSend call and every transaction in the batch calls the Safe itself for Safe version ${version}`, () => {
-          const chainId = '1'
+          const chainId = '5'
           const safeAddress = faker.finance.ethereumAddress()
 
           const safeAbi = getSafeSingletonDeployment({ network: chainId, version })!.abi
@@ -182,7 +175,7 @@ describe('recovery-state', () => {
 
       PRE_MULTI_SEND_CALL_ONLY_VERSIONS.forEach((version) => {
         it(`should return false if the transaction is an official MultiSend call for Safe version ${version} (below the initial MultiSend contract version)`, () => {
-          const chainId = '1'
+          const chainId = '5'
           const safeAddress = faker.finance.ethereumAddress()
 
           const safeAbi = getSafeSingletonDeployment({ network: chainId, version })!.abi
@@ -278,7 +271,7 @@ describe('recovery-state', () => {
         blockHash: faker.string.alphanumeric(),
       } as TransactionReceipt
 
-      global.fetch = jest.fn().mockImplementation(() => {
+      global.fetch = jest.fn().mockImplementation((_url: string) => {
         return Promise.resolve({
           json: () => Promise.resolve({ transactionHash }),
           status: 200,
@@ -308,7 +301,7 @@ describe('recovery-state', () => {
         blockHash: faker.string.alphanumeric(),
       } as TransactionReceipt
 
-      global.fetch = jest.fn().mockImplementation(() => {
+      global.fetch = jest.fn().mockImplementation((_url: string) => {
         return Promise.resolve({
           json: () => Promise.resolve({ transactionHash }),
           status: 200,
@@ -336,7 +329,7 @@ describe('recovery-state', () => {
       const transactionService = faker.internet.url({ appendSlash: false })
       const safeAddress = faker.finance.ethereumAddress()
 
-      global.fetch = jest.fn().mockImplementation(() => {
+      global.fetch = jest.fn().mockImplementation((_url: string) => {
         return Promise.resolve({
           status: 500,
           ok: false,
@@ -359,7 +352,7 @@ describe('recovery-state', () => {
   describe('getRecoveryState', () => {
     it('should return the recovery state from the Safe creation block', async () => {
       const safeAddress = faker.finance.ethereumAddress()
-      const chainId = '1'
+      const chainId = '5'
       const version = '1.3.0'
       const transactionService = faker.internet.url({ appendSlash: false })
       const transactionHash = `0x${faker.string.hexadecimal()}`
@@ -376,7 +369,7 @@ describe('recovery-state', () => {
           .mockResolvedValue(transactionAddedReceipt),
       } as unknown as JsonRpcProvider
 
-      global.fetch = jest.fn().mockImplementation(() => {
+      global.fetch = jest.fn().mockImplementation((_url: string) => {
         return Promise.resolve({
           json: () => Promise.resolve({ transactionHash }),
           status: 200,
@@ -484,7 +477,7 @@ describe('recovery-state', () => {
 
     it('should not query data if the queueNonce equals the txNonce', async () => {
       const safeAddress = faker.finance.ethereumAddress()
-      const chainId = '1'
+      const chainId = '5'
       const version = '1.3.0'
       const transactionService = faker.internet.url({ appendSlash: true })
       const provider = {} as unknown as JsonRpcProvider

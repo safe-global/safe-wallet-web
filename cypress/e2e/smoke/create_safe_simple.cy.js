@@ -2,28 +2,25 @@ import * as constants from '../../support/constants'
 import * as main from '../../e2e/pages/main.page'
 import * as createwallet from '../pages/create_wallet.pages'
 import * as owner from '../pages/owners.pages'
-import * as wallet from '../../support/utils/wallet.js'
-
-const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
-const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 describe('[SMOKE] Safe creation tests', () => {
   beforeEach(() => {
     cy.visit(constants.welcomeUrl + '?chain=sep')
+    cy.clearLocalStorage()
+    main.acceptCookies()
   })
   it('[SMOKE] Verify a Wallet can be connected', () => {
-    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
     owner.clickOnWalletExpandMoreIcon()
     owner.clickOnDisconnectBtn()
-    wallet.connectSigner(signer)
+    createwallet.clickOnConnectWalletBtn()
+    createwallet.connectWallet()
     owner.waitForConnectionStatus()
   })
 
   it('[SMOKE] Verify that a new Wallet has default name related to the selected network', () => {
-    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
@@ -31,7 +28,6 @@ describe('[SMOKE] Safe creation tests', () => {
   })
 
   it('[SMOKE] Verify Add and Remove Owner Row works as expected', () => {
-    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
@@ -47,7 +43,6 @@ describe('[SMOKE] Safe creation tests', () => {
   })
 
   it('[SMOKE] Verify Threshold Setup', () => {
-    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()

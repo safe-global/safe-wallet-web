@@ -1,11 +1,11 @@
 import type { AppThunk } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
-import { upsertAddressBookEntries } from '@/store/addressBookSlice'
+import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 
 export const updateAddressBook = (
-  chainIds: string[],
+  chainId: string,
   address: string,
   name: string,
   owners: NamedAddress[],
@@ -13,36 +13,34 @@ export const updateAddressBook = (
 ): AppThunk => {
   return (dispatch) => {
     dispatch(
-      upsertAddressBookEntries({
-        chainIds,
-        address,
-        name,
+      upsertAddressBookEntry({
+        chainId: chainId,
+        address: address,
+        name: name,
       }),
     )
 
     owners.forEach((owner) => {
       const entryName = owner.name || owner.ens
       if (entryName) {
-        dispatch(upsertAddressBookEntries({ chainIds, address: owner.address, name: entryName }))
+        dispatch(upsertAddressBookEntry({ chainId, address: owner.address, name: entryName }))
       }
     })
 
-    chainIds.forEach((chainId) => {
-      dispatch(
-        addOrUpdateSafe({
-          safe: {
-            ...defaultSafeInfo,
-            address: { value: address, name },
-            threshold,
-            owners: owners.map((owner) => ({
-              value: owner.address,
-              name: owner.name || owner.ens,
-            })),
-            chainId,
-            nonce: 0,
-          },
-        }),
-      )
-    })
+    dispatch(
+      addOrUpdateSafe({
+        safe: {
+          ...defaultSafeInfo,
+          address: { value: address, name },
+          threshold,
+          owners: owners.map((owner) => ({
+            value: owner.address,
+            name: owner.name || owner.ens,
+          })),
+          chainId: chainId,
+          nonce: 0,
+        },
+      }),
+    )
   }
 }

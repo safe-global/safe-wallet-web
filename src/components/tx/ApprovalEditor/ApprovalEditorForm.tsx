@@ -1,12 +1,13 @@
-import { Box, Divider, List, ListItem, Stack } from '@mui/material'
+import { IconButton, SvgIcon, List, ListItem } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import css from './styles.module.css'
+import CheckIcon from '@mui/icons-material/Check'
 import type { ApprovalInfo } from './hooks/useApprovalInfos'
-
+import { ApprovalValueField } from './ApprovalValueField'
+import { MODALS_EVENTS } from '@/services/analytics'
+import Track from '@/components/common/Track'
 import { useMemo } from 'react'
-import EditableApprovalItem from './EditableApprovalItem'
-import { groupBy } from 'lodash'
-import { SpenderField } from './SpenderField'
+import ApprovalItem from '@/components/tx/ApprovalEditor/ApprovalItem'
 
 export type ApprovalEditorFormData = {
   approvals: string[]
@@ -19,8 +20,6 @@ export const ApprovalEditorForm = ({
   approvalInfos: ApprovalInfo[]
   updateApprovals: (newApprovals: string[]) => void
 }) => {
-  const groupedApprovals = useMemo(() => groupBy(approvalInfos, (approval) => approval.spender), [approvalInfos])
-
   const initialApprovals = useMemo(() => approvalInfos.map((info) => info.amountFormatted), [approvalInfos])
 
   const formMethods = useForm<ApprovalEditorFormData>({
@@ -30,7 +29,11 @@ export const ApprovalEditorForm = ({
     mode: 'onChange',
   })
 
-  const { getValues, reset } = formMethods
+  const {
+    formState: { errors, dirtyFields },
+    getValues,
+    reset,
+  } = formMethods
 
   const onSave = () => {
     const formData = getValues('approvals')
@@ -38,29 +41,32 @@ export const ApprovalEditorForm = ({
     reset({ approvals: formData })
   }
 
-  let fieldIndex = 0
-
   return (
     <FormProvider {...formMethods}>
       <List className={css.approvalsList}>
-        {Object.entries(groupedApprovals).map(([spender, approvals], spenderIdx) => (
-          <Box key={spender}>
-            <Stack gap={2}>
-              {approvals.map((tx) => (
-                <ListItem
-                  key={tx.tokenAddress + tx.spender}
-                  className={0n === tx.amount ? css.zeroValueApproval : undefined}
-                  disablePadding
-                  data-testid="approval-item"
-                >
-                  <EditableApprovalItem approval={tx} name={`approvals.${fieldIndex++}`} onSave={onSave} />
-                </ListItem>
-              ))}
-              <SpenderField address={spender} />
-
-              {spenderIdx !== Object.keys(groupedApprovals).length - 1 && <Divider />}
-            </Stack>
-          </Box>
+        {approvalInfos.map((tx, idx) => (
+          <ListItem
+            key={tx.tokenAddress + tx.spender}
+            className={0n === tx.amount ? css.zeroValueApproval : undefined}
+            disablePadding
+            data-testid="approval-item"
+          >
+            <ApprovalItem spender={tx.spender} method={tx.method}>
+              <>
+                <ApprovalValueField name={`approvals.${idx}`} tx={tx} />
+                <Track {...MODALS_EVENTS.EDIT_APPROVALS}>
+                  <IconButton
+                    className={css.iconButton}
+                    onClick={onSave}
+                    disabled={!!errors.approvals || !dirtyFields.approvals?.[idx]}
+                    title="Save"
+                  >
+                    <SvgIcon component={CheckIcon} />
+                  </IconButton>
+                </Track>
+              </>
+            </ApprovalItem>
+          </ListItem>
         ))}
       </List>
     </FormProvider>

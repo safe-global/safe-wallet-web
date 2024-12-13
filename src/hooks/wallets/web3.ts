@@ -1,15 +1,8 @@
 import { type ChainInfo, RPC_AUTHENTICATION, type RpcUri } from '@safe-global/safe-gateway-typescript-sdk'
 import { INFURA_TOKEN, SAFE_APPS_INFURA_TOKEN } from '@/config/constants'
-import { JsonRpcProvider, BrowserProvider, type Eip1193Provider } from 'ethers'
+import { JsonRpcProvider, BrowserProvider, type Eip1193Provider, type Provider } from 'ethers'
 import ExternalStore from '@/services/ExternalStore'
-
-/**
- * Infura and other RPC providers limit the max amount included in a batch RPC call.
- * Ethers uses 100 by default which is too high for i.e. Infura.
- *
- * Some networks like Scroll only support a batch size of 3.
- */
-const BATCH_MAX_COUNT = 3
+import { EMPTY_DATA } from '@safe-global/protocol-kit/dist/src/utils/constants'
 
 // RPC helpers
 const formatRpcServiceUrl = ({ authentication, value }: RpcUri, token: string): string => {
@@ -30,9 +23,8 @@ export const getRpcServiceUrl = (rpcUri: RpcUri): string => {
 export const createWeb3ReadOnly = (chain: ChainInfo, customRpc?: string): JsonRpcProvider | undefined => {
   const url = customRpc || getRpcServiceUrl(chain.rpcUri)
   if (!url) return
-  return new JsonRpcProvider(url, Number(chain.chainId), {
+  return new JsonRpcProvider(url, undefined, {
     staticNetwork: true,
-    batchMaxCount: BATCH_MAX_COUNT,
   })
 }
 
@@ -45,7 +37,6 @@ export const createSafeAppsWeb3Provider = (chain: ChainInfo, customRpc?: string)
   if (!url) return
   return new JsonRpcProvider(url, undefined, {
     staticNetwork: true,
-    batchMaxCount: BATCH_MAX_COUNT,
   })
 }
 
@@ -65,4 +56,10 @@ export const getUserNonce = async (userAddress: string): Promise<number> => {
   } catch (error) {
     return Promise.reject(error)
   }
+}
+
+export const isSmartContract = async (provider: Provider, address: string): Promise<boolean> => {
+  const code = await provider.getCode(address)
+
+  return code !== EMPTY_DATA
 }

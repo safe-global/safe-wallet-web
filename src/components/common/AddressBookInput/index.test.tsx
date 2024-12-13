@@ -1,5 +1,4 @@
-import { act } from 'react'
-import { fireEvent, render, waitFor } from '@/tests/test-utils'
+import { act, fireEvent, render, waitFor } from '@/tests/test-utils'
 import { FormProvider, useForm } from 'react-hook-form'
 import AddressBookInput from '.'
 import type { AddressInputProps } from '../AddressInput'
@@ -148,12 +147,12 @@ describe('AddressBookInput', () => {
 
     expect(input).toHaveAttribute('aria-expanded', 'false')
 
-    act(() => {
+    await act(() => {
       fireEvent.mouseDown(input)
       fireEvent.mouseUp(input)
     })
 
-    act(() => {
+    await act(() => {
       fireEvent.change(input, { target: { value: invalidAddress } })
       jest.advanceTimersByTime(1000)
     })
@@ -161,8 +160,7 @@ describe('AddressBookInput', () => {
     await waitFor(() => expect(utils.getByLabelText(validationError, { exact: false })).toBeDefined())
 
     const address = checksumAddress(faker.finance.ethereumAddress())
-
-    act(() => {
+    await act(() => {
       fireEvent.change(input, { target: { value: address } })
       jest.advanceTimersByTime(1000)
     })
@@ -189,14 +187,14 @@ describe('AddressBookInput', () => {
 
     expect(input).toHaveAttribute('aria-expanded', 'false')
 
-    act(() => {
+    await act(() => {
       fireEvent.mouseDown(input)
       fireEvent.mouseUp(input)
     })
 
     expect(input).toHaveAttribute('aria-expanded', 'true')
 
-    act(() => {
+    await act(() => {
       fireEvent.click(utils.getByText('InvalidAddress'))
       fireEvent.blur(input)
       jest.advanceTimersByTime(1000)
@@ -208,7 +206,7 @@ describe('AddressBookInput', () => {
     })
 
     // Clear the input by clicking on the readonly input
-    act(() => {
+    await act(() => {
       // first click clears input
       fireEvent.click(utils.getByLabelText(validationError, { exact: false }))
     })
@@ -217,13 +215,13 @@ describe('AddressBookInput', () => {
     const newInput = utils.getByLabelText(validationError, { exact: false })
     expect(newInput).toBeVisible()
 
-    act(() => {
+    await act(() => {
       // mousedown opens autocompletion again
       fireEvent.mouseDown(newInput)
       fireEvent.mouseUp(newInput)
     })
 
-    act(() => {
+    await act(() => {
       fireEvent.click(utils.getByText('ValidAddress'))
       fireEvent.blur(newInput)
 
@@ -241,7 +239,7 @@ describe('AddressBookInput', () => {
     const { input, utils } = setup('', {}, undefined, true)
 
     const newAddress = checksumAddress(faker.finance.ethereumAddress())
-    act(() => {
+    await act(() => {
       fireEvent.change(input, { target: { value: newAddress } })
       jest.advanceTimersByTime(1000)
     })
@@ -255,7 +253,7 @@ describe('AddressBookInput', () => {
     })
 
     const nameInput = utils.getByLabelText('Name', { exact: false })
-    act(() => {
+    await act(() => {
       fireEvent.change(nameInput, { target: { value: 'Tim Testermann' } })
       fireEvent.submit(nameInput)
     })
@@ -267,7 +265,7 @@ describe('AddressBookInput', () => {
     const { input, utils } = setup('', {}, undefined, false)
 
     const newAddress = checksumAddress(faker.finance.ethereumAddress())
-    act(() => {
+    await act(() => {
       fireEvent.change(input, { target: { value: newAddress } })
       jest.advanceTimersByTime(1000)
     })

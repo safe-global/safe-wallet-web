@@ -49,14 +49,19 @@ export const txQueueListener = (listenerMiddleware: typeof listenerMiddlewareIns
           continue
         }
 
+        const awaitingSigner = pendingTx.signerAddress
+        if (!awaitingSigner) {
+          continue
+        }
+
         // The transaction is waiting for a signature of awaitingSigner
         if (
           isMultisigExecutionInfo(result.transaction.executionInfo) &&
           !result.transaction.executionInfo.missingSigners?.some((address) =>
-            sameAddress(address.value, pendingTx.signerAddress),
+            sameAddress(address.value, awaitingSigner),
           )
         ) {
-          txDispatch(TxEvent.SIGNATURE_INDEXED, { txId })
+          txDispatch(TxEvent.SIGNATURE_INDEXED, { txId: txId })
         }
       }
     },

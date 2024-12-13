@@ -3,7 +3,6 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useMemo } from 'react'
 import debounce from 'lodash/debounce'
-import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import SafeAppsSDKLink from '@/components/safe-apps/SafeAppsSDKLink'
@@ -22,11 +21,6 @@ const SafeApps: NextPage = () => {
     useSafeAppsFilters(remoteSafeApps)
   const isFiltered = filteredApps.length !== remoteSafeApps.length
   const isSafeAppsEnabled = useHasFeature(FEATURES.SAFE_APPS)
-
-  const featuredSafeApps = useMemo(() => {
-    // TODO: Remove assertion after migrating to new SDK
-    return remoteSafeApps.filter((app) => (app as SafeAppData & { featured: boolean }).featured)
-  }, [remoteSafeApps])
 
   const nonPinnedApps = useMemo(
     () => remoteSafeApps.filter((app) => !pinnedSafeAppIds.has(app.id)),
@@ -49,7 +43,7 @@ const SafeApps: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Safe Apps'}</title>
+        <title>{'Bitlayer Safe – Safe Apps'}</title>
       </Head>
 
       <SafeAppsSDKLink />
@@ -76,26 +70,14 @@ const SafeApps: NextPage = () => {
           />
         )}
 
-        {/* Featured apps */}
-        {!isFiltered && featuredSafeApps.length > 0 && (
-          <SafeAppList
-            title="Featured apps"
-            safeAppsList={featuredSafeApps}
-            bookmarkedSafeAppsId={pinnedSafeAppIds}
-            onBookmarkSafeApp={togglePin}
-          />
-        )}
-
         {/* All apps */}
         <SafeAppList
           title="All apps"
-          isFiltered={isFiltered}
           safeAppsList={isFiltered ? filteredApps : nonPinnedApps}
           safeAppsListLoading={remoteSafeAppsLoading}
           bookmarkedSafeAppsId={pinnedSafeAppIds}
           onBookmarkSafeApp={togglePin}
           query={query}
-          showNativeSwapsCard
         />
       </main>
     </>

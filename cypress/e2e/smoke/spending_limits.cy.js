@@ -2,21 +2,12 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as spendinglimit from '../pages/spending_limits.pages'
 import * as owner from '../pages/owners.pages'
-import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
-import * as wallet from '../../support/utils/wallet.js'
-
-let staticSafes = []
-const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
-const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 describe('[SMOKE] Spending limits tests', () => {
-  before(async () => {
-    staticSafes = await getSafes(CATEGORIES.static)
-  })
-
   beforeEach(() => {
-    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_8)
-    wallet.connectSigner(signer)
+    cy.visit(constants.securityUrl + constants.SEPOLIA_TEST_SAFE_12)
+    cy.clearLocalStorage()
+    main.acceptCookies()
     owner.waitForConnectionStatus()
     cy.get(spendinglimit.spendingLimitsSection).should('be.visible')
     spendinglimit.clickOnNewSpendingLimitBtn()
@@ -24,11 +15,11 @@ describe('[SMOKE] Spending limits tests', () => {
 
   it('Verify A valid ENS name is resolved successfully', () => {
     spendinglimit.enterBeneficiaryAddress(constants.ENS_TEST_SEPOLIA)
-    spendinglimit.checkBeneficiaryENS(staticSafes.SEP_STATIC_SAFE_6)
+    spendinglimit.checkBeneficiaryENS(constants.SEPOLIA_TEST_SAFE_7)
   })
 
   it('Verify writing a valid address shows no errors', () => {
-    spendinglimit.enterBeneficiaryAddress(staticSafes.SEP_STATIC_SAFE_6)
+    spendinglimit.enterBeneficiaryAddress(constants.SEPOLIA_TEST_SAFE_7)
     spendinglimit.verifyValidAddressShowsNoErrors()
   })
 

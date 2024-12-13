@@ -15,7 +15,7 @@ import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useWalletCanRelay from '@/hooks/useWalletCanRelay'
 import { ExecutionMethod, ExecutionMethodSelector } from '../ExecutionMethodSelector'
 import { hasRemainingRelays } from '@/utils/relaying'
-import type { SignOrExecuteProps } from './SignOrExecuteForm'
+import type { SignOrExecuteProps } from '.'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { TxModalContext } from '@/components/tx-flow'
 import { SuccessScreenFlow } from '@/components/tx-flow/flows'
@@ -41,14 +41,15 @@ export const ExecuteForm = ({
   isCreation,
   isOwner,
   isExecutionLoop,
+  relays,
   txActions,
   txSecurity,
 }: SignOrExecuteProps & {
   isOwner: ReturnType<typeof useIsSafeOwner>
   isExecutionLoop: ReturnType<typeof useIsExecutionLoop>
+  relays: ReturnType<typeof useRelaysBySafe>
   txActions: ReturnType<typeof useTxActions>
   txSecurity: ReturnType<typeof useTxSecurityContext>
-  isCreation?: boolean
   safeTx?: SafeTransaction
 }): ReactElement => {
   // Form state
@@ -67,7 +68,7 @@ export const ExecuteForm = ({
 
   // SC wallets can relay fully signed transactions
   const [walletCanRelay] = useWalletCanRelay(safeTx)
-  const relays = useRelaysBySafe()
+
   // The transaction can/will be relayed
   const canRelay = walletCanRelay && hasRemainingRelays(relays[0])
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
@@ -111,12 +112,13 @@ export const ExecuteForm = ({
 
     // On success
     onSubmit?.(executedTxId, true)
-    setTxFlow(<SuccessScreenFlow txId={executedTxId} safeTx={safeTx} />, undefined, false)
+    setTxFlow(<SuccessScreenFlow txId={executedTxId} />, undefined, false)
   }
 
   const walletCanPay = useWalletCanPay({
     gasLimit,
     maxFeePerGas: advancedParams.maxFeePerGas,
+    maxPriorityFeePerGas: advancedParams.maxPriorityFeePerGas,
   })
 
   const cannotPropose = !isOwner && !onlyExecute
@@ -160,7 +162,7 @@ export const ExecuteForm = ({
             Cannot execute a transaction from the Safe Account itself, please connect a different account.
           </ErrorMessage>
         ) : !walletCanPay && !willRelay ? (
-          <ErrorMessage level="info">
+          <ErrorMessage level={'info'}>
             Your connected wallet doesn&apos;t have enough funds to execute this transaction.
           </ErrorMessage>
         ) : (
@@ -188,14 +190,14 @@ export const ExecuteForm = ({
 
         <CardActions>
           {/* Submit button */}
-          <CheckWallet allowNonOwner={onlyExecute} checkNetwork={!submitDisabled}>
+          <CheckWallet allowNonOwner={onlyExecute}>
             {(isOk) => (
               <Button
                 data-testid="execute-form-btn"
                 variant="contained"
                 type="submit"
                 disabled={!isOk || submitDisabled}
-                sx={{ minWidth: '112px', width: ['100%', '100%', '100%', 'auto'] }}
+                sx={{ minWidth: '112px' }}
               >
                 {!isSubmittable ? <CircularProgress size={20} /> : 'Execute'}
               </Button>
@@ -212,6 +214,7 @@ const useTxSecurityContext = () => useContext(TxSecurityContext)
 export default madProps(ExecuteForm, {
   isOwner: useIsSafeOwner,
   isExecutionLoop: useIsExecutionLoop,
+  relays: useRelaysBySafe,
   txActions: useTxActions,
   txSecurity: useTxSecurityContext,
 })

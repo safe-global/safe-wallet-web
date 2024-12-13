@@ -3,12 +3,12 @@ import {
   INCREASE_ALLOWANCE_SIGNATURE_HASH,
 } from '@/components/tx/ApprovalEditor/utils/approvals'
 import { ERC20__factory } from '@/types/contracts'
+import { decodeMultiSendTxs } from '@/utils/transactions'
 import { normalizeTypedData } from '@/utils/web3'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { type EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 import { id } from 'ethers'
 import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '../types'
-import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
 
 export type ApprovalModuleResponse = Approval[]
 
@@ -25,7 +25,6 @@ export type Approval = {
   amount: any
   tokenAddress: string
   method: 'approve' | 'increaseAllowance' | 'Permit2'
-  transactionIndex: number
 }
 
 type PermitDetails = { token: string; amount: string }
@@ -34,7 +33,7 @@ const MULTISEND_SIGNATURE_HASH = id('multiSend(bytes)').slice(0, 10)
 const ERC20_INTERFACE = ERC20__factory.createInterface()
 
 export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, ApprovalModuleResponse> {
-  private static scanInnerTransaction(txPartial: { to: string; data: string }, txIndex: number): Approval[] {
+  private static scanInnerTransaction(txPartial: { to: string; data: string }): Approval[] {
     if (txPartial.data.startsWith(APPROVAL_SIGNATURE_HASH)) {
       const [spender, amount] = ERC20_INTERFACE.decodeFunctionData('approve', txPartial.data)
       return [
@@ -43,7 +42,6 @@ export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, App
           spender,
           tokenAddress: txPartial.to,
           method: 'approve',
-          transactionIndex: txIndex,
         },
       ]
     }
@@ -56,7 +54,6 @@ export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, App
           spender,
           tokenAddress: txPartial.to,
           method: 'increaseAllowance',
-          transactionIndex: txIndex,
         },
       ]
     }
@@ -74,7 +71,6 @@ export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, App
     const safeMessage = request.safeMessage
     const approvalInfos: Approval[] = []
     const normalizedMessage = normalizeTypedData(safeMessage)
-
     if (normalizedMessage.domain.name === 'Permit2') {
       if (normalizedMessage.types['PermitSingle'] !== undefined) {
         const spender = normalizedMessage.message['spender'] as string
@@ -85,19 +81,17 @@ export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, App
           ...permitInfo,
           method: 'Permit2',
           spender,
-          transactionIndex: 0,
         })
       } else if (normalizedMessage.types['PermitBatch'] !== undefined) {
         const spender = normalizedMessage.message['spender'] as string
         const details = normalizedMessage.message['details'] as PermitDetails[]
-        details.forEach((details, idx) => {
+        details.forEach((details) => {
           const permitInfo = ApprovalModule.getPermitDetails(details)
 
           approvalInfos.push({
             ...permitInfo,
             method: 'Permit2',
             spender,
-            transactionIndex: idx,
           })
         })
       }
@@ -120,10 +114,10 @@ export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, App
     const approvalInfos: Approval[] = []
     const safeTxData = safeTransaction.data.data
     if (safeTxData.startsWith(MULTISEND_SIGNATURE_HASH)) {
-      const innerTxs = decodeMultiSendData(safeTxData)
-      approvalInfos.push(...innerTxs.flatMap((tx, index) => ApprovalModule.scanInnerTransaction(tx, index)))
+      const innerTxs = decodeMultiSendTxs(safeTxData)
+      approvalInfos.push(...innerTxs.flatMap((tx) => ApprovalModule.scanInnerTransaction(tx)))
     } else {
-      approvalInfos.push(...ApprovalModule.scanInnerTransaction({ to: safeTransaction.data.to, data: safeTxData }, 0))
+      approvalInfos.push(...ApprovalModule.scanInnerTransaction({ to: safeTransaction.data.to, data: safeTxData }))
     }
 
     if (approvalInfos.length > 0) {

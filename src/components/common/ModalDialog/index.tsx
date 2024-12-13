@@ -20,11 +20,7 @@ interface DialogTitleProps {
 
 export const ModalDialogTitle = ({ children, onClose, hideChainIndicator = false, ...other }: DialogTitleProps) => {
   return (
-    <DialogTitle
-      data-testid="modal-title"
-      sx={{ m: 0, px: 3, pt: 3, pb: 2, display: 'flex', alignItems: 'center', fontWeight: 'bold' }}
-      {...other}
-    >
+    <DialogTitle data-testid="modal-title" sx={{ m: 0, p: 2, display: 'flex', alignItems: 'center' }} {...other}>
       {children}
       <span style={{ flex: 1 }} />
       {!hideChainIndicator && <ChainIndicator inline />}

@@ -1,14 +1,12 @@
-import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import { useCallback } from 'react'
 import { useAppDispatch, useAppSelector } from '@/store'
 import useChainId from './useChainId'
 import useSafeAddress from './useSafeAddress'
 import type { DraftBatchItem } from '@/store/batchSlice'
-import { selectBatchBySafe, addTx, removeTx } from '@/store/batchSlice'
+import { selectBatchBySafe, addTx, removeTx, setBatch } from '@/store/batchSlice'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { BATCH_EVENTS, trackEvent } from '@/services/analytics'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
-import { shallowEqual } from 'react-redux'
 
 export const useUpdateBatch = () => {
   const chainId = useChainId()
@@ -25,9 +23,7 @@ export const useUpdateBatch = () => {
         }),
       )
 
-      if (isMultisigExecutionInfo(txDetails.detailedExecutionInfo)) {
-        txDispatch(TxEvent.BATCH_ADD, { txId: txDetails.txId, nonce: txDetails.detailedExecutionInfo.nonce })
-      }
+      txDispatch(TxEvent.BATCH_ADD, { txId: txDetails.txId })
 
       trackEvent({ ...BATCH_EVENTS.BATCH_TX_APPENDED, label: txDetails.txInfo.type })
     },
@@ -47,12 +43,27 @@ export const useUpdateBatch = () => {
     [dispatch, chainId, safeAddress],
   )
 
-  return [onAdd, onDelete] as const
+  const onSet = useCallback(
+    (items: DraftBatchItem[]) => {
+      dispatch(
+        setBatch({
+          chainId,
+          safeAddress,
+          items,
+        }),
+      )
+
+      trackEvent({ ...BATCH_EVENTS.BATCH_REORDER })
+    },
+    [dispatch, chainId, safeAddress],
+  )
+
+  return [onAdd, onDelete, onSet] as const
 }
 
 export const useDraftBatch = (): DraftBatchItem[] => {
   const chainId = useChainId()
   const safeAddress = useSafeAddress()
-  const batch = useAppSelector((state) => selectBatchBySafe(state, chainId, safeAddress), shallowEqual)
+  const batch = useAppSelector((state) => selectBatchBySafe(state, chainId, safeAddress))
   return batch
 }

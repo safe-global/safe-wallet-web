@@ -1,4 +1,4 @@
-import { getSafeTokenAddress, getSafeLockingAddress } from '@/components/common/SafeTokenWidget'
+import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
 import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 import { IS_PRODUCTION } from '@/config/constants'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
@@ -16,7 +16,7 @@ export const VESTING_URL =
     : 'https://safe-claiming-app-data.staging.5afe.dev/allocations/'
 
 export type VestingData = {
-  tag: 'user' | 'ecosystem' | 'investor' | 'user_v2' | 'sap_boosted' | 'sap_unboosted' // SEP #5
+  tag: 'user' | 'ecosystem' | 'investor' | 'user_v2' // SEP #5
   account: string
   chainId: number
   contract: string
@@ -40,9 +40,6 @@ const airdropInterface = new Interface([
   'function vestings(bytes32) public returns (address account, uint8 curveType,bool managed, uint16 durationWeeks, uint64 startDate, uint128 amount, uint128 amountClaimed, uint64 pausingDate,bool cancelled)',
 ])
 const tokenInterface = new Interface(['function balanceOf(address _owner) public view returns (uint256 balance)'])
-const safeLockingInterface = new Interface([
-  'function getUserTokenBalance(address holder) external view returns (uint96 amount)',
-])
 
 export const _getRedeemDeadline = memoize(
   async (allocation: VestingData, web3ReadOnly: JsonRpcProvider): Promise<string> => {
@@ -139,20 +136,6 @@ const fetchTokenBalance = async (chainId: string, safeAddress: string): Promise<
     throw Error(`Error fetching Safe Token balance:  ${err}`)
   }
 }
-const fetchLockingContractBalance = async (chainId: string, safeAddress: string): Promise<string> => {
-  try {
-    const web3ReadOnly = getWeb3ReadOnly()
-    const safeLockingAddress = getSafeLockingAddress(chainId)
-    if (!safeLockingAddress || !web3ReadOnly) return '0'
-
-    return await web3ReadOnly.call({
-      to: safeLockingAddress,
-      data: safeLockingInterface.encodeFunctionData('getUserTokenBalance', [safeAddress]),
-    })
-  } catch (err) {
-    throw Error(`Error fetching Safe Token balance in locking contract:  ${err}`)
-  }
-}
 
 /**
  * The Safe token allocation is equal to the voting power.
@@ -162,39 +145,30 @@ export const useSafeVotingPower = (allocationData?: Vesting[]): AsyncResult<bigi
   const { safe, safeAddress } = useSafeInfo()
   const chainId = safe.chainId
 
-  const [balance, balanceError, balanceLoading] = useAsync<bigint>(() => {
+  const [balance, balanceError, balanceLoading] = useAsync<string>(() => {
     if (!safeAddress) return
-    const tokenBalancePromise = fetchTokenBalance(chainId, safeAddress)
-    const lockingContractBalancePromise = fetchLockingContractBalance(chainId, safeAddress)
-    return Promise.all([tokenBalancePromise, lockingContractBalancePromise]).then(
-      ([tokenBalance, lockingContractBalance]) => {
-        return BigInt(tokenBalance) + BigInt(lockingContractBalance)
-      },
-    )
+    return fetchTokenBalance(chainId, safeAddress)
     // If the history tag changes we could have claimed / redeemed tokens
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, safeAddress, safe.txHistoryTag])
 
   const allocation = useMemo(() => {
-    if (balance === undefined) {
+    if (!balance) {
       return
     }
 
     // Return current balance if no allocation exists
     if (!allocationData) {
-      return balance
+      return BigInt(balance.startsWith('0x') ? balance : '0x' + balance)
     }
 
     const tokensInVesting = allocationData.reduce(
-      (acc, data) =>
-        data.isExpired || data.tag === 'sap_boosted' || data.tag === 'sap_unboosted' // Exclude the SAP Airdrops from voting power
-          ? acc
-          : acc + BigInt(data.amount) - BigInt(data.amountClaimed),
+      (acc, data) => (data.isExpired ? acc : acc + BigInt(data.amount) - BigInt(data.amountClaimed)),
       BigInt(0),
     )
 
     // add balance
-    const totalAllocation = tokensInVesting + balance
+    const totalAllocation = tokensInVesting + BigInt(balance)
     return totalAllocation
   }, [allocationData, balance])
 

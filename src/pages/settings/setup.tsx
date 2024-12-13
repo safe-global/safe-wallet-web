@@ -7,8 +7,7 @@ import { OwnerList } from '@/components/settings/owner/OwnerList'
 import { RequiredConfirmation } from '@/components/settings/RequiredConfirmations'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import SettingsHeader from '@/components/settings/SettingsHeader'
-import ProposersList from 'src/components/settings/ProposersList'
-import SpendingLimits from '@/components/settings/SpendingLimits'
+import DelegatesList from '@/components/settings/DelegatesList'
 
 const Setup: NextPage = () => {
   const { safe, safeLoaded } = useSafeInfo()
@@ -19,7 +18,7 @@ const Setup: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Settings – Setup'}</title>
+        <title>{'Bitlayer Safe – Settings – Setup'}</title>
       </Head>
 
       <SettingsHeader />
@@ -58,15 +57,13 @@ const Setup: NextPage = () => {
           </Grid>
         </Paper>
 
-        <Paper sx={{ p: 4, mb: 2 }}>
+        <Paper sx={{ p: 4 }}>
           <OwnerList />
-
-          <ProposersList />
 
           <RequiredConfirmation threshold={threshold} owners={ownerLength} />
         </Paper>
 
-        <SpendingLimits />
+        <DelegatesList />
       </main>
     </>
   )

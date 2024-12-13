@@ -16,8 +16,6 @@ import { type ReactElement, useEffect, type SyntheticEvent } from 'react'
 import { trackEvent, TX_LIST_EVENTS } from '@/services/analytics'
 import Track from '../Track'
 
-import css from './styles.module.css'
-
 export type ConfirmCopyModalProps = {
   open: boolean
   onClose: () => void
@@ -49,18 +47,11 @@ const ConfirmCopyModal = ({ open, onClose, onCopy, children }: ConfirmCopyModalP
       <DialogContent>{children}</DialogContent>
       <Divider />
       <DialogActions sx={{ padding: 3 }}>
-        <Box className={css.dialogActions} gap={1}>
-          <Track {...TX_LIST_EVENTS.COPY_WARNING_PROCEED}>
-            <Button size="small" variant="text" color="primary" onClick={onCopy} fullWidth>
-              Proceed and copy
-            </Button>
-          </Track>
-          <Track {...TX_LIST_EVENTS.COPY_WARNING_CLOSE}>
-            <Button size="small" variant="contained" color="primary" onClick={onClose} fullWidth>
-              Do not copy
-            </Button>
-          </Track>
-        </Box>
+        <Track {...TX_LIST_EVENTS.COPY_WARNING_PROCEED}>
+          <Button size="small" variant="outlined" color="primary" onClick={onCopy}>
+            Proceed and copy
+          </Button>
+        </Track>
       </DialogActions>
     </Dialog>
   )

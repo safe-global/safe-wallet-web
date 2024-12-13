@@ -1,15 +1,3 @@
-/* eslint-disable */
-
-import { CURRENT_COOKIE_TERMS_VERSION } from './constants.js'
-
-const cookieState = {
-  necessary: true,
-  updates: true,
-  analytics: true,
-  terms: true,
-  termsVersion: CURRENT_COOKIE_TERMS_VERSION,
-}
-
 export const batchData = {
   entry0: {
     11155111: {
@@ -122,7 +110,7 @@ export const batchData = {
                 logoUri: null,
               },
               direction: 'OUTGOING',
-              transferInfo: { type: 'NATIVE_COIN', value: '2000000000000000' },
+              transferInfo: { type: 'NATIVE_COIN', value: '1000000000000000' },
             },
             txData: {
               hexData: null,
@@ -340,33 +328,10 @@ export const addressBookData = {
       '0x9E6DAfe829431e1892EcF8461FDAd02665170c31': 'Added non-owner',
     },
   },
-  multichain: {
-    137: {
-      '0xC96ee38f5A73C8A70b565CB8EA938D2aF913ee3B': 'Multichain polygon',
-    },
-    11155111: {
-      '0xC96ee38f5A73C8A70b565CB8EA938D2aF913ee3B': 'Multichain Sepolia',
-    },
-  },
-  undeployed: {
-    11155111: {
-      '0x926186108f74dB20BFeb2b6c888E523C78cb7E00': 'Undeployed Sepolia',
-    },
-  },
-  undeployedEth: {
-    1: {
-      '0x926186108f74dB20BFeb2b6c888E523C78cb7E00': 'Undeployed Sepolia',
-    },
-  },
   sortingData: {
     11155111: {
       '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED': 'AA Safe',
       '0x6a5602335a878ADDCa4BF63a050E34946B56B5bC': 'BB Safe',
-    },
-  },
-  autofillData: {
-    11155111: {
-      '0x01A9F68e339da12565cfBc47fe7D6EdEcB11C46f': 'David',
     },
   },
   sameOwnerName: {
@@ -408,7 +373,7 @@ export const addressBookData = {
       '0xc2F3645bfd395516d1a18CA6ad9298299d328C01': 'Safe 27',
     },
   },
-  cookies: cookieState,
+  cookies: { necessary: true, updates: true, analytics: true },
 }
 
 export const safeSettings = {
@@ -514,22 +479,6 @@ export const addedSafes = {
       },
     },
     11155111: {
-      '0x027bBe128174F0e5e5d22ECe9623698E01cd3970': {
-        owners: [
-          {
-            value: '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED',
-            name: null,
-            logoUri: null,
-          },
-          {
-            value: '0x96D4c6fFC338912322813a77655fCC926b9A5aC5',
-            name: null,
-            logoUri: null,
-          },
-        ],
-        threshold: 1,
-        ethBalance: '0',
-      },
       '0x6E834E9D04ad6b26e1525dE1a37BFd9b215f40B7': {
         owners: [
           {
@@ -660,113 +609,8 @@ export const addedSafes = {
       },
     },
   },
-  set4: {
-    11155111: {
-      '0x86Cb401afF6A25A335c440C25954A70b3c232C27': {
-        owners: [
-          {
-            value: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
-          },
-          {
-            value: '0x12d0Ad7d21bdbe7E05AB0aDd973C58fB48b52Ae5',
-          },
-        ],
-        threshold: 1,
-      },
-    },
-  },
-  set5: {
-    137: {
-      '0xC96ee38f5A73C8A70b565CB8EA938D2aF913ee3B': {
-        owners: [
-          {
-            value: '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED',
-          },
-        ],
-        threshold: 1,
-      },
-    },
-    11155111: {
-      '0xC96ee38f5A73C8A70b565CB8EA938D2aF913ee3B': {
-        owners: [
-          {
-            value: '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED',
-          },
-        ],
-        threshold: 1,
-      },
-    },
-  },
-  set6_undeployed_safe: {
-    11155111: {
-      '0x926186108f74dB20BFeb2b6c888E523C78cb7E00': {
-        owners: [
-          {
-            value: '0x9445deb174C1eCbbfce8d31D33F438B8e7a0F1BA',
-          },
-        ],
-        threshold: 1,
-      },
-    },
-  },
 }
 
 export const pinnedApps = {
   transactionBuilder: { 11155111: { pinned: [24], opened: [] } },
-}
-
-export const customApps = (url) => ({
-  safeTestApp: [{ url: url }],
-  grantedPermissions: {
-    [url]: [
-      { feature: 'camera', status: 'granted' },
-      { feature: 'microphone', status: 'granted' },
-    ],
-  },
-})
-
-const infoModalAccepted = {
-  11155111: {
-    consentsAccepted: true,
-    warningCheckedCustomApps: [],
-  },
-}
-
-export const appPermissions = (url) => ({
-  grantedPermissions: {
-    [url]: [
-      { feature: 'camera', status: 'granted' },
-      { feature: 'microphone', status: 'granted' },
-    ],
-  },
-  infoModalAccepted: JSON.stringify(infoModalAccepted),
-})
-
-export const cookies = {
-  acceptedCookies: JSON.stringify(cookieState),
-  acceptedTokenListOnboarding: true,
-}
-
-export const undeployedSafe = {
-  safe1: {
-    11155111: {
-      '0x926186108f74dB20BFeb2b6c888E523C78cb7E00': {
-        props: {
-          safeAccountConfig: {
-            threshold: 1,
-            owners: ['0x9445deb174C1eCbbfce8d31D33F438B8e7a0F1BA'],
-            fallbackHandler: '0x017062a1dE2FE6b99BE3d9d37841FeD19F573804',
-          },
-          safeDeploymentConfig: {
-            saltNonce: '21',
-            safeVersion: '1.3.0',
-          },
-        },
-        status: {
-          status: 'AWAITING_EXECUTION',
-          type: 'PayLater',
-        },
-      },
-    },
-  },
 }

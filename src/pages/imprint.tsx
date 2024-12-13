@@ -21,7 +21,7 @@ const SafeImprint = () => (
       10178 Berlin, Germany
     </Typography>
     <Typography mb={4}>
-      Managing director: Richard Meißner
+      Managing directors: Richard Meißner, Tobias Schubotz
       <br />
       Contact:{' '}
       <Link href="mailto:info@cc0x.dev" passHref legacyBehavior>
@@ -72,7 +72,7 @@ const Imprint: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Imprint'}</title>
+        <title>{'Bitlayer Safe – Imprint'}</title>
       </Head>
 
       <main>{IS_OFFICIAL_HOST && <SafeImprint />}</main>

@@ -1,6 +1,3 @@
-import TxProposalChip from '@/features/proposers/components/TxProposalChip'
-import StatusLabel from '@/features/swap/components/StatusLabel'
-import useIsExpiredSwap from '@/features/swap/hooks/useIsExpiredSwap'
 import { Box } from '@mui/material'
 import type { ReactElement } from 'react'
 import { type Transaction } from '@safe-global/safe-gateway-typescript-sdk'
@@ -11,53 +8,49 @@ import TxInfo from '@/components/transactions/TxInfo'
 import { isMultisigExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
 import TxType from '@/components/transactions/TxType'
 import classNames from 'classnames'
-import { isImitation, isTrustedTx } from '@/utils/transactions'
-import MaliciousTxWarning from '../MaliciousTxWarning'
+import { isTrustedTx } from '@/utils/transactions'
+import UntrustedTxWarning from '../UntrustedTxWarning'
 import QueueActions from './QueueActions'
 import useIsPending from '@/hooks/useIsPending'
+import TxStatusLabel from '../TxStatusLabel'
 import TxConfirmations from '../TxConfirmations'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
-import TxStatusLabel from '@/components/transactions/TxStatusLabel'
 
 type TxSummaryProps = {
-  isConflictGroup?: boolean
-  isBulkGroup?: boolean
+  isGrouped?: boolean
   item: Transaction
 }
 
-const TxSummary = ({ item, isConflictGroup, isBulkGroup }: TxSummaryProps): ReactElement => {
+const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const hasDefaultTokenlist = useHasFeature(FEATURES.DEFAULT_TOKENLIST)
 
   const tx = item.transaction
   const isQueue = isTxQueued(tx.txStatus)
   const nonce = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : undefined
   const isTrusted = !hasDefaultTokenlist || isTrustedTx(tx)
-  const isImitationTransaction = isImitation(tx)
   const isPending = useIsPending(tx.id)
   const executionInfo = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo : undefined
-  const expiredSwap = useIsExpiredSwap(tx.txInfo)
 
   return (
     <Box
       data-testid="transaction-item"
       className={classNames(css.gridContainer, {
         [css.history]: !isQueue,
-        [css.conflictGroup]: isConflictGroup,
-        [css.bulkGroup]: isBulkGroup,
-        [css.untrusted]: !isTrusted || isImitationTransaction,
+        [css.grouped]: isGrouped,
+        [css.untrusted]: !isTrusted,
       })}
       id={tx.id}
     >
-      {nonce !== undefined && !isConflictGroup && !isBulkGroup && (
+      {nonce !== undefined && !isGrouped && (
         <Box gridArea="nonce" data-testid="nonce" className={css.nonce}>
           {nonce}
         </Box>
       )}
 
-      {(isImitationTransaction || !isTrusted) && (
+      {!isTrusted && (
         <Box data-testid="warning" gridArea="nonce">
-          <MaliciousTxWarning withTooltip={!isImitationTransaction} />
+          <UntrustedTxWarning />
         </Box>
       )}
 
@@ -75,34 +68,14 @@ const TxSummary = ({ item, isConflictGroup, isBulkGroup }: TxSummaryProps): Reac
 
       {isQueue && executionInfo && (
         <Box gridArea="confirmations">
-          {executionInfo.confirmationsSubmitted > 0 || isPending ? (
-            <TxConfirmations
-              submittedConfirmations={executionInfo.confirmationsSubmitted}
-              requiredConfirmations={executionInfo.confirmationsRequired}
-            />
-          ) : (
-            <TxProposalChip />
-          )}
+          <TxConfirmations
+            submittedConfirmations={executionInfo.confirmationsSubmitted}
+            requiredConfirmations={executionInfo.confirmationsRequired}
+          />
         </Box>
       )}
 
-      {isQueue && expiredSwap ? (
-        <Box gridArea="status" justifyContent="flex-end" display="flex" className={css.status}>
-          <StatusLabel status="expired" />
-        </Box>
-      ) : !isQueue || isPending ? (
-        <Box gridArea="status" justifyContent="flex-end" display="flex" className={css.status}>
-          <TxStatusLabel tx={tx} />
-        </Box>
-      ) : (
-        ''
-      )}
-
-      {isQueue && !expiredSwap && (
-        <Box gridArea="actions">
-          <QueueActions tx={tx} />
-        </Box>
-      )}
+      <Box gridArea="status">{isQueue && !isPending ? <QueueActions tx={tx} /> : <TxStatusLabel tx={tx} />}</Box>
     </Box>
   )
 }

@@ -14,7 +14,7 @@ import { Methods } from '@safe-global/safe-apps-sdk'
 import type { EIP712TypedData, SafeSettings } from '@safe-global/safe-apps-sdk'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { Interface, getAddress } from 'ethers'
+import { getAddress } from 'ethers'
 import { AppRoutes } from '@/config/routes'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import { NotificationMessages, showNotification } from './notifications'
@@ -22,7 +22,6 @@ import { SignMessageOnChainFlow } from '@/components/tx-flow/flows'
 import { useAppSelector } from '@/store'
 import { selectOnChainSigning } from '@/store/settingsSlice'
 import { isOffchainEIP1271Supported } from '@/utils/safe-messages'
-import { getCreateCallContractDeployment } from '../contracts/deployments'
 
 export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK | undefined => {
   const { safe } = useSafeInfo()
@@ -170,7 +169,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
           throw new Error(`Chain ${chainId} not supported`)
         }
 
-        if (confirm(`${appInfo.name} wants to switch to ${cfg.shortName}. Do you want to continue?`)) {
+        if (prompt(`${appInfo.name} wants to switch to ${cfg.shortName}. Do you want to continue?`)) {
           router.push({
             pathname: AppRoutes.index,
             query: {
@@ -204,26 +203,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
       },
 
       async proxy(method, params) {
-        return web3ReadOnly?.send(method, params ?? [])
-      },
-
-      getCreateCallTransaction(data) {
-        const createCallDeployment = currentChain
-          ? getCreateCallContractDeployment(currentChain, safe.version)
-          : undefined
-        if (!createCallDeployment) {
-          throw new Error('No CreateCall deployment found for chain and safe version')
-        }
-        const createCallAddress = createCallDeployment.networkAddresses[safe.chainId]
-
-        const createCallInterface = new Interface(createCallDeployment.abi)
-        const callData = createCallInterface.encodeFunctionData('performCreate', ['0', data])
-
-        return {
-          to: createCallAddress,
-          data: callData,
-          value: '0',
-        }
+        return web3ReadOnly?.send(method, params)
       },
     }
   }, [chainId, safeAddress, safe, currentChain, onChainSigning, settings, setTxFlow, configs, router, web3ReadOnly])

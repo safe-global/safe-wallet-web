@@ -1,19 +1,21 @@
-import { isSwapOrderTxInfo } from '@/utils/transaction-guards'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import TxLayout from '@/components/tx-flow/common/TxLayout'
 import ConfirmProposedTx from './ConfirmProposedTx'
 import { useTransactionType } from '@/hooks/useTransactionType'
-import SwapIcon from '@/public/images/common/swap.svg'
+import TxInfo from '@/components/transactions/TxInfo'
 
 const ConfirmTxFlow = ({ txSummary }: { txSummary: TransactionSummary }) => {
   const { text } = useTransactionType(txSummary)
-  const isSwapOrder = isSwapOrderTxInfo(txSummary.txInfo)
 
   return (
     <TxLayout
       title="Confirm transaction"
-      subtitle={<>{text}&nbsp;</>}
-      icon={isSwapOrder && SwapIcon}
+      subtitle={
+        <>
+          {text}&nbsp;
+          <TxInfo info={txSummary.txInfo} withLogo={false} omitSign />
+        </>
+      }
       step={0}
       txSummary={txSummary}
     >

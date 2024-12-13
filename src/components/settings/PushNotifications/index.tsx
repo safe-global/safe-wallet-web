@@ -9,8 +9,6 @@ import {
   Switch,
   Divider,
   Link as MuiLink,
-  useMediaQuery,
-  useTheme,
 } from '@mui/material'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -29,10 +27,11 @@ import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notif
 import { AppRoutes } from '@/config/routes'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useIsMac } from '@/hooks/useIsMac'
+import useOnboard from '@/hooks/wallets/useOnboard'
+import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import ExternalLink from '@/components/common/ExternalLink'
 
 import css from './styles.module.css'
-import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 export const PushNotifications = (): ReactElement => {
   const { safe, safeLoaded } = useSafeInfo()
@@ -40,8 +39,7 @@ export const PushNotifications = (): ReactElement => {
   const isMac = useIsMac()
   const [isRegistering, setIsRegistering] = useState(false)
   const [isUpdatingIndexedDb, setIsUpdatingIndexedDb] = useState(false)
-  const theme = useTheme()
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'))
+  const onboard = useOnboard()
 
   const { updatePreferences, getPreferences, getAllPreferences } = useNotificationPreferences()
   const { unregisterSafeNotifications, unregisterDeviceNotifications, registerNotifications } =
@@ -60,7 +58,17 @@ export const PushNotifications = (): ReactElement => {
   const shouldShowMacHelper = isMac || IS_DEV
 
   const handleOnChange = async () => {
+    if (!onboard) {
+      return
+    }
+
     setIsRegistering(true)
+
+    try {
+      await assertWalletChain(onboard, safe.chainId)
+    } catch {
+      return
+    }
 
     if (!preferences) {
       await registerNotifications({ [safe.chainId]: [safe.address.value] })
@@ -118,20 +126,18 @@ export const PushNotifications = (): ReactElement => {
               {safeLoaded ? (
                 <>
                   <Divider />
-                  <NetworkWarning action="change your notification settings" />
 
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <EthHashInfo
                       address={safe.address.value}
                       showCopyButton
-                      shortAddress={!isLargeScreen}
+                      shortAddress={false}
                       showName={true}
                       hasExplorer
                     />
-                    <CheckWallet allowNonOwner checkNetwork={!isRegistering && safe.deployed}>
+                    <CheckWallet allowNonOwner>
                       {(isOk) => (
                         <FormControlLabel
-                          data-testid="notifications-switch"
                           control={<Switch checked={!!preferences} onChange={handleOnChange} />}
                           label={preferences ? 'On' : 'Off'}
                           disabled={!isOk || isRegistering || !safe.deployed}

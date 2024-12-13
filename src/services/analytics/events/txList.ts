@@ -54,11 +54,6 @@ export const TX_LIST_EVENTS = {
     category: TX_LIST_CATEGORY,
     event: EventType.CLICK,
   },
-  COPY_WARNING_CLOSE: {
-    action: 'Do not copy address',
-    category: TX_LIST_CATEGORY,
-    event: EventType.CLICK,
-  },
   TOGGLE_UNTRUSTED: {
     action: 'Toggle untrusted transactions',
     category: TX_LIST_CATEGORY,
@@ -70,10 +65,6 @@ export const TX_LIST_EVENTS = {
 export const MESSAGE_EVENTS = {
   SIGN: {
     action: 'Sign message',
-    category: TX_LIST_CATEGORY,
-  },
-  COPY_DEEPLINK: {
-    action: 'Copy message deeplink',
     category: TX_LIST_CATEGORY,
   },
 }

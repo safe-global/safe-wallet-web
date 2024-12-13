@@ -1,7 +1,4 @@
 import * as main from './main.page'
-import * as addressbook from '../pages/address_book.page'
-import * as createTx from '../pages/create_tx.pages'
-import { tableRow } from '../pages/address_book.page'
 
 let etherscanLinkSepolia = 'a[aria-label="View on sepolia.etherscan.io"]'
 export const balanceSingleRow = '[aria-labelledby="tableTitle"] > tbody tr'
@@ -22,16 +19,11 @@ const hiddenTokenDeselectAllBtn = 'span[data-track="assets: Deselect all hide di
 const hiddenTokenIcon = 'svg[data-testid="VisibilityOffOutlinedIcon"]'
 const currencySelector = '[data-testid="currency-selector"]'
 const currencyItem = '[data-testid="currency-item"]'
-const tokenAmountFld = '[data-testid="token-amount-field"]'
-const tokenBalance = '[data-testid="token-balance"]'
-const tokenItem = '[data-testid="token-item"]'
 
 const hideTokenDefaultString = 'Hide tokens'
 const assetNameSortBtnStr = 'Asset'
 const assetBalanceSortBtnStr = 'Balance'
 export const sendBtnStr = 'Send'
-export const confirmBtnStr = 'Confirm'
-export const executeBtnStr = 'Execute'
 const sendTokensStr = 'Send tokens'
 
 const pageRowsDefault = '25'
@@ -44,25 +36,16 @@ const pageCountString1to25 = '1–25 of'
 const pageCountString1to10 = '1–10 of'
 const pageCountString10to20 = '11–20 of'
 
-export const fiatRegex = new RegExp(`\\$?(([0-9]{1,3},)*[0-9]{1,3}(\\.[0-9]{2})?|0)`)
+export const fiatRegex = new RegExp(`([0-9]{1,3},)*[0-9]{1,3}.[0-9]{2}`)
 
 export const tokenListOptions = {
   allTokens: 'span[data-track="assets: Show all tokens"]',
   default: 'span[data-track="assets: Show default tokens"]',
 }
-export const currencyEUR = '€'
-export const currencyOptionEUR = 'EUR'
-export const currency$ = '$'
-export const currencyCAD = 'CAD'
+export const currencyEUR = 'EUR'
+export const currencyUSD = 'USD'
 
 export const currentcySepoliaFormat = '0.09996 ETH'
-
-export const currencyTestTokenTTONE = 'test-token-type-one'
-export const currencyTestTokenTTONEAlttext = 'TTONE'
-export const currentcyTestTokenTTONEFormat = '90 TTONE'
-export const currentcyTestTokenTTONEFormat_2 = '10 TTONE'
-export const currentcyTestTokenTTONEFormat_3 = '5 TTONE'
-export const currentcyTestTokenTTONEFormat_4 = '95 TTONE'
 
 export const currencyAave = 'AAVE'
 export const currencyAaveAlttext = 'AAVE'
@@ -110,14 +93,6 @@ export const currentcyGnosisFormat = '< 0.00001 GNO'
 export const currencyOx = /^0x$/
 export const currentcyOxFormat = '1.003 ZRX'
 
-export function enterAmount(amount) {
-  cy.get(tokenAmountFld).find('input').clear().type(amount)
-}
-
-export function checkSelectedToken(token) {
-  cy.get(tokenBalance).contains(token)
-}
-
 function clickOnCurrencySelector() {
   cy.get(currencySelector).click()
 }
@@ -128,42 +103,12 @@ export function changeCurrency(currency) {
 }
 
 export function clickOnSendBtn(index) {
-  cy.wait(4000)
-  cy.get(addressbook.tableRow)
-    .eq(index)
-    .within(() => {
-      cy.get('button')
-        .contains(sendBtnStr)
-        .then((elements) => {
-          cy.wrap(elements[0]).invoke('css', 'opacity', 100).click()
-        })
+  cy.get('button')
+    .contains(sendBtnStr)
+    .then((elements) => {
+      cy.wrap(elements[index]).invoke('css', 'opacity', 100).click()
     })
-}
-
-export function clickOnConfirmBtn(index) {
-  cy.wait(2000)
-  cy.get(createTx.transactionItem)
-    .eq(index)
-    .within(() => {
-      cy.get('button')
-        .contains(confirmBtnStr)
-        .then((elements) => {
-          cy.wrap(elements[0]).click()
-        })
-    })
-}
-
-export function clickOnExecuteBtn(index) {
-  cy.wait(2000)
-  cy.get(createTx.transactionItem)
-    .eq(index)
-    .within(() => {
-      cy.get('button')
-        .contains(executeBtnStr)
-        .then((elements) => {
-          cy.wrap(elements[0]).click()
-        })
-    })
+  cy.get('div').contains(sendTokensStr).should('exist')
 }
 
 export function showSendBtn(index) {
@@ -195,12 +140,10 @@ export function clickOnTokenBalanceSortBtn() {
 export function verifyTokenNamesOrder(option = 'ascending') {
   const tokens = []
 
-  main.getTextToArray(tableRow, tokens)
+  main.getTextToArray('tr p', tokens)
 
   cy.wrap(tokens).then((arr) => {
-    cy.log('*** Original array ' + tokens)
     let sortedNames = [...arr].sort()
-    cy.log('*** Sorted array ' + sortedNames)
     if (option == 'descending') sortedNames = [...arr].sort().reverse()
     expect(arr).to.deep.equal(sortedNames)
   })
@@ -241,8 +184,6 @@ export function checkHiddenTokenBtnCounter(value) {
 }
 
 export function verifyEachRowHasCheckbox(state) {
-  const tokens = [currencyTestTokenB, currencyTestTokenA]
-  main.verifyTextVisibility(tokens)
   cy.get(tokenListTable).within(() => {
     cy.get('tbody').within(() => {
       cy.get('tr').each(($row) => {
@@ -266,9 +207,9 @@ export function verifyTokenIsPresent(token) {
 
 export function selectTokenList(option) {
   cy.get(tokenListDropdown)
-    .click({ force: true })
+    .click()
     .then(() => {
-      cy.get(option).click({ force: true })
+      cy.get(option).click()
     })
 }
 

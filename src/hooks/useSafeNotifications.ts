@@ -4,7 +4,7 @@ import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript
 import useSafeInfo from './useSafeInfo'
 import { useAppDispatch } from '@/store'
 import { AppRoutes } from '@/config/routes'
-import { isMigrationToL2Possible, isValidMasterCopy } from '@/services/contracts/safeContracts'
+import { isValidMasterCopy } from '@/services/contracts/safeContracts'
 import { useRouter } from 'next/router'
 import useIsSafeOwner from './useIsSafeOwner'
 import { isValidSafeVersion } from './coreSDK/safeCoreSDK'
@@ -131,31 +131,25 @@ const useSafeNotifications = (): void => {
   /**
    * Show a notification when the Safe master copy is not supported
    */
+
   useEffect(() => {
     if (isValidMasterCopy(safe.implementationVersionState)) return
 
-    const isMigrationPossible = isMigrationToL2Possible(safe)
-
-    const message = isMigrationPossible
-      ? `This Safe Account was created with an unsupported base contract.
-           It is possible to migrate it to a compatible base contract. This migration will be automatically included with your first transaction.`
-      : `This Safe Account was created with an unsupported base contract.
-           The web interface might not work correctly.
-           We recommend using the command line interface instead.`
-
     const id = dispatch(
       showNotification({
-        variant: isMigrationPossible ? 'info' : 'warning',
-        message,
+        variant: 'warning',
+        message: `This Safe Account was created with an unsupported base contract.
+           The web interface might not work correctly.
+           We recommend using the command line interface instead.`,
         groupKey: 'invalid-mastercopy',
-        link: isMigrationPossible ? undefined : CLI_LINK,
+        link: CLI_LINK,
       }),
     )
 
     return () => {
       dispatch(closeNotification({ id }))
     }
-  }, [dispatch, safe, safe.implementationVersionState])
+  }, [dispatch, safe.implementationVersionState])
 }
 
 export default useSafeNotifications

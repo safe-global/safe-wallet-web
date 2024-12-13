@@ -25,8 +25,6 @@ import SettingsIcon from '@/public/images/sidebar/settings.svg'
 import css from './styles.module.css'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 import SvgIcon from '@mui/icons-material/ExpandLess'
-import { useHasFeature } from '@/hooks/useChains'
-import { FEATURES } from '@/utils/chains'
 
 const NOTIFICATION_CENTER_LIMIT = 4
 
@@ -35,7 +33,7 @@ const NotificationCenter = (): ReactElement => {
   const [showAll, setShowAll] = useState<boolean>(false)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const open = Boolean(anchorEl)
-  const hasPushNotifications = useHasFeature(FEATURES.PUSH_NOTIFICATIONS)
+
   const dispatch = useAppDispatch()
 
   const notifications = useAppSelector(selectNotifications)
@@ -88,10 +86,6 @@ const NotificationCenter = (): ReactElement => {
     dispatch(deleteAllNotifications())
   }
 
-  const onSettingsClick = () => {
-    setTimeout(handleClose, 300)
-  }
-
   const ExpandIcon = showAll ? ExpandLessIcon : ExpandMoreIcon
 
   return (
@@ -110,10 +104,6 @@ const NotificationCenter = (): ReactElement => {
       </ButtonBase>
 
       <Popover
-        // Clicking the "view transaction" link doesn't remove the popover even though
-        // handleClose is called which results in the UI not being clickable anymore
-        // so by adding a key we force a re-render
-        key={Number(open)}
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
@@ -150,11 +140,9 @@ const NotificationCenter = (): ReactElement => {
               </MuiLink>
             )}
           </div>
-
           <div>
             <NotificationCenterList notifications={notificationsToShow} handleClose={handleClose} />
           </div>
-
           <div className={css.popoverFooter}>
             {canExpand && (
               <>
@@ -174,21 +162,18 @@ const NotificationCenter = (): ReactElement => {
                 </Typography>
               </>
             )}
-
-            {hasPushNotifications && (
-              <Link
-                href={{
-                  pathname: AppRoutes.settings.notifications,
-                  query: router.query,
-                }}
-                passHref
-                legacyBehavior
-              >
-                <MuiLink className={css.settingsLink} variant="body2" onClick={onSettingsClick}>
-                  <SvgIcon component={SettingsIcon} inheritViewBox fontSize="small" /> Push notifications settings
-                </MuiLink>
-              </Link>
-            )}
+            <Link
+              href={{
+                pathname: AppRoutes.settings.notifications,
+                query: router.query,
+              }}
+              passHref
+              legacyBehavior
+            >
+              <MuiLink className={css.settingsLink} variant="body2" onClick={handleClose}>
+                <SvgIcon component={SettingsIcon} inheritViewBox fontSize="small" /> Settings
+              </MuiLink>
+            </Link>
           </div>
         </Paper>
       </Popover>

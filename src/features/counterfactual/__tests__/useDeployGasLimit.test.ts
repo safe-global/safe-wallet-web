@@ -1,7 +1,5 @@
 import useDeployGasLimit from '@/features/counterfactual/hooks/useDeployGasLimit'
-import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import * as onboard from '@/hooks/wallets/useOnboard'
-import * as useWallet from '@/hooks/wallets/useWallet'
 import * as sdk from '@/services/tx/tx-sender/sdk'
 import { safeTxBuilder } from '@/tests/builders/safeTx'
 import * as protocolKit from '@safe-global/protocol-kit'
@@ -9,30 +7,14 @@ import * as protocolKitContracts from '@safe-global/protocol-kit/dist/src/contra
 import type Safe from '@safe-global/protocol-kit'
 
 import { renderHook } from '@/tests/test-utils'
-import type {
-  CompatibilityFallbackHandlerContractImplementationType,
-  SimulateTxAccessorContractImplementationType,
-} from '@safe-global/protocol-kit/dist/src/types'
 import { waitFor } from '@testing-library/react'
 import type { OnboardAPI } from '@web3-onboard/core'
 import { faker } from '@faker-js/faker'
+import type { CompatibilityFallbackHandlerContract, SimulateTxAccessorContract } from '@safe-global/safe-core-sdk-types'
 
 describe('useDeployGasLimit hook', () => {
-  beforeEach(() => {
-    jest.resetAllMocks()
-
-    jest.spyOn(useWallet, 'default').mockReturnValue({} as ConnectedWallet)
-  })
-
   it('returns undefined in onboard is not initialized', () => {
     jest.spyOn(onboard, 'default').mockReturnValue(undefined)
-    const { result } = renderHook(() => useDeployGasLimit())
-
-    expect(result.current.gasLimit).toBeUndefined()
-  })
-
-  it('returns undefined in there is no wallet connected', () => {
-    jest.spyOn(useWallet, 'default').mockReturnValue(null)
     const { result } = renderHook(() => useDeployGasLimit())
 
     expect(result.current.gasLimit).toBeUndefined()
@@ -77,18 +59,15 @@ describe('useDeployGasLimit hook', () => {
     const mockOnboard = {} as OnboardAPI
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(sdk, 'getSafeSDKWithSigner').mockResolvedValue({
-      getThreshold: jest.fn(),
-      getNonce: jest.fn(),
-      getSafeProvider: () => ({
-        estimateGas: () => Promise.resolve('420000'),
-        getSignerAddress: () => Promise.resolve(faker.finance.ethereumAddress()),
-      }),
-      getChainId: jest.fn(),
       getContractManager: () =>
         ({
           contractNetworks: {},
         } as any),
       getContractVersion: () => Promise.resolve('1.3.0'),
+      getEthAdapter: () => ({
+        estimateGas: () => Promise.resolve('420000'),
+        getSignerAddress: () => Promise.resolve(faker.finance.ethereumAddress()),
+      }),
       createSafeDeploymentTransaction: () =>
         Promise.resolve({
           to: faker.finance.ethereumAddress(),
@@ -105,11 +84,11 @@ describe('useDeployGasLimit hook', () => {
     } as unknown as Safe)
     jest.spyOn(protocolKitContracts, 'getCompatibilityFallbackHandlerContract').mockResolvedValue({
       encode: () => '0x3456',
-    } as unknown as CompatibilityFallbackHandlerContractImplementationType)
+    } as unknown as CompatibilityFallbackHandlerContract)
     jest.spyOn(protocolKitContracts, 'getSimulateTxAccessorContract').mockResolvedValue({
       encode: () => '0x4567',
       getAddress: () => Promise.resolve(faker.finance.ethereumAddress()),
-    } as unknown as SimulateTxAccessorContractImplementationType)
+    } as unknown as SimulateTxAccessorContract)
     jest.spyOn(protocolKit, 'estimateSafeDeploymentGas').mockReturnValue(Promise.resolve('100'))
     jest.spyOn(protocolKit, 'estimateTxBaseGas').mockReturnValue(Promise.resolve('21000'))
 

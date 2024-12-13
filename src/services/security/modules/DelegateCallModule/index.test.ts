@@ -1,15 +1,12 @@
 import { OperationType } from '@safe-global/safe-core-sdk-types'
-import { getMultiSendCallOnlyDeployment } from '@safe-global/safe-deployments'
+import { getMultiSendCallOnlyDeployment } from '@/bitlayer-safe-deployments/src'
 import { toBeHex } from 'ethers'
 
 import { DelegateCallModule } from '.'
 import { createMockSafeTransaction, getMockMultiSendCalldata } from '@/tests/transactions'
-import { chainBuilder } from '@/tests/builders/chains'
 
 describe('DelegateCallModule', () => {
   const DelegateCallModuleInstance = new DelegateCallModule()
-
-  const chainInfo = chainBuilder().with({ chainId: '1' }).build()
 
   it('should not warn about Call operation transactions', async () => {
     const recipient = toBeHex('0x1', 20)
@@ -22,7 +19,7 @@ describe('DelegateCallModule', () => {
 
     const result = await DelegateCallModuleInstance.scanTransaction({
       safeTransaction,
-      chain: chainInfo,
+      chainId: '5',
       safeVersion: '1.3.0',
     })
 
@@ -32,7 +29,7 @@ describe('DelegateCallModule', () => {
   })
 
   it('should not warn about MultiSendCallOnly DelegateCall operation transactions', async () => {
-    const CHAIN_ID = '1'
+    const CHAIN_ID = '5'
     const SAFE_VERSION = '1.3.0'
 
     const multiSend = getMultiSendCallOnlyDeployment({
@@ -53,7 +50,7 @@ describe('DelegateCallModule', () => {
 
     const result = await DelegateCallModuleInstance.scanTransaction({
       safeTransaction,
-      chain: chainInfo,
+      chainId: CHAIN_ID,
       safeVersion: SAFE_VERSION,
     })
 
@@ -73,7 +70,7 @@ describe('DelegateCallModule', () => {
 
     const result = await DelegateCallModuleInstance.scanTransaction({
       safeTransaction,
-      chain: chainInfo,
+      chainId: '5',
       safeVersion: '1.3.0',
     })
 

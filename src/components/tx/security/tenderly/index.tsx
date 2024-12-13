@@ -1,4 +1,3 @@
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { Alert, Button, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { useContext, useEffect } from 'react'
 import type { ReactElement } from 'react'
@@ -35,7 +34,6 @@ export type TxSimulationProps = {
 const TxSimulationBlock = ({ transactions, disabled, gasLimit, executionOwner }: TxSimulationProps): ReactElement => {
   const { safe } = useSafeInfo()
   const wallet = useWallet()
-  const isSafeOwner = useIsSafeOwner()
   const isDarkMode = useDarkMode()
   const { safeTx } = useContext(SafeTxContext)
   const {
@@ -50,8 +48,7 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit, executionOwner }:
 
     simulateTransaction({
       safe,
-      // fall back to the first owner of the safe in case the transaction is created by a proposer
-      executionOwner: executionOwner ?? isSafeOwner ? wallet.address : safe.owners[0].value,
+      executionOwner: executionOwner ?? wallet.address,
       transactions,
       gasLimit,
     } as SimulationTxParams)

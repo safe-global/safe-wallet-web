@@ -11,6 +11,7 @@ import classnames from 'classnames'
 
 type MultisendProps = {
   txData?: TransactionData
+  showDelegateCallWarning?: boolean
   compact?: boolean
 }
 
@@ -44,7 +45,11 @@ export const MultisendActionsHeader = ({
   )
 }
 
-export const Multisend = ({ txData, compact = false }: MultisendProps): ReactElement | null => {
+export const Multisend = ({
+  txData,
+  showDelegateCallWarning = true,
+  compact = false,
+}: MultisendProps): ReactElement | null => {
   const [openMap, setOpenMap] = useState<Record<number, boolean>>()
   const isOpenMapUndefined = openMap == null
 
@@ -54,9 +59,13 @@ export const Multisend = ({ txData, compact = false }: MultisendProps): ReactEle
   useEffect(() => {
     // Initialise whether each transaction should be expanded or not
     if (isOpenMapUndefined && multiSendTransactions) {
-      setOpenMap(multiSendTransactions.map(({ operation }) => operation === Operation.DELEGATE))
+      setOpenMap(
+        multiSendTransactions.map(({ operation }) => {
+          return showDelegateCallWarning ? operation === Operation.DELEGATE : false
+        }),
+      )
     }
-  }, [multiSendTransactions, isOpenMapUndefined])
+  }, [multiSendTransactions, isOpenMapUndefined, showDelegateCallWarning])
 
   if (!txData) return null
 
@@ -71,6 +80,7 @@ export const Multisend = ({ txData, compact = false }: MultisendProps): ReactEle
   if (!multiSendTransactions) {
     return null
   }
+
   return (
     <>
       <MultisendActionsHeader setOpen={setOpenMap} amount={multiSendTransactions.length} compact={compact} />
@@ -95,6 +105,7 @@ export const Multisend = ({ txData, compact = false }: MultisendProps): ReactEle
                 operation,
               }}
               txData={txData}
+              showDelegateCallWarning={showDelegateCallWarning}
               actionTitle={`${index + 1}`}
               variant={compact ? 'outlined' : 'elevation'}
               expanded={openMap?.[index] ?? false}

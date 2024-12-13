@@ -1,8 +1,7 @@
 import { blo } from 'blo'
-import { act } from 'react'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
-import { fireEvent, render, waitFor } from '@/tests/test-utils'
+import { act, fireEvent, render, waitFor } from '@/tests/test-utils'
 import * as useAllAddressBooks from '@/hooks/useAllAddressBooks'
 import * as useChainId from '@/hooks/useChainId'
 import * as store from '@/store'
@@ -254,12 +253,12 @@ describe('EthHashInfo', () => {
       )
 
       const { container } = render(
-        <EthHashInfo address="0xe26920604f9a02c5a877d449faa71b7504f0c2508dcc7c0384078a024b8e592f" showCopyButton />,
+        <EthHashInfo address={'0xe26920604f9a02c5a877d449faa71b7504f0c2508dcc7c0384078a024b8e592f'} showCopyButton />,
       )
 
       const button = container.querySelector('button')
 
-      act(() => {
+      await act(() => {
         fireEvent.click(button!)
       })
 
@@ -289,7 +288,7 @@ describe('EthHashInfo', () => {
 
       const button = container.querySelector('button')
 
-      act(() => {
+      await act(() => {
         fireEvent.click(button!)
       })
 
@@ -321,7 +320,7 @@ describe('EthHashInfo', () => {
 
       const button = container.querySelector('button')
 
-      act(() => {
+      await act(() => {
         fireEvent.click(button!)
       })
 
@@ -350,7 +349,7 @@ describe('EthHashInfo', () => {
 
       const button = container.querySelector('button')
 
-      act(() => {
+      await act(() => {
         fireEvent.click(button!)
       })
 
@@ -376,7 +375,7 @@ describe('EthHashInfo', () => {
 
       const button = container.querySelector('button')
 
-      act(() => {
+      await act(() => {
         fireEvent.click(button!)
       })
 

@@ -1,86 +1,91 @@
-import ExternalLink from '@/components/common/ExternalLink'
-import LoadingSpinner, { SpinnerStatus } from '@/components/new-safe/create/steps/StatusStep/LoadingSpinner'
-import { SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
-import type { UndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
-import { useCurrentChain } from '@/hooks/useChains'
-import { getBlockExplorerLink } from '@/utils/chains'
 import { Box, Typography } from '@mui/material'
-import FailedIcon from '@/public/images/common/tx-failed.svg'
+import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
+import LoadingSpinner, { SpinnerStatus } from '@/components/new-safe/create/steps/StatusStep/LoadingSpinner'
 
-const getStep = (status: SafeCreationEvent) => {
+const getStep = (status: SafeCreationStatus) => {
+  const ERROR_TEXT = 'Please cancel the process or retry the transaction.'
+
   switch (status) {
-    case SafeCreationEvent.AWAITING_EXECUTION:
+    case SafeCreationStatus.AWAITING:
       return {
-        description: 'Your account is awaiting activation',
-        instruction: 'Activate the account to unlock all features of your smart wallet',
+        description: 'Waiting for transaction confirmation.',
+        instruction: 'Please confirm the transaction with your connected wallet.',
       }
-    case SafeCreationEvent.PROCESSING:
-    case SafeCreationEvent.RELAYING:
+    case SafeCreationStatus.WALLET_REJECTED:
       return {
-        description: 'We are activating your account',
-        instruction: 'It can take some minutes to create your account, but you can check the progress below.',
+        description: 'Transaction was rejected.',
+        instruction: ERROR_TEXT,
       }
-    case SafeCreationEvent.FAILED:
+    case SafeCreationStatus.PROCESSING:
       return {
-        description: "Your account couldn't be created",
-        instruction:
-          'The creation transaction was rejected by the connected wallet. You can retry or create an account from scratch.',
+        description: 'Transaction is being executed.',
+        instruction: 'Please do not leave this page.',
       }
-    case SafeCreationEvent.REVERTED:
+    case SafeCreationStatus.ERROR:
       return {
-        description: "Your account couldn't be created",
-        instruction: 'The creation transaction reverted. You can retry or create an account from scratch.',
+        description: 'There was an error.',
+        instruction: ERROR_TEXT,
       }
-    case SafeCreationEvent.SUCCESS:
+    case SafeCreationStatus.REVERTED:
+      return {
+        description: 'Transaction was reverted.',
+        instruction: ERROR_TEXT,
+      }
+    case SafeCreationStatus.TIMEOUT:
+      return {
+        description: 'Transaction was not found. Be aware that it might still be processed.',
+        instruction: ERROR_TEXT,
+      }
+    case SafeCreationStatus.SUCCESS:
       return {
         description: 'Your Safe Account is being indexed..',
         instruction: 'The account will be ready for use shortly. Please do not leave this page.',
       }
-    case SafeCreationEvent.INDEXED:
+    case SafeCreationStatus.INDEXED:
       return {
         description: 'Your Safe Account was successfully created!',
         instruction: '',
       }
+    case SafeCreationStatus.INDEX_FAILED:
+      return {
+        description: 'Your Safe Account is successfully created!',
+        instruction:
+          'You can already open Safe{Wallet}. It might take a moment until it becomes fully usable in the interface.',
+      }
   }
 }
 
-const StatusMessage = ({
-  status,
-  isError,
-  pendingSafe,
-}: {
-  status: SafeCreationEvent
-  isError: boolean
-  pendingSafe: UndeployedSafe | undefined
-}) => {
+const StatusMessage = ({ status, isError }: { status: SafeCreationStatus; isError: boolean }) => {
   const stepInfo = getStep(status)
-  const chain = useCurrentChain()
 
-  const isSuccess = status === SafeCreationEvent.SUCCESS
-  const spinnerStatus = isSuccess ? SpinnerStatus.SUCCESS : SpinnerStatus.PROCESSING
-  const explorerLink =
-    chain && pendingSafe?.status.txHash ? getBlockExplorerLink(chain, pendingSafe.status.txHash) : undefined
+  const color = isError ? 'error' : 'info'
+  const isSuccess = status >= SafeCreationStatus.SUCCESS
+  const spinnerStatus = isError ? SpinnerStatus.ERROR : isSuccess ? SpinnerStatus.SUCCESS : SpinnerStatus.PROCESSING
 
   return (
     <>
       <Box data-testid="safe-status-info" paddingX={3} mt={3}>
-        <Box width="160px" height="160px" display="flex" margin="auto">
-          {isError ? <FailedIcon /> : <LoadingSpinner status={spinnerStatus} />}
-        </Box>
-        <Typography variant="h3" marginTop={2} fontWeight={700}>
+        <LoadingSpinner status={spinnerStatus} />
+        <Typography variant="h6" marginTop={2} fontWeight={700}>
           {stepInfo.description}
         </Typography>
       </Box>
-      <Box maxWidth={390} margin="auto">
-        {stepInfo.instruction && (
-          <Typography variant="body2" my={2}>
-            {stepInfo.instruction}
-          </Typography>
-        )}
-        {!isError && explorerLink && (
-          <ExternalLink href={explorerLink.href}>Check status on block explorer</ExternalLink>
-        )}
-      </Box>
+      {stepInfo.instruction && (
+        <Box
+          sx={({ palette }) => ({
+            backgroundColor: palette[color].background,
+            borderColor: palette[color].light,
+            borderWidth: 1,
+            borderStyle: 'solid',
+            borderRadius: '6px',
+          })}
+          padding={3}
+          mt={4}
+          mb={0}
+        >
+          <Typography variant="body2">{stepInfo.instruction}</Typography>
+        </Box>
+      )}
     </>
   )
 }

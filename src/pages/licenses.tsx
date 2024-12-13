@@ -443,7 +443,7 @@ const SafeLicenses = () => (
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>@safe-global/safe-deployments</TableCell>
+              <TableCell>@/bitlayer-safe-deployments/src</TableCell>
               <TableCell>
                 <ExternalLink href="https://github.com/safe-global/safe-deployments/blob/main/LICENSE">
                   https://github.com/safe-global/safe-deployments/blob/main/LICENSE
@@ -479,6 +479,14 @@ const SafeLicenses = () => (
               <TableCell>
                 <ExternalLink href="https://github.com/getsentry/sentry-javascript/blob/develop/LICENSE">
                   https://github.com/getsentry/sentry-javascript/blob/develop/LICENSE
+                </ExternalLink>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>@truffle/hdwallet-provider</TableCell>
+              <TableCell>
+                <ExternalLink href="https://github.com/trufflesuite/truffle/blob/develop/LICENSE">
+                  https://github.com/trufflesuite/truffle/blob/develop/LICENSE
                 </ExternalLink>
               </TableCell>
             </TableRow>
@@ -709,7 +717,7 @@ const Licenses: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Licenses'}</title>
+        <title>{'Bitlayer Safe – Licenses'}</title>
       </Head>
 
       <main>{IS_OFFICIAL_HOST && <SafeLicenses />}</main>

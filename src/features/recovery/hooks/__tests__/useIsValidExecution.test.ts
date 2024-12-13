@@ -1,4 +1,3 @@
-import type { SafeContractImplementationType } from '@safe-global/protocol-kit'
 import type { SafeTransaction, SafeSignature } from '@safe-global/safe-core-sdk-types'
 import * as useWallet from '@/hooks/wallets/useWallet'
 import { act, renderHook } from '@/tests/test-utils'
@@ -10,8 +9,7 @@ import type { Eip1193Provider } from 'ethers'
 import { JsonRpcProvider, BrowserProvider } from 'ethers'
 import * as contracts from '@/services/contracts/safeContracts'
 
-import { MockEip1193Provider } from '@/tests/mocks/providers'
-
+import type { SafeContractEthers } from '@safe-global/protocol-kit'
 const createSafeTx = (data = '0x'): SafeTransaction => {
   return {
     data: {
@@ -40,7 +38,7 @@ const createSafeTx = (data = '0x'): SafeTransaction => {
 
 describe('useIsValidExecution', () => {
   const mockReadOnlyProvider: JsonRpcProvider = new JsonRpcProvider()
-  const mockProvider: BrowserProvider = new BrowserProvider(MockEip1193Provider)
+  const mockProvider: BrowserProvider = new BrowserProvider(jest.fn() as unknown as Eip1193Provider)
   const mockWallet = {
     address: '',
     chainId: '5',
@@ -69,7 +67,7 @@ describe('useIsValidExecution', () => {
             },
           },
         },
-      } as unknown as SafeContractImplementationType),
+      } as unknown as SafeContractEthers),
     )
 
     const mockTx = createSafeTx()

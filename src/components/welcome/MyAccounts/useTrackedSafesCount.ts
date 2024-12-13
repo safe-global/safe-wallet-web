@@ -2,48 +2,21 @@ import { AppRoutes } from '@/config/routes'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import { type SafeItem } from './useAllSafes'
-import { type MultiChainSafeItem } from './useAllSafesGrouped'
-import { isMultiChainSafeItem } from '@/features/multichain/utils/utils'
+import type { SafeItems } from './useAllSafes'
 
-let isOwnedSafesTracked = false
-let isWatchlistTracked = false
+let isTracked = false
 
-const useTrackSafesCount = (
-  ownedSafes: (MultiChainSafeItem | SafeItem)[] | undefined,
-  watchlistSafes: (MultiChainSafeItem | SafeItem)[] | undefined,
-  wallet: ConnectedWallet | null,
-) => {
+const useTrackSafesCount = (ownedSafes: SafeItems | undefined, watchlistSafes: SafeItems | undefined) => {
   const router = useRouter()
   const isLoginPage = router.pathname === AppRoutes.welcome.accounts
 
-  // Reset tracking for new wallet
   useEffect(() => {
-    isOwnedSafesTracked = false
-  }, [wallet?.address])
-
-  useEffect(() => {
-    const totalSafesOwned = ownedSafes?.reduce(
-      (prev, current) => prev + (isMultiChainSafeItem(current) ? current.safes.length : 1),
-      0,
-    )
-    if (wallet && !isOwnedSafesTracked && ownedSafes && ownedSafes.length > 0 && isLoginPage) {
-      trackEvent({ ...OVERVIEW_EVENTS.TOTAL_SAFES_OWNED, label: totalSafesOwned })
-      isOwnedSafesTracked = true
+    if (watchlistSafes && ownedSafes && isLoginPage && !isTracked) {
+      trackEvent({ ...OVERVIEW_EVENTS.TOTAL_SAFES_OWNED, label: ownedSafes.length })
+      trackEvent({ ...OVERVIEW_EVENTS.TOTAL_SAFES_WATCHLIST, label: watchlistSafes.length })
+      isTracked = true
     }
-  }, [isLoginPage, ownedSafes, wallet])
-
-  useEffect(() => {
-    const totalSafesWatched = watchlistSafes?.reduce(
-      (prev, current) => prev + (isMultiChainSafeItem(current) ? current.safes.length : 1),
-      0,
-    )
-    if (watchlistSafes && isLoginPage && watchlistSafes.length > 0 && !isWatchlistTracked) {
-      trackEvent({ ...OVERVIEW_EVENTS.TOTAL_SAFES_WATCHLIST, label: totalSafesWatched })
-      isWatchlistTracked = true
-    }
-  }, [isLoginPage, watchlistSafes])
+  }, [isLoginPage, ownedSafes, watchlistSafes])
 }
 
 export default useTrackSafesCount

@@ -1,13 +1,13 @@
 import madProps from '@/utils/mad-props'
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
 import { CircularProgress, Box, Button, CardActions, Divider } from '@mui/material'
-import Stack from '@mui/system/Stack'
+
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { trackError, Errors } from '@/services/exceptions'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useAlreadySigned, useTxActions } from './hooks'
-import type { SignOrExecuteProps } from './SignOrExecuteForm'
+import type { SignOrExecuteProps } from '.'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { TxModalContext } from '@/components/tx-flow'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
@@ -34,7 +34,6 @@ export const SignForm = ({
   isOwner: ReturnType<typeof useIsSafeOwner>
   txActions: ReturnType<typeof useTxActions>
   txSecurity: ReturnType<typeof useTxSecurityContext>
-  isCreation?: boolean
   safeTx?: SafeTransaction
 }): ReactElement => {
   // Form state
@@ -115,13 +114,7 @@ export const SignForm = ({
       <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
 
       <CardActions>
-        <Stack
-          sx={{
-            width: ['100%', '100%', '100%', 'auto'],
-          }}
-          direction={{ xs: 'column-reverse', lg: 'row' }}
-          spacing={{ xs: 2, md: 2 }}
-        >
+        <Box display="flex" gap={2}>
           {/* Batch button */}
           {isCreation && !isBatch && (
             <BatchButton
@@ -132,20 +125,20 @@ export const SignForm = ({
           )}
 
           {/* Submit button */}
-          <CheckWallet checkNetwork={!submitDisabled}>
+          <CheckWallet>
             {(isOk) => (
               <Button
                 data-testid="sign-btn"
                 variant="contained"
                 type="submit"
                 disabled={!isOk || submitDisabled}
-                sx={{ minWidth: '82px', order: '1', width: ['100%', '100%', '100%', 'auto'] }}
+                sx={{ minWidth: '82px' }}
               >
                 {!isSubmittable ? <CircularProgress size={20} /> : 'Sign'}
               </Button>
             )}
           </CheckWallet>
-        </Stack>
+        </Box>
       </CardActions>
     </form>
   )
