@@ -1,5 +1,6 @@
 import { selectUndeployedSafes } from '@/features/counterfactual/store/undeployedSafesSlice'
 import NetworkLogosList from '@/features/multichain/components/NetworkLogosList'
+import { showNotification } from '@/store/notificationsSlice'
 import SingleAccountItem from '@/features/myAccounts/components/AccountItems/SingleAccountItem'
 import type { SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
 import { useCallback, useMemo, useState } from 'react'
@@ -74,7 +75,7 @@ const MultichainIndicator = ({ safes }: { safes: SafeItem[] }) => {
 }
 
 function useMultiAccountItemData(multiSafeAccountItem: MultiChainSafeItem) {
-  const { address, safes, isPinned } = multiSafeAccountItem
+  const { address, safes, isPinned, name } = multiSafeAccountItem
 
   const router = useRouter()
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
@@ -124,6 +125,7 @@ function useMultiAccountItemData(multiSafeAccountItem: MultiChainSafeItem) {
 
   return {
     address,
+    name,
     sortedSafes,
     safeOverviews,
     sharedSetup,
@@ -137,7 +139,12 @@ function useMultiAccountItemData(multiSafeAccountItem: MultiChainSafeItem) {
   }
 }
 
-function usePinActions(address: string, safes: SafeItem[], safeOverviews: SafeOverview[] | undefined) {
+function usePinActions(
+  address: string,
+  name: string | undefined,
+  safes: SafeItem[],
+  safeOverviews: SafeOverview[] | undefined,
+) {
   const dispatch = useAppDispatch()
   const allAddedSafes = useAppSelector(selectAllAddedSafes)
 
@@ -173,15 +180,35 @@ function usePinActions(address: string, safes: SafeItem[], safeOverviews: SafeOv
         dispatch(pinSafe({ chainId: safe.chainId, address: safe.address }))
       }
     }
+
+    dispatch(
+      showNotification({
+        title: 'Pinned multi-chain Safe',
+        message: name ?? shortenAddress(address),
+        groupKey: `pin-safe-success-${address}`,
+        variant: 'success',
+      }),
+    )
+
     trackEvent({ ...OVERVIEW_EVENTS.PIN_SAFE, label: PIN_SAFE_LABELS.pin })
-  }, [safes, allAddedSafes, dispatch, findOverview, address])
+  }, [name, safes, allAddedSafes, dispatch, findOverview, address])
 
   const removeFromPinnedList = useCallback(() => {
     for (const safe of safes) {
       dispatch(unpinSafe({ chainId: safe.chainId, address: safe.address }))
     }
+
+    dispatch(
+      showNotification({
+        title: 'Unpinned multi-chain Safe',
+        message: name ?? shortenAddress(address),
+        groupKey: `unpin-safe-success-${address}`,
+        variant: 'success',
+      }),
+    )
+
     trackEvent({ ...OVERVIEW_EVENTS.PIN_SAFE, label: PIN_SAFE_LABELS.unpin })
-  }, [safes, dispatch])
+  }, [dispatch, name, address, safes])
 
   return { addToPinnedList, removeFromPinnedList }
 }
@@ -189,6 +216,7 @@ function usePinActions(address: string, safes: SafeItem[], safeOverviews: SafeOv
 const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountItemProps) => {
   const {
     address,
+    name,
     sortedSafes,
     safeOverviews,
     sharedSetup,
@@ -200,7 +228,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
     isWelcomePage,
     deployedChainIds,
   } = useMultiAccountItemData(multiSafeAccountItem)
-  const { addToPinnedList, removeFromPinnedList } = usePinActions(address, sortedSafes, safeOverviews)
+  const { addToPinnedList, removeFromPinnedList } = usePinActions(address, name, sortedSafes, safeOverviews)
 
   const [expanded, setExpanded] = useState(isCurrentSafe)
   const trackingLabel = isWelcomePage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
