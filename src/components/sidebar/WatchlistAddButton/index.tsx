@@ -58,7 +58,7 @@ const WatchlistAddButton = () => {
             sx={{ py: 1.3 }}
             startIcon={<VisibilityOutlined sx={{ verticalAlign: 'middle', marginRight: 1 }} />}
           >
-            Add as Read-only
+            Add read-only
           </Button>
         </Track>
       )}
