@@ -5,7 +5,7 @@ import {
   TransactionListItemType,
   TransactionStatus,
   TransferDirection,
-} from '@/src/store/gateway/types'
+} from '@safe-global/store/gateway/types'
 import {
   isCancellationTxInfo,
   isCreationTxInfo,

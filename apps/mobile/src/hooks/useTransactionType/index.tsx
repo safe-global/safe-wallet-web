@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import type { AnyAppDataDocVersion, latest } from '@cowprotocol/app-data'
-import { SettingsInfoType, TransactionInfoType } from '@/src/store/gateway/types'
-import type { Transaction, AddressInfo } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { SettingsInfoType, TransactionInfoType } from '@safe-global/store/gateway/types'
+import type { Transaction, AddressInfo } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 import {
   isCancellationTxInfo,
   isModuleExecutionInfo,
@@ -10,7 +10,7 @@ import {
   isTxQueued,
 } from '@/src/utils/transaction-guards'
 import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
-import { SwapOrderTransactionInfo } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { SwapOrderTransactionInfo } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 
 const getTxTo = ({ txInfo }: Pick<Transaction, 'txInfo'>): AddressInfo | undefined => {
   switch (txInfo.type) {

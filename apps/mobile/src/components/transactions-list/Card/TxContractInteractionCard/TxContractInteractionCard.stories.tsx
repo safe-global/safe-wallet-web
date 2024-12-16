@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { TxContractInteractionCard } from '@/src/components/transactions-list/Card/TxContractInteractionCard'
 import { mockTransferWithInfo } from '@/src/tests/mocks'
-import { CustomTransactionInfo } from '@/src/store/gateway/AUTO_GENERATED/transactions'
-import { TransactionInfoType } from '@/src/store/gateway/types'
+import { CustomTransactionInfo } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
+import { TransactionInfoType } from '@safe-global/store/gateway/types'
 
 const meta: Meta<typeof TxContractInteractionCard> = {
   title: 'TransactionsList/TxContractInteractionCard',

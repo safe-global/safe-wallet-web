@@ -1,6 +1,6 @@
 import { render } from '@/src/tests/test-utils'
 import { TxSwapCard } from '.'
-import { OrderTransactionInfo } from '@/src/store/gateway/types'
+import { OrderTransactionInfo } from '@safe-global/store/gateway/types'
 import { mockSwapTransfer } from '@/src/tests/mocks'
 
 describe('TxSwapCard', () => {

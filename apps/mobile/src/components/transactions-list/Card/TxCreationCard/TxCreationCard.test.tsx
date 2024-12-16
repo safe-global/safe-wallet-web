@@ -1,8 +1,8 @@
 import { render } from '@/src/tests/test-utils'
 import { TxCreationCard } from '.'
 import { mockTransferWithInfo } from '@/src/tests/mocks'
-import { TransactionInfoType } from '@/src/store/gateway/types'
-import { CreationTransactionInfo } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { TransactionInfoType } from '@safe-global/store/gateway/types'
+import { CreationTransactionInfo } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 
 describe('TxCreationCard', () => {
   it('should render the default markup', () => {

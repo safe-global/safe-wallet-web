@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { mockERC20Transfer, mockListItemByType, mockNFTTransfer } from '@/src/tests/mocks'
-import { TransactionItem } from '@/src/store/gateway/AUTO_GENERATED/transactions'
-import { TransactionListItemType, TransactionStatus } from '@/src/store/gateway/types'
+import { TransactionItem } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
+import { TransactionListItemType, TransactionStatus } from '@safe-global/store/gateway/types'
 import { TxGroupedCard } from '.'
 
 const meta: Meta<typeof TxGroupedCard> = {

@@ -7,7 +7,7 @@ import {
   TransactionListItemType,
   TransactionTokenType,
   TransferDirection,
-} from '@/src/store/gateway/types'
+} from '@safe-global/store/gateway/types'
 import type {
   ModuleExecutionInfo,
   TransactionDetails,
@@ -28,9 +28,9 @@ import type {
   Transaction,
   CreationTransactionInfo,
   CustomTransactionInfo,
-} from '@/src/store/gateway/AUTO_GENERATED/transactions'
+} from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 
-import { HistoryTransactionItems, PendingTransactionItems } from '@/src/store/gateway/types'
+import { HistoryTransactionItems, PendingTransactionItems } from '@safe-global/store/gateway/types'
 
 const TransactionStatus = {
   AWAITING_CONFIRMATIONS: 'AWAITING_CONFIRMATIONS',

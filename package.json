@@ -4,17 +4,20 @@
   "version": "1.0.0",
   "workspaces": [
     "apps/*",
+    "config/*",
     "packages/*"
   ],
   "scripts": {
     "lint": "yarn workspaces foreach --all -pt run lint",
     "test": "yarn workspaces foreach --all -pt run test",
-    "prettier:fix": "yarn workspaces foreach --all -pt run prettier:fix",
-    "eslint": "yarn workspaces foreach --all -pt run eslint"
+    "eslint": "yarn workspaces foreach --all -pt run eslint",
+    "prettier": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\""
   },
   "devDependencies": {
     "husky": "^9.1.6",
-    "lint-staged": "^15.2.10"
+    "lint-staged": "^15.2.10",
+    "prettier": "^3.4.2"
   },
   "packageManager": "yarn@4.5.3"
 }

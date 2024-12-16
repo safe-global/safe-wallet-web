@@ -4,8 +4,8 @@ import { Image, Spinner, View } from 'tamagui'
 import { Alert } from '@/src/components/Alert'
 import { Dropdown } from '@/src/components/Dropdown'
 import { Fiat } from '@/src/components/Fiat'
-import { SafeOverview } from '@/src/store/gateway/AUTO_GENERATED/safes'
-import { Chain } from '@/src/store/gateway/AUTO_GENERATED/chains'
+import { SafeOverview } from '@safe-global/store/gateway/AUTO_GENERATED/safes'
+import { Chain } from '@safe-global/store/gateway/AUTO_GENERATED/chains'
 
 import { ChainItems } from './ChainItems'
 

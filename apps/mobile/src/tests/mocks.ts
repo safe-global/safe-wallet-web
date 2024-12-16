@@ -8,7 +8,7 @@ import {
   ConflictType,
   TransactionListItemType,
   HistoryTransactionItems,
-} from '@/src/store/gateway/types'
+} from '@safe-global/store/gateway/types'
 import {
   TransferTransactionInfo,
   SwapTransferTransactionInfo,
@@ -18,7 +18,7 @@ import {
   ConflictHeaderQueuedItem,
   AddressInfo,
   Transaction,
-} from '@/src/store/gateway/AUTO_GENERATED/transactions'
+} from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 
 export const fakeToken = {
   address: '0x1111111111',

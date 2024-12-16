@@ -2,7 +2,7 @@ import { renderHook, act } from '@/src/tests/test-utils'
 import { useAppSelector, useAppDispatch } from '.'
 import { addTx, txHistorySelector } from '../txHistorySlice'
 import { mockHistoryPageItem } from '@/src/tests/mocks'
-import { TransactionListItemType } from '@/src/store/gateway/types'
+import { TransactionListItemType } from '@safe-global/store/gateway/types'
 
 const mockHook = () => {
   const dispatch = useAppDispatch()

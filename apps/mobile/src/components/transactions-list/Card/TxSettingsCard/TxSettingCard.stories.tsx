@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { TxSettingsCard } from '@/src/components/transactions-list/Card/TxSettingsCard'
 import { mockTransferWithInfo } from '@/src/tests/mocks'
-import { SettingsChangeTransaction } from '@/src/store/gateway/AUTO_GENERATED/transactions'
-import { TransactionInfoType } from '@/src/store/gateway/types'
+import { SettingsChangeTransaction } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
+import { TransactionInfoType } from '@safe-global/store/gateway/types'
 
 const meta: Meta<typeof TxSettingsCard> = {
   title: 'TransactionsList/TxSettingsCard',

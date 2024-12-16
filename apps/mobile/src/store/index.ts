@@ -4,10 +4,11 @@ import { reduxStorage } from './storage'
 import txHistory from './txHistorySlice'
 import activeChain from './activeChainSlice'
 import activeSafe from './activeSafeSlice'
-import { cgwClient } from '@/src/store/gateway/cgwClient'
+import { cgwClient, setBaseUrl } from '@safe-global/store/gateway/cgwClient'
 import devToolsEnhancer from 'redux-devtools-expo-dev-plugin'
-import { isTestingEnv } from '../config/constants'
+import { GATEWAY_URL, isTestingEnv } from '../config/constants'
 
+setBaseUrl(GATEWAY_URL)
 const persistConfig = {
   key: 'root',
   version: 1,

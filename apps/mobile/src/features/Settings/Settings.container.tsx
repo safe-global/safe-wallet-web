@@ -1,5 +1,5 @@
-import { useGetSafeQuery } from '@/src/store/gateway'
-import { SafeState } from '@/src/store/gateway/AUTO_GENERATED/safes'
+import { useGetSafeQuery } from '@safe-global/store/gateway'
+import { SafeState } from '@safe-global/store/gateway/AUTO_GENERATED/safes'
 import { useSelector } from 'react-redux'
 import { selectActiveSafe } from '@/src/store/activeSafeSlice'
 import { Settings } from './Settings'

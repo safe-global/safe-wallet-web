@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '.'
-import { TransactionItemPage } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { TransactionItemPage } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 
 const initialState: TransactionItemPage = { results: [] }
 

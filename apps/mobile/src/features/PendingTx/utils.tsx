@@ -1,4 +1,4 @@
-import { TransactionQueuedItem } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { TransactionQueuedItem } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 import {
   getBulkGroupTxHash,
   getTxHash,
@@ -7,7 +7,7 @@ import {
   isTransactionListItem,
 } from '@/src/utils/transaction-guards'
 import { groupBulkTxs } from '@/src/utils/transactions'
-import { type PendingTransactionItems, TransactionListItemType } from '@/src/store/gateway/types'
+import { type PendingTransactionItems, TransactionListItemType } from '@safe-global/store//src/gateway/types'
 import { View } from 'tamagui'
 import { TxGroupedCard } from '@/src/components/transactions-list/Card/TxGroupedCard'
 import { TxConflictingCard } from '@/src/components/transactions-list/Card/TxConflictingCard'
