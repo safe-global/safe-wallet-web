@@ -9,6 +9,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import useNameResolver from '@/components/common/AddressInput/useNameResolver'
 import { chainBuilder } from '@/tests/builders/chains'
 import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
+import userEvent from '@testing-library/user-event'
 
 const mockChain = chainBuilder()
   .with({ features: [FEATURES.DOMAIN_LOOKUP] })
@@ -31,7 +32,15 @@ jest.mock('@/components/common/AddressInput/useNameResolver', () => ({
   })),
 }))
 
-const TestForm = ({ address, validate }: { address: string; validate?: AddressInputProps['validate'] }) => {
+const TestForm = ({
+  address,
+  validate,
+  disabled,
+}: {
+  address: string
+  validate?: AddressInputProps['validate']
+  disabled?: boolean
+}) => {
   const name = 'recipient'
 
   const methods = useForm<{
@@ -46,15 +55,15 @@ const TestForm = ({ address, validate }: { address: string; validate?: AddressIn
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(() => null)}>
-        <AddressInput name={name} label="Recipient address" validate={validate} />
+        <AddressInput name={name} label="Recipient address" validate={validate} disabled={disabled} />
         <button type="submit">Submit</button>
       </form>
     </FormProvider>
   )
 }
 
-const setup = (address: string, validate?: AddressInputProps['validate']) => {
-  const utils = render(<TestForm address={address} validate={validate} />)
+const setup = (address: string, validate?: AddressInputProps['validate'], disabled?: boolean) => {
+  const utils = render(<TestForm address={address} validate={validate} disabled={disabled} />)
   const input = utils.getByLabelText('Recipient address', { exact: false })
 
   return {
@@ -297,5 +306,59 @@ describe('AddressInput tests', () => {
     })
 
     await waitFor(() => expect(utils.getByText(mockSafeName)).toBeInTheDocument())
+  })
+
+  it('should clear the input on click if the address is in the address book and not disabled', async () => {
+    const mockChainId = '11155111'
+    const mockSafeName = 'Test Safe'
+    const mockAB = { [TEST_ADDRESS_A]: mockSafeName }
+
+    jest.spyOn(urlChainId, 'default').mockImplementation(() => mockChainId)
+    jest.spyOn(allAddressBooks, 'default').mockReturnValue({ [mockChainId]: mockAB })
+    jest.spyOn(addressBook, 'default').mockImplementation(() => mockAB)
+
+    const { input, utils } = setup(TEST_ADDRESS_A)
+
+    act(() => {
+      fireEvent.change(input, { target: { value: TEST_ADDRESS_A } })
+    })
+
+    await waitFor(() => {
+      expect(utils.getByText(mockSafeName)).toBeInTheDocument()
+      expect(utils.getByRole('textbox')).toHaveValue(TEST_ADDRESS_A)
+    })
+
+    act(() => {
+      userEvent.click(input)
+    })
+
+    await waitFor(() => expect(utils.getByRole('textbox')).toHaveValue(''))
+  })
+
+  it('should not clear the input on click if the address is in the address book and the input is disabled', async () => {
+    const mockChainId = '11155111'
+    const mockSafeName = 'Test Safe'
+    const mockAB = { [TEST_ADDRESS_A]: mockSafeName }
+
+    jest.spyOn(urlChainId, 'default').mockImplementation(() => mockChainId)
+    jest.spyOn(allAddressBooks, 'default').mockReturnValue({ [mockChainId]: mockAB })
+    jest.spyOn(addressBook, 'default').mockImplementation(() => mockAB)
+
+    const { input, utils } = setup(TEST_ADDRESS_A, undefined, true)
+
+    act(() => {
+      fireEvent.change(input, { target: { value: TEST_ADDRESS_A } })
+    })
+
+    await waitFor(() => {
+      expect(utils.getByText(mockSafeName)).toBeInTheDocument()
+      expect(utils.getByRole('textbox')).toHaveValue(TEST_ADDRESS_A)
+    })
+
+    act(() => {
+      userEvent.click(input)
+    })
+
+    await waitFor(() => expect(utils.getByRole('textbox')).toHaveValue(TEST_ADDRESS_A))
   })
 })
