@@ -117,7 +117,7 @@
     "@storybook/nextjs": "^8.0.6",
     "@storybook/react": "^8.0.6",
     "@storybook/test": "^8.0.6",
-    "@svgr/webpack": "^6.3.1",
+    "@svgr/webpack": "^8.1.0",
     "@testing-library/cypress": "^10.0.2",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.0.1",
