@@ -7,7 +7,7 @@ import {
   SwapTransferTransactionInfo,
   ModuleExecutionInfo,
   MultisigExecutionInfo,
-} from '@/src/store/gateway/AUTO_GENERATED/transactions'
+} from './AUTO_GENERATED/transactions'
 import { SafeOverview } from './AUTO_GENERATED/safes'
 
 export type ExecutionInfo = ModuleExecutionInfo | MultisigExecutionInfo

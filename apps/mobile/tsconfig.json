@@ -3,7 +3,8 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@safe-global/store/*": ["../../packages/store/src/*"]
     },
     "types": ["jest", "node"]
   },

@@ -2,8 +2,8 @@ import React from 'react'
 import { Avatar, Text, Theme, View } from 'tamagui'
 import { SafeListItem } from '@/src/components/SafeListItem'
 import { formatValue } from '@/src/utils/formatters'
-import { OrderTransactionInfo } from '@/src/store/gateway/types'
-import { Transaction } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { OrderTransactionInfo } from '@safe-global/store/gateway/types'
+import { Transaction } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 
 interface TxSwapCardProps {
   txInfo: OrderTransactionInfo

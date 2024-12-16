@@ -1,6 +1,6 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '.'
-import { selectChainById } from './gateway/chains'
+import { selectChainById } from './chains'
 
 const initialState = { id: '1' }
 

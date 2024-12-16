@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { safelyDecodeURIComponent } from 'expo-router/build/fork/getStateFromPath-forks'
 
-import { useGetTxsHistoryQuery } from '@/src/store/gateway'
-import type { TransactionItemPage } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { useGetTxsHistoryQuery } from '@safe-global/store/gateway'
+import type { TransactionItemPage } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 import { selectActiveSafe } from '@/src/store/activeSafeSlice'
 import { TxHistoryList } from '@/src/features/TxHistory/components/TxHistoryList'
 

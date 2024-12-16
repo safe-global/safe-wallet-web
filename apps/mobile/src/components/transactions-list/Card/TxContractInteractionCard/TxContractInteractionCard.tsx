@@ -2,8 +2,8 @@ import React from 'react'
 import { Avatar, Text, Theme, View } from 'tamagui'
 import { SafeListItem } from '@/src/components/SafeListItem'
 import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
-import { MultiSend } from '@/src/store/gateway/types'
-import { Transaction, CustomTransactionInfo } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { MultiSend } from '@safe-global/store/gateway/types'
+import { Transaction, CustomTransactionInfo } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 
 interface TxContractInteractionCardProps {
   bordered?: boolean

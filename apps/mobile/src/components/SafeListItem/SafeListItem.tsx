@@ -4,7 +4,7 @@ import { Text, Theme, ThemeName, View } from 'tamagui'
 import { IconProps, SafeFontIcon } from '../SafeFontIcon/SafeFontIcon'
 import { ellipsis } from '@/src/utils/formatters'
 import { isMultisigExecutionInfo } from '@/src/utils/transaction-guards'
-import { Transaction } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { Transaction } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 import { Badge } from '../Badge'
 
 interface SafeListItemProps {

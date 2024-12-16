@@ -3,9 +3,9 @@ import React, { useMemo } from 'react'
 import { SectionList } from 'react-native'
 
 import { SafeListItem } from '@/src/components/SafeListItem'
-import { TransactionItem } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { TransactionItem } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 import { getTxHash, GroupedTxsWithTitle, groupTxsByDate } from '@/src/features/TxHistory/utils'
-import { HistoryTransactionItems } from '@/src/store/gateway/types'
+import { HistoryTransactionItems } from '@safe-global/store/gateway/types'
 import { renderItem } from '@/src/features/TxHistory/utils'
 
 interface TxHistoryList {

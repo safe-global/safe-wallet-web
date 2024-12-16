@@ -1,7 +1,7 @@
-import { useGetPendingTxsQuery } from '@/src/store/gateway'
+import { useGetPendingTxsQuery } from '@safe-global/store/gateway'
 import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { QueuedItemPage } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { QueuedItemPage } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 import { groupPendingTxs } from '@/src/features/PendingTx/utils'
 import { selectActiveSafe } from '@/src/store/activeSafeSlice'
 

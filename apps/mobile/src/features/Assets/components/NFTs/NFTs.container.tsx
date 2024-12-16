@@ -9,7 +9,7 @@ import {
   Collectible,
   CollectiblePage,
   useCollectiblesGetCollectiblesV2Query,
-} from '@/src/store/gateway/AUTO_GENERATED/collectibles'
+} from '@safe-global/store/gateway/AUTO_GENERATED/collectibles'
 
 import { Fallback } from '../Fallback'
 import { NFTItem } from './NFTItem'

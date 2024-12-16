@@ -1,6 +1,6 @@
 import React from 'react'
-import { TransactionInfoType } from '@/src/store/gateway/types'
-import { type Transaction } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { TransactionInfoType } from '@safe-global/store/gateway/types'
+import { type Transaction } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 import { useTransactionType } from '@/src/hooks/useTransactionType'
 import { TxTokenCard } from '@/src/components/transactions-list/Card/TxTokenCard'
 import { TxSettingsCard } from '@/src/components/transactions-list/Card/TxSettingsCard'

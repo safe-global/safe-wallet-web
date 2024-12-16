@@ -18,11 +18,26 @@ To get started, ensure you have the required tools installed and follow these st
 ### Prerequisites
 
 - **Node.js**: Install the latest stable version from [Node.js](https://nodejs.org/).
-- **Yarn**: Use Yarn version 4.5.3 or later. You can install it globally:
+- **Yarn**: Use Yarn version 4.5.3 or later
+
+to install it with the latest node version you can simply do
 
 ```bash
-npm install -g yarn
+corepack enable
 ```
+
+and then just run
+
+```bash
+yarn
+```
+
+This will install the required version of yarn and resolve all dependencies.
+
+> [!INFO]
+>
+> Corepack is a tool to help with managing versions of your package managers. It exposes binary proxies for each supported package manager that, when called, will identify whatever package manager is
+> configured for the current project, download it if needed, and finally run it.
 
 ### Initial Setup
 
@@ -52,7 +67,7 @@ yarn workspace <workspace-name> <script>
 ```
 
 Example:
- 
+
 ```bash
 yarn workspace @safe-global/mobile start
 ```
@@ -64,20 +79,21 @@ yarn workspace <workspace-name> add <package-name>
 ```
 
 - **Remove a dependency from a specific workspace:**
+
 ```bash
 yarn workspace <workspace-name> remove <package-name>
 ```
-  
+
 > [!Note]
-> 
-> Yarn treats commands that contain a semicolon as global commands. For example if you have a 
+>
+> Yarn treats commands that contain a semicolon as global commands. For example if you have a
 > command in a workspace that has a semicolon and there isn't another workspace that has the same command,
->you can run the command without specifying the workspace name. For example:
-> 
+> you can run the command without specifying the workspace name. For example:
+>
 > ```bash
 > yarn start:ios
 > ```
-> 
+>
 > is equivalent to:
 >
 > ```bash
@@ -137,4 +153,3 @@ yarn install
 
 If you have any questions or run into issues, feel free to open a discussion or contact the maintainers. Happy coding!
 🚀
-

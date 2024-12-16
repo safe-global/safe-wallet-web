@@ -2,8 +2,8 @@ import React from 'react'
 import { Avatar, Text, View } from 'tamagui'
 import { SafeListItem } from '@/src/components/SafeListItem'
 import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
-import type { MultiSend } from '@/src/store/gateway/types'
-import type { SafeAppInfo, Transaction } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import type { MultiSend } from '@safe-global/store/gateway/types'
+import type { SafeAppInfo, Transaction } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 
 interface TxSafeAppCardProps {
   safeAppInfo: SafeAppInfo

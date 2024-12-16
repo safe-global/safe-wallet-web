@@ -6,9 +6,11 @@ on:
       - main
     paths:
       - apps/mobile/**
+      - packages/store/**
   pull_request:
     paths:
       - apps/mobile/**
+      - packages/store/**
 
 jobs:
   lint:

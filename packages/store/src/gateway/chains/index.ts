@@ -1,15 +1,13 @@
-import { type Chain as ChainInfo } from '@/src/store/gateway/AUTO_GENERATED/chains'
-import { GATEWAY_URL } from '@/src/config/constants'
+import { type Chain as ChainInfo } from '../AUTO_GENERATED/chains'
 import { createEntityAdapter, createSelector, EntityState } from '@reduxjs/toolkit'
-import { RootState } from '../..'
-import { cgwClient } from '@/src/store/gateway/cgwClient'
+import { cgwClient, getBaseUrl } from '../cgwClient'
 import { QueryReturnValue, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/query'
 
-const chainsAdapter = createEntityAdapter<ChainInfo, string>({ selectId: (chain: ChainInfo) => chain.chainId })
-const initialState = chainsAdapter.getInitialState()
+export const chainsAdapter = createEntityAdapter<ChainInfo, string>({ selectId: (chain: ChainInfo) => chain.chainId })
+export const initialState = chainsAdapter.getInitialState()
 
 const getChainsConfigs = async (
-  url = `${GATEWAY_URL}/v1/chains`,
+  url = `${getBaseUrl()}/v1/chains`,
   results: ChainInfo[] = [],
 ): Promise<EntityState<ChainInfo, string>> => {
   const response = await fetch(url)
@@ -48,15 +46,3 @@ export const apiSliceWithChainsConfig = cgwClient.injectEndpoints({
   }),
   overrideExisting: true,
 })
-
-const selectChainsResult = apiSliceWithChainsConfig.endpoints.getChainsConfig.select()
-
-const selectChainsData = createSelector(selectChainsResult, (result) => {
-  return result.data ?? initialState
-})
-
-const { selectAll: selectAllChains, selectById } = chainsAdapter.getSelectors(selectChainsData)
-
-export const selectChainById = (state: RootState, chainId: string) => selectById(state, chainId)
-export const { useGetChainsConfigQuery } = apiSliceWithChainsConfig
-export { selectAllChains }

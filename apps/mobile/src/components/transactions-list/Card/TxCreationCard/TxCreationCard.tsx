@@ -3,7 +3,7 @@ import { Theme, View } from 'tamagui'
 import { SafeListItem } from '@/src/components/SafeListItem'
 import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
 import { shortenAddress } from '@/src/utils/formatters'
-import type { Transaction, CreationTransactionInfo } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import type { Transaction, CreationTransactionInfo } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 
 interface TxCreationCardProps {
   txInfo: CreationTransactionInfo

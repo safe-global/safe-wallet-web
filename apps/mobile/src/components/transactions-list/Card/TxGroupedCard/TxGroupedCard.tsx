@@ -5,8 +5,8 @@ import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
 import { TxInfo } from '@/src/components/TxInfo'
 import { getOrderClass } from '@/src/hooks/useTransactionType'
 import { isSwapTransferOrderTxInfo } from '@/src/utils/transaction-guards'
-import { OrderTransactionInfo } from '@/src/store/gateway/types'
-import { TransactionQueuedItem, TransactionItem } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { OrderTransactionInfo } from '@safe-global/store/gateway/types'
+import { TransactionQueuedItem, TransactionItem } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 
 interface TxGroupedCard {
   transactions: (TransactionItem | TransactionQueuedItem)[]

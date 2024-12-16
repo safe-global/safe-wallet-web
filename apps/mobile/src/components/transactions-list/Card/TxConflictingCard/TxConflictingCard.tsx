@@ -2,7 +2,7 @@ import React from 'react'
 import { Theme, View } from 'tamagui'
 import { TxInfo } from '@/src/components/TxInfo'
 import { Alert } from '@/src/components/Alert'
-import { TransactionQueuedItem } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { TransactionQueuedItem } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 
 interface TxConflictingCard {
   transactions: TransactionQueuedItem[]

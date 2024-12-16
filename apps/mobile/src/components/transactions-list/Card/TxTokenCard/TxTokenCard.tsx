@@ -11,8 +11,8 @@ import {
 import { ellipsis, formatValue } from '@/src/utils/formatters'
 import { useSelector } from 'react-redux'
 import { selectNativeCurrency } from '@/src/store/activeChainSlice'
-import { TransferDirection } from '@/src/store/gateway/types'
-import { TransferTransactionInfo, Transaction } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { TransferDirection } from '@safe-global/store/gateway/types'
+import { TransferTransactionInfo, Transaction } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 import { Logo } from '@/src/components/Logo'
 
 interface TxTokenCardProps {

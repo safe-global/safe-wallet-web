@@ -1,5 +1,5 @@
 import { GroupedTxs } from '@/src/features/TxHistory/utils'
-import { Transaction } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { Transaction } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 
 export const groupBulkTxs = <T extends { type: string; transaction?: Transaction }>(
   list: GroupedTxs<T>,

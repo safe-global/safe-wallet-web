@@ -1,4 +1,7 @@
+const preset = require('../../config/jest-presets/presets/jest-preset')
+
 module.exports = {
+  ...preset,
   preset: 'jest-expo',
   collectCoverage: true,
   collectCoverageFrom: [

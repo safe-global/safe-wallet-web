@@ -6,8 +6,8 @@ import { Badge } from '@/src/components/Badge'
 import { NavBarTitle } from '@/src/components/Title/NavBarTitle'
 import { LargeHeaderTitle } from '@/src/components/Title/LargeHeaderTitle'
 import { useScrollableHeader } from '@/src/navigation/useScrollableHeader'
-import { TransactionQueuedItem } from '@/src/store/gateway/AUTO_GENERATED/transactions'
-import { PendingTransactionItems } from '@/src/store/gateway/types'
+import { TransactionQueuedItem } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
+import { PendingTransactionItems } from '@safe-global/store/gateway/types'
 import { keyExtractor, renderItem } from '@/src/features/PendingTx/utils'
 
 export interface GroupedPendingTxsWithTitle {

@@ -1,7 +1,7 @@
 import { renderHook } from '@/src/tests/test-utils'
 import { useTransactionType } from '.'
 import { mockTransactionSummary, mockTransferWithInfo } from '@/src/tests/mocks'
-import { TransactionInfoType, TransactionStatus, TransferDirection } from '@/src/store/gateway/types'
+import { TransactionInfoType, TransactionStatus, TransferDirection } from '@safe-global/store/gateway/types'
 
 describe('useTransactionType', () => {
   it('should be a Received transaction', () => {

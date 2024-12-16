@@ -1,4 +1,4 @@
-import { type Chain } from '@/src/store/gateway/AUTO_GENERATED/chains'
+import { type Chain } from '@safe-global/store/gateway/AUTO_GENERATED/chains'
 
 export const _replaceTemplate = (uri: string, data: Record<string, string>): string => {
   // Template syntax returned from gateway is {{this}}
