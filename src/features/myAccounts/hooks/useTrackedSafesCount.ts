@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useMemo } from 'react'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { type SafeItem } from './useAllSafes'
-import type { AllSafesGrouped } from './useAllSafesGrouped'
+import type { AllSafeItemsGrouped } from './useAllSafesGrouped'
 import { type MultiChainSafeItem } from './useAllSafesGrouped'
 import { isMultiChainSafeItem } from '@/features/multichain/utils/utils'
 
@@ -12,11 +12,7 @@ let isOwnedSafesTracked = false
 let isPinnedSafesTracked = false
 let isWatchlistTracked = false
 
-const useTrackSafesCount = (
-  safes: AllSafesGrouped,
-  pinnedSafes: (MultiChainSafeItem | SafeItem)[],
-  wallet: ConnectedWallet | null,
-) => {
+const useTrackSafesCount = (safes: AllSafeItemsGrouped, wallet: ConnectedWallet | null) => {
   const router = useRouter()
   const isLoginPage = router.pathname === AppRoutes.welcome.accounts
 
@@ -44,6 +40,15 @@ const useTrackSafesCount = (
       ...(safes.allSingleSafes?.filter(({ isReadOnly, isPinned }) => isReadOnly && !isPinned) ?? []),
     ],
     [safes, watchlistMultiChainSafes],
+  )
+
+  // TODO: This is computed here and inside PinnedSafes now. Find a way to optimize it
+  const pinnedSafes = useMemo<(MultiChainSafeItem | SafeItem)[]>(
+    () => [
+      ...(safes.allSingleSafes?.filter(({ isPinned }) => isPinned) ?? []),
+      ...(safes.allMultiChainSafes?.filter(({ isPinned }) => isPinned) ?? []),
+    ],
+    [safes],
   )
 
   // Reset tracking for new wallet
