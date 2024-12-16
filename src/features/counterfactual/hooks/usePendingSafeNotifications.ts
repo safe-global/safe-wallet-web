@@ -1,5 +1,8 @@
 import { SafeCreationEvent, safeCreationSubscribe } from '@/features/counterfactual/services/safeCreationEvents'
+import useWallet from '@/hooks/wallets/useWallet'
+import { useGetAllOwnedSafesQuery } from '@/store/api/gateway'
 import { getBlockExplorerLink } from '@/utils/chains'
+import { skipToken } from '@reduxjs/toolkit/query'
 import { useEffect } from 'react'
 import { formatError } from '@/utils/formatters'
 import { showNotification } from '@/store/notificationsSlice'
@@ -26,6 +29,8 @@ const usePendingSafeNotifications = (): void => {
   const dispatch = useAppDispatch()
   const chain = useCurrentChain()
   const safeAddress = useSafeAddress()
+  const { address = '' } = useWallet() || {}
+  const { refetch } = useGetAllOwnedSafesQuery(address === '' ? skipToken : { walletAddress: address })
 
   useEffect(() => {
     if (!chain) return
@@ -43,6 +48,11 @@ const usePendingSafeNotifications = (): void => {
         const groupKey = 'groupKey' in detail && detail.groupKey ? detail.groupKey : txHash || ''
         const link = chain && txHash ? getBlockExplorerLink(chain, txHash) : undefined
 
+        // Fetch all owned safes after the Safe has been deployed
+        if (isSuccess) {
+          refetch()
+        }
+
         dispatch(
           showNotification({
             title: 'Safe Account activation',
@@ -59,7 +69,7 @@ const usePendingSafeNotifications = (): void => {
     return () => {
       unsubFns.forEach((unsub) => unsub())
     }
-  }, [dispatch, safeAddress, chain])
+  }, [dispatch, safeAddress, chain, refetch])
 }
 
 export default usePendingSafeNotifications
