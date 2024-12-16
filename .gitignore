@@ -56,4 +56,6 @@ yalc.lock
 /public/*.js.LICENSE.txt
 certificates
 *storybook.log
-/.yarn
+
+# Yarn v4
+.yarn/*
