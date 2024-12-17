@@ -152,14 +152,7 @@ const NftGrid = ({
                   }}
                 >
                   {headCell.id === 'collection' ? (
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        alignContent: 'center',
-                        gap: 1,
-                      }}
-                    >
+                    <Box display="flex" alignItems="center" alignContent="center" gap={1}>
                       <TextField
                         placeholder="Collection"
                         hiddenLabel
@@ -209,25 +202,13 @@ const NftGrid = ({
                 <TableRow data-testid={`nfts-table-row-${index + 1}`} tabIndex={-1} key={`${item.address}-${item.id}`}>
                   {/* Collection name */}
                   <TableCell onClick={onClick} sx={sx}>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 2,
-                      }}
-                    >
+                    <Box display="flex" alignItems="center" gap={2}>
                       {item.imageUri ? activeNftIcon : inactiveNftIcon}
 
                       <div>
                         <Typography>{item.tokenName || item.tokenSymbol}</Typography>
 
-                        <Typography
-                          component="div"
-                          sx={{
-                            fontSize: 'small',
-                            color: 'text.secondary',
-                          }}
-                        >
+                        <Typography fontSize="small" color="text.secondary" component="div">
                           <EthHashInfo
                             address={item.address}
                             showAvatar={false}
@@ -239,22 +220,17 @@ const NftGrid = ({
                       </div>
                     </Box>
                   </TableCell>
+
                   {/* Token ID */}
                   <TableCell onClick={onClick} sx={sx}>
                     <Typography sx={item.name ? undefined : { wordBreak: 'break-all' }}>
                       {item.name || `${item.tokenSymbol} #${item.id.slice(0, 20)}`}
                     </Typography>
                   </TableCell>
+
                   {/* Links */}
                   <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        alignContent: 'center',
-                        gap: 2.5,
-                      }}
-                    >
+                    <Box display="flex" alignItems="center" alignContent="center" gap={2.5}>
                       {linkTemplates?.map(({ title, logo, getUrl }) => (
                         <ExternalLink href={getUrl(item)} key={title} onClick={stopPropagation} noIcon>
                           <img src={logo} width={24} height={24} alt={title} />
@@ -262,6 +238,7 @@ const NftGrid = ({
                       ))}
                     </Box>
                   </TableCell>
+
                   {/* Checkbox */}
                   <TableCell align="right">
                     <Checkbox
@@ -286,12 +263,7 @@ const NftGrid = ({
                       key={headCell.id}
                       sx={headCell.xsHidden ? { display: { xs: 'none', sm: 'table-cell' } } : undefined}
                     >
-                      <Box
-                        sx={{
-                          height: '42px',
-                          width: '42px',
-                        }}
-                      />
+                      <Box height="42px" width="42px" />
                     </TableCell>
                   ))}
                 </TableRow>

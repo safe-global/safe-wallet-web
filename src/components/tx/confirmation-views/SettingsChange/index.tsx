@@ -9,6 +9,7 @@ import { SettingsInfoType, type SettingsChange } from '@safe-global/safe-gateway
 import { ChangeSignerSetupWarning } from '@/features/multichain/components/SignerSetupWarning/ChangeSignerSetupWarning'
 import { useContext } from 'react'
 import { SettingsChangeContext } from '@/components/tx-flow/flows/AddOwner/context'
+import { maybePlural } from '@/utils/formatters'
 
 export interface SettingsChangeProps extends NarrowConfirmationViewProps {
   txInfo: SettingsChange
@@ -22,19 +23,13 @@ const SettingsChange: React.FC<SettingsChangeProps> = ({ txInfo: { settingsInfo 
 
   const shouldShowChangeSigner = 'owner' in settingsInfo || 'newOwner' in params
   const hasNewOwner = 'newOwner' in params
+  const newSignersLength = safe.owners.length + ('removedOwner' in settingsInfo ? 0 : 1)
 
   return (
     <>
       {'oldOwner' in settingsInfo && (
         <Paper sx={{ backgroundColor: ({ palette }) => palette.warning.background, p: 2 }}>
-          <Typography
-            sx={{
-              color: 'text.secondary',
-              mb: 2,
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
+          <Typography color="text.secondary" mb={2} display="flex" alignItems="center">
             <SvgIcon component={MinusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
             Previous signer
           </Typography>
@@ -47,9 +42,12 @@ const SettingsChange: React.FC<SettingsChangeProps> = ({ txInfo: { settingsInfo 
           />
         </Paper>
       )}
+
       {'owner' in settingsInfo && !hasNewOwner && <OwnerList owners={[settingsInfo.owner]} />}
       {hasNewOwner && <OwnerList owners={[{ name: params.newOwner.name, value: params.newOwner.address }]} />}
+
       {shouldShowChangeSigner && <ChangeSignerSetupWarning />}
+
       {'threshold' in settingsInfo && (
         <>
           <Divider className={commonCss.nestedDivider} />
@@ -58,7 +56,9 @@ const SettingsChange: React.FC<SettingsChangeProps> = ({ txInfo: { settingsInfo 
             <Typography variant="body2">Any transaction requires the confirmation of:</Typography>
             <Typography>
               <b>{settingsInfo.threshold}</b> out of{' '}
-              <b>{safe.owners.length + ('removedOwner' in settingsInfo ? 0 : 1)} signers</b>
+              <b>
+                {newSignersLength} signer{maybePlural(newSignersLength)}
+              </b>
             </Typography>
           </Box>
         </>

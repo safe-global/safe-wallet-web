@@ -11,12 +11,7 @@ const ExplorerLink = ({ address }: { address: string }): ReactElement | null => 
   if (!link) return null
 
   return (
-    <Typography
-      component="span"
-      sx={{
-        color: 'border.main',
-      }}
-    >
+    <Typography component="span" color="border.main">
       <ExplorerButton href={link.href} title={link.title} />
     </Typography>
   )

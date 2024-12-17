@@ -23,18 +23,8 @@ const PkModulePopup = () => {
 
   return (
     <ModalDialog dialogTitle="Connect with Private Key" onClose={onClose} open={isOpen} sx={{ zIndex: 1400 }}>
-      <Box
-        sx={{
-          p: 2,
-        }}
-      >
-        <Typography
-          variant="body1"
-          gutterBottom
-          sx={{
-            mb: 3,
-          }}
-        >
+      <Box p={2}>
+        <Typography variant="body1" gutterBottom mb={3}>
           Enter your signer private key. The key will be saved for the duration of this browser session.
         </Typography>
 

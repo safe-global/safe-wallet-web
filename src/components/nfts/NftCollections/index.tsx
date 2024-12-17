@@ -70,6 +70,7 @@ const NftCollections = (): ReactElement => {
         <form onSubmit={onSendSubmit}>
           {/* Batch send form */}
           <NftSendForm selectedNfts={selectedNfts} />
+
           {/* NFTs table */}
           <NftGrid
             nfts={allNfts}
@@ -83,6 +84,7 @@ const NftCollections = (): ReactElement => {
           </NftGrid>
         </form>
       )}
+
       {/* NFT preview */}
       <NftPreviewModal onClose={() => setPreviewNft(undefined)} nft={previewNft} />
     </>

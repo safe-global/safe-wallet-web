@@ -11,14 +11,9 @@ const SecurityLogin = () => {
   const router = useRouter()
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 2,
-      }}
-    >
+    <Box display="flex" flexDirection="column" gap={2}>
       {isRecoverySupported && router.query.safe ? <RecoverySettings /> : null}
+
       <SecuritySettings />
     </Box>
   )

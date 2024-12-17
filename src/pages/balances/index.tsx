@@ -26,18 +26,16 @@ const Balances: NextPage = () => {
       <Head>
         <title>{'Safe{Wallet} – Assets'}</title>
       </Head>
+
       <AssetsHeader>
         <HiddenTokenButton showHiddenAssets={showHiddenAssets} toggleShowHiddenAssets={toggleShowHiddenAssets} />
         <TokenListSelect />
         <CurrencySelect />
       </AssetsHeader>
+
       <main>
         {isStakingBannerEnabled && (
-          <Box
-            sx={{
-              mb: 2,
-            }}
-          >
+          <Box mb={2}>
             <StakingBanner />
           </Box>
         )}

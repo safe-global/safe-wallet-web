@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS, trackEvent } from '@/services/analytics'
 import useWallet from '@/hooks/wallets/useWallet'
-import { useHasSafes } from '@/features/myAccounts/hooks/useAllSafes'
+import useHasSafes from '@/features/myAccounts/hooks/useHasSafes'
 import Track from '@/components/common/Track'
 import { useCallback, useEffect, useState } from 'react'
 import WalletLogin from './WalletLogin'
@@ -42,22 +42,11 @@ const WelcomeLogin = () => {
       <Box className={css.loginContent}>
         <SvgIcon component={SafeLogo} inheritViewBox sx={{ height: '24px', width: '80px', ml: '-8px' }} />
 
-        <Typography
-          variant="h6"
-          sx={{
-            mt: 6,
-            fontWeight: 700,
-          }}
-        >
+        <Typography variant="h6" mt={6} fontWeight={700}>
           Get started
         </Typography>
 
-        <Typography
-          sx={{
-            mb: 2,
-            textAlign: 'center',
-          }}
-        >
+        <Typography mb={2} textAlign="center">
           {wallet
             ? 'Open your existing Safe Accounts or create a new one'
             : 'Connect your wallet to create a new Safe Account or open an existing one'}
@@ -70,13 +59,7 @@ const WelcomeLogin = () => {
         {!wallet && (
           <>
             <Divider sx={{ mt: 2, mb: 2, width: '100%' }}>
-              <Typography
-                variant="overline"
-                sx={{
-                  color: 'text.secondary',
-                  fontWeight: 700,
-                }}
-              >
+              <Typography color="text.secondary" fontWeight={700} variant="overline">
                 or
               </Typography>
             </Divider>

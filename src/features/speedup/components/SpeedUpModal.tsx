@@ -167,35 +167,19 @@ export const SpeedUpModal = ({
     return (
       <ModalDialog open={open} onClose={onCancel} dialogTitle="Speed up transaction">
         <DialogContent sx={{ p: '24px !important' }}>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              mb: 2,
-            }}
-          >
+          <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
             <SvgIcon inheritViewBox component={RocketSpeedup} sx={{ width: 90, height: 90 }} />
           </Box>
 
           <Typography data-testid="speedup-summary">
             This will speed up the pending transaction by{' '}
-            <Typography
-              component="span"
-              sx={{
-                fontWeight: 700,
-              }}
-            >
+            <Typography component="span" fontWeight={700}>
               replacing
             </Typography>{' '}
             the original gas parameters with new ones.
           </Typography>
 
-          <Box
-            sx={{
-              mt: 2,
-            }}
-          >
+          <Box mt={2}>
             {speedUpFee && signerNonce && (
               <GasParams
                 params={{
@@ -215,6 +199,7 @@ export const SpeedUpModal = ({
             <NetworkWarning />
           </Box>
         </DialogContent>
+
         <DialogActions>
           <Button onClick={onCancel}>Cancel</Button>
 
@@ -241,14 +226,7 @@ export const SpeedUpModal = ({
   return (
     <ModalDialog open={open} onClose={handleClose} dialogTitle="Speed up transaction">
       <DialogContent sx={{ p: '24px !important' }}>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            mb: 2,
-          }}
-        >
+        <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
           <SvgIcon inheritViewBox component={RocketSpeedup} sx={{ width: 90, height: 90 }} />
         </Box>
 

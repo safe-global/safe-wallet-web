@@ -12,7 +12,7 @@ const NetworkWarning = ({ action }: { action?: string }) => {
   return (
     <Alert severity="warning">
       <AlertTitle sx={{ fontWeight: 700 }}>Change your wallet network</AlertTitle>You are trying to{' '}
-      {action || 'sign or execute a transaction'}on {chain.chainName}. Make sure that your wallet is set to the same
+      {action || 'sign or execute a transaction'} on {chain.chainName}. Make sure that your wallet is set to the same
       network.
       <Box
         sx={{

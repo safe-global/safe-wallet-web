@@ -57,15 +57,12 @@ function EntryDialog({
       onClose={handleClose}
       dialogTitle={defaultValues.name ? 'Edit entry' : 'Create entry'}
       hideChainIndicator={chainIds && chainIds.length > 1}
+      chainId={chainIds?.[0]}
     >
       <FormProvider {...methods}>
         <form onSubmit={onSubmit}>
           <DialogContent>
-            <Box
-              sx={{
-                mb: 2,
-              }}
-            >
+            <Box mb={2}>
               <NameInput data-testid="name-input" label="Name" autoFocus name="name" required />
             </Box>
 

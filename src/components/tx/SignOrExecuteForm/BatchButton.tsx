@@ -29,14 +29,7 @@ const BatchButton = ({
         </Track>
       </span>
     </Tooltip>
-    <Box
-      sx={{
-        display: ['none', 'flex'],
-        flexDirection: 'column',
-        justifyContent: 'center',
-        color: 'border.main',
-      }}
-    >
+    <Box display={['none', 'flex']} flexDirection="column" justifyContent="center" color="border.main">
       {' '}
       <Divider
         sx={{

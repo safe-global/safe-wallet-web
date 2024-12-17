@@ -17,17 +17,14 @@ const Queue: NextPage = () => {
       <Head>
         <title>{'Safe{Wallet} – Transaction queue'}</title>
       </Head>
+
       <BatchExecuteHoverProvider>
         <TxHeader>
           <BatchExecuteButton />
         </TxHeader>
 
         <main>
-          <Box
-            sx={{
-              mb: 4,
-            }}
-          >
+          <Box mb={4}>
             <RecoveryList />
 
             {/* Pending unsigned transactions */}

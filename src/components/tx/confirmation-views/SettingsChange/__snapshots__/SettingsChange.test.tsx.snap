@@ -7,7 +7,7 @@ exports[`SettingsChange should display the SettingsChange component with newOwne
     style="--Paper-shadow: none;"
   >
     <p
-      class="MuiTypography-root MuiTypography-body1 css-k1tjez-MuiTypography-root"
+      class="MuiTypography-root MuiTypography-body1 css-qzqzle-MuiTypography-root"
     >
       <mock-icon
         aria-hidden=""
@@ -331,7 +331,7 @@ exports[`SettingsChange should display the SettingsChange component with owner d
        
       <b>
         1
-         signers
+         signer
       </b>
     </p>
   </div>

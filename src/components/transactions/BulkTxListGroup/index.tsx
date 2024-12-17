@@ -39,39 +39,22 @@ const GroupedTxListItems = ({
   }
   return (
     <Paper data-testid="grouped-items" className={css.container}>
-      <Box
-        sx={{
-          gridArea: 'icon',
-        }}
-      >
+      <Box gridArea="icon">
         <SvgIcon className={css.icon} component={BatchIcon} inheritViewBox fontSize="medium" />
       </Box>
-      <Box
-        sx={{
-          gridArea: 'info',
-        }}
-      >
+      <Box gridArea="info">
         <Typography noWrap>{title}</Typography>
       </Box>
       <Box className={css.action}>{groupedListItems.length} transactions</Box>
       <Box className={css.hash}>
         <ExplorerButton href={explorerLink} isCompact={false} />
       </Box>
-      <Box
-        className={css.txItems}
-        sx={{
-          gridArea: 'items',
-        }}
-      >
+
+      <Box gridArea="items" className={css.txItems}>
         {groupedListItems.map((tx) => {
           const nonce = isMultisigExecutionInfo(tx.transaction.executionInfo) ? tx.transaction.executionInfo.nonce : ''
           return (
-            <Box
-              key={tx.transaction.id}
-              sx={{
-                position: 'relative',
-              }}
-            >
+            <Box position="relative" key={tx.transaction.id}>
               <Box className={css.nonce}>
                 <Typography className={css.nonce}>{nonce}</Typography>
               </Box>

@@ -101,9 +101,12 @@ export const SignForm = ({
   const submitDisabled =
     !safeTx || !isSubmittable || disableSubmit || cannotPropose || (needsRiskConfirmation && !isRiskConfirmed)
 
+  const isSafeAppTransaction = !!origin
+
   return (
     <form onSubmit={handleSubmit}>
       {hasSigned && <ErrorMessage level="warning">You have already signed this transaction.</ErrorMessage>}
+
       {cannotPropose ? (
         <NonOwnerError />
       ) : (
@@ -111,16 +114,15 @@ export const SignForm = ({
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )
       )}
+
       {isRejectedByUser && (
-        <Box
-          sx={{
-            mt: 1,
-          }}
-        >
+        <Box mt={1}>
           <WalletRejectionError />
         </Box>
       )}
+
       <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
+
       <CardActions>
         <Stack
           sx={{
@@ -133,7 +135,7 @@ export const SignForm = ({
           {isCreation && !isBatch && (
             <BatchButton
               onClick={onBatchClick}
-              disabled={submitDisabled || !isBatchable}
+              disabled={submitDisabled || !isBatchable || isSafeAppTransaction}
               tooltip={!isBatchable ? `Cannot batch this type of transaction` : undefined}
             />
           )}

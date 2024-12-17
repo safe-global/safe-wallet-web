@@ -22,12 +22,7 @@ function Disclaimer({ isMalicious }: { isMalicious: boolean }): ReactElement {
       sx={{ bgcolor: ({ palette }) => `${palette.warning.background} !important` }}
     >
       <Typography>
-        <Typography
-          component="span"
-          sx={{
-            fontWeight: 700,
-          }}
-        >
+        <Typography component="span" fontWeight={700}>
           Cancelling {isMalicious ? 'malicious transaction' : 'Account recovery'}.
         </Typography>{' '}
         You will need to execute the cancellation.{' '}
@@ -49,26 +44,13 @@ export function GroupedRecoveryListItems({ items }: { items: Array<Transaction |
 
   return (
     <Paper className={[css.container, customCss.recoveryGroupContainer].join(' ')}>
-      <Box
-        className={css.disclaimerContainer}
-        sx={{
-          gridArea: 'warning',
-        }}
-      >
+      <Box gridArea="warning" className={css.disclaimerContainer}>
         <Disclaimer isMalicious={isMalicious} />
       </Box>
-      <Box
-        className={css.line}
-        sx={{
-          gridArea: 'line',
-        }}
-      />
-      <Box
-        className={css.txItems}
-        sx={{
-          gridArea: 'items',
-        }}
-      >
+
+      <Box gridArea="line" className={css.line} />
+
+      <Box gridArea="items" className={css.txItems}>
         {cancellations.map((tx) => (
           <div key={tx.transaction.id}>
             <ExpandableTransactionItem item={tx} />

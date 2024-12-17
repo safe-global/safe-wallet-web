@@ -32,37 +32,17 @@ const ConfirmationOrderHeader = ({ blocks, showArrow }: { blocks: [InfoBlock, In
           }}
         >
           {block.tokenInfo && (
-            <Box
-              sx={{
-                width: 40,
-                mr: 2,
-              }}
-            >
+            <Box width={40} mr={2}>
               <TokenIcon size={40} logoUri={block.tokenInfo.logoUri || ''} tokenSymbol={block.tokenInfo.symbol} />
             </Box>
           )}
 
-          <Box
-            sx={{
-              flex: 1,
-            }}
-          >
-            <Typography
-              variant="body2"
-              sx={{
-                color: 'primary.light',
-              }}
-            >
+          <Box flex={1}>
+            <Typography variant="body2" color="primary.light">
               {block.label}
             </Typography>
 
-            <Typography
-              variant="h4"
-              component="div"
-              sx={{
-                fontWeight: 'bold',
-              }}
-            >
+            <Typography variant="h4" fontWeight="bold" component="div">
               {block.tokenInfo ? (
                 <TokenAmount
                   tokenSymbol={block.tokenInfo.symbol}
@@ -76,16 +56,15 @@ const ConfirmationOrderHeader = ({ blocks, showArrow }: { blocks: [InfoBlock, In
           </Box>
 
           {showArrow && index === 0 && (
-            <Box
+            <Stack
               sx={{
-                bgcolor: 'background.paper',
                 width: 40,
                 height: 40,
-                p: 1,
-                borderRadius: '100%',
-                display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                p: 1,
+                borderRadius: '100%',
+                bgcolor: 'background.paper',
                 position: 'absolute',
                 right: -20,
                 top: '50%',
@@ -94,7 +73,7 @@ const ConfirmationOrderHeader = ({ blocks, showArrow }: { blocks: [InfoBlock, In
               }}
             >
               <SvgIcon component={EastRoundedIcon} inheritViewBox fontSize="small" />
-            </Box>
+            </Stack>
           )}
         </Stack>
       ))}
