@@ -30,6 +30,9 @@ const DEFAULT_ASSETS: Array<Asset> = [
   },
 ]
 
+// Error code returned by Ledger device when user rejects action
+const REJECTION_ERROR_CODE = '6985'
+
 export function ledgerModuleV2(): WalletInit {
   return () => {
     return {
@@ -313,6 +316,8 @@ async function getLedgerSdk() {
     '@ledgerhq/device-management-kit'
   )
   const { SignerEthBuilder } = await import('@ledgerhq/device-signer-kit-ethereum')
+  const { makeError } = await import('ethers-v6')
+  const { default: get } = await import('lodash/get')
   const { lastValueFrom } = await import('rxjs')
 
   // Get connected device and create signer
@@ -331,9 +336,21 @@ async function getLedgerSdk() {
         return actionState.output
       }
       case DeviceActionStatus.Error: {
-        throw actionState.error
+        const errorCode = get(actionState.error, 'originalError.errorCode')
+        const isRejection = errorCode === REJECTION_ERROR_CODE
+
+        if (!isRejection) {
+          throw actionState.error
+        }
+
+        throw makeError('user rejected action', 'ACTION_REJECTED', {
+          action: 'unknown',
+          reason: 'rejected',
+          info: actionState,
+        })
       }
       default: {
+        console.log('other', actionState)
         throw new Error(`Device ${actionState.status}`)
       }
     }
