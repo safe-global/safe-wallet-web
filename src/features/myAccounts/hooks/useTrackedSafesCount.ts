@@ -10,7 +10,6 @@ import { isMultiChainSafeItem } from '@/features/multichain/utils/utils'
 
 let isOwnedSafesTracked = false
 let isPinnedSafesTracked = false
-let isWatchlistTracked = false
 
 const useTrackSafesCount = (safes: AllSafeItemsGrouped, wallet: ConnectedWallet | null) => {
   const router = useRouter()
@@ -21,25 +20,9 @@ const useTrackSafesCount = (safes: AllSafeItemsGrouped, wallet: ConnectedWallet 
     [safes],
   )
 
-  // If all safes of a multichain account are on the watchlist we put the entire account on the watchlist
-  const watchlistMultiChainSafes = useMemo(
-    () =>
-      safes.allMultiChainSafes?.filter((account) =>
-        account.safes.some(({ isReadOnly, isPinned }) => isReadOnly && !isPinned),
-      ),
-    [safes],
-  )
-
   const ownedSafes = useMemo<(MultiChainSafeItem | SafeItem)[]>(
     () => [...(ownedMultiChainSafes ?? []), ...(safes.allSingleSafes?.filter(({ isReadOnly }) => !isReadOnly) ?? [])],
     [safes, ownedMultiChainSafes],
-  )
-  const watchlistSafes = useMemo<(MultiChainSafeItem | SafeItem)[]>(
-    () => [
-      ...(watchlistMultiChainSafes ?? []),
-      ...(safes.allSingleSafes?.filter(({ isReadOnly, isPinned }) => isReadOnly && !isPinned) ?? []),
-    ],
-    [safes, watchlistMultiChainSafes],
   )
 
   // TODO: This is computed here and inside PinnedSafes now. Find a way to optimize it
@@ -77,17 +60,6 @@ const useTrackSafesCount = (safes: AllSafeItemsGrouped, wallet: ConnectedWallet 
       isPinnedSafesTracked = true
     }
   }, [isLoginPage, pinnedSafes])
-
-  useEffect(() => {
-    const totalSafesWatched = watchlistSafes?.reduce(
-      (prev, current) => prev + (isMultiChainSafeItem(current) ? current.safes.length : 1),
-      0,
-    )
-    if (watchlistSafes && isLoginPage && watchlistSafes.length > 0 && !isWatchlistTracked) {
-      trackEvent({ ...OVERVIEW_EVENTS.TOTAL_SAFES_WATCHLIST, label: totalSafesWatched })
-      isWatchlistTracked = true
-    }
-  }, [isLoginPage, watchlistSafes])
 }
 
 export default useTrackSafesCount
