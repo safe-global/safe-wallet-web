@@ -73,6 +73,10 @@
   vertical-align: middle;
 }
 
+.search :global .MuiInputBase-root {
+  border: 1px solid transparent !important;
+}
+
 @media (max-width: 599.95px) {
   .header {
     flex-direction: column;

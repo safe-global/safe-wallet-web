@@ -1,9 +1,12 @@
+import { memo } from 'react'
 import { default as MuiBox, type BoxProps } from '@mui/material/Box'
 import { default as MuiTypograpahy, type TypographyProps } from '@mui/material/Typography'
+import omitBy from 'lodash/omitBy'
+import isUndefined from 'lodash/isUndefined'
 
 export * from '@mui/material/index'
 
-export const Box = ({
+export const Box = memo(function Box({
   m,
   mt,
   mr,
@@ -41,68 +44,71 @@ export const Box = ({
   overflow,
   textOverflow,
   border,
-  borderColor,
   borderRadius,
   borderBottom,
+  borderColor,
   bgcolor,
   gridArea,
   lineHeight,
   ...props
-}: BoxProps['sx'] & BoxProps) => {
+}: BoxProps['sx'] & BoxProps) {
   return (
     <MuiBox
-      sx={{
-        m,
-        mt,
-        mr,
-        mb,
-        ml,
-        mx,
-        my,
-        p,
-        pt,
-        pr,
-        pb,
-        pl,
-        px,
-        py,
-        width,
-        height,
-        minWidth,
-        minHeight,
-        maxWidth,
-        maxHeight,
-        display,
-        flex,
-        flexWrap,
-        flexGrow,
-        flexShrink,
-        flexDirection,
-        alignItems,
-        justifyItems,
-        alignContent,
-        justifyContent,
-        gap,
-        color,
-        textAlign,
-        position,
-        overflow,
-        textOverflow,
-        border,
-        borderColor,
-        borderRadius,
-        borderBottom,
-        bgcolor,
-        gridArea,
-        lineHeight,
-        ...props.sx,
-      }}
+      sx={omitBy(
+        {
+          m,
+          mt,
+          mr,
+          mb,
+          ml,
+          mx,
+          my,
+          p,
+          pt,
+          pr,
+          pb,
+          pl,
+          px,
+          py,
+          width,
+          height,
+          minWidth,
+          minHeight,
+          maxWidth,
+          maxHeight,
+          display,
+          flex,
+          flexWrap,
+          flexGrow,
+          flexShrink,
+          flexDirection,
+          alignItems,
+          justifyItems,
+          alignContent,
+          justifyContent,
+          gap,
+          color,
+          textAlign,
+          position,
+          overflow,
+          textOverflow,
+          border,
+          borderRadius,
+          borderBottom,
+          borderColor,
+          bgcolor,
+          gridArea,
+          lineHeight,
+          ...props.sx,
+        },
+        isUndefined,
+      )}
       {...props}
     />
   )
-}
+})
 
-export const Typography = ({
+export const Typography = memo(function Typography({
   m,
   mt,
   mr,
@@ -138,47 +144,50 @@ export const Typography = ({
   whiteSpace,
   width,
   ...props
-}: TypographyProps['sx'] & TypographyProps) => {
+}: TypographyProps['sx'] & TypographyProps) {
   return (
     <MuiTypograpahy
-      sx={{
-        m,
-        mt,
-        mr,
-        mb,
-        ml,
-        mx,
-        my,
-        p,
-        pt,
-        pr,
-        pb,
-        pl,
-        px,
-        py,
-        display,
-        flex,
-        flexWrap,
-        flexGrow,
-        flexShrink,
-        flexDirection,
-        alignItems,
-        justifyItems,
-        alignContent,
-        justifyContent,
-        gap,
-        color,
-        textAlign,
-        fontSize,
-        fontWeight,
-        fontStyle,
-        lineHeight,
-        letterSpacing,
-        whiteSpace,
-        width,
-        ...props.sx,
-      }}
+      sx={omitBy(
+        {
+          m,
+          mt,
+          mr,
+          mb,
+          ml,
+          mx,
+          my,
+          p,
+          pt,
+          pr,
+          pb,
+          pl,
+          px,
+          py,
+          display,
+          flex,
+          flexWrap,
+          flexGrow,
+          flexShrink,
+          flexDirection,
+          alignItems,
+          justifyItems,
+          alignContent,
+          justifyContent,
+          gap,
+          color,
+          textAlign,
+          fontSize,
+          fontWeight,
+          fontStyle,
+          lineHeight,
+          letterSpacing,
+          whiteSpace,
+          width,
+          ...props.sx,
+        },
+        isUndefined,
+      )}
       {...props}
     />
   )
-}
+})

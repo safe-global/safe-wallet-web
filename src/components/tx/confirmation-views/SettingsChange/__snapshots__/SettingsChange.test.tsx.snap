@@ -331,7 +331,7 @@ exports[`SettingsChange should display the SettingsChange component with owner d
        
       <b>
         1
-         signers
+         signer
       </b>
     </p>
   </div>

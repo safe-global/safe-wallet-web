@@ -23,6 +23,7 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
         features: [],
         socialProfiles: [],
         developerWebsite: '',
+        featured: true,
       },
       {
         id: 3,
@@ -40,6 +41,7 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
         features: [],
         socialProfiles: [],
         developerWebsite: '',
+        featured: true,
       },
       {
         id: 14,
@@ -56,6 +58,7 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
         features: [],
         socialProfiles: [],
         developerWebsite: '',
+        featured: false,
       },
       {
         id: 24,
@@ -73,6 +76,7 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
         features: [],
         socialProfiles: [],
         developerWebsite: '',
+        featured: true,
       },
     ]),
 }))
@@ -116,8 +120,7 @@ describe('Safe Apps Dashboard Section', () => {
       expect(screen.getByText('Decentralised naming for wallets, websites, & more.')).toBeInTheDocument(),
     )
 
-    await waitFor(() => expect(screen.getByText('Synthetix')).toBeInTheDocument())
-    await waitFor(() => expect(screen.getByText('Trade synthetic assets on Ethereum')).toBeInTheDocument())
+    // Synthetix is not displayed as it is not featured
 
     await waitFor(() => expect(screen.getByText('Transaction Builder')).toBeInTheDocument())
     await waitFor(() => expect(screen.getByText('A Safe app to compose custom transactions')).toBeInTheDocument())

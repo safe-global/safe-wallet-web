@@ -129,6 +129,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
                 onChange={(e) => {
                   handleSearch(e.target.value)
                 }}
+                className={css.search}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -200,7 +201,11 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
                 </Box>
 
                 {/* All Accounts */}
-                <Accordion sx={{ border: 'none' }} defaultExpanded={!isSidebar}>
+                <Accordion
+                  sx={{ border: 'none' }}
+                  defaultExpanded={!isSidebar}
+                  slotProps={{ transition: { unmountOnExit: true } }}
+                >
                   <AccordionSummary
                     data-testid="expand-safes-list"
                     expandIcon={<ExpandMoreIcon sx={{ '& path': { fill: 'var(--color-text-secondary)' } }} />}
