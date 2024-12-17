@@ -12,6 +12,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { PortalProvider } from '@tamagui/portal'
 import { SafeToastProvider } from '@/src/theme/provider/toastProvider'
 import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated'
+import { OnboardingHeader } from '@/src/features/Onboarding/components/OnboardingHeader'
 
 configureReanimatedLogger({
   level: ReanimatedLogLevel.warn,
@@ -43,6 +44,12 @@ function RootLayout() {
                       ),
                     })}
                   >
+                    <Stack.Screen
+                      name="index"
+                      options={{
+                        header: OnboardingHeader,
+                      }}
+                    />
                     <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                     <Stack.Screen name="pending-transactions" options={{ headerShown: true, title: '' }} />
                     <Stack.Screen name="signers" options={{ headerShown: true, title: 'Signers' }} />

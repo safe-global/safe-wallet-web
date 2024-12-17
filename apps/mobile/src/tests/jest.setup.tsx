@@ -22,6 +22,12 @@ jest.mock('react-native-mmkv', () => ({
   },
 }))
 
+jest.mock('expo-splash-screen', () => ({
+  preventAutoHideAsync: jest.fn(),
+  setOptions: jest.fn(),
+  hideAsync: jest.fn(),
+}))
+
 jest.mock('redux-persist', () => {
   const real = jest.requireActual('redux-persist')
   return {
