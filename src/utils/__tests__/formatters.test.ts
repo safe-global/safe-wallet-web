@@ -107,7 +107,7 @@ describe('formatters', () => {
     it('should add an "s" for more than 1', () => {
       expect(maybePlural(2)).toEqual('s')
       expect(maybePlural(10)).toEqual('s')
-      expect(maybePlural(0)).toEqual('')
+      expect(maybePlural(0)).toEqual('s')
       expect(maybePlural(1)).toEqual('')
     })
 
