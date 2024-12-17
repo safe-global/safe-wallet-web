@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
+import type { AllSafeItems } from '@/features/myAccounts/hooks/useAllSafesGrouped'
 import PinnedSafes from './index'
-import type { SafeItems } from '@/features/myAccounts/hooks/useAllSafes'
 import SafesList from '@/features/myAccounts/components/SafesList'
 
 // Mock the SafesList component to ensure we can test the props passed to it
@@ -20,7 +20,7 @@ describe('PinnedSafes', () => {
   })
 
   it('renders SafesList when there are pinned safes', () => {
-    const pinnedSafes: SafeItems = [
+    const pinnedSafes: AllSafeItems = [
       { name: 'PinnedSafe1', address: '0x1', isPinned: true, chainId: '1', isReadOnly: false, lastVisited: 0 },
       { name: 'PinnedSafe2', address: '0x2', isPinned: true, chainId: '2', isReadOnly: false, lastVisited: 0 },
     ]
@@ -39,7 +39,7 @@ describe('PinnedSafes', () => {
   })
 
   it('passes onLinkClick to SafesList if provided', () => {
-    const pinnedSafes: SafeItems = [
+    const pinnedSafes: AllSafeItems = [
       { name: 'PinnedSafe1', address: '0x1', isPinned: true, chainId: '1', isReadOnly: false, lastVisited: 0 },
     ]
     const onLinkClickMock = jest.fn()
@@ -51,7 +51,7 @@ describe('PinnedSafes', () => {
   })
 
   it('shows empty pinned message when there are no pinned safes', () => {
-    const nonPinnedSafes: SafeItems = [
+    const nonPinnedSafes: AllSafeItems = [
       { name: 'NotPinned', address: '0x3', isPinned: false, chainId: '3', isReadOnly: false, lastVisited: 0 },
     ]
 

@@ -1,16 +1,12 @@
 import SafesList from '@/features/myAccounts/components/SafesList'
-import type { SafeItem } from '@/features/myAccounts/hooks/useAllSafes'
-import type { AllSafeItems, MultiChainSafeItem } from '@/features/myAccounts/hooks/useAllSafesGrouped'
+import type { AllSafeItems } from '@/features/myAccounts/hooks/useAllSafesGrouped'
 import css from '@/features/myAccounts/styles.module.css'
 import BookmarkIcon from '@/public/images/apps/bookmark.svg'
 import { Box, SvgIcon, Typography } from '@mui/material'
 import { useMemo } from 'react'
 
 const PinnedSafes = ({ allSafes, onLinkClick }: { allSafes: AllSafeItems; onLinkClick?: () => void }) => {
-  const pinnedSafes = useMemo<(MultiChainSafeItem | SafeItem)[]>(
-    () => [...(allSafes?.filter(({ isPinned }) => isPinned) ?? [])],
-    [allSafes],
-  )
+  const pinnedSafes = useMemo<AllSafeItems>(() => [...(allSafes?.filter(({ isPinned }) => isPinned) ?? [])], [allSafes])
 
   return (
     <Box data-testid="pinned-accounts" mb={2} minHeight="170px">
