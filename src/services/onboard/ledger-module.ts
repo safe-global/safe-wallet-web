@@ -45,7 +45,7 @@ export function ledgerModuleV2(): WalletInit {
         const { createEIP1193Provider, ProviderRpcError, ProviderRpcErrorCode } = await import('@web3-onboard/common')
         const { accountSelect, getHardwareWalletProvider } = await import('@web3-onboard/hw-common')
         const { BigNumber } = await import('ethers-v5')
-        const { Signature, toUtf8Bytes, Transaction, JsonRpcProvider } = await import('ethers-v6')
+        const { getBytes, Signature, Transaction, JsonRpcProvider } = await import('ethers-v6')
 
         const eventEmitter = new EventEmitter()
         const ledgerSdk = await getLedgerSdk()
@@ -167,7 +167,7 @@ export function ledgerModuleV2(): WalletInit {
               const signature = await ledgerSdk.signMessage(
                 getAssertedDerivationPath(),
                 // Safe signs bytes
-                toUtf8Bytes(message),
+                getBytes(message),
               )
               return Signature.from(signature).serialized
             },
