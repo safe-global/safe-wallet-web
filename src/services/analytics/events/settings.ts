@@ -129,6 +129,10 @@ export const SETTINGS_EVENTS = {
       action: 'Imported counterfactual safes via Import all',
       category: SETTINGS_CATEGORY,
     },
+    IMPORT_VISITED_SAFES: {
+      action: 'Imported visited safes via Import all',
+      category: SETTINGS_CATEGORY,
+    },
   },
   ENV_VARIABLES: {
     SAVE: {

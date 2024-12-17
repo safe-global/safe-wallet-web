@@ -5,6 +5,7 @@ import { ChangeThresholdFlow } from '@/components/tx-flow/flows'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useContext } from 'react'
 import { TxModalContext } from '@/components/tx-flow'
+import { maybePlural } from '@/utils/formatters'
 
 export const RequiredConfirmation = ({ threshold, owners }: { threshold: number; owners: number }) => {
   const { setTxFlow } = useContext(TxModalContext)
@@ -43,7 +44,7 @@ export const RequiredConfirmation = ({ threshold, owners }: { threshold: number;
               pr: 2,
             }}
           >
-            <b>{threshold}</b> out of <b>{owners}</b> signers.
+            <b>{threshold}</b> out of <b>{owners}</b> signer{maybePlural(owners)}.
           </Typography>
 
           {owners > 1 && (
