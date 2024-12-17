@@ -30,7 +30,7 @@ const DEFAULT_ASSETS: Array<Asset> = [
   },
 ]
 
-export function ledgerModule(): WalletInit {
+export function ledgerModuleV2(): WalletInit {
   return () => {
     return {
       label: 'Ledger',

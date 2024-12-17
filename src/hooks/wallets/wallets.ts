@@ -4,7 +4,8 @@ import type { InitOptions } from '@web3-onboard/core'
 import coinbaseModule from '@web3-onboard/coinbase'
 import injectedWalletModule from '@web3-onboard/injected-wallets'
 import keystoneModule from '@web3-onboard/keystone/dist/index'
-import { ledgerModule } from '@/services/onboard/ledger-module'
+import ledgerModule from '@web3-onboard/ledger/dist/index'
+import { ledgerModuleV2 } from '@/services/onboard/ledger-module'
 import trezorModule from '@web3-onboard/trezor'
 import walletConnect from '@web3-onboard/walletconnect'
 import pkModule from '@/services/private-key-module'
@@ -42,7 +43,8 @@ const WALLET_MODULES: Partial<{ [_key in WALLET_KEYS]: (chain: ChainInfo) => Wal
   [WALLET_KEYS.INJECTED]: () => injectedWalletModule() as WalletInit,
   [WALLET_KEYS.WALLETCONNECT_V2]: (chain) => walletConnectV2(chain) as WalletInit,
   [WALLET_KEYS.COINBASE]: () => coinbaseModule({ darkMode: prefersDarkMode() }) as WalletInit,
-  [WALLET_KEYS.LEDGER]: () => ledgerModule() as WalletInit,
+  [WALLET_KEYS.LEDGER]: () => ledgerModule(),
+  [WALLET_KEYS.LEDGER_V2]: () => ledgerModuleV2(),
   [WALLET_KEYS.TREZOR]: () => trezorModule({ appUrl: TREZOR_APP_URL, email: TREZOR_EMAIL }) as WalletInit,
   [WALLET_KEYS.KEYSTONE]: () => keystoneModule() as WalletInit,
   [WALLET_KEYS.PK]: (chain) => pkModule(chain.chainId, chain.rpcUri) as WalletInit,
@@ -54,6 +56,8 @@ export const getAllWallets = (chain: ChainInfo): WalletInits => {
 
 export const isWalletSupported = (disabledWallets: string[], walletLabel: string): boolean => {
   const legacyWalletName = CGW_NAMES?.[walletLabel.toUpperCase() as WALLET_KEYS]
+  console.log('legacyWalletName', legacyWalletName)
+  console.log('isEnabled', !disabledWallets.includes(legacyWalletName || walletLabel))
   return !disabledWallets.includes(legacyWalletName || walletLabel)
 }
 
