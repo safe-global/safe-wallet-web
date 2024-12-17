@@ -350,7 +350,6 @@ async function getLedgerSdk() {
         })
       }
       default: {
-        console.log('other', actionState)
         throw new Error(`Device ${actionState.status}`)
       }
     }
