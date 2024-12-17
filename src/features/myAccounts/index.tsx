@@ -1,4 +1,4 @@
-import AccountsFilter from '@/features/myAccounts/components/AccountsFilter'
+import AccountListFilters from 'src/features/myAccounts/components/AccountListFilters'
 import AccountsHeader from '@/features/myAccounts/components/AccountsHeader'
 import AccountsList from '@/features/myAccounts/components/AccountsList'
 import { useState } from 'react'
@@ -28,7 +28,7 @@ const MyAccounts = ({ safes, onLinkClick, isSidebar = false }: MyAccountsProps) 
         <AccountsHeader isSidebar={isSidebar} onLinkClick={onLinkClick} />
 
         <Paper sx={{ padding: 0 }}>
-          <AccountsFilter setSearchQuery={setSearchQuery} />
+          <AccountListFilters setSearchQuery={setSearchQuery} />
 
           {isSidebar && <Divider />}
 

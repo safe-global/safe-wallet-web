@@ -7,7 +7,7 @@ import css from '@/features/myAccounts/styles.module.css'
 import SearchIcon from '@/public/images/common/search.svg'
 import { Box, InputAdornment, Paper, SvgIcon, TextField } from '@mui/material'
 
-const AccountsFilter = ({ setSearchQuery }: { setSearchQuery: Dispatch<SetStateAction<string>> }) => {
+const AccountListFilters = ({ setSearchQuery }: { setSearchQuery: Dispatch<SetStateAction<string>> }) => {
   const dispatch = useAppDispatch()
   const { orderBy } = useAppSelector(selectOrderByPreference)
 
@@ -57,4 +57,4 @@ const AccountsFilter = ({ setSearchQuery }: { setSearchQuery: Dispatch<SetStateA
   )
 }
 
-export default AccountsFilter
+export default AccountListFilters
