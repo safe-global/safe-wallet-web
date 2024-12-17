@@ -56,8 +56,6 @@ export const getAllWallets = (chain: ChainInfo): WalletInits => {
 
 export const isWalletSupported = (disabledWallets: string[], walletLabel: string): boolean => {
   const legacyWalletName = CGW_NAMES?.[walletLabel.toUpperCase() as WALLET_KEYS]
-  console.log('legacyWalletName', legacyWalletName)
-  console.log('isEnabled', !disabledWallets.includes(legacyWalletName || walletLabel))
   return !disabledWallets.includes(legacyWalletName || walletLabel)
 }
 
