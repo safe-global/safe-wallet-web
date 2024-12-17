@@ -1,9 +1,8 @@
 import { useContext, useMemo } from 'react'
 import { SvgIcon, Typography, Alert, AlertTitle, Skeleton, Button } from '@mui/material'
-import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import { sameAddress } from '@/utils/addresses'
 import type { MasterCopy } from '@/hooks/useMasterCopies'
-import { MasterCopyDeployer, useMasterCopies } from '@/hooks/useMasterCopies'
+import { useMasterCopies } from '@/hooks/useMasterCopies'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -25,9 +24,9 @@ export const ContractVersion = () => {
     return masterCopies?.find((mc) => sameAddress(mc.address, masterCopyAddress))
   }, [masterCopies, masterCopyAddress])
 
-  const needsUpdate = safe.implementationVersionState === ImplementationVersionState.OUTDATED
-  const showUpdateDialog = safeMasterCopy?.deployer === MasterCopyDeployer.GNOSIS && needsUpdate
-  const isLatestVersion = safe.version && !showUpdateDialog
+  //const needsUpdate = safe.implementationVersionState === ImplementationVersionState.OUTDATED
+  const showUpdateDialog = true //safeMasterCopy?.deployer === MasterCopyDeployer.GNOSIS && needsUpdate
+  const isLatestVersion = false //safe.version && !showUpdateDialog
 
   const latestSafeVersion = getLatestSafeVersion(currentChain)
 
@@ -69,7 +68,7 @@ export const ContractVersion = () => {
 
           <CheckWallet>
             {(isOk) => (
-              <Button onClick={() => setTxFlow(<UpdateSafeFlow />)} variant="contained" disabled={!isOk}>
+              <Button onClick={() => setTxFlow(<UpdateSafeFlow />)} variant="contained" disabled={false && !isOk}>
                 Update
               </Button>
             )}

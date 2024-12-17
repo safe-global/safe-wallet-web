@@ -28,7 +28,7 @@ export const useChain = (chainId: string): ChainInfo | undefined => {
 export const useCurrentChain = (): ChainInfo | undefined => {
   const chainId = useChainId()
   const chainInfo = useAppSelector((state) => selectChainById(state, chainId), isEqual)
-  return chainInfo
+  return useMemo(() => (chainInfo ? { ...chainInfo, recommendedMasterCopyVersion: '1.4.1' } : chainInfo), [chainInfo])
 }
 
 /**
