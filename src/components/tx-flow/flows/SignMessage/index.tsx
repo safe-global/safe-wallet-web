@@ -1,5 +1,5 @@
 import TxLayout from '@/components/tx-flow/common/TxLayout'
-import SignMessage, { type ConfirmProps, type ProposeProps } from '@/components/tx-flow/flows/SignMessage/SignMessage'
+import SignMessage, { type SignMessageProps } from '@/components/tx-flow/flows/SignMessage/SignMessage'
 import { getSwapTitle } from '@/features/swap'
 import { selectSwapParams } from '@/features/swap/store/swapParamsSlice'
 import { useAppSelector } from '@/store'
@@ -47,7 +47,7 @@ export const AppTitle = ({
   )
 }
 
-const SignMessageFlow = ({ ...props }: ProposeProps | ConfirmProps) => {
+const SignMessageFlow = ({ ...props }: SignMessageProps) => {
   return (
     <TxLayout
       title="Confirm message"
