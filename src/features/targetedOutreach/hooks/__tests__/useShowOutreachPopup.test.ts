@@ -3,7 +3,7 @@ import useShowOutreachPopup from '../useShowOutreachPopup'
 import * as useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import * as store from '@/store'
 import { HOUR_IN_MS } from '../../constants'
-import { faker } from '@faker-js/faker/.'
+import { faker } from '@faker-js/faker'
 
 jest.mock('@/hooks/useIsSafeOwner')
 jest.mock('@/store')
