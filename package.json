@@ -55,7 +55,7 @@
     "@mui/icons-material": "^6.1.6",
     "@mui/material": "^6.1.6",
     "@mui/x-date-pickers": "^7.22.1",
-    "@reduxjs/toolkit": "^2.2.6",
+    "@reduxjs/toolkit": "^2.5.0",
     "@reown/walletkit": "^1.1.1",
     "@safe-global/api-kit": "^2.4.6",
     "@safe-global/protocol-kit": "^4.1.3",
