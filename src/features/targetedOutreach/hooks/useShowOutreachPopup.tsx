@@ -12,7 +12,8 @@ const useShowOutreachPopup = (
   const cookiesPopup = useAppSelector(selectCookieBanner)
   const isSigner = useIsSafeOwner()
 
-  const isTargetedSafe = ACTIVE_OUTREACH.targetAll || !!submission?.outreachId
+  const submissionHasLoaded = submission !== undefined
+  const isTargetedSafe = submissionHasLoaded && (ACTIVE_OUTREACH.targetAll || !!submission?.outreachId)
   const hasCompletedSurvey = !!submission?.completionDate
 
   if (cookiesPopup?.open || isDismissed || !isSigner || !isTargetedSafe || hasCompletedSurvey) {
