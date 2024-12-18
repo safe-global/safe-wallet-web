@@ -2,7 +2,7 @@ export const stableCoinAddresses: {
   [address: string]: {
     name: string
     symbol: string
-    chains: Array<'gnosis' | 'ethereum' | 'arbitrum-one' | 'sepolia'>
+    chains: Array<'gnosis' | 'ethereum' | 'arbitrum-one' | 'sepolia' | 'base'>
   }
 } = {
   '0xdd96b45877d0e8361a4ddb732da741e97f3191ff': {
@@ -540,5 +540,36 @@ export const stableCoinAddresses: {
     name: 'Sky dollar',
     symbol: 'USDS',
     chains: ['ethereum'],
+  },
+  // Base
+  '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': {
+    name: 'USDC',
+    symbol: 'usdc',
+    chains: ['base'],
+  },
+  '0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2': {
+    name: 'Tether USD',
+    symbol: 'usdt',
+    chains: ['base'],
+  },
+  '0x50c5725949a6f0c72e6c4a641f24049a917db0cb': {
+    name: 'Dai Stablecoin',
+    symbol: 'dai',
+    chains: ['base'],
+  },
+  '0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34': {
+    name: 'USDe',
+    symbol: 'usde',
+    chains: ['base'],
+  },
+  '0x820c137fa70c8691f0e44dc420a5e53c168921dc': {
+    name: 'USDS Stablecoin',
+    symbol: 'usds',
+    chains: ['base'],
+  },
+  '0x60a3e35cc302bfa44cb288bc5a4f316fdb1adb42': {
+    name: 'EURC',
+    symbol: 'eurc',
+    chains: ['base'],
   },
 }

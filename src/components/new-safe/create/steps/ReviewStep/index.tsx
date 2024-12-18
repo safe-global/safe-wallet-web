@@ -336,7 +336,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       }
 
       if (willRelay) {
-        const taskId = await relaySafeCreation(chain, props)
+        const taskId = await relaySafeCreation(chain, props, gasLimit?.toString())
         onSubmitCallback(taskId)
       } else {
         await createNewSafe(

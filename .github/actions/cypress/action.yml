@@ -30,7 +30,7 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - uses: ./.github/workflows/yarn
+    - uses: ./.github/actions/yarn
 
     - name: Install Latest stable Chrome Version
       shell: bash
@@ -38,18 +38,10 @@ runs:
         curl -O 'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
         sudo apt-get install ./google-chrome-stable_current_amd64.deb
 
-    - name: Install Cypress 13.15.2
-      shell: bash
-      run: yarn add -D cypress@13.15.2
-
-    - uses: ./.github/workflows/build
+    - uses: ./.github/actions/build
       with:
         secrets: ${{ inputs.secrets }}
         e2e_mnemonic: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_CYPRESS_MNEMONIC }}
-
-    - name: Serve
-      shell: bash
-      run: yarn serve &
 
     - uses: cypress-io/github-action@v6
       with:
@@ -60,6 +52,8 @@ runs:
         record: true
         tag: ${{ inputs.tag }}
         config: baseUrl=http://localhost:8080
+        install: false
+        start: yarn serve
       env:
         CYPRESS_RECORD_KEY: ${{ inputs.record_key || fromJSON(inputs.secrets).CYPRESS_RECORD_KEY }}
         GITHUB_TOKEN: ${{ fromJSON(inputs.secrets).GITHUB_TOKEN }}
