@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ./.github/workflows/yarn
+      - uses: ./.github/actions/yarn
 
       - uses: CatChen/eslint-suggestion-action@v4.1.7
         with:

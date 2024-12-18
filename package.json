@@ -26,20 +26,20 @@
     "cypress:canary": "cross-env TZ=UTC cypress open --e2e -b chrome:canary",
     "cypress:run": "cypress run",
     "cypress:ci": "yarn cypress:run --config baseUrl=http://localhost:8080 --spec cypress/e2e/smoke/*.cy.js",
-    "serve": "npx -y serve out -p ${REVERSE_PROXY_UI_PORT:=8080}",
+    "serve": "sh -c 'npx -y serve out -p ${REVERSE_PROXY_UI_PORT:=8080}'",
     "static-serve": "yarn build && yarn serve",
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build --quiet"
   },
+  "resolutions": {
+    "@safe-global/safe-core-sdk-types/ethers": "6.13.4",
+    "@safe-global/protocol-kit/ethers": "6.13.4",
+    "@safe-global/api-kit/ethers": "6.13.4",
+    "@gnosis.pm/zodiac/ethers": "6.13.4"
+  },
   "engines": {
     "node": ">=18"
-  },
-  "resolutions": {
-    "@safe-global/safe-core-sdk-types/**/ethers": "^6.11.1",
-    "@safe-global/protocol-kit/**/ethers": "^6.11.1",
-    "@safe-global/api-kit/**/ethers": "^6.11.1",
-    "@gnosis.pm/zodiac/**/ethers": "^6.11.1"
   },
   "dependencies": {
     "@cowprotocol/widget-react": "^0.10.0",
@@ -70,7 +70,6 @@
     "@web3-onboard/coinbase": "^2.4.1",
     "@web3-onboard/core": "^2.21.4",
     "@web3-onboard/injected-wallets": "^2.11.2",
-    "@web3-onboard/keystone": "^2.3.7",
     "@web3-onboard/ledger": "2.3.2",
     "@web3-onboard/trezor": "^2.4.2",
     "@web3-onboard/walletconnect": "^2.6.1",
@@ -171,5 +170,6 @@
     "budgetPercentIncreaseRed": 20,
     "minimumChangeThreshold": 0,
     "showDetails": true
-  }
+  },
+  "packageManager": "yarn@4.5.3"
 }
