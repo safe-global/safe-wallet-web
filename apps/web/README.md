@@ -5,13 +5,35 @@
 ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/safe-global/safe-wallet-web)
 [![GitPOAP Badge](https://public-api.gitpoap.io/v1/repo/safe-global/safe-wallet-web/badge)](https://www.gitpoap.io/gh/safe-global/safe-wallet-web)
 
+# Safe{Wallet} Web  💻
+
+This project is now part of the **@safe-global/safe-wallet** monorepo! The monorepo setup allows centralized management
+of multiple
+applications and shared libraries. This workspace (`apps/web`) is the frontend of the Safe{Wallet} web app.
+
 Safe{Wallet} is a smart contract wallet for Ethereum and other EVM chains. Based on Gnosis Safe multisig contracts.
 
-This repository is the frontend of the Safe{Wallet} app.
+You can run commands for this workspace in two ways:
+
+1. **From the root of the monorepo using `yarn workspace` commands**
+2. **From within the `apps/web` directory**
+
+## Prerequisites
+
+Except for the main monorepo prerequisites, no additional prerequisites are required for this workspace.
+
+## Setup the Project
+
+1. Install all dependencies from the **root of the monorepo**:
+
+```bash
+yarn install
+```
 
 ## Contributing
 
-Contributions, be it a bug report or a pull request, are very welcome. Please check our [contribution guidelines](CONTRIBUTING.md) beforehand.
+Contributions, be it a bug report or a pull request, are very welcome. Please check
+our [contribution guidelines](CONTRIBUTING.md) beforehand.
 
 ## Getting started with local development
 
@@ -54,38 +76,13 @@ If you don't provide some of the variables, the corresponding features will be d
 
 ### Running the app locally
 
-#### Prerequisites
-
-- **Node.js**: Install the latest stable version from [Node.js](https://nodejs.org/).
-
-We use Yarn v4 for package management. If you are running on Node.js v16 or later, you can run:
+From the root of the monorepo:
 
 ```bash
-corepack enable
+yarn workspace @safe-global/web start
 ```
 
-and then when you run `yarn` in the repository root, it will install the required version of yarn and resolve all
-dependencies.
-
-> [!INFO]
->
-> Corepack is a tool to help with managing versions of your package managers. It exposes binary proxies for each
-> supported package manager that, when called, will identify whatever package manager is
-> configured for the current project, download it if needed, and finally run it.
-
-Install the dependencies:
-
-```bash
-yarn
-```
-
-Generate types:
-
-```bash
-yarn postinstall
-```
-
-Run the development server:
+Or directly from the `apps/web` directory:
 
 ```bash
 yarn start
@@ -93,18 +90,22 @@ yarn start
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the app.
 
+> [!NOTE]
+>
+> From now on for brevity we will only show the command to run from the root of the monorepo. You can always run the command from the `apps/web` directory you just need to omit the `workspace @safe-global/web`.
+
 ## Lint
 
 ESLint:
 
 ```
-yarn lint --fix
+yarn workspace @safe-global/web lint --fix
 ```
 
 Prettier:
 
 ```
-yarn prettier
+yarn workspace @safe-global/web prettier
 ```
 
 ## Tests
@@ -112,7 +113,7 @@ yarn prettier
 Unit tests:
 
 ```
-yarn test --watch
+yarn workspace @safe-global/web test --watch
 ```
 
 ### Cypress tests
@@ -120,19 +121,19 @@ yarn test --watch
 Build a static site:
 
 ```
-yarn build
+yarn workspace @safe-global/web build
 ```
 
 Serve the static files:
 
 ```
-yarn serve
+yarn workspace @safe-global/web serve
 ```
 
 Launch the Cypress UI:
 
 ```
-yarn cypress:open
+yarn workspace @safe-global/web cypress:open
 ```
 
 You can then choose which e2e tests to run.
@@ -143,12 +144,13 @@ Some tests will require signer private keys, please include them in your .env fi
 To create a new component from a template:
 
 ```
-yarn cmp MyNewComponent
+yarn workspace @safe-global/web cmp MyNewComponent
 ```
 
 ## Pre-push hooks
 
-This repo has a pre-push hook that runs the linter (always) and the tests (if the `RUN_TESTS_ON_PUSH` env variable is set to true)
+This repo has a pre-push hook that runs the linter (always) and the tests (if the `RUN_TESTS_ON_PUSH` env variable is
+set to true)
 before pushing. If you want to skip the hooks, you can use the `--no-verify` flag.
 
 ## Frameworks
