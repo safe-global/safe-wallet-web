@@ -1,0 +1,26 @@
+{
+  "private": true,
+  "name": "@safe-global/safe-wallet",
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "lint": "yarn workspaces foreach --all -pt run lint",
+    "test": "yarn workspaces foreach --all -pt run test",
+    "prettier:fix": "yarn workspaces foreach --all -pt run prettier:fix",
+    "eslint": "yarn workspaces foreach --all -pt run eslint"
+  },
+  "resolutions": {
+    "@safe-global/safe-core-sdk-types/ethers": "6.13.4",
+    "@safe-global/protocol-kit/ethers": "6.13.4",
+    "@safe-global/api-kit/ethers": "6.13.4",
+    "@gnosis.pm/zodiac/ethers": "6.13.4"
+  },
+  "devDependencies": {
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10"
+  },
+  "packageManager": "yarn@4.5.3"
+}
