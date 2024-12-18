@@ -86,7 +86,7 @@ const nextConfig = {
         cacheGroups: {
           ...config.optimization.splitChunks.cacheGroups,
           customModule: {
-            test: /[\\/]node_modules[\\/](@safe-global|ethers)[\\/]/,
+            test: /[\\/]..[\\/]..[\\/]node_modules[\\/](@safe-global|ethers)[\\/]/,
             name: 'protocol-kit-ethers',
             chunks: 'all',
           },

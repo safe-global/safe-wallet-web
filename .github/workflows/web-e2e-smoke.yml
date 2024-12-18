@@ -2,7 +2,8 @@ name: Smoke tests
 
 on:
   pull_request:
-
+    paths:
+      - apps/web/**
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true

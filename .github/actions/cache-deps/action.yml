@@ -34,7 +34,7 @@ runs:
           **/node_modules
           /home/runner/.cache/Cypress
           ${{ github.workspace }}/.yarn/install-state.gz
-          ${{ github.workspace }}/src/types
+          ${{ github.workspace }}/apps/web/src/types
         key: ${{ runner.os }}-web-core-modules-${{ hashFiles('**/package.json','**/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-web-core-modules-
@@ -54,7 +54,7 @@ runs:
           **/node_modules
           /home/runner/.cache/Cypress
           ${{ github.workspace }}/.yarn/install-state.gz
-          ${{ github.workspace }}/src/types
+          ${{ github.workspace }}/apps/web/src/types
         key: ${{inputs.key}}
 
     - name: Restore Next.js
@@ -63,10 +63,10 @@ runs:
       uses: actions/cache/restore@v4
       with:
         path: |
-          ${{ github.workspace }}/.next/cache
-        key: ${{ runner.os }}-nextjs-cypress-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          ${{ github.workspace }}/apps/web/.next/cache
+        key: ${{ runner.os }}-nextjs-cypress-${{ hashFiles('apps/web/package.json', 'apps/web/yarn.lock') }}-${{ hashFiles('apps/web/src/**/*', 'apps/web/public/**/*', 'apps/web/*.{js,jsx,cjs,ts,mjs,tsx,json} ') }}
         restore-keys: |
-          ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
+          ${{ runner.os }}-nextjs-${{ hashFiles('apps/web/package.json', 'apps/web/yarn.lock') }}-
 
     - name: Set composite outputs nc
       if: ${{ inputs.mode == 'restore-nc' }}
@@ -81,5 +81,5 @@ runs:
       uses: actions/cache/save@v4
       with:
         path: |
-          ${{ github.workspace }}/.next/cache
+          ${{ github.workspace }}/apps/web/.next/cache
         key: ${{inputs.key}}
