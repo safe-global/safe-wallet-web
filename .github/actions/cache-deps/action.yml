@@ -76,7 +76,7 @@ runs:
         echo "computed-cache-key-nc=${{ steps.restore-nc.outputs.cache-primary-key }}" >> $GITHUB_OUTPUT
 
 
-    - name: Save Nextj.js
+    - name: Save Next.js
       if: ${{ inputs.mode == 'save-nc' }}
       uses: actions/cache/save@v4
       with:
