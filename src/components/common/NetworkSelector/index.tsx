@@ -429,7 +429,7 @@ const NetworkSelector = ({
         sx: {
           '& .MuiPaper-root': {
             overflow: 'auto',
-            minWidth: '250px !important',
+            minWidth: '260px !important',
           },
           ...(isDarkMode
             ? {

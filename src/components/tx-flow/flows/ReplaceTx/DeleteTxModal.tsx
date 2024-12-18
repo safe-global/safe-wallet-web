@@ -27,6 +27,8 @@ import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import { REJECT_TX_EVENTS } from '@/services/analytics/events/reject-tx'
 import { trackEvent } from '@/services/analytics'
 import { isWalletRejection } from '@/utils/wallets'
+import CheckWallet from '@/components/common/CheckWallet'
+import ChainSwitcher from '@/components/common/ChainSwitcher'
 
 type DeleteTxModalProps = {
   safeTxHash: string
@@ -122,6 +124,10 @@ const InternalDeleteTxModal = ({
           related to deleting a transaction off-chain.
         </Box>
 
+        <Box mt={2}>
+          <ChainSwitcher />
+        </Box>
+
         {error && (
           <Box mt={2}>
             <ErrorMessage error={error}>Error deleting transaction</ErrorMessage>
@@ -136,17 +142,21 @@ const InternalDeleteTxModal = ({
           Keep it
         </Button>
 
-        <Button
-          data-testid="delete-tx-btn"
-          size="small"
-          variant="contained"
-          color="primary"
-          onClick={onConfirm}
-          disabled={isLoading}
-          sx={{ minWidth: '122px', minHeight: '36px' }}
-        >
-          {isLoading ? <CircularProgress size={20} /> : 'Yes, delete'}
-        </Button>
+        <CheckWallet checkNetwork>
+          {(isOk) => (
+            <Button
+              data-testid="delete-tx-btn"
+              size="small"
+              variant="contained"
+              color="primary"
+              onClick={onConfirm}
+              disabled={!isOk || isLoading}
+              sx={{ minWidth: '122px', minHeight: '36px' }}
+            >
+              {isLoading ? <CircularProgress size={20} /> : 'Yes, delete'}
+            </Button>
+          )}
+        </CheckWallet>
       </DialogActions>
     </Dialog>
   )
