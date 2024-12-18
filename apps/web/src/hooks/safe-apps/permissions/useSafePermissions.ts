@@ -4,7 +4,7 @@ import type {
   Permission,
   PermissionCaveat,
   PermissionRequest,
-} from 'node_modules/@safe-global/safe-apps-sdk/dist/types/types/permissions'
+} from '@safe-global/safe-apps-sdk/dist/types/types/permissions'
 
 import { PermissionStatus } from '@/components/safe-apps/types'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
