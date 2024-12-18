@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "@cowprotocol/widget-react": "^0.10.0",
-    "@ducanh2912/next-pwa": "^9.7.1",
+    "@ducanh2912/next-pwa": "^10.2.9",
     "@emotion/cache": "^11.13.5",
     "@emotion/react": "^11.13.5",
     "@emotion/server": "^11.11.0",
