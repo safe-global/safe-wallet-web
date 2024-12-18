@@ -116,7 +116,7 @@ describe('useSafeWalletProvider', () => {
         name: appInfo.name,
         message: 'message',
         requestId: expect.any(String),
-        safeAppId: 1,
+        origin: appInfo.url,
       })
 
       expect(resp).toBeInstanceOf(Promise)
@@ -236,7 +236,7 @@ describe('useSafeWalletProvider', () => {
         name: appInfo.name,
         message: typedMessage,
         requestId: expect.any(String),
-        safeAppId: 1,
+        origin: appInfo.url,
       })
 
       expect(resp).toBeInstanceOf(Promise)

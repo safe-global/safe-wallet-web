@@ -13,7 +13,7 @@ const contractAddresses = {
   simulateTxAccessorAddress: null,
 }
 
-const CONFIG_SERVICE_CHAINS = [
+const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
   {
     transactionService: 'https://safe-transaction.mainnet.gnosis.io',
     contractAddresses,
@@ -648,6 +648,6 @@ const CONFIG_SERVICE_CHAINS = [
       enabled: false,
     },
   },
-] as unknown as ChainInfo[]
+]
 
 export { CONFIG_SERVICE_CHAINS }
