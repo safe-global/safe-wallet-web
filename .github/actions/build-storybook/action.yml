@@ -11,4 +11,4 @@ runs:
   steps:
     - name: Build Storybook
       shell: bash
-      run: yarn build-storybook -o ./out/storybook
+      run: yarn workspace @safe-global/web build-storybook -o ./out/storybook

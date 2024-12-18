@@ -21,12 +21,17 @@ runs:
       run: |
         echo "Yarn cache hit: ${{ steps.restore-yarn-types.outputs.cache-hit-yarn }}"
 
-    - name: Yarn install & after-install generate types
+    - name: Yarn install
       if: steps.restore-yarn-types.outputs.cache-hit-yarn != 'true'
       shell: bash
       run: |
         yarn install --immutable
-        yarn after-install
+
+    - name: Yarn after-install to generate contracts types
+      if: steps.restore-yarn-types.outputs.cache-hit-yarn != 'true'
+      shell: bash
+      run: |        
+        yarn workspace @safe-global/web after-install
 
     - name: Save Yarn Cache & Types
       if: steps.restore-yarn-types.outputs.cache-hit-yarn != 'true'

@@ -5,6 +5,8 @@ on:
     branches:
       - main
     types: [closed]
+    paths:
+      - apps/web/**
 
 jobs:
   tag-release:

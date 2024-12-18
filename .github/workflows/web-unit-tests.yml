@@ -1,11 +1,14 @@
 name: Unit tests
 on:
   pull_request:
+    paths:
+      - apps/web/**
 
   push:
     branches:
       - main
-
+    paths:
+      - apps/web/**
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -30,6 +33,7 @@ jobs:
           annotations: failed-tests
           package-manager: yarn
           test-script: yarn test:ci
+          working-directory: apps/web
           github-token: ${{ secrets.GITHUB_TOKEN }}
         env:
           NEXT_PUBLIC_IS_OFFICIAL_HOST: true

@@ -1,5 +1,8 @@
 name: Lint
-on: [pull_request]
+on:
+  pull_request:
+    paths:
+      - apps/web/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -24,5 +27,5 @@ jobs:
           fail-check: true # optional
           github-token: ${{ secrets.GITHUB_TOKEN }} # optional
           directory: './' # optional
-          targets: 'src' # optional
-          config-path: './eslint.config.mjs'
+          targets: '/apps/web/src' # optional
+          config-path: './apps/web/eslint.config.mjs'

@@ -7,6 +7,8 @@ on:
     branches:
       - main
       - dev
+    paths:
+      - apps/web/**
   release:
     types: [ released ]
 
