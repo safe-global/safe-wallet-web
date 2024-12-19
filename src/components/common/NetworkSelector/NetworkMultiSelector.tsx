@@ -1,7 +1,7 @@
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { useCallback, useEffect, type ReactElement } from 'react'
-import { Checkbox, Autocomplete, TextField, Chip } from '@mui/material'
+import { Checkbox, Autocomplete, TextField, Chip, Box } from '@mui/material'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import ChainIndicator from '../ChainIndicator'
 import css from './styles.module.css'
@@ -138,12 +138,16 @@ const NetworkMultiSelector = ({
                 ></Chip>
               ))
             }
-            renderOption={(props, chain, { selected }) => (
-              <li {...props} key={chain.chainId}>
-                <Checkbox data-testid="network-checkbox" size="small" checked={selected} />
-                <ChainIndicator chainId={chain.chainId} inline />
-              </li>
-            )}
+            renderOption={(props, chain, { selected }) => {
+              const { key, ...rest } = props
+
+              return (
+                <Box component="li" key={key} {...rest}>
+                  <Checkbox data-testid="network-checkbox" size="small" checked={selected} />
+                  <ChainIndicator chainId={chain.chainId} inline />
+                </Box>
+              )
+            }}
             getOptionLabel={(option) => option.chainName}
             getOptionDisabled={isOptionDisabled}
             renderInput={(params) => (

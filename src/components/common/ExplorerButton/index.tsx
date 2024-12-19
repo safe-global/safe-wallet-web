@@ -19,7 +19,9 @@ const ExplorerButton = ({
   className,
   onClick,
   isCompact = true,
-}: ExplorerButtonProps): ReactElement => {
+}: ExplorerButtonProps): ReactElement | null => {
+  if (!href) return null
+
   return isCompact ? (
     <Tooltip title={title} placement="top">
       <IconButton
