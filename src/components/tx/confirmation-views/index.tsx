@@ -7,6 +7,7 @@ import {
   isExecTxData,
   isOnChainConfirmationTxData,
   isOrderTxInfo,
+  isSafeToL2MigrationTxData,
   isSafeUpdateTxData,
   isSwapOrderTxInfo,
 } from '@/utils/transaction-guards'
@@ -24,6 +25,7 @@ import { type ReactElement } from 'react'
 import SwapOrder from './SwapOrder'
 import StakingTx from './StakingTx'
 import UpdateSafe from './UpdateSafe'
+import { MigrateToL2Information } from './MigrateToL2Information'
 
 type ConfirmationViewProps = {
   txDetails?: TransactionDetails
@@ -58,6 +60,10 @@ const getConfirmationViewComponent = ({
   if (isAnyStakingTxInfo(txInfo)) return <StakingTx txDetails={txDetails} txInfo={txInfo} />
 
   if (isCustomTxInfo(txInfo) && isSafeUpdateTxData(txDetails.txData)) return <UpdateSafe />
+
+  if (isCustomTxInfo(txInfo) && isSafeToL2MigrationTxData(txDetails.txData)) {
+    return <MigrateToL2Information variant="queue" txData={txDetails.txData} />
+  }
 
   return null
 }

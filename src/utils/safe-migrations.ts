@@ -4,7 +4,7 @@ import { getSafeContractDeployment } from '@/services/contracts/deployments'
 import { sameAddress } from './addresses'
 import { getSafeToL2MigrationDeployment, getSafeMigrationDeployment } from '@safe-global/safe-deployments'
 import { type MetaTransactionData, OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ChainInfo, TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
 import { isValidMasterCopy } from '@/services/contracts/safeContracts'
 import { isMultiSendCalldata } from './transaction-calldata'
 import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
@@ -95,16 +95,12 @@ export const prependSafeToL2Migration = (
   return __unsafe_createMultiSendTx(newTxs)
 }
 
-export const extractMigrationL2MasterCopyAddress = (safeTx: SafeTransaction | undefined): string | undefined => {
-  if (!safeTx) {
+export const extractMigrationL2MasterCopyAddress = (txData: TransactionData): string | undefined => {
+  if (!isMultiSendCalldata(txData.hexData || '')) {
     return undefined
   }
 
-  if (!isMultiSendCalldata(safeTx.data.data)) {
-    return undefined
-  }
-
-  const innerTxs = decodeMultiSendData(safeTx.data.data)
+  const innerTxs = decodeMultiSendData(txData.hexData || '')
   const firstInnerTx = innerTxs[0]
   if (!firstInnerTx) {
     return undefined

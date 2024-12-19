@@ -69,6 +69,7 @@ import { isMultiSendCalldata } from './transaction-calldata'
 import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
+import { extractMigrationL2MasterCopyAddress } from './safe-migrations'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
@@ -475,4 +476,9 @@ export const isSafeUpdateTxData = (data?: TransactionData): boolean => {
       data.dataDecoded?.parameters?.[0]?.valueDecoded?.some((tx) => tx.dataDecoded?.method === 'changeMasterCopy'),
     )
   )
+}
+
+export const isSafeToL2MigrationTxData = (data?: TransactionData): boolean => {
+  if (!data) return false
+  return !!extractMigrationL2MasterCopyAddress(data)
 }

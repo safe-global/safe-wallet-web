@@ -1,4 +1,8 @@
-import { type ChainInfo, ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
+import {
+  type ChainInfo,
+  ImplementationVersionState,
+  type TransactionData,
+} from '@safe-global/safe-gateway-typescript-sdk'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 import { extractMigrationL2MasterCopyAddress, prependSafeToL2Migration } from '../safe-migrations'
 import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
@@ -250,74 +254,59 @@ describe('prependSafeToL2Migration', () => {
 })
 
 describe('extractMigrationL2MasterCopyAddress', () => {
-  it('should return undefined for undefined safeTx', () => {
-    expect(extractMigrationL2MasterCopyAddress(undefined)).toBeUndefined()
-  })
-
   it('should return undefined for non multisend safeTx', () => {
-    expect(extractMigrationL2MasterCopyAddress(safeTxBuilder().build())).toBeUndefined()
+    expect(
+      extractMigrationL2MasterCopyAddress({
+        hexData:
+          '0xf8dc5dd9000000000000000000000000000000000000000000000000000000000000000100000000000000000000000065f8236309e5a99ff0d129d04e486ebce20dc7b00000000000000000000000000000000000000000000000000000000000000001',
+      } as TransactionData),
+    ).toBeUndefined()
   })
 
   it('should return undefined for multisend without migration', () => {
     expect(
-      extractMigrationL2MasterCopyAddress(
-        safeTxBuilder()
-          .with({
-            data: safeTxDataBuilder()
-              .with({
-                data: multisendInterface.encodeFunctionData('multiSend', [
-                  encodeMultiSendData([
-                    {
-                      to: faker.finance.ethereumAddress(),
-                      data: faker.string.hexadecimal({ length: 64 }),
-                      value: '0',
-                      operation: 0,
-                    },
-                    {
-                      to: faker.finance.ethereumAddress(),
-                      data: faker.string.hexadecimal({ length: 64 }),
-                      value: '0',
-                      operation: 0,
-                    },
-                  ]),
-                ]),
-              })
-              .build(),
-          })
-          .build(),
-      ),
+      extractMigrationL2MasterCopyAddress({
+        hexData: multisendInterface.encodeFunctionData('multiSend', [
+          encodeMultiSendData([
+            {
+              to: faker.finance.ethereumAddress(),
+              data: faker.string.hexadecimal({ length: 64 }),
+              value: '0',
+              operation: 0,
+            },
+            {
+              to: faker.finance.ethereumAddress(),
+              data: faker.string.hexadecimal({ length: 64 }),
+              value: '0',
+              operation: 0,
+            },
+          ]),
+        ]),
+      } as TransactionData),
     ).toBeUndefined()
   })
 
   it('should return migration address for multisend with migration as first tx', () => {
     const l2SingletonAddress = getSafeL2SingletonDeployment()?.defaultAddress!
     expect(
-      extractMigrationL2MasterCopyAddress(
-        safeTxBuilder()
-          .with({
-            data: safeTxDataBuilder()
-              .with({
-                data: multisendInterface.encodeFunctionData('multiSend', [
-                  encodeMultiSendData([
-                    {
-                      to: safeToL2MigrationAddress!,
-                      data: safeToL2MigrationInterface.encodeFunctionData('migrateToL2', [l2SingletonAddress]),
-                      value: '0',
-                      operation: 1,
-                    },
-                    {
-                      to: faker.finance.ethereumAddress(),
-                      data: faker.string.hexadecimal({ length: 64 }),
-                      value: '0',
-                      operation: 0,
-                    },
-                  ]),
-                ]),
-              })
-              .build(),
-          })
-          .build(),
-      ),
+      extractMigrationL2MasterCopyAddress({
+        hexData: multisendInterface.encodeFunctionData('multiSend', [
+          encodeMultiSendData([
+            {
+              to: safeToL2MigrationAddress!,
+              data: safeToL2MigrationInterface.encodeFunctionData('migrateToL2', [l2SingletonAddress]),
+              value: '0',
+              operation: 1,
+            },
+            {
+              to: faker.finance.ethereumAddress(),
+              data: faker.string.hexadecimal({ length: 64 }),
+              value: '0',
+              operation: 0,
+            },
+          ]),
+        ]),
+      } as TransactionData),
     ).toEqual(l2SingletonAddress)
   })
 
