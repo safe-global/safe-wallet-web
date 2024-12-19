@@ -221,7 +221,7 @@ describe('SignMessage', () => {
         name="Test App"
         message="Hello world!"
         requestId="123"
-        safeAppId={25}
+        origin="http://localhost:3000"
       />,
     )
 
@@ -253,7 +253,7 @@ describe('SignMessage', () => {
       expect.objectContaining({
         safe: extendedSafeInfo,
         message: 'Hello world!',
-        safeAppId: 25,
+        origin: 'http://localhost:3000',
         //onboard: expect.anything(),
       }),
     )
@@ -362,7 +362,7 @@ describe('SignMessage', () => {
         name="Test App"
         message="Hello world!"
         requestId="123"
-        safeAppId={25}
+        origin="http://localhost:3000"
       />,
     )
 
@@ -384,7 +384,7 @@ describe('SignMessage', () => {
         name="Test App"
         message="Hello world!"
         requestId="123"
-        safeAppId={25}
+        origin="http://localhost:3000"
       />,
     )
 
@@ -409,7 +409,7 @@ describe('SignMessage', () => {
         name="Test App"
         message="Hello world!"
         requestId="123"
-        safeAppId={25}
+        origin="http://localhost:3000"
       />,
     )
 
@@ -491,7 +491,7 @@ describe('SignMessage', () => {
         name="Test App"
         message="Hello world!"
         requestId="123"
-        safeAppId={25}
+        origin="http://localhost:3000"
       />,
     )
 

@@ -92,7 +92,7 @@ export const useCustomAppCommunicator = (
             logoUri={appData?.iconUrl || ''}
             name={appData?.name || ''}
             message={message}
-            safeAppId={appData?.id}
+            origin={appData?.url}
             requestId={requestId}
           />,
           onTxFlowClose,

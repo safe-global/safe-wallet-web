@@ -12,12 +12,12 @@ export const dispatchSafeMsgProposal = async ({
   provider,
   safe,
   message,
-  safeAppId,
+  origin = '',
 }: {
   provider: Eip1193Provider
   safe: SafeInfo
   message: SafeMessage['message']
-  safeAppId?: number
+  origin: string | undefined
 }): Promise<void> => {
   const messageHash = generateSafeMessageHash(safe, message)
 
@@ -33,7 +33,7 @@ export const dispatchSafeMsgProposal = async ({
     await proposeSafeMessage(safe.chainId, safe.address.value, {
       message: normalizedMessage,
       signature,
-      safeAppId,
+      origin,
     })
   } catch (error) {
     safeMsgDispatch(SafeMsgEvent.PROPOSE_FAILED, {

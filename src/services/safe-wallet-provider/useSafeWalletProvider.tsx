@@ -90,9 +90,9 @@ export const useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK | 
             <SignMessageFlow
               logoUri={appInfo.iconUrl}
               name={appInfo.name}
+              origin={appInfo.url}
               message={message}
               requestId={id}
-              safeAppId={appInfo.id}
             />,
             onClose,
           )

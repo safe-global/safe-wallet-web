@@ -43,14 +43,14 @@ describe('safeMsgSender', () => {
         },
       } as unknown as gateway.SafeInfo
       const message = 'Hello world'
-      const safeAppId = 1
+      const origin = 'http://example.com'
 
-      await dispatchSafeMsgProposal({ provider: MockEip1193Provider, safe, message, safeAppId })
+      await dispatchSafeMsgProposal({ provider: MockEip1193Provider, safe, message, origin })
 
       expect(proposeSafeMessageSpy).toHaveBeenCalledWith('5', zeroPadValue('0x0789', 20), {
         message,
         signature: mockValidSignature,
-        safeAppId,
+        origin,
       })
 
       expect(safeMsgDispatchSpy).toHaveBeenCalledWith(events.SafeMsgEvent.PROPOSE, {
@@ -88,9 +88,9 @@ describe('safeMsgSender', () => {
           test: 'Hello World!',
         },
       }
-      const safeAppId = 1
+      const origin = 'http://example.com'
 
-      await dispatchSafeMsgProposal({ provider: MockEip1193Provider, safe, message, safeAppId })
+      await dispatchSafeMsgProposal({ provider: MockEip1193Provider, safe, message, origin })
 
       // Normalize message manually
       message.types['EIP712Domain'] = [
@@ -103,7 +103,7 @@ describe('safeMsgSender', () => {
       expect(proposeSafeMessageSpy).toHaveBeenCalledWith('5', zeroPadValue('0x0789', 20), {
         message,
         signature: mockValidSignature,
-        safeAppId,
+        origin,
       })
     })
 
@@ -125,15 +125,15 @@ describe('safeMsgSender', () => {
         },
       } as unknown as gateway.SafeInfo
       const message = 'Hello world'
-      const safeAppId = 1
+      const origin = 'http://example.com'
 
-      await dispatchSafeMsgProposal({ provider: MockEip1193Provider, safe, message, safeAppId })
+      await dispatchSafeMsgProposal({ provider: MockEip1193Provider, safe, message, origin })
 
       expect(proposeSafeMessageSpy).toHaveBeenCalledWith('5', zeroPadValue('0x0789', 20), {
         message,
         // Even though the mock returns the signature with invalid V, the valid signature should get dispatched as we adjust invalid Vs
         signature: mockValidSignature,
-        safeAppId,
+        origin,
       })
 
       expect(safeMsgDispatchSpy).toHaveBeenCalledWith(events.SafeMsgEvent.PROPOSE, {
@@ -155,17 +155,17 @@ describe('safeMsgSender', () => {
         },
       } as unknown as gateway.SafeInfo
       const message = 'Hello world'
-      const safeAppId = 1
+      const origin = 'http://example.com'
 
       try {
-        await dispatchSafeMsgProposal({ provider: MockEip1193Provider, safe, message, safeAppId })
+        await dispatchSafeMsgProposal({ provider: MockEip1193Provider, safe, message, origin })
       } catch (e) {
         expect((e as Error).message).toBe('Example error')
 
         expect(proposeSafeMessageSpy).toHaveBeenCalledWith('5', zeroPadValue('0x0789', 20), {
           message,
           signature: mockValidSignature,
-          safeAppId,
+          origin,
         })
 
         expect(safeMsgDispatchSpy).toHaveBeenCalledWith(events.SafeMsgEvent.PROPOSE_FAILED, {

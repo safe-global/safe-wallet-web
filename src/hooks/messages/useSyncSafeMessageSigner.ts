@@ -33,7 +33,7 @@ const useSyncSafeMessageSigner = (
   decodedMessage: string | EIP712TypedData,
   safeMessageHash: string,
   requestId: string | undefined,
-  safeAppId: number | undefined,
+  origin: string | undefined,
   onClose: () => void,
 ) => {
   const [submitError, setSubmitError] = useState<Error | undefined>()
@@ -60,7 +60,7 @@ const useSyncSafeMessageSigner = (
     try {
       // When collecting the first signature
       if (!message) {
-        await dispatchSafeMsgProposal({ provider: wallet.provider, safe, message: decodedMessage, safeAppId })
+        await dispatchSafeMsgProposal({ provider: wallet.provider, safe, message: decodedMessage, origin })
 
         // Fetch updated message
         const updatedMsg = await fetchSafeMessage(safeMessageHash, safe.chainId)
@@ -86,7 +86,7 @@ const useSyncSafeMessageSigner = (
     } catch (e) {
       setSubmitError(asError(e))
     }
-  }, [wallet, safe, message, decodedMessage, safeAppId, safeMessageHash, onClose, requestId])
+  }, [wallet, safe, message, decodedMessage, origin, safeMessageHash, onClose, requestId])
 
   return { submitError, onSign }
 }
