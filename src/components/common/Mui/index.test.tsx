@@ -29,4 +29,11 @@ describe('Box Component', () => {
     const box = getByTestId('box')
     expect(box).toHaveStyle('text-align: center')
   })
+
+  it('should pass the sx prop to the MuiBox component', () => {
+    const { getByTestId } = render(<Box p={1} sx={{ p: 3, fontSize: '14px' }} data-testid="box" />)
+    const box = getByTestId('box')
+    expect(box).toHaveStyle('padding: 24px')
+    expect(box).toHaveStyle('font-size: 14px')
+  })
 })

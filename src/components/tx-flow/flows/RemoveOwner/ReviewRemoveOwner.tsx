@@ -14,6 +14,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { ChangeSignerSetupWarning } from '@/features/multichain/components/SignerSetupWarning/ChangeSignerSetupWarning'
+import { maybePlural } from '@/utils/formatters'
 
 export const ReviewRemoveOwner = ({ params }: { params: RemoveOwnerFlowProps }): ReactElement => {
   const addressBook = useAddressBook()
@@ -55,7 +56,7 @@ export const ReviewRemoveOwner = ({ params }: { params: RemoveOwnerFlowProps }):
           Any transaction requires the confirmation of:
         </Typography>
         <Typography>
-          <b>{threshold}</b> out of <b>{newOwnerLength}</b> signers
+          <b>{threshold}</b> out of <b>{newOwnerLength}</b> signer{maybePlural(newOwnerLength)}
         </Typography>
       </Box>
       <Divider className={commonCss.nestedDivider} />

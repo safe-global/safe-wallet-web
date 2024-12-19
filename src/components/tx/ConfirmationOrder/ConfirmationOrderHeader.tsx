@@ -56,15 +56,14 @@ const ConfirmationOrderHeader = ({ blocks, showArrow }: { blocks: [InfoBlock, In
           </Box>
 
           {showArrow && index === 0 && (
-            <Box
-              width={40}
-              height={40}
-              p={1}
-              borderRadius="100%"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
+            <Stack
               sx={{
+                width: 40,
+                height: 40,
+                alignItems: 'center',
+                justifyContent: 'center',
+                p: 1,
+                borderRadius: '100%',
                 bgcolor: 'background.paper',
                 position: 'absolute',
                 right: -20,
@@ -74,7 +73,7 @@ const ConfirmationOrderHeader = ({ blocks, showArrow }: { blocks: [InfoBlock, In
               }}
             >
               <SvgIcon component={EastRoundedIcon} inheritViewBox fontSize="small" />
-            </Box>
+            </Stack>
           )}
         </Stack>
       ))}

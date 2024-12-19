@@ -79,7 +79,7 @@ const DeleteTxButton = ({
       <Tooltip
         arrow
         placement="top"
-        title={isDeletable ? '' : 'You can only delete the last transaction in the queue or duplicates'}
+        title={isDeletable ? '' : 'You can only delete the last transaction in the queue, or a duplicate transaction.'}
       >
         <span style={{ width: '100%' }}>
           <Track {...REJECT_TX_EVENTS.DELETE_OFFCHAIN_BUTTON} as="div">

@@ -1,13 +1,12 @@
 import { useEffect, useMemo } from 'react'
 import Fuse from 'fuse.js'
-import type { MultiChainSafeItem } from './useAllSafesGrouped'
-import type { SafeItem } from './useAllSafes'
+import type { AllSafeItems } from './useAllSafesGrouped'
 import { selectChains } from '@/store/chainsSlice'
 import { useAppSelector } from '@/store'
 import { isMultiChainSafeItem } from '@/features/multichain/utils/utils'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 
-const useSafesSearch = (safes: (SafeItem | MultiChainSafeItem)[], query: string): (SafeItem | MultiChainSafeItem)[] => {
+const useSafesSearch = (safes: AllSafeItems, query: string): AllSafeItems => {
   const chains = useAppSelector(selectChains)
 
   useEffect(() => {

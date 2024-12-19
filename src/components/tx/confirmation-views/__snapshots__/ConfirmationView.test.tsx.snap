@@ -123,7 +123,7 @@ exports[`ConfirmationView should display a confirmation screen for a SETTINGS_CH
        
       <b>
         1
-         signers
+         signer
       </b>
     </p>
   </div>

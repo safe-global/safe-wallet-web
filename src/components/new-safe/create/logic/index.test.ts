@@ -10,7 +10,7 @@ import {
   getRedirect,
   createNewUndeployedSafeWithoutSalt,
 } from '@/components/new-safe/create/logic/index'
-import { relayTransaction } from '@safe-global/safe-gateway-typescript-sdk'
+import * as relaying from '@/services/tx/relaying'
 import { toBeHex } from 'ethers'
 import {
   Gnosis_safe__factory,
@@ -21,7 +21,6 @@ import {
   getReadOnlyGnosisSafeContract,
   getReadOnlyProxyFactoryContract,
 } from '@/services/contracts/safeContracts'
-import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
 import { FEATURES, getLatestSafeVersion } from '@/utils/chains'
 import { type FEATURES as GatewayFeatures } from '@safe-global/safe-gateway-typescript-sdk'
 import { chainBuilder } from '@/tests/builders/chains'
@@ -68,13 +67,14 @@ describe('create/logic', () => {
     })
 
     it('returns taskId if create Safe successfully relayed', async () => {
+      const gasLimit = faker.string.numeric()
       const mockSafeProvider = {
         getExternalProvider: jest.fn(),
         getExternalSigner: jest.fn(),
         getChainId: jest.fn().mockReturnValue(BigInt(1)),
       } as unknown as SafeProvider
 
-      jest.spyOn(gateway, 'relayTransaction').mockResolvedValue({ taskId: '0x123' })
+      jest.spyOn(relaying, 'relayTransaction').mockResolvedValue({ taskId: '0x123' })
       jest.spyOn(sdkHelpers, 'getSafeProvider').mockImplementation(() => mockSafeProvider)
 
       jest.spyOn(contracts, 'getReadOnlyFallbackHandlerContract').mockResolvedValue({
@@ -123,20 +123,22 @@ describe('create/logic', () => {
         expectedSaltNonce,
       ])
 
-      const taskId = await relaySafeCreation(mockChainInfo, undeployedSafeProps)
+      const taskId = await relaySafeCreation(mockChainInfo, undeployedSafeProps, gasLimit)
 
       expect(taskId).toEqual('0x123')
-      expect(relayTransaction).toHaveBeenCalledTimes(1)
-      expect(relayTransaction).toHaveBeenCalledWith('1', {
+      expect(relaying.relayTransaction).toHaveBeenCalledTimes(1)
+      expect(relaying.relayTransaction).toHaveBeenCalledWith('1', {
         to: proxyFactoryAddress,
         data: expectedCallData,
         version: latestSafeVersion,
+        gasLimit,
       })
     })
 
     it('should throw an error if relaying fails', () => {
+      const gasLimit = faker.string.numeric()
       const relayFailedError = new Error('Relay failed')
-      jest.spyOn(gateway, 'relayTransaction').mockRejectedValue(relayFailedError)
+      jest.spyOn(relaying, 'relayTransaction').mockRejectedValue(relayFailedError)
 
       const undeployedSafeProps: ReplayedSafeProps = {
         safeAccountConfig: {
@@ -155,7 +157,7 @@ describe('create/logic', () => {
         saltNonce: '69',
       }
 
-      expect(relaySafeCreation(mockChainInfo, undeployedSafeProps)).rejects.toEqual(relayFailedError)
+      expect(relaySafeCreation(mockChainInfo, undeployedSafeProps, gasLimit)).rejects.toEqual(relayFailedError)
     })
   })
   describe('getRedirect', () => {
