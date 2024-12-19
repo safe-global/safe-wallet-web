@@ -4,7 +4,8 @@ import {
   type TransactionData,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
-import { extractMigrationL2MasterCopyAddress, prependSafeToL2Migration } from '../safe-migrations'
+import { prependSafeToL2Migration } from '../safe-migrations'
+import { extractMigrationL2MasterCopyAddress } from '@/features/multichain/utils/extract-migration-data'
 import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { chainBuilder } from '@/tests/builders/chains'
 import { safeSignatureBuilder, safeTxBuilder, safeTxDataBuilder } from '@/tests/builders/safeTx'
