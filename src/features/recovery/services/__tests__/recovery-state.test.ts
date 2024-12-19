@@ -15,8 +15,7 @@ import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { encodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils/transactions/utils'
 import { getMultiSendCallOnlyDeployment, getSafeSingletonDeployment } from '@safe-global/safe-deployments'
 import { Interface } from 'ethers'
-import { FEATURES, getLatestSafeVersion } from '@/utils/chains'
-import { type FEATURES as GatewayFeatures } from '@safe-global/safe-gateway-typescript-sdk'
+import { getLatestSafeVersion } from '@/utils/chains'
 import { chainBuilder } from '@/tests/builders/chains'
 
 jest.mock('@/hooks/wallets/web3')
@@ -24,9 +23,7 @@ jest.mock('@/hooks/wallets/web3')
 const mockUseWeb3ReadOnly = useWeb3ReadOnly as jest.MockedFunction<typeof useWeb3ReadOnly>
 
 const latestSafeVersion = getLatestSafeVersion(
-  chainBuilder()
-    .with({ chainId: '1', features: [FEATURES.SAFE_141 as unknown as GatewayFeatures] })
-    .build(),
+  chainBuilder().with({ chainId: '1', recommendedMasterCopyVersion: '1.4.1' }).build(),
 )
 const PRE_MULTI_SEND_CALL_ONLY_VERSIONS = ['1.0.0', '1.1.1']
 const SUPPORTED_MULTI_SEND_CALL_ONLY_VERSIONS = [

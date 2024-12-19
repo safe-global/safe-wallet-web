@@ -7,7 +7,7 @@ import { Errors, logError } from '@/services/exceptions'
 import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useCurrentChain } from '@/hooks/useChains'
-import { prependSafeToL2Migration } from '@/utils/transactions'
+import { prependSafeToL2Migration } from '@/utils/safe-migrations'
 import { useSelectAvailableSigner } from '@/hooks/wallets/useSelectAvailableSigner'
 
 export type SafeTxContextParams = {

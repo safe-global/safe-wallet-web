@@ -8,7 +8,7 @@ import type { ReactElement } from 'react'
 
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { HelpCenterArticle } from '@/config/constants'
+import { BRAND_NAME, HelpCenterArticle } from '@/config/constants'
 import ExternalLink from '@/components/common/ExternalLink'
 import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -43,7 +43,7 @@ export const FallbackHandler = (): ReactElement | null => {
 
   const warning = !hasFallbackHandler ? (
     <>
-      The {'Safe{Wallet}'} may not work correctly as no fallback handler is currently set.
+      The {BRAND_NAME} may not work correctly as no fallback handler is currently set.
       {txBuilder && (
         <>
           {' '}

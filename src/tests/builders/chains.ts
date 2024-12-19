@@ -110,6 +110,7 @@ export const chainBuilder = (): IBuilder<ChainInfo> => {
     disabledWallets: generateRandomArray(() => faker.word.sample(), { min: 1, max: 10 }),
     // @ts-expect-error - we are using a local FEATURES enum
     features: generateRandomArray(() => faker.helpers.enumValue(FEATURES), { min: 1, max: 10 }),
+    recommendedMasterCopyVersion: faker.system.semver(),
   })
 }
 

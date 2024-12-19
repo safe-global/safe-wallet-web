@@ -80,11 +80,14 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canA
                 elevation: 2,
               },
             }}
-            renderOption={(props, option) => (
-              <Typography data-testid="address-item" component="li" variant="body2" {...props}>
-                <EthHashInfo address={option.label} name={option.name} shortAddress={false} copyAddress={false} />
-              </Typography>
-            )}
+            renderOption={(props, option) => {
+              const { key, ...rest } = props
+              return (
+                <Typography data-testid="address-item" component="li" variant="body2" {...rest} key={key}>
+                  <EthHashInfo address={option.label} name={option.name} shortAddress={false} copyAddress={false} />
+                </Typography>
+              )
+            }}
             renderInput={(params) => (
               <AddressInput
                 data-testid="address-item"

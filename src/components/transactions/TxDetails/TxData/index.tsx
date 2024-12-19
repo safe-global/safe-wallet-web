@@ -1,6 +1,11 @@
 import SettingsChangeTxInfo from '@/components/transactions/TxDetails/TxData/SettingsChange'
 import type { SpendingLimitMethods } from '@/utils/transaction-guards'
-import { isExecTxData, isOnChainConfirmationTxData, isStakingTxWithdrawInfo } from '@/utils/transaction-guards'
+import {
+  isExecTxData,
+  isOnChainConfirmationTxData,
+  isSafeUpdateTxData,
+  isStakingTxWithdrawInfo,
+} from '@/utils/transaction-guards'
 import { isStakingTxExitInfo } from '@/utils/transaction-guards'
 import {
   isCancellationTxInfo,
@@ -28,6 +33,7 @@ import StakingTxExitDetails from '@/features/stake/components/StakingTxExitDetai
 import StakingTxWithdrawDetails from '@/features/stake/components/StakingTxWithdrawDetails'
 import { OnChainConfirmation } from './NestedTransaction/OnChainConfirmation'
 import { ExecTransaction } from './NestedTransaction/ExecTransaction'
+import SafeUpdate from './SafeUpdate'
 
 const TxData = ({
   txDetails,
@@ -85,6 +91,10 @@ const TxData = ({
 
   if (isExecTxData(txDetails.txData)) {
     return <ExecTransaction data={txDetails.txData} />
+  }
+
+  if (isSafeUpdateTxData(txDetails.txData)) {
+    return <SafeUpdate txData={txDetails.txData} />
   }
 
   return <DecodedData txData={txDetails.txData} toInfo={toInfo} />

@@ -68,6 +68,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       chainName: null,
       enabled: false,
     },
+    recommendedMasterCopyVersion: '1.4.1',
   },
   {
     transactionService: 'https://safe-transaction.xdai.gnosis.io',
@@ -122,6 +123,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       chainName: null,
       enabled: false,
     },
+    recommendedMasterCopyVersion: '1.4.1',
   },
   {
     transactionService: 'https://safe-transaction.polygon.gnosis.io',
@@ -182,6 +184,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       chainName: null,
       enabled: false,
     },
+    recommendedMasterCopyVersion: '1.4.1',
   },
   {
     transactionService: 'https://safe-transaction.bsc.gnosis.io',
@@ -238,6 +241,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       chainName: null,
       enabled: false,
     },
+    recommendedMasterCopyVersion: '1.4.1',
   },
   {
     transactionService: 'https://safe-transaction.ewc.gnosis.io',
@@ -292,6 +296,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       chainName: null,
       enabled: false,
     },
+    recommendedMasterCopyVersion: '1.4.1',
   },
   {
     transactionService: 'https://safe-transaction.arbitrum.gnosis.io',
@@ -339,6 +344,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       chainName: null,
       enabled: false,
     },
+    recommendedMasterCopyVersion: '1.4.1',
   },
   {
     transactionService: 'https://safe-transaction.aurora.gnosis.io',
@@ -387,6 +393,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       chainName: null,
       enabled: false,
     },
+    recommendedMasterCopyVersion: '1.4.1',
   },
   {
     transactionService: 'https://safe-transaction.avalanche.gnosis.io',
@@ -446,6 +453,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       chainName: null,
       enabled: false,
     },
+    recommendedMasterCopyVersion: '1.4.1',
   },
   {
     transactionService: 'https://safe-transaction.optimism.gnosis.io',
@@ -493,6 +501,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       chainName: null,
       enabled: false,
     },
+    recommendedMasterCopyVersion: '1.4.1',
   },
   {
     transactionService: 'https://safe-transaction.goerli.gnosis.io/',
@@ -548,6 +557,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       chainName: null,
       enabled: false,
     },
+    recommendedMasterCopyVersion: '1.4.1',
   },
   {
     transactionService: 'https://safe-transaction.rinkeby.gnosis.io',
@@ -593,6 +603,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       chainName: null,
       enabled: false,
     },
+    recommendedMasterCopyVersion: '1.4.1',
   },
   {
     transactionService: 'https://safe-transaction.volta.gnosis.io',
@@ -647,6 +658,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       chainName: null,
       enabled: false,
     },
+    recommendedMasterCopyVersion: '1.4.1',
   },
 ]
 

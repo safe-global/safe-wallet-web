@@ -32,31 +32,36 @@ describe('NetworkMultiSelector', () => {
       .with({ chainId: '1' })
       .with({ chainName: 'Ethereum' })
       .with({ shortName: 'eth' })
-      .with({ features: [FEATURES.SAFE_141, FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
+      .with({ features: [FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
+      .with({ recommendedMasterCopyVersion: '1.4.1' })
       .build(),
     chainBuilder()
       .with({ chainId: '10' })
       .with({ chainName: 'Optimism' })
       .with({ shortName: 'oeth' })
-      .with({ features: [FEATURES.SAFE_141, FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
+      .with({ features: [FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
+      .with({ recommendedMasterCopyVersion: '1.4.1' })
       .build(),
     chainBuilder()
       .with({ chainId: '100' })
       .with({ chainName: 'Gnosis Chain' })
       .with({ shortName: 'gno' })
-      .with({ features: [FEATURES.SAFE_141, FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
+      .with({ features: [FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
+      .with({ recommendedMasterCopyVersion: '1.4.1' })
       .build(),
     chainBuilder()
       .with({ chainId: '324' })
       .with({ chainName: 'ZkSync Era' })
       .with({ shortName: 'zksync' })
-      .with({ features: [FEATURES.SAFE_141, FEATURES.COUNTERFACTUAL] as any })
+      .with({ features: [FEATURES.COUNTERFACTUAL] as any })
+      .with({ recommendedMasterCopyVersion: '1.4.1' })
       .build(),
     chainBuilder()
       .with({ chainId: '480' })
       .with({ chainName: 'Worldchain' })
       .with({ shortName: 'wc' })
-      .with({ features: [FEATURES.SAFE_141, FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
+      .with({ features: [FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
+      .with({ recommendedMasterCopyVersion: '1.4.1' })
       .build(),
   ]
 
