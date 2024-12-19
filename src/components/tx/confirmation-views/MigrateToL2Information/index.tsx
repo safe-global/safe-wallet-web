@@ -3,7 +3,7 @@ import { Alert, AlertTitle, Box, SvgIcon, Typography } from '@mui/material'
 import type { TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
 import InfoOutlinedIcon from '@/public/images/notifications/info.svg'
 import NamedAddressInfo from '@/components/common/NamedAddressInfo'
-import { extractMigrationL2MasterCopyAddress } from '@/utils/safe-migrations'
+import { extractMigrationL2MasterCopyAddress } from '@/features/multichain/utils/extract-migration-data'
 
 export const MigrateToL2Information = ({
   variant,
