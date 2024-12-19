@@ -12,6 +12,7 @@ import css from './styles.module.css'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import Track from '@/components/common/Track'
 import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
+import { BRAND_NAME } from '@/config/constants'
 
 const WC_HINTS_KEY = 'wcHints'
 
@@ -60,7 +61,7 @@ export const WcConnectionForm = ({ sessions, uri }: { sessions: SessionTypes.Str
           }}
         >
           {safeLoaded
-            ? `Paste the pairing code below to connect to your Safe{Wallet} via WalletConnect`
+            ? `Paste the pairing code below to connect to your ${BRAND_NAME} via WalletConnect`
             : `Please open one of your Safe Accounts to connect to via WalletConnect`}
         </Typography>
 

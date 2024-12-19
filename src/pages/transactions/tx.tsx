@@ -3,12 +3,13 @@ import Head from 'next/head'
 
 import SingleTx from '@/components/transactions/SingleTx'
 import Typography from '@mui/material/Typography'
+import { BRAND_NAME } from '@/config/constants'
 
 const SingleTransaction: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Transaction details'}</title>
+        <title>{`${BRAND_NAME} – Transaction details`}</title>
       </Head>
 
       <main>

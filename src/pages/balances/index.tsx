@@ -14,6 +14,7 @@ import TokenListSelect from '@/components/balances/TokenListSelect'
 import StakingBanner from '@/components/dashboard/StakingBanner'
 import useIsStakingBannerEnabled from '@/features/stake/hooks/useIsStakingBannerEnabled'
 import { Box } from '@mui/material'
+import { BRAND_NAME } from '@/config/constants'
 
 const Balances: NextPage = () => {
   const { error } = useBalances()
@@ -24,7 +25,7 @@ const Balances: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Assets'}</title>
+        <title>{`${BRAND_NAME} – Assets`}</title>
       </Head>
 
       <AssetsHeader>

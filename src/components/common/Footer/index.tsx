@@ -8,7 +8,8 @@ import { AppRoutes } from '@/config/routes'
 import packageJson from '../../../../package.json'
 import ExternalLink from '../ExternalLink'
 import MUILink from '@mui/material/Link'
-import { HELP_CENTER_URL, IS_DEV, IS_OFFICIAL_HOST } from '@/config/constants'
+import { HELP_CENTER_URL } from '@/config/constants'
+import { useIsOfficialHost } from '@/hooks/useIsOfficialHost'
 
 const footerPages = [
   AppRoutes.welcome.index,
@@ -32,6 +33,7 @@ const FooterLink = ({ children, href }: { children: ReactNode; href: string }): 
 
 const Footer = (): ReactElement | null => {
   const router = useRouter()
+  const isOfficialHost = useIsOfficialHost()
 
   if (!footerPages.some((path) => router.pathname.startsWith(path))) {
     return null
@@ -44,7 +46,7 @@ const Footer = (): ReactElement | null => {
   return (
     <footer className={css.container}>
       <ul>
-        {IS_OFFICIAL_HOST || IS_DEV ? (
+        {isOfficialHost ? (
           <>
             <li>
               <Typography variant="caption">&copy;2022–{new Date().getFullYear()} Core Contributors GmbH</Typography>
@@ -74,7 +76,7 @@ const Footer = (): ReactElement | null => {
             </li>
           </>
         ) : (
-          <li>{'This is an unofficial distribution of Safe{Wallet}'}</li>
+          <li>This is an unofficial distribution of the app</li>
         )}
 
         <li>

@@ -10,6 +10,7 @@ import SignedMessagesHelpLink from '@/components/transactions/SignedMessagesHelp
 import { AppRoutes } from '@/config/routes'
 import { useCurrentChain } from '@/hooks/useChains'
 import { hasFeature } from '@/utils/chains'
+import { BRAND_NAME } from '@/config/constants'
 
 const Messages: NextPage = () => {
   const chain = useCurrentChain()
@@ -26,7 +27,7 @@ const Messages: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Messages'}</title>
+        <title>{`${BRAND_NAME} – Messages`}</title>
       </Head>
 
       <TxHeader>

@@ -2,12 +2,13 @@ import { Box, Paper, Typography } from '@mui/material'
 import WifiOffIcon from '@mui/icons-material/WifiOff'
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import { BRAND_NAME } from '@/config/constants'
 
 const Offline: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Offline'}</title>
+        <title>{`${BRAND_NAME} – Offline`}</title>
       </Head>
 
       <main>
