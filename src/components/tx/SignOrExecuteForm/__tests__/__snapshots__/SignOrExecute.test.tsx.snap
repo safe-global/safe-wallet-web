@@ -98,6 +98,73 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
     <div
       class="MuiCardContent-root cardContent css-1lt5qva-MuiCardContent-root"
     >
+      <form>
+        <h6
+          class="MuiTypography-root MuiTypography-h6 css-v1yov6-MuiTypography-root"
+        >
+          Add a note
+        </h6>
+        <div
+          class="MuiFormControl-root MuiFormControl-marginNormal MuiFormControl-fullWidth MuiTextField-root css-16bevx5-MuiFormControl-root-MuiTextField-root"
+        >
+          <label
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeMedium MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeMedium MuiInputLabel-outlined css-ll8nw6-MuiFormLabel-root-MuiInputLabel-root"
+            data-shrink="false"
+            for=":r1:"
+            id=":r1:-label"
+          >
+            Transaction description
+          </label>
+          <div
+            class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1pfp7cx-MuiInputBase-root-MuiOutlinedInput-root"
+          >
+            <input
+              aria-invalid="false"
+              class="MuiInputBase-input MuiOutlinedInput-input css-1eoo0u4-MuiInputBase-input-MuiOutlinedInput-input"
+              id=":r1:"
+              name="note"
+              type="text"
+            />
+            <fieldset
+              aria-hidden="true"
+              class="MuiOutlinedInput-notchedOutline css-1focg1t-MuiOutlinedInput-notchedOutline"
+            >
+              <legend
+                class="css-81qg8w"
+              >
+                <span>
+                  Transaction description
+                </span>
+              </legend>
+            </fieldset>
+          </div>
+        </div>
+        <div
+          class="MuiStack-root css-mw1pf-MuiStack-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-caption css-cmorml-MuiTypography-root"
+          >
+            Attention: transaction notes are public
+          </span>
+          <button
+            class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary css-vi2kll-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="submit"
+          >
+            Add note
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiCard-root css-1w4z6qv-MuiPaper-root-MuiCard-root"
+    style="--Paper-shadow: none;"
+  >
+    <div
+      class="MuiCardContent-root cardContent css-1lt5qva-MuiCardContent-root"
+    >
       <div
         class="wrapper"
       >
@@ -424,6 +491,73 @@ exports[`SignOrExecute should display an error screen 1`] = `
           </div>
         </div>
       </div>
+    </div>
+  </div>
+  <div
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiCard-root css-1w4z6qv-MuiPaper-root-MuiCard-root"
+    style="--Paper-shadow: none;"
+  >
+    <div
+      class="MuiCardContent-root cardContent css-1lt5qva-MuiCardContent-root"
+    >
+      <form>
+        <h6
+          class="MuiTypography-root MuiTypography-h6 css-v1yov6-MuiTypography-root"
+        >
+          Add a note
+        </h6>
+        <div
+          class="MuiFormControl-root MuiFormControl-marginNormal MuiFormControl-fullWidth MuiTextField-root css-16bevx5-MuiFormControl-root-MuiTextField-root"
+        >
+          <label
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeMedium MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeMedium MuiInputLabel-outlined css-ll8nw6-MuiFormLabel-root-MuiInputLabel-root"
+            data-shrink="false"
+            for=":r6:"
+            id=":r6:-label"
+          >
+            Transaction description
+          </label>
+          <div
+            class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1pfp7cx-MuiInputBase-root-MuiOutlinedInput-root"
+          >
+            <input
+              aria-invalid="false"
+              class="MuiInputBase-input MuiOutlinedInput-input css-1eoo0u4-MuiInputBase-input-MuiOutlinedInput-input"
+              id=":r6:"
+              name="note"
+              type="text"
+            />
+            <fieldset
+              aria-hidden="true"
+              class="MuiOutlinedInput-notchedOutline css-1focg1t-MuiOutlinedInput-notchedOutline"
+            >
+              <legend
+                class="css-81qg8w"
+              >
+                <span>
+                  Transaction description
+                </span>
+              </legend>
+            </fieldset>
+          </div>
+        </div>
+        <div
+          class="MuiStack-root css-mw1pf-MuiStack-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-caption css-cmorml-MuiTypography-root"
+          >
+            Attention: transaction notes are public
+          </span>
+          <button
+            class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary css-vi2kll-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="submit"
+          >
+            Add note
+          </button>
+        </div>
+      </form>
     </div>
   </div>
   <div

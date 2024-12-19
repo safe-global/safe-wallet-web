@@ -41,6 +41,7 @@ import ConfirmationView from '../confirmation-views'
 import { SignerForm } from './SignerForm'
 import { useSigner } from '@/hooks/wallets/useWallet'
 import { isNestedConfirmationTxInfo } from '@/utils/transaction-guards'
+import TxNoteForm from './TxNoteForm'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -142,6 +143,7 @@ export const SignOrExecuteForm = ({
   isCreation?: boolean
   txDetails?: TransactionDetails
 }): ReactElement => {
+  const [customOrigin, setCustomOrigin] = useState<string | undefined>(props.origin)
   const { transactionExecution } = useAppSelector(selectSettings)
   const [shouldExecute, setShouldExecute] = useState<boolean>(transactionExecution)
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
@@ -204,6 +206,19 @@ export const SignOrExecuteForm = ({
     [onFormSubmit],
   )
 
+  const onNoteSubmit = useCallback(
+    (note: string) => {
+      const originalOrigin = props.origin ? JSON.parse(props.origin) : { url: location.origin }
+      setCustomOrigin(
+        JSON.stringify({
+          ...originalOrigin,
+          name: JSON.stringify({ note }),
+        }),
+      )
+    },
+    [setCustomOrigin, props.origin],
+  )
+
   return (
     <>
       <TxCard>
@@ -229,6 +244,8 @@ export const SignOrExecuteForm = ({
       </TxCard>
 
       {!isCounterfactualSafe && !props.isRejection && <TxChecks />}
+
+      {isCreation && <TxNoteForm onSubmit={onNoteSubmit} />}
 
       <SignerForm willExecute={willExecute} />
 
@@ -264,7 +281,13 @@ export const SignOrExecuteForm = ({
           <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />
         )}
         {!isCounterfactualSafe && willExecute && !isProposing && (
-          <ExecuteForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} />
+          <ExecuteForm
+            {...props}
+            origin={customOrigin}
+            safeTx={safeTx}
+            isCreation={isCreation}
+            onSubmit={onFormSubmit}
+          />
         )}
         {!isCounterfactualSafe && willExecuteThroughRole && (
           <ExecuteThroughRoleForm
@@ -278,6 +301,7 @@ export const SignOrExecuteForm = ({
         {!isCounterfactualSafe && !willExecute && !willExecuteThroughRole && !isProposing && (
           <SignForm
             {...props}
+            origin={customOrigin}
             safeTx={safeTx}
             isBatchable={isBatchable}
             isCreation={isCreation}
