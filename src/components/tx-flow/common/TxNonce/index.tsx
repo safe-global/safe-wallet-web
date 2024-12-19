@@ -217,11 +217,13 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
               const isRecommendedNonce = option === recommendedNonce
               const isInitialPreviousNonce = option === previousNonces[0]
 
+              const { key, ...rest } = props
+
               return (
-                <div key={option}>
+                <div key={key}>
                   {isRecommendedNonce && <NonceFormHeader>Recommended nonce</NonceFormHeader>}
                   {isInitialPreviousNonce && <NonceFormHeader sx={{ pt: 3 }}>Replace existing</NonceFormHeader>}
-                  <NonceFormOption key={option} menuItemProps={props} nonce={option} />
+                  <NonceFormOption menuItemProps={rest} nonce={option} />
                 </div>
               )
             }}
