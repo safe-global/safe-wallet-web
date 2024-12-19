@@ -13,23 +13,23 @@ const NavTabs = ({ tabs }: { tabs: NavItem[] }) => {
   return (
     <Tabs value={activeTab} variant="scrollable" allowScrollButtonsMobile className={css.tabs}>
       {tabs.map((tab, idx) => (
-        <NextLink key={tab.href} href={{ pathname: tab.href, query }} passHref legacyBehavior>
-          <Tab
-            component="a"
-            tabIndex={0}
-            className={css.tab}
-            label={
-              <Typography
-                variant="body2"
-                fontWeight={700}
-                color={activeTab === idx ? 'primary' : 'primary.light'}
-                className={css.label}
-              >
-                {tab.label}
-              </Typography>
-            }
-          />
-        </NextLink>
+        <Tab
+          key={tab.href}
+          href={{ pathname: tab.href, query }}
+          component={NextLink}
+          tabIndex={0}
+          className={css.tab}
+          label={
+            <Typography
+              variant="body2"
+              fontWeight={700}
+              color={activeTab === idx ? 'primary' : 'primary.light'}
+              className={css.label}
+            >
+              {tab.label}
+            </Typography>
+          }
+        />
       ))}
     </Tabs>
   )
