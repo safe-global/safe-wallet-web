@@ -19,28 +19,20 @@ import UnknownContractError from './UnknownContractError'
 import { ErrorBoundary } from '@sentry/react'
 import ApprovalEditor from '../ApprovalEditor'
 import { isDelegateCall } from '@/services/tx/tx-sender/sdk'
-import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
-import { TX_EVENTS } from '@/services/analytics/events/transactions'
-import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
 import ExecuteThroughRoleForm from './ExecuteThroughRoleForm'
 import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThroughRoleForm/hooks'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { BlockaidBalanceChanges } from '../security/blockaid/BlockaidBalanceChange'
 import { Blockaid } from '../security/blockaid'
-
-import { MigrateToL2Information } from './MigrateToL2Information'
-import { extractMigrationL2MasterCopyAddress } from '@/utils/transactions'
-
 import { useLazyGetTransactionDetailsQuery } from '@/store/api/gateway'
 import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'
-
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import ConfirmationView from '../confirmation-views'
 import { SignerForm } from './SignerForm'
 import { useSigner } from '@/hooks/wallets/useWallet'
-import { isNestedConfirmationTxInfo } from '@/utils/transaction-guards'
+import { trackTxEvents } from './tracking'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -56,76 +48,6 @@ export type SignOrExecuteProps = {
   disableSubmit?: boolean
   origin?: string
   showMethodCall?: boolean
-}
-
-const trackTxEvents = (
-  details: TransactionDetails | undefined,
-  isCreation: boolean,
-  isExecuted: boolean,
-  isRoleExecution: boolean,
-  isProposerCreation: boolean,
-  isParentSigner: boolean,
-  origin?: string,
-) => {
-  const isNestedConfirmation = !!details && isNestedConfirmationTxInfo(details.txInfo)
-
-  const creationEvent = getCreationEvent({ isParentSigner, isRoleExecution, isProposerCreation })
-  const confirmationEvent = getConfirmationEvent({ isParentSigner, isNestedConfirmation })
-  const executionEvent = getExecutionEvent({ isParentSigner, isNestedConfirmation, isRoleExecution })
-
-  const event = (() => {
-    if (isCreation) {
-      return creationEvent
-    }
-    if (isExecuted) {
-      return executionEvent
-    }
-    return confirmationEvent
-  })()
-
-  const txType = getTransactionTrackingType(details, origin)
-  trackEvent({ ...event, label: txType })
-
-  // Immediate execution on creation
-  if (isCreation && isExecuted) {
-    trackEvent({ ...executionEvent, label: txType })
-  }
-}
-
-function getCreationEvent(args: { isParentSigner: boolean; isRoleExecution: boolean; isProposerCreation: boolean }) {
-  if (args.isParentSigner) {
-    return TX_EVENTS.CREATE_VIA_PARENT
-  }
-  if (args.isRoleExecution) {
-    return TX_EVENTS.CREATE_VIA_ROLE
-  }
-  if (args.isProposerCreation) {
-    return TX_EVENTS.CREATE_VIA_PROPOSER
-  }
-  return TX_EVENTS.CREATE
-}
-
-function getConfirmationEvent(args: { isParentSigner: boolean; isNestedConfirmation: boolean }) {
-  if (args.isParentSigner) {
-    return TX_EVENTS.CONFIRM_VIA_PARENT
-  }
-  if (args.isNestedConfirmation) {
-    return TX_EVENTS.CONFIRM_IN_PARENT
-  }
-  return TX_EVENTS.CONFIRM
-}
-
-function getExecutionEvent(args: { isParentSigner: boolean; isNestedConfirmation: boolean; isRoleExecution: boolean }) {
-  if (args.isParentSigner) {
-    return TX_EVENTS.EXECUTE_VIA_PARENT
-  }
-  if (args.isNestedConfirmation) {
-    return TX_EVENTS.EXECUTE_IN_PARENT
-  }
-  if (args.isRoleExecution) {
-    return TX_EVENTS.EXECUTE_VIA_ROLE
-  }
-  return TX_EVENTS.EXECUTE
 }
 
 export const SignOrExecuteForm = ({
@@ -157,8 +79,6 @@ export const SignOrExecuteForm = ({
   const isProposer = useIsWalletProposer()
   const isProposing = isProposer && !isSafeOwner && isCreation
   const isCounterfactualSafe = !safe.deployed
-  const multiChainMigrationTarget = extractMigrationL2MasterCopyAddress(safeTx)
-  const isMultiChainMigration = !!multiChainMigrationTarget
 
   // Check if a Zodiac Roles mod is enabled and if the user is a member of any role that allows the transaction
   const roles = useRoles(
@@ -208,7 +128,6 @@ export const SignOrExecuteForm = ({
     <>
       <TxCard>
         {props.children}
-        {isMultiChainMigration && <MigrateToL2Information variant="queue" newMasterCopy={multiChainMigrationTarget} />}
 
         <ConfirmationView
           isCreation={isCreation}
@@ -256,7 +175,7 @@ export const SignOrExecuteForm = ({
 
         <NetworkWarning />
 
-        {!isMultiChainMigration && <UnknownContractError />}
+        <UnknownContractError txData={props.txDetails?.txData} />
 
         <Blockaid />
 

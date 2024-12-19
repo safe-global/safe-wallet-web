@@ -57,12 +57,14 @@ export const ContractVersion = () => {
           sx={{ mt: 2, borderRadius: '2px', borderColor: '#B0FFC9' }}
           icon={<SvgIcon component={InfoIcon} inheritViewBox color="secondary" />}
         >
-          <AlertTitle sx={{ fontWeight: 700 }}>New version is available: {latestSafeVersion}</AlertTitle>
+          <AlertTitle sx={{ fontWeight: 700 }}>
+            New version is available: {latestSafeVersion} (
+            <ExternalLink href={safeMasterCopy?.deployerRepoUrl}>changelog</ExternalLink>)
+          </AlertTitle>
 
-          <Typography mb={3}>
+          <Typography mb={2}>
             Update now to take advantage of new features and the highest security standards available. You will need to
-            confirm this update just like any other transaction.{' '}
-            <ExternalLink href={safeMasterCopy?.deployerRepoUrl}>GitHub</ExternalLink>
+            confirm this update just like any other transaction.
           </Typography>
 
           <CheckWallet>

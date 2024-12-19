@@ -46,6 +46,7 @@ import {
   ConfirmationViewTypes,
   ConflictType,
   DetailedExecutionInfoType,
+  Operation,
   TransactionInfoType,
   TransactionListItemType,
   TransactionStatus,
@@ -57,12 +58,18 @@ import { sameAddress } from '@/utils/addresses'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 import { ethers } from 'ethers'
-import { getSafeToL2MigrationDeployment, getMultiSendDeployments } from '@safe-global/safe-deployments'
+import {
+  getSafeToL2MigrationDeployment,
+  getSafeMigrationDeployment,
+  getMultiSendDeployments,
+} from '@safe-global/safe-deployments'
 import { Safe__factory, Safe_to_l2_migration__factory } from '@/types/contracts'
 import { hasMatchingDeployment } from '@/services/contracts/deployments'
 import { isMultiSendCalldata } from './transaction-calldata'
 import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
+import { extractMigrationL2MasterCopyAddress } from './safe-migrations'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
@@ -446,4 +453,32 @@ export const isExecTxInfo = (info: TransactionInfo): info is Custom => {
 
 export const isNestedConfirmationTxInfo = (info: TransactionInfo): boolean => {
   return isCustomTxInfo(info) && (isOnChainConfirmationTxInfo(info) || isExecTxInfo(info))
+}
+
+export const isSafeUpdateTxData = (data?: TransactionData): boolean => {
+  if (!data) return false
+
+  // Must be a trusted delegate call
+  if (!(data.trustedDelegateCallTarget && data.operation === Operation.DELEGATE)) {
+    return false
+  }
+
+  // For 1.3.0+ Safes
+  const migrationContract = getSafeMigrationDeployment({ version: LATEST_SAFE_VERSION })
+  if (migrationContract && sameAddress(data.to.value, migrationContract.defaultAddress)) {
+    return true
+  }
+
+  // For older Safes
+  return (
+    isMultiSendCalldata(data.hexData || '') &&
+    Boolean(
+      data.dataDecoded?.parameters?.[0]?.valueDecoded?.some((tx) => tx.dataDecoded?.method === 'changeMasterCopy'),
+    )
+  )
+}
+
+export const isSafeToL2MigrationTxData = (data?: TransactionData): boolean => {
+  if (!data) return false
+  return !!extractMigrationL2MasterCopyAddress(data)
 }

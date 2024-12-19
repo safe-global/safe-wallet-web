@@ -32,7 +32,6 @@ export enum FEATURES {
   NATIVE_SWAPS_USE_COW_STAGING_SERVER = 'NATIVE_SWAPS_USE_COW_STAGING_SERVER',
   NATIVE_SWAPS_FEE_ENABLED = 'NATIVE_SWAPS_FEE_ENABLED',
   ZODIAC_ROLES = 'ZODIAC_ROLES',
-  SAFE_141 = 'SAFE_141',
   STAKING = 'STAKING',
   STAKING_BANNER = 'STAKING_BANNER',
   MULTI_CHAIN_SAFE_CREATION = 'MULTI_CHAIN_SAFE_CREATION',
@@ -71,7 +70,7 @@ export const isRouteEnabled = (route: string, chain?: ChainInfo) => {
 }
 
 export const getLatestSafeVersion = (chain: ChainInfo | undefined): SafeVersion => {
-  const latestSafeVersion = chain && hasFeature(chain, FEATURES.SAFE_141) ? LATEST_SAFE_VERSION : FALLBACK_SAFE_VERSION
+  const latestSafeVersion = chain?.recommendedMasterCopyVersion || LATEST_SAFE_VERSION
   // Without version filter it will always return the LATEST_SAFE_VERSION constant to avoid automatically updating to the newest version if the deployments change
   const latestDeploymentVersion = (getSafeSingletonDeployment({ network: chain?.chainId, released: true })?.version ??
     FALLBACK_SAFE_VERSION) as SafeVersion

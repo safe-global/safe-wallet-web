@@ -12,7 +12,7 @@ import { zeroPadValue } from 'ethers'
 import DecodedData from '../DecodedData'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
-import { MigrateToL2Information } from '@/components/tx/SignOrExecuteForm/MigrateToL2Information'
+import { MigrateToL2Information } from '@/components/tx/confirmation-views/MigrateToL2Information'
 import { Box } from '@mui/material'
 import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 
@@ -73,7 +73,8 @@ export const MigrationToL2TxData = ({ txDetails }: { txDetails: TransactionDetai
 
   return (
     <Box>
-      <MigrateToL2Information variant="history" />
+      <MigrateToL2Information variant="history" txData={txDetails.txData} />
+
       {realSafeTxError ? (
         <ErrorMessage>{realSafeTxError.message}</ErrorMessage>
       ) : decodedRealTxError ? (

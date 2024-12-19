@@ -5820,7 +5820,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@safe-global/safe-gateway-typescript-sdk@npm:3.22.4, @safe-global/safe-gateway-typescript-sdk@npm:^3.5.3":
+"@safe-global/safe-gateway-typescript-sdk@npm:3.22.5-beta.0":
+  version: 3.22.5-beta.0
+  resolution: "@safe-global/safe-gateway-typescript-sdk@npm:3.22.5-beta.0"
+  checksum: 10/503bfeb717a23bcd6fffd087c3365b24497f8712b772a006134dd032bc6f36e9681be3cfb8e52ee915fe1d5c1945e746bbcdd8f456a8ad25194695d4bdfc13d4
+  languageName: node
+  linkType: hard
+
+"@safe-global/safe-gateway-typescript-sdk@npm:^3.5.3":
   version: 3.22.4
   resolution: "@safe-global/safe-gateway-typescript-sdk@npm:3.22.4"
   checksum: 10/5b088499a01a0d0190b4ab6828bfb2df779b603bbcee7645c23ad8e420670aab4ce7ca39b858fc62ee03fded77b322c3f8a9b0203f41ecb779d08f47bd4bfe0c
@@ -21976,7 +21983,7 @@ __metadata:
     "@safe-global/safe-apps-sdk": "npm:^9.1.0"
     "@safe-global/safe-client-gateway-sdk": "npm:v1.60.1"
     "@safe-global/safe-core-sdk-types": "npm:^5.0.1"
-    "@safe-global/safe-gateway-typescript-sdk": "npm:3.22.4"
+    "@safe-global/safe-gateway-typescript-sdk": "npm:3.22.5-beta.0"
     "@safe-global/safe-modules-deployments": "npm:^2.2.1"
     "@sentry/react": "npm:^7.91.0"
     "@sentry/types": "npm:^7.74.0"
