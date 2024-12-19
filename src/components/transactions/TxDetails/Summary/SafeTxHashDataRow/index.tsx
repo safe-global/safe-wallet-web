@@ -24,6 +24,31 @@ export function getDomainHash({
   })
 }
 
+const NEW_SAFE_TX_TYPE_HASH_VERSION = '>=1.0.0'
+
+export function getMessageHash({
+  safeVersion,
+  safeTxData,
+}: {
+  safeVersion: SafeVersion
+  safeTxData: SafeTransactionData
+}): string {
+  const usesBaseGas = semverSatisfies(safeVersion, NEW_SAFE_TX_TYPE_HASH_VERSION)
+  const SafeTx = getEip712TxTypes(safeVersion).SafeTx
+
+  // Clone to not modify the original
+  const tx: any = { ...safeTxData }
+
+  if (!usesBaseGas) {
+    tx.dataGas = tx.baseGas
+    delete tx.baseGas
+
+    SafeTx[5].name = 'dataGas'
+  }
+
+  return TypedDataEncoder.hashStruct('SafeTx', { SafeTx }, tx)
+}
+
 export const SafeTxHashDataRow = ({
   safeTxHash,
   safeTxData,
@@ -37,9 +62,7 @@ export const SafeTxHashDataRow = ({
   const safeAddress = useSafeAddress()
 
   const domainHash = getDomainHash({ chainId, safeAddress, safeVersion })
-  const messageHash = safeTxData
-    ? TypedDataEncoder.hashStruct('SafeTx', { SafeTx: getEip712TxTypes(safeVersion).SafeTx }, safeTxData)
-    : undefined
+  const messageHash = safeTxData ? getMessageHash({ safeVersion, safeTxData }) : undefined
 
   return (
     <>
