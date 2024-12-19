@@ -36,12 +36,12 @@ jobs:
 
       - uses: actions/checkout@v4
 
-      - uses: ./.github/workflows/yarn
+      - uses: ./.github/actions/yarn
 
-      - uses: ./.github/workflows/build
+      - uses: ./.github/actions/build
         with:
           secrets: ${{ toJSON(secrets) }}
-          if: startsWith(github.ref, 'refs/heads/main')
+         # if: startsWith(github.ref, 'refs/heads/main')
 
       #- uses: ./.github/workflows/build-storybook
 

@@ -3,8 +3,9 @@ import {
   isExecTxInfo,
   isOnChainConfirmationTxData,
   isOnChainConfirmationTxInfo,
+  isSafeUpdateTxData,
 } from '../transaction-guards'
-import { faker } from '@faker-js/faker/.'
+import { faker } from '@faker-js/faker'
 import { Safe__factory } from '@/types/contracts'
 import { TransactionInfoType, TransactionTokenType, TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
@@ -162,6 +163,119 @@ describe('transaction-guards', () => {
           methodName: 'execTransaction',
         }),
       ).toBeTruthy()
+    })
+  })
+
+  describe('isSafeUpdateTxData', () => {
+    it('should return true for 1.3.0+ migrations', () => {
+      const mockTxData = {
+        hexData: '0xed007fc6',
+        to: {
+          value: '0x526643F69b81B008F46d95CD5ced5eC0edFFDaC6',
+          name: 'SafeMigration 1.4.1',
+          logoUri: '',
+        },
+        value: '0',
+        operation: 1,
+        trustedDelegateCallTarget: true,
+      }
+      expect(isSafeUpdateTxData(mockTxData)).toBeTruthy()
+    })
+
+    it('should return false for arbitrary txData', () => {
+      expect(
+        isSafeUpdateTxData({
+          operation: 0,
+          to: { value: faker.finance.ethereumAddress() },
+          trustedDelegateCallTarget: false,
+          addressInfoIndex: undefined,
+          dataDecoded: undefined,
+          hexData: faker.string.hexadecimal({ length: 64 }),
+        }),
+      ).toBeFalsy()
+    })
+
+    it('should return true for older Safe masterCopyChange calls', () => {
+      const mockTxData = {
+        hexData:
+          '0x8d80ff0a000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000f20085c9f5aa0f82a531087a356a55623cf05e7bb895000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000247de7edef00000000000000000000000041675c099f32341bf84bfc5382af534df5c7461a0085c9f5aa0f82a531087a356a55623cf05e7bb89500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f08a0323000000000000000000000000fd0732dc9e303f09fcef3a7388ad10a83459ec990000000000000000000000000000',
+        dataDecoded: {
+          method: 'multiSend',
+          parameters: [
+            {
+              name: 'transactions',
+              type: 'bytes',
+              value:
+                '0x0085c9f5aa0f82a531087a356a55623cf05e7bb895000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000247de7edef00000000000000000000000041675c099f32341bf84bfc5382af534df5c7461a0085c9f5aa0f82a531087a356a55623cf05e7bb89500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f08a0323000000000000000000000000fd0732dc9e303f09fcef3a7388ad10a83459ec99',
+              valueDecoded: [
+                {
+                  operation: 0,
+                  to: '0x85C9f5aA0F82A531087a356a55623Cf05E7Bb895',
+                  value: '0',
+                  data: '0x7de7edef00000000000000000000000041675c099f32341bf84bfc5382af534df5c7461a',
+                  dataDecoded: {
+                    method: 'changeMasterCopy',
+                    parameters: [
+                      {
+                        name: '_masterCopy',
+                        type: 'address',
+                        value: '0x41675C099F32341bf84BFc5382aF534df5C7461a',
+                      },
+                    ],
+                  },
+                },
+                {
+                  operation: 0,
+                  to: '0x85C9f5aA0F82A531087a356a55623Cf05E7Bb895',
+                  value: '0',
+                  data: '0xf08a0323000000000000000000000000fd0732dc9e303f09fcef3a7388ad10a83459ec99',
+                  dataDecoded: {
+                    method: 'setFallbackHandler',
+                    parameters: [
+                      {
+                        name: 'handler',
+                        type: 'address',
+                        value: '0xfd0732Dc9E303f09fCEf3a7388Ad10A83459Ec99',
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        to: {
+          value: '0x40A2aCCbd92BCA938b02010E17A5b8929b49130D',
+          name: 'Safe: MultiSendCallOnly 1.3.0',
+          logoUri: '',
+        },
+        value: '0',
+        operation: 1,
+        trustedDelegateCallTarget: true,
+      }
+
+      expect(isSafeUpdateTxData(mockTxData)).toBeTruthy()
+    })
+
+    it('should return false for arbitrary multisends', () => {
+      const mockTxData = {
+        hexData:
+          '0x8d80ff0a000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000f20085c9f5aa0f82a531087a356a55623cf05e7bb895000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000247de7edef00000000000000000000000041675c099f32341bf84bfc5382af534df5c7461a0085c9f5aa0f82a531087a356a55623cf05e7bb89500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f08a0323000000000000000000000000fd0732dc9e303f09fcef3a7388ad10a83459ec990000000000000000000000000000',
+        dataDecoded: {
+          method: 'multiSend',
+          parameters: [],
+        },
+        to: {
+          value: '0x40A2aCCbd92BCA938b02010E17A5b8929b49130D',
+          name: 'Safe: MultiSendCallOnly 1.3.0',
+          logoUri: '',
+        },
+        value: '0',
+        operation: 1,
+        trustedDelegateCallTarget: true,
+      }
+
+      expect(isSafeUpdateTxData(mockTxData)).toBeFalsy()
     })
   })
 })

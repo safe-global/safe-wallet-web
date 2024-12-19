@@ -80,24 +80,7 @@ exports[`SettingsChange should display the SettingsChange component with newOwne
           </span>
           <div
             class="MuiBox-root css-yjghm1"
-          >
-            <button
-              aria-label=""
-              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1vbp2rr-MuiButtonBase-root-MuiIconButton-root"
-              data-mui-internal-clone-element="true"
-              data-testid="explorer-btn"
-              rel="noreferrer"
-              tabindex="0"
-              target="_blank"
-              type="button"
-            >
-              <mock-icon
-                aria-hidden=""
-                class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-tqxw8e-MuiSvgIcon-root"
-                focusable="false"
-              />
-            </button>
-          </div>
+          />
         </div>
       </div>
     </div>
@@ -180,24 +163,7 @@ exports[`SettingsChange should display the SettingsChange component with newOwne
           </span>
           <div
             class="MuiBox-root css-yjghm1"
-          >
-            <button
-              aria-label=""
-              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1vbp2rr-MuiButtonBase-root-MuiIconButton-root"
-              data-mui-internal-clone-element="true"
-              data-testid="explorer-btn"
-              rel="noreferrer"
-              tabindex="0"
-              target="_blank"
-              type="button"
-            >
-              <mock-icon
-                aria-hidden=""
-                class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-tqxw8e-MuiSvgIcon-root"
-                focusable="false"
-              />
-            </button>
-          </div>
+          />
         </div>
       </div>
     </div>
@@ -288,24 +254,7 @@ exports[`SettingsChange should display the SettingsChange component with owner d
           </span>
           <div
             class="MuiBox-root css-yjghm1"
-          >
-            <button
-              aria-label=""
-              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1vbp2rr-MuiButtonBase-root-MuiIconButton-root"
-              data-mui-internal-clone-element="true"
-              data-testid="explorer-btn"
-              rel="noreferrer"
-              tabindex="0"
-              target="_blank"
-              type="button"
-            >
-              <mock-icon
-                aria-hidden=""
-                class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-tqxw8e-MuiSvgIcon-root"
-                focusable="false"
-              />
-            </button>
-          </div>
+          />
         </div>
       </div>
     </div>

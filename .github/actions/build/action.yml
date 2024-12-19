@@ -5,6 +5,7 @@ description: 'Build the app'
 inputs:
   secrets:
     required: true
+    description: 'GitHub secrets as JSON'
 
   prod: # id of input
     description: 'Production build flag'
@@ -18,6 +19,12 @@ runs:
   using: 'composite'
 
   steps:
+    - name: Restore Next.js Build Cache & Cypress cache
+      id: restore-nc
+      uses: ./.github/actions/cache-deps
+      with:
+        mode: restore-nc
+
     - name: Set environment variables
       shell: bash
       run: |
@@ -51,6 +58,8 @@ runs:
         NEXT_PUBLIC_SAFE_RELAY_SERVICE_URL_PRODUCTION: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL_PRODUCTION }}
         NEXT_PUBLIC_SAFE_RELAY_SERVICE_URL_STAGING: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL_STAGING }}
         NEXT_PUBLIC_IS_OFFICIAL_HOST: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_IS_OFFICIAL_HOST }}
+        NEXT_PUBLIC_BRAND_LOGO: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_BRAND_LOGO }}
+        NEXT_PUBLIC_BRAND_NAME: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_BRAND_NAME }}
         NEXT_PUBLIC_BLOCKAID_CLIENT_ID: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_BLOCKAID_CLIENT_ID }}
         NEXT_PUBLIC_SOCIAL_WALLET_OPTIONS_STAGING: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_SOCIAL_WALLET_OPTIONS_STAGING }}
         NEXT_PUBLIC_SOCIAL_WALLET_OPTIONS_PRODUCTION: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_SOCIAL_WALLET_OPTIONS_PRODUCTION }}
@@ -60,3 +69,10 @@ runs:
         NEXT_PUBLIC_FIREBASE_VAPID_KEY_STAGING: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_FIREBASE_VAPID_KEY_STAGING }}
         NEXT_PUBLIC_SPINDL_SDK_KEY: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_SPINDL_SDK_KEY }}
         NEXT_PUBLIC_ECOSYSTEM_ID_ADDRESS: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_ECOSYSTEM_ID_ADDRESS }}
+
+    - name: Save Next.js Build Cache & Cypress cache
+      if: steps.restore-nc.outputs.cache-hit-nc != 'true'
+      uses: ./.github/actions/cache-deps
+      with:
+        mode: save-nc
+        key: ${{ steps.restore-nc.outputs.computed-cache-key-nc }}

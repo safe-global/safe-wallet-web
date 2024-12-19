@@ -40,6 +40,7 @@ import { FEATURES } from '@/utils/chains'
 import { useGetIsSanctionedQuery } from '@/store/api/ofac'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import { getKeyWithTrueValue } from '@/utils/helpers'
+import { BRAND_NAME } from '@/config/constants'
 
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
 
@@ -148,8 +149,7 @@ const SwapWidget = ({ sell }: Params) => {
     },
     content: {
       feeLabel: 'Widget Fee',
-      feeTooltipMarkdown:
-        'The [tiered widget fee](https://help.safe.global/en/articles/178530-how-does-the-widget-fee-work-for-native-swaps) incurred here is charged by CoW Protocol for the operation of this widget. The fee is automatically calculated into this quote. Part of the fee will contribute to a license fee that supports the Safe Community. Neither the Safe Ecosystem Foundation nor Safe{Wallet} operate the CoW Swap Widget and/or CoW Swap',
+      feeTooltipMarkdown: `The [tiered widget fee](https://help.safe.global/en/articles/178530-how-does-the-widget-fee-work-for-native-swaps) incurred here is charged by CoW Protocol for the operation of this widget. The fee is automatically calculated into this quote. Part of the fee will contribute to a license fee that supports the Safe Community. Neither the Safe Ecosystem Foundation nor ${BRAND_NAME} operate the CoW Swap Widget and/or CoW Swap`,
     },
   })
 

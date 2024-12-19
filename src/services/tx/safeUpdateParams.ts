@@ -2,11 +2,13 @@ import type { SafeContractImplementationType } from '@safe-global/protocol-kit/d
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import semverSatisfies from 'semver/functions/satisfies'
 import { getReadOnlyFallbackHandlerContract, getReadOnlyGnosisSafeContract } from '@/services/contracts/safeContracts'
 import { assertValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 import { SAFE_FEATURES } from '@safe-global/protocol-kit/dist/src/utils/safeVersions'
 import { hasSafeFeature } from '@/utils/safe-versions'
 import { getLatestSafeVersion } from '@/utils/chains'
+import { createUpdateMigration } from '@/utils/safe-migrations'
 
 const getChangeFallbackHandlerCallData = async (
   safeContractInstance: SafeContractImplementationType,
@@ -24,14 +26,21 @@ const getChangeFallbackHandlerCallData = async (
 }
 
 /**
- * Creates two transactions:
+ * For 1.3.0 Safes, does a delegate call to a migration contract.
+ *
+ * For older Safes, creates two transactions:
  * - change the mastercopy address
  * - set the fallback handler address
- * Only works for safes < 1.3.0 as the changeMasterCopy function was removed
  */
 export const createUpdateSafeTxs = async (safe: SafeInfo, chain: ChainInfo): Promise<MetaTransactionData[]> => {
   assertValidSafeVersion(safe.version)
 
+  // 1.3.0 Safes are updated using a delegate call to a migration contract
+  if (semverSatisfies(safe.version, '1.3.0')) {
+    return [createUpdateMigration(chain)]
+  }
+
+  // For older Safes, we need to create two transactions
   const latestMasterCopyAddress = await (
     await getReadOnlyGnosisSafeContract(chain, getLatestSafeVersion(chain))
   ).getAddress()

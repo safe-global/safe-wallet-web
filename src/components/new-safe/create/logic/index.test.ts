@@ -10,7 +10,7 @@ import {
   getRedirect,
   createNewUndeployedSafeWithoutSalt,
 } from '@/components/new-safe/create/logic/index'
-import { relayTransaction } from '@safe-global/safe-gateway-typescript-sdk'
+import * as relaying from '@/services/tx/relaying'
 import { toBeHex } from 'ethers'
 import {
   Gnosis_safe__factory,
@@ -21,9 +21,7 @@ import {
   getReadOnlyGnosisSafeContract,
   getReadOnlyProxyFactoryContract,
 } from '@/services/contracts/safeContracts'
-import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
 import { FEATURES, getLatestSafeVersion } from '@/utils/chains'
-import { type FEATURES as GatewayFeatures } from '@safe-global/safe-gateway-typescript-sdk'
 import { chainBuilder } from '@/tests/builders/chains'
 import { type ReplayedSafeProps } from '@/store/slices'
 import { faker } from '@faker-js/faker'
@@ -40,9 +38,7 @@ import { Safe_to_l2_setup__factory } from '@/types/contracts'
 const provider = new JsonRpcProvider(undefined, { name: 'ethereum', chainId: 1 })
 
 const latestSafeVersion = getLatestSafeVersion(
-  chainBuilder()
-    .with({ chainId: '1', features: [FEATURES.SAFE_141 as unknown as GatewayFeatures] })
-    .build(),
+  chainBuilder().with({ chainId: '1', recommendedMasterCopyVersion: '1.4.1' }).build(),
 )
 
 const safeToL2SetupDeployment = getSafeToL2SetupDeployment()
@@ -58,7 +54,7 @@ describe('create/logic', () => {
       .with({
         chainId: '1',
         l2: false,
-        features: [FEATURES.SAFE_141 as unknown as GatewayFeatures],
+        recommendedMasterCopyVersion: '1.4.1',
       })
       .build()
 
@@ -68,13 +64,14 @@ describe('create/logic', () => {
     })
 
     it('returns taskId if create Safe successfully relayed', async () => {
+      const gasLimit = faker.string.numeric()
       const mockSafeProvider = {
         getExternalProvider: jest.fn(),
         getExternalSigner: jest.fn(),
         getChainId: jest.fn().mockReturnValue(BigInt(1)),
       } as unknown as SafeProvider
 
-      jest.spyOn(gateway, 'relayTransaction').mockResolvedValue({ taskId: '0x123' })
+      jest.spyOn(relaying, 'relayTransaction').mockResolvedValue({ taskId: '0x123' })
       jest.spyOn(sdkHelpers, 'getSafeProvider').mockImplementation(() => mockSafeProvider)
 
       jest.spyOn(contracts, 'getReadOnlyFallbackHandlerContract').mockResolvedValue({
@@ -123,20 +120,22 @@ describe('create/logic', () => {
         expectedSaltNonce,
       ])
 
-      const taskId = await relaySafeCreation(mockChainInfo, undeployedSafeProps)
+      const taskId = await relaySafeCreation(mockChainInfo, undeployedSafeProps, gasLimit)
 
       expect(taskId).toEqual('0x123')
-      expect(relayTransaction).toHaveBeenCalledTimes(1)
-      expect(relayTransaction).toHaveBeenCalledWith('1', {
+      expect(relaying.relayTransaction).toHaveBeenCalledTimes(1)
+      expect(relaying.relayTransaction).toHaveBeenCalledWith('1', {
         to: proxyFactoryAddress,
         data: expectedCallData,
         version: latestSafeVersion,
+        gasLimit,
       })
     })
 
     it('should throw an error if relaying fails', () => {
+      const gasLimit = faker.string.numeric()
       const relayFailedError = new Error('Relay failed')
-      jest.spyOn(gateway, 'relayTransaction').mockRejectedValue(relayFailedError)
+      jest.spyOn(relaying, 'relayTransaction').mockRejectedValue(relayFailedError)
 
       const undeployedSafeProps: ReplayedSafeProps = {
         safeAccountConfig: {
@@ -155,7 +154,7 @@ describe('create/logic', () => {
         saltNonce: '69',
       }
 
-      expect(relaySafeCreation(mockChainInfo, undeployedSafeProps)).rejects.toEqual(relayFailedError)
+      expect(relaySafeCreation(mockChainInfo, undeployedSafeProps, gasLimit)).rejects.toEqual(relayFailedError)
     })
   })
   describe('getRedirect', () => {
@@ -207,7 +206,7 @@ describe('create/logic', () => {
           chainBuilder()
             .with({ chainId: '1' })
             // Multichain creation is toggled off
-            .with({ features: [FEATURES.SAFE_141, FEATURES.COUNTERFACTUAL] as any })
+            .with({ features: [FEATURES.COUNTERFACTUAL] as any })
             .with({ l2: false })
             .build(),
         ),
@@ -237,7 +236,8 @@ describe('create/logic', () => {
           chainBuilder()
             .with({ chainId: '137' })
             // Multichain creation is toggled off
-            .with({ features: [FEATURES.SAFE_141, FEATURES.COUNTERFACTUAL] as any })
+            .with({ features: [FEATURES.COUNTERFACTUAL] as any })
+            .with({ recommendedMasterCopyVersion: '1.4.1' })
             .with({ l2: true })
             .build(),
         ),
@@ -267,7 +267,8 @@ describe('create/logic', () => {
           chainBuilder()
             .with({ chainId: '137' })
             // Multichain creation is toggled on
-            .with({ features: [FEATURES.SAFE_141, FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
+            .with({ features: [FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
+            .with({ recommendedMasterCopyVersion: '1.3.0' })
             .with({ l2: true })
             .build(),
         ),
@@ -301,7 +302,8 @@ describe('create/logic', () => {
           chainBuilder()
             .with({ chainId: '137' })
             // Multichain creation is toggled on
-            .with({ features: [FEATURES.SAFE_141, FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
+            .with({ features: [FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
+            .with({ recommendedMasterCopyVersion: '1.4.1' })
             .with({ l2: true })
             .build(),
         ),
@@ -334,6 +336,7 @@ describe('create/logic', () => {
             .with({ chainId: '324' })
             // Multichain and 1.4.1 creation is toggled off
             .with({ features: [FEATURES.COUNTERFACTUAL] as any })
+            .with({ recommendedMasterCopyVersion: '1.3.0' })
             .with({ l2: true })
             .build(),
         ),

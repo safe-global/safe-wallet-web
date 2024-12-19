@@ -111,7 +111,14 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
       }
     }
     case TransactionInfoType.CUSTOM: {
-      if (isMultiSendTxInfo(tx.txInfo) && !tx.safeAppInfo) {
+      if (tx.safeAppInfo) {
+        return {
+          icon: tx.safeAppInfo.logoUri,
+          text: tx.safeAppInfo.name,
+        }
+      }
+
+      if (isMultiSendTxInfo(tx.txInfo)) {
         return {
           icon: <SvgIcon component={BatchIcon} inheritViewBox fontSize="small" alt="Batch" />,
           text: 'Batch',
@@ -145,13 +152,6 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
       }
     }
     default: {
-      if (tx.safeAppInfo) {
-        return {
-          icon: tx.safeAppInfo.logoUri,
-          text: tx.safeAppInfo.name,
-        }
-      }
-
       return {
         icon: '/images/transactions/custom.svg',
         text: addressBookName || 'Contract interaction',

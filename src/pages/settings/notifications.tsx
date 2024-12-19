@@ -5,6 +5,7 @@ import SettingsHeader from '@/components/settings/SettingsHeader'
 import { PushNotifications } from '@/components/settings/PushNotifications'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
+import { BRAND_NAME } from '@/config/constants'
 
 const NotificationsPage: NextPage = () => {
   const isNotificationFeatureEnabled = useHasFeature(FEATURES.PUSH_NOTIFICATIONS)
@@ -16,7 +17,7 @@ const NotificationsPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Settings – Notifications'}</title>
+        <title>{`${BRAND_NAME} – Settings – Notifications`}</title>
       </Head>
 
       <SettingsHeader />

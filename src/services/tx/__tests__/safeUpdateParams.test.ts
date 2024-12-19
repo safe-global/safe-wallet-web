@@ -10,7 +10,7 @@ import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { Interface, JsonRpcProvider } from 'ethers'
 import { createUpdateSafeTxs } from '../safeUpdateParams'
 import * as web3 from '@/hooks/wallets/web3'
-import { FEATURES, getLatestSafeVersion } from '@/utils/chains'
+import { getLatestSafeVersion } from '@/utils/chains'
 import { chainBuilder } from '@/tests/builders/chains'
 
 const MOCK_SAFE_ADDRESS = '0x0000000000000000000000000000000000005AFE'
@@ -39,7 +39,7 @@ describe('safeUpgradeParams', () => {
     } as SafeInfo
 
     const mockChainInfo = chainBuilder()
-      .with({ chainId: '1', l2: false, features: [FEATURES.SAFE_141 as any] })
+      .with({ chainId: '1', l2: false, recommendedMasterCopyVersion: '1.4.1' })
       .build()
     const txs = await createUpdateSafeTxs(mockSafe, mockChainInfo)
     const [masterCopyTx, fallbackHandlerTx] = txs
@@ -74,7 +74,7 @@ describe('safeUpgradeParams', () => {
       version: '1.1.1',
     } as SafeInfo
     const mockChainInfo = chainBuilder()
-      .with({ chainId: '1', l2: false, features: [FEATURES.SAFE_141 as any] })
+      .with({ chainId: '1', l2: false, recommendedMasterCopyVersion: '1.4.1' })
       .build()
     const txs = await createUpdateSafeTxs(mockSafe, mockChainInfo)
     const [masterCopyTx, fallbackHandlerTx] = txs
@@ -111,7 +111,7 @@ describe('safeUpgradeParams', () => {
       version: '1.1.1',
     } as SafeInfo
     const mockChainInfo = chainBuilder()
-      .with({ chainId: '100', l2: true, features: [FEATURES.SAFE_141 as any] })
+      .with({ chainId: '100', l2: true, recommendedMasterCopyVersion: '1.4.1' })
       .build()
 
     const txs = await createUpdateSafeTxs(mockSafe, mockChainInfo)

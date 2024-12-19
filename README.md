@@ -23,6 +23,9 @@ Here's the list of all the environment variables:
 
 | Env variable                                      | Description                                                                                                                                                             |
 | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_BRAND_NAME`                          | The name of the app, defaults to "Wallet fork"                                                              |
+| `NEXT_PUBLIC_BRAND_LOGO`                          | The URL of the app logo displayed in the header                                                             |
+
 | `NEXT_PUBLIC_INFURA_TOKEN`                        | [Infura](https://docs.infura.io/infura/networks/ethereum/how-to/secure-a-project/project-id) RPC API token                                                              |
 | `NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN`              | Infura token for Safe Apps, falls back to `NEXT_PUBLIC_INFURA_TOKEN`                                                                                                    |
 | `NEXT_PUBLIC_IS_PRODUCTION`                       | Set to `true` to build a minified production app                                                                                                                        |
@@ -50,6 +53,25 @@ Here's the list of all the environment variables:
 If you don't provide some of the variables, the corresponding features will be disabled in the UI.
 
 ### Running the app locally
+
+#### Prerequisites
+
+- **Node.js**: Install the latest stable version from [Node.js](https://nodejs.org/).
+
+We use Yarn v4 for package management. If you are running on Node.js v16 or later, you can run:
+
+```bash
+corepack enable
+```
+
+and then when you run `yarn` in the repository root, it will install the required version of yarn and resolve all
+dependencies.
+
+> [!INFO]
+>
+> Corepack is a tool to help with managing versions of your package managers. It exposes binary proxies for each
+> supported package manager that, when called, will identify whatever package manager is
+> configured for the current project, download it if needed, and finally run it.
 
 Install the dependencies:
 

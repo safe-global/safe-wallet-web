@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ./.github/workflows/cypress
+      - uses: ./.github/actions/cypress
         with:
           secrets: ${{ toJSON(secrets) }}
           spec: |

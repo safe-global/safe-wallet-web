@@ -80,24 +80,7 @@ exports[`ConfirmationView should display a confirmation screen for a SETTINGS_CH
           </span>
           <div
             class="MuiBox-root css-yjghm1"
-          >
-            <button
-              aria-label=""
-              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1vbp2rr-MuiButtonBase-root-MuiIconButton-root"
-              data-mui-internal-clone-element="true"
-              data-testid="explorer-btn"
-              rel="noreferrer"
-              tabindex="0"
-              target="_blank"
-              type="button"
-            >
-              <mock-icon
-                aria-hidden=""
-                class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-tqxw8e-MuiSvgIcon-root"
-                focusable="false"
-              />
-            </button>
-          </div>
+          />
         </div>
       </div>
     </div>
@@ -272,24 +255,7 @@ exports[`ConfirmationView should display a confirmation screen for a SETTINGS_CH
                             </span>
                             <div
                               class="MuiBox-root css-yjghm1"
-                            >
-                              <button
-                                aria-label=""
-                                class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1vbp2rr-MuiButtonBase-root-MuiIconButton-root"
-                                data-mui-internal-clone-element="true"
-                                data-testid="explorer-btn"
-                                rel="noreferrer"
-                                tabindex="0"
-                                target="_blank"
-                                type="button"
-                              >
-                                <mock-icon
-                                  aria-hidden=""
-                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-tqxw8e-MuiSvgIcon-root"
-                                  focusable="false"
-                                />
-                              </button>
-                            </div>
+                            />
                           </div>
                         </div>
                       </div>
@@ -429,24 +395,7 @@ exports[`ConfirmationView should display a confirmation screen for a SETTINGS_CH
                                 </span>
                                 <div
                                   class="MuiBox-root css-yjghm1"
-                                >
-                                  <button
-                                    aria-label=""
-                                    class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1vbp2rr-MuiButtonBase-root-MuiIconButton-root"
-                                    data-mui-internal-clone-element="true"
-                                    data-testid="explorer-btn"
-                                    rel="noreferrer"
-                                    tabindex="0"
-                                    target="_blank"
-                                    type="button"
-                                  >
-                                    <mock-icon
-                                      aria-hidden=""
-                                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-tqxw8e-MuiSvgIcon-root"
-                                      focusable="false"
-                                    />
-                                  </button>
-                                </div>
+                                />
                               </div>
                             </div>
                           </div>
@@ -601,24 +550,7 @@ exports[`ConfirmationView should display a confirmation screen for a SETTINGS_CH
                             </span>
                             <div
                               class="MuiBox-root css-yjghm1"
-                            >
-                              <button
-                                aria-label=""
-                                class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1vbp2rr-MuiButtonBase-root-MuiIconButton-root"
-                                data-mui-internal-clone-element="true"
-                                data-testid="explorer-btn"
-                                rel="noreferrer"
-                                tabindex="0"
-                                target="_blank"
-                                type="button"
-                              >
-                                <mock-icon
-                                  aria-hidden=""
-                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-tqxw8e-MuiSvgIcon-root"
-                                  focusable="false"
-                                />
-                              </button>
-                            </div>
+                            />
                           </div>
                         </div>
                       </div>
@@ -828,24 +760,7 @@ exports[`ConfirmationView should display a confirmation with method call when th
                             </span>
                             <div
                               class="MuiBox-root css-yjghm1"
-                            >
-                              <button
-                                aria-label=""
-                                class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1vbp2rr-MuiButtonBase-root-MuiIconButton-root"
-                                data-mui-internal-clone-element="true"
-                                data-testid="explorer-btn"
-                                rel="noreferrer"
-                                tabindex="0"
-                                target="_blank"
-                                type="button"
-                              >
-                                <mock-icon
-                                  aria-hidden=""
-                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-tqxw8e-MuiSvgIcon-root"
-                                  focusable="false"
-                                />
-                              </button>
-                            </div>
+                            />
                           </div>
                         </div>
                       </div>
@@ -985,24 +900,7 @@ exports[`ConfirmationView should display a confirmation with method call when th
                                 </span>
                                 <div
                                   class="MuiBox-root css-yjghm1"
-                                >
-                                  <button
-                                    aria-label=""
-                                    class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1vbp2rr-MuiButtonBase-root-MuiIconButton-root"
-                                    data-mui-internal-clone-element="true"
-                                    data-testid="explorer-btn"
-                                    rel="noreferrer"
-                                    tabindex="0"
-                                    target="_blank"
-                                    type="button"
-                                  >
-                                    <mock-icon
-                                      aria-hidden=""
-                                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-tqxw8e-MuiSvgIcon-root"
-                                      focusable="false"
-                                    />
-                                  </button>
-                                </div>
+                                />
                               </div>
                             </div>
                           </div>
@@ -1157,24 +1055,7 @@ exports[`ConfirmationView should display a confirmation with method call when th
                             </span>
                             <div
                               class="MuiBox-root css-yjghm1"
-                            >
-                              <button
-                                aria-label=""
-                                class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1vbp2rr-MuiButtonBase-root-MuiIconButton-root"
-                                data-mui-internal-clone-element="true"
-                                data-testid="explorer-btn"
-                                rel="noreferrer"
-                                tabindex="0"
-                                target="_blank"
-                                type="button"
-                              >
-                                <mock-icon
-                                  aria-hidden=""
-                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-tqxw8e-MuiSvgIcon-root"
-                                  focusable="false"
-                                />
-                              </button>
-                            </div>
+                            />
                           </div>
                         </div>
                       </div>

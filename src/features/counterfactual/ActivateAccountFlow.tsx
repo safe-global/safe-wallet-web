@@ -121,7 +121,7 @@ const ActivateAccountFlow = () => {
 
     try {
       if (willRelay) {
-        const taskId = await relaySafeCreation(chain, undeployedSafe.props)
+        const taskId = await relaySafeCreation(chain, undeployedSafe.props, options?.gasLimit?.toString())
         safeCreationDispatch(SafeCreationEvent.RELAYING, { groupKey: CF_TX_GROUP_KEY, taskId, safeAddress })
 
         onSubmit()

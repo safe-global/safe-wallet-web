@@ -5,7 +5,7 @@ import { Grid, Skeleton, Typography } from '@mui/material'
 import AssetsHeader from '@/components/balances/AssetsHeader'
 import NftCollections from '@/components/nfts/NftCollections'
 import SafeAppCard from '@/components/safe-apps/SafeAppCard'
-import { SafeAppsTag } from '@/config/constants'
+import { BRAND_NAME, SafeAppsTag } from '@/config/constants'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 
 // `React.memo` requires a `displayName`
@@ -57,7 +57,7 @@ const NFTs: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – NFTs'}</title>
+        <title>{`${BRAND_NAME} – NFTs`}</title>
       </Head>
 
       <AssetsHeader />

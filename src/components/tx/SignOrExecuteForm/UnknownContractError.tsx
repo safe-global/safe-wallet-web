@@ -1,19 +1,24 @@
-import { type ReactElement } from 'react'
+import { useMemo, type ReactElement } from 'react'
+import type { TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
 import ExternalLink from '@/components/common/ExternalLink'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { getExplorerLink } from '@/utils/gateway'
 import ErrorMessage from '../ErrorMessage'
 import { isValidMasterCopy } from '@/services/contracts/safeContracts'
+import { extractMigrationL2MasterCopyAddress } from '@/utils/safe-migrations'
 
-const UnknownContractError = (): ReactElement | null => {
+const UnknownContractError = ({ txData }: { txData: TransactionData | undefined }): ReactElement | null => {
   const { safe, safeAddress } = useSafeInfo()
   const currentChain = useCurrentChain()
+  const newMasterCopy = useMemo(() => {
+    return txData && extractMigrationL2MasterCopyAddress(txData)
+  }, [txData])
 
   // Unsupported base contract
   const isUnknown = !isValidMasterCopy(safe.implementationVersionState)
 
-  if (!isUnknown) return null
+  if (!isUnknown || !newMasterCopy) return null
 
   return (
     <ErrorMessage>

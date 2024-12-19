@@ -17,7 +17,6 @@ import { Interface } from 'ethers'
 import { getCreateCallDeployment } from '@safe-global/safe-deployments'
 import { useCurrentChain } from '@/hooks/useChains'
 import { chainBuilder } from '@/tests/builders/chains'
-import { FEATURES } from '@/utils/chains'
 
 const appInfo = {
   id: 1,
@@ -47,9 +46,7 @@ describe('useSafeWalletProvider', () => {
     jest.clearAllMocks()
 
     mockUseCurrentChain.mockReturnValue(
-      chainBuilder()
-        .with({ chainId: '1', features: [FEATURES.SAFE_141 as any] })
-        .build(),
+      chainBuilder().with({ chainId: '1', recommendedMasterCopyVersion: '1.4.1' }).build(),
     )
   })
 
@@ -116,7 +113,7 @@ describe('useSafeWalletProvider', () => {
         name: appInfo.name,
         message: 'message',
         requestId: expect.any(String),
-        safeAppId: 1,
+        origin: appInfo.url,
       })
 
       expect(resp).toBeInstanceOf(Promise)
@@ -236,7 +233,7 @@ describe('useSafeWalletProvider', () => {
         name: appInfo.name,
         message: typedMessage,
         requestId: expect.any(String),
-        safeAppId: 1,
+        origin: appInfo.url,
       })
 
       expect(resp).toBeInstanceOf(Promise)

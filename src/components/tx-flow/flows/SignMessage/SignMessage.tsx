@@ -244,19 +244,12 @@ const SuccessCard = ({ safeMessage, onContinue }: { safeMessage: SafeMessage; on
 
 type BaseProps = Pick<SafeMessage, 'logoUri' | 'name' | 'message'>
 
-// Custom Safe Apps do not have a `safeAppId`
-export type ProposeProps = BaseProps & {
-  safeAppId?: number
-  requestId: RequestId
-}
-
-// A proposed message does not return the `safeAppId` but the `logoUri` and `name` of the Safe App that proposed it
-export type ConfirmProps = BaseProps & {
-  safeAppId?: never
+export type SignMessageProps = BaseProps & {
+  origin?: string
   requestId?: RequestId
 }
 
-const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmProps): ReactElement => {
+const SignMessage = ({ message, origin, requestId }: SignMessageProps): ReactElement => {
   // Hooks & variables
   const { setTxFlow } = useContext(TxModalContext)
   const { setSafeMessage: setContextSafeMessage } = useContext(SafeTxContext)
@@ -291,7 +284,7 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
     decodedMessage,
     safeMessageHash,
     requestId,
-    safeAppId,
+    origin,
     () => setTxFlow(undefined),
   )
 

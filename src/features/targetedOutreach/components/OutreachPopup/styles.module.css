@@ -3,7 +3,7 @@
   z-index: 1300;
   bottom: var(--space-2);
   right: var(--space-2);
-  max-width: 400px;
+  max-width: 340px;
 }
 
 .container {
@@ -18,6 +18,11 @@
   top: var(--space-1);
   z-index: 1;
   padding: var(--space-1);
+}
+
+.avatar {
+  height: 32px;
+  width: 32px;
 }
 
 @media (max-width: 599.99px) {

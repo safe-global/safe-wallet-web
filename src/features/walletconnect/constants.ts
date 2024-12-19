@@ -1,3 +1,5 @@
+import { BRAND_NAME } from '@/config/constants'
+
 export const SAFE_COMPATIBLE_METHODS = [
   'eth_accounts',
   'net_version',
@@ -31,7 +33,7 @@ export const SAFE_COMPATIBLE_METHODS = [
 export const SAFE_COMPATIBLE_EVENTS = ['chainChanged', 'accountsChanged']
 
 export const SAFE_WALLET_METADATA = {
-  name: 'Safe{Wallet}',
+  name: BRAND_NAME,
   url: 'https://app.safe.global',
   description: 'Smart contract wallet for Ethereum',
   icons: ['https://app.safe.global/images/logo-round.svg'],

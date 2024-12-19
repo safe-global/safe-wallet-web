@@ -1,9 +1,10 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { IS_OFFICIAL_HOST } from '@/config/constants'
 import { Typography, Table, TableBody, TableRow, TableCell, TableHead, TableContainer, Box } from '@mui/material'
 import ExternalLink from '@/components/common/ExternalLink'
 import Paper from '@mui/material/Paper'
+import { useIsOfficialHost } from '@/hooks/useIsOfficialHost'
+import { BRAND_NAME } from '@/config/constants'
 
 const SafeLicenses = () => (
   <>
@@ -16,7 +17,7 @@ const SafeLicenses = () => (
     <Box mb={4}>
       <Typography mb={3}>
         This page contains a list of attribution notices for third party software that may be contained in portions of
-        the {'Safe{Wallet}'}. We thank the open source community for all of their contributions.
+        the {BRAND_NAME}. We thank the open source community for all of their contributions.
       </Typography>
       <Typography variant="h2" mb={2}>
         Android
@@ -706,13 +707,15 @@ const SafeLicenses = () => (
 )
 
 const Licenses: NextPage = () => {
+  const isOfficialHost = useIsOfficialHost()
+
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Licenses'}</title>
+        <title>{`${BRAND_NAME} – Licenses`}</title>
       </Head>
 
-      <main>{IS_OFFICIAL_HOST && <SafeLicenses />}</main>
+      <main>{isOfficialHost && <SafeLicenses />}</main>
     </>
   )
 }
