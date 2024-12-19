@@ -26,18 +26,21 @@ const getChangeFallbackHandlerCallData = async (
 }
 
 /**
- * Creates two transactions:
+ * For 1.3.0 Safes, does a delegate call to a migration contract.
+ *
+ * For older Safes, creates two transactions:
  * - change the mastercopy address
  * - set the fallback handler address
- * Only works for safes < 1.3.0 as the changeMasterCopy function was removed
  */
 export const createUpdateSafeTxs = async (safe: SafeInfo, chain: ChainInfo): Promise<MetaTransactionData[]> => {
   assertValidSafeVersion(safe.version)
 
-  if (semverSatisfies(safe.version, '>=1.3.0')) {
+  // 1.3.0 Safes are updated using a delegate call to a migration contract
+  if (semverSatisfies(safe.version, '1.3.0')) {
     return [createUpdateMigration(chain)]
   }
 
+  // For older Safes, we need to create two transactions
   const latestMasterCopyAddress = await (
     await getReadOnlyGnosisSafeContract(chain, getLatestSafeVersion(chain))
   ).getAddress()
