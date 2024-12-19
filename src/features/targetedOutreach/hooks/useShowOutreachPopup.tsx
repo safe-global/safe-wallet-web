@@ -1,5 +1,5 @@
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import { MAX_ASK_AGAIN_DELAY } from '@/features/targetedOutreach/constants'
+import { ACTIVE_OUTREACH, MAX_ASK_AGAIN_DELAY } from '@/features/targetedOutreach/constants'
 import { useAppSelector } from '@/store'
 import { selectCookieBanner } from '@/store/popupSlice'
 import type { getSubmission } from '@safe-global/safe-client-gateway-sdk'
@@ -12,7 +12,8 @@ const useShowOutreachPopup = (
   const cookiesPopup = useAppSelector(selectCookieBanner)
   const isSigner = useIsSafeOwner()
 
-  const isTargetedSafe = !!submission?.outreachId
+  const submissionHasLoaded = submission !== undefined
+  const isTargetedSafe = submissionHasLoaded && (ACTIVE_OUTREACH.targetAll || !!submission?.outreachId)
   const hasCompletedSurvey = !!submission?.completionDate
 
   if (cookiesPopup?.open || isDismissed || !isSigner || !isTargetedSafe || hasCompletedSurvey) {
