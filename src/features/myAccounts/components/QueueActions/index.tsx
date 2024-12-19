@@ -1,12 +1,13 @@
-import { useMemo, type ReactNode } from 'react'
-import type { UrlObject } from 'url'
-import NextLink from 'next/link'
-import { Box, Chip, Typography, SvgIcon } from '@mui/material'
+import classnames from 'classnames'
+import { useRouter } from 'next/router'
+import { type ReactNode, useCallback, type MouseEvent } from 'react'
+import { Chip, Typography, SvgIcon } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 import TransactionsIcon from '@/public/images/transactions/transactions.svg'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import { AppRoutes } from '@/config/routes'
+import css from './styles.module.css'
 
 const ChipLink = ({ children, color }: { children: ReactNode; color?: string }) => (
   <Chip
@@ -40,12 +41,17 @@ const QueueActions = ({
   awaitingConfirmation: number
   isMobile?: boolean
 }) => {
-  const queueLink = useMemo<UrlObject>(
-    () => ({
-      pathname: AppRoutes.transactions.queue,
-      query: { safe: `${chainShortName}:${safeAddress}` },
-    }),
-    [chainShortName, safeAddress],
+  const router = useRouter()
+
+  const onQueueClick = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      router.push({
+        pathname: AppRoutes.transactions.queue,
+        query: { safe: `${chainShortName}:${safeAddress}` },
+      })
+    },
+    [chainShortName, router, safeAddress],
   )
 
   if (!queued && !awaitingConfirmation) {
@@ -54,31 +60,21 @@ const QueueActions = ({
 
   return (
     <Track {...OVERVIEW_EVENTS.OPEN_MISSING_SIGNATURES}>
-      <NextLink href={queueLink}>
-        <Box
-          sx={{
-            px: isMobile ? 2 : 0,
-            pb: isMobile ? 2 : 0,
-            display: 'flex',
-            gap: 1,
-            alignItems: 'center',
-          }}
-        >
-          {queued > 0 && (
-            <ChipLink>
-              <SvgIcon component={TransactionsIcon} inheritViewBox sx={{ fontSize: 'small' }} />
-              {queued} pending
-            </ChipLink>
-          )}
+      <button onClick={onQueueClick} className={classnames(css.queueButton, { [css.isMobile]: isMobile })}>
+        {queued > 0 && (
+          <ChipLink>
+            <SvgIcon component={TransactionsIcon} inheritViewBox sx={{ fontSize: 'small' }} />
+            {queued} pending
+          </ChipLink>
+        )}
 
-          {awaitingConfirmation > 0 && (
-            <ChipLink color="warning">
-              <SvgIcon component={CheckIcon} inheritViewBox sx={{ fontSize: 'small', color: 'warning' }} />
-              {awaitingConfirmation} to confirm
-            </ChipLink>
-          )}
-        </Box>
-      </NextLink>
+        {awaitingConfirmation > 0 && (
+          <ChipLink color="warning">
+            <SvgIcon component={CheckIcon} inheritViewBox sx={{ fontSize: 'small', color: 'warning' }} />
+            {awaitingConfirmation} to confirm
+          </ChipLink>
+        )}
+      </button>
     </Track>
   )
 }
