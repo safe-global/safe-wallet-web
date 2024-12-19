@@ -21,4 +21,5 @@ jobs:
           # Optional
           MODEL: gpt-4o # https://platform.openai.com/docs/models
           PROMPT: |
-            Find potential bugs in these code changes. If you cannot find any bugs, write a funny haiku summarizing the code changes.
+            Find potential bugs in these code changes.
+            If you cannot find any bugs, say nothing, just write a funny haiku summarizing the code changes and post ONLY that.
