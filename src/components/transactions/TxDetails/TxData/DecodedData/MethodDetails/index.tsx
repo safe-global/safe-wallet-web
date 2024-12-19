@@ -1,3 +1,4 @@
+import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import type { ReactElement } from 'react'
 import { generateDataRowValue, TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { isAddress, isArrayParameter, isByte } from '@/utils/transaction-guards'
@@ -7,21 +8,26 @@ import { Value } from '@/components/transactions/TxDetails/TxData/DecodedData/Va
 
 type MethodDetailsProps = {
   data: DataDecoded
+  hexData?: string
   addressInfoIndex?: {
     [key: string]: AddressEx
   }
 }
 
-export const MethodDetails = ({ data, addressInfoIndex }: MethodDetailsProps): ReactElement => {
+export const MethodDetails = ({ data, hexData, addressInfoIndex }: MethodDetailsProps): ReactElement => {
   if (!data.parameters?.length) {
     return (
-      <Typography
-        sx={{
-          color: 'text.secondary',
-        }}
-      >
-        No parameters
-      </Typography>
+      <>
+        <Typography
+          sx={{
+            color: 'text.secondary',
+          }}
+        >
+          No parameters
+        </Typography>
+
+        {hexData && <HexEncodedData title="Data (hex-encoded)" hexData={hexData} />}
+      </>
     )
   }
 

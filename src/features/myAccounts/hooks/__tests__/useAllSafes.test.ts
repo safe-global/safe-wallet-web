@@ -132,7 +132,7 @@ describe('useAllSafes hook', () => {
     ])
   })
 
-  it('returns SafeItems for added safes and undeployed safes', () => {
+  it('returns SafeItems for added safes and undeployed safes sorted', () => {
     const { result } = renderHook(() => useAllSafes(), {
       initialReduxState: {
         addedSafes: {
@@ -164,7 +164,7 @@ describe('useAllSafes hook', () => {
     ])
   })
 
-  it('returns SafeItems for owned safes and undeployed safes', () => {
+  it('returns SafeItems for owned safes and undeployed safes sorted', () => {
     const mockOwnedSafes = {
       '1': ['0x456', '0x789'],
     }
@@ -188,13 +188,13 @@ describe('useAllSafes hook', () => {
     })
 
     expect(result.current).toEqual([
+      { address: '0x123', chainId: '1', isPinned: false, isReadOnly: true, lastVisited: 0, name: undefined },
       { address: '0x456', chainId: '1', isPinned: false, isReadOnly: false, lastVisited: 0, name: undefined },
       { address: '0x789', chainId: '1', isPinned: false, isReadOnly: false, lastVisited: 0, name: undefined },
-      { address: '0x123', chainId: '1', isPinned: false, isReadOnly: true, lastVisited: 0, name: undefined },
     ])
   })
 
-  it('returns SafeItems for added, owned and undeployed safes', () => {
+  it('returns SafeItems for added, owned and undeployed safes sorted', () => {
     const mockOwnedSafes = {
       '1': ['0x456', '0x789'],
     }
@@ -227,9 +227,9 @@ describe('useAllSafes hook', () => {
 
     expect(result.current).toEqual([
       { address: '0x123', chainId: '1', isPinned: true, isReadOnly: true, lastVisited: 0, name: undefined },
+      { address: '0x321', chainId: '1', isPinned: false, isReadOnly: true, lastVisited: 0, name: undefined },
       { address: '0x456', chainId: '1', isPinned: false, isReadOnly: false, lastVisited: 0, name: undefined },
       { address: '0x789', chainId: '1', isPinned: false, isReadOnly: false, lastVisited: 0, name: undefined },
-      { address: '0x321', chainId: '1', isPinned: false, isReadOnly: true, lastVisited: 0, name: undefined },
     ])
   })
 

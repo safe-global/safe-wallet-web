@@ -3,11 +3,12 @@ RUN apk add --no-cache libc6-compat git python3 py3-pip make g++ libusb-dev eude
 WORKDIR /app
 COPY . .
 
+RUN corepack enable
 # Fix arm64 timeouts
-RUN yarn config set network-timeout 300000 && yarn global add node-gyp
+RUN yarn config set httpTimeout 300000
 
 # install deps
-RUN yarn install --frozen-lockfile
+RUN yarn install --immutable
 RUN yarn after-install
 
 ENV NODE_ENV production

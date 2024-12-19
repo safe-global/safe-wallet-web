@@ -5,7 +5,7 @@ import {
   isOnChainConfirmationTxInfo,
   isSafeUpdateTxData,
 } from '../transaction-guards'
-import { faker } from '@faker-js/faker/.'
+import { faker } from '@faker-js/faker'
 import { Safe__factory } from '@/types/contracts'
 import { TransactionInfoType, TransactionTokenType, TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'

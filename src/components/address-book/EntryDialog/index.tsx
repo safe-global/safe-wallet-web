@@ -57,6 +57,7 @@ function EntryDialog({
       onClose={handleClose}
       dialogTitle={defaultValues.name ? 'Edit entry' : 'Create entry'}
       hideChainIndicator={chainIds && chainIds.length > 1}
+      chainId={chainIds?.[0]}
     >
       <FormProvider {...methods}>
         <form onSubmit={onSubmit}>
