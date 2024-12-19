@@ -1,0 +1,8 @@
+name: "Enable corepack"
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Enable Corepack"
+      shell: bash
+      run: corepack enable

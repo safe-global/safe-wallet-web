@@ -17,7 +17,7 @@ import { txQueueListener, txQueueSlice } from '../txQueueSlice'
 import type { PendingTxsState } from '../pendingTxsSlice'
 import { PendingStatus } from '../pendingTxsSlice'
 import type { RootState } from '..'
-import { faker } from '@faker-js/faker/.'
+import { faker } from '@faker-js/faker'
 
 describe('txQueueSlice', () => {
   const listenerMiddlewareInstance = createListenerMiddleware<RootState>()

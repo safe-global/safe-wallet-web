@@ -1,0 +1,36 @@
+name: 'Yarn'
+
+description: 'Install the dependencies'
+
+runs:
+  using: 'composite'
+  steps:
+    # We require yarn v4 and installing through corepack is the easiest way to get it
+    - uses: actions/checkout@v4
+
+    - uses: ./.github/actions/corepack
+
+    - name: Restore Yarn Cache & Types
+      id: restore-yarn-types
+      uses: ./.github/actions/cache-deps
+      with:
+        mode: restore-yarn
+
+    - name: Echo cache hit
+      shell: bash
+      run: |
+        echo "Yarn cache hit: ${{ steps.restore-yarn-types.outputs.cache-hit-yarn }}"
+
+    - name: Yarn install & after-install generate types
+      if: steps.restore-yarn-types.outputs.cache-hit-yarn != 'true'
+      shell: bash
+      run: |
+        yarn install --immutable
+        yarn after-install
+
+    - name: Save Yarn Cache & Types
+      if: steps.restore-yarn-types.outputs.cache-hit-yarn != 'true'
+      uses: ./.github/actions/cache-deps
+      with:
+        mode: save-yarn
+        key: ${{ steps.restore-yarn-types.outputs.computed-cache-key-yarn }}

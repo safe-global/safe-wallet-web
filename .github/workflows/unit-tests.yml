@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ./.github/workflows/yarn
+      - uses: ./.github/actions/yarn
 
       - name: Annotations and coverage report
         uses: ArtiomTr/jest-coverage-report-action@v2.3.1

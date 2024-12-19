@@ -2,7 +2,8 @@ import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { type Eip1193Provider, type Provider } from 'ethers'
 import semverSatisfies from 'semver/functions/satisfies'
 
-import { getSafeInfo, type SafeInfo, type ChainInfo, relayTransaction } from '@safe-global/safe-gateway-typescript-sdk'
+import { getSafeInfo, type SafeInfo, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { relayTransaction } from '@/services/tx/relaying'
 import { getReadOnlyProxyFactoryContract } from '@/services/contracts/safeContracts'
 import type { UrlObject } from 'url'
 import { AppRoutes } from '@/config/routes'
@@ -178,7 +179,11 @@ export const getRedirect = (
   return redirectUrl + `${appendChar}safe=${address}`
 }
 
-export const relaySafeCreation = async (chain: ChainInfo, undeployedSafeProps: UndeployedSafeProps) => {
+export const relaySafeCreation = async (
+  chain: ChainInfo,
+  undeployedSafeProps: UndeployedSafeProps,
+  gasLimit: string | undefined,
+) => {
   const replayedSafeProps = assertNewUndeployedSafeProps(undeployedSafeProps, chain)
   const encodedSafeCreationTx = encodeSafeCreationTx(replayedSafeProps, chain)
 
@@ -186,6 +191,7 @@ export const relaySafeCreation = async (chain: ChainInfo, undeployedSafeProps: U
     to: replayedSafeProps.factoryAddress,
     data: encodedSafeCreationTx,
     version: replayedSafeProps.safeVersion,
+    gasLimit,
   })
 
   return relayResponse.taskId

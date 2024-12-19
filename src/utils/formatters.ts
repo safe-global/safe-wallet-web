@@ -106,5 +106,5 @@ export const formatDurationFromMilliseconds = (
 
 export const maybePlural = (quantity: number | unknown[]) => {
   quantity = Array.isArray(quantity) ? quantity.length : quantity
-  return quantity > 1 ? 's' : ''
+  return quantity === 1 ? '' : 's'
 }

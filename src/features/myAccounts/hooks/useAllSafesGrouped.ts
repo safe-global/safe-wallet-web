@@ -11,10 +11,12 @@ export type MultiChainSafeItem = {
   name: string | undefined
 }
 
-export type AllSafesGrouped = {
+export type AllSafeItemsGrouped = {
   allSingleSafes: SafeItems | undefined
   allMultiChainSafes: MultiChainSafeItem[] | undefined
 }
+
+export type AllSafeItems = Array<SafeItem | MultiChainSafeItem>
 
 export const _buildMultiChainSafeItem = (address: string, safes: SafeItems): MultiChainSafeItem => {
   const isPinned = safes.some((safe) => safe.isPinned)
@@ -43,7 +45,7 @@ export const _getSingleChainAccounts = (safes: SafeItems, allMultiChainSafes: Mu
 export const useAllSafesGrouped = () => {
   const allSafes = useAllSafes()
 
-  return useMemo<AllSafesGrouped>(() => {
+  return useMemo<AllSafeItemsGrouped>(() => {
     if (!allSafes) {
       return { allMultiChainSafes: undefined, allSingleSafes: undefined }
     }
