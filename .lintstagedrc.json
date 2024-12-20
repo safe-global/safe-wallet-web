@@ -1,0 +1,8 @@
+{
+  "*.ts": ["yarn prettier:fix"],
+  "*.tsx": ["yarn prettier:fix"],
+  "apps/mobile/assets/fonts/safe-icons/selection.json": [
+    "node ./apps/mobile/scripts/generateIconTypes.js",
+    "git add ./apps/mobile/src/types/iconTypes.ts"
+  ]
+}

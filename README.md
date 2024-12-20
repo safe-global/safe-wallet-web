@@ -87,8 +87,8 @@ yarn workspace <workspace-name> remove <package-name>
 
 > [!Note]
 >
-> Yarn treats commands that contain a semicolon as global commands. For example if you have a
-> command in a workspace that has a semicolon and there isn't another workspace that has the same command,
+> Yarn treats commands that contain a colon as global commands. For example if you have a
+> command in a workspace that has a colon and there isn't another workspace that has the same command,
 > you can run the command without specifying the workspace name. For example:
 >
 > ```bash
