@@ -1,6 +1,6 @@
 # web-core image is meant to be used only by our safe-infrastructure repository
 
-name: Deploy to Dockerhub
+name: Web  Deploy to Dockerhub
 
 on:
   push:

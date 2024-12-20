@@ -1,4 +1,4 @@
-name: Happy path on demand tests
+name: Web Happy path on demand tests
 
 on:
   workflow_dispatch:

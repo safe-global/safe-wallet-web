@@ -1,4 +1,4 @@
-name: Unit tests
+name: Web Unit tests
 on:
   pull_request:
     paths:

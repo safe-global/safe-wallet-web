@@ -1,4 +1,4 @@
-name: Production health check tests
+name: Web Production health check tests
 
 on:
   workflow_dispatch:

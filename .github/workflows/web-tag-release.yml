@@ -1,4 +1,4 @@
-name: Tag & GitHub release
+name: Web Tag & GitHub release
 
 on:
   pull_request_target:

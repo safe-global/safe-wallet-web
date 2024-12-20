@@ -1,4 +1,4 @@
-name: Smoke tests
+name: Web Smoke tests
 
 on:
   pull_request:

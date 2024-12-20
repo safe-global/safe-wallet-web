@@ -1,4 +1,4 @@
-name: Safe Apps e2e
+name: Web Safe Apps e2e
 
 on:
   pull_request:

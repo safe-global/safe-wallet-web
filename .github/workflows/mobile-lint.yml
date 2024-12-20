@@ -1,4 +1,4 @@
-name: Run Lint
+name: Mobile Lint
 
 on:
   push:
