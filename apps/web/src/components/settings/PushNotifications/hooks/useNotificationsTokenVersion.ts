@@ -84,4 +84,3 @@ export const useNotificationsTokenVersion = () => {
 
   return { safeTokenVersion, allTokenVersions, setTokenVersion }
 }
-
