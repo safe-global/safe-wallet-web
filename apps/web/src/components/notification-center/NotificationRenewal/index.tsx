@@ -3,13 +3,15 @@ import { Alert, Box, Button, Typography } from '@mui/material'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useNotificationsRenewal } from '@/components/settings/PushNotifications/hooks/useNotificationsRenewal'
+import { useIsNotificationsRenewalEnabled } from '@/components/settings/PushNotifications/hooks/useNotificationsTokenVersion'
 
 const NotificationRenewal = (): ReactElement => {
   const { safe, safeLoaded } = useSafeInfo()
   const [isRegistering, setIsRegistering] = useState(false)
   const { renewNotifications, needsRenewal, numberChainsForRenewal } = useNotificationsRenewal()
+  const isNotificationsRenewalEnabled = useIsNotificationsRenewalEnabled()
 
-  if (!needsRenewal) {
+  if (!needsRenewal || !isNotificationsRenewalEnabled) {
     // No need to renew any Safe's notifications
     return <></>
   }

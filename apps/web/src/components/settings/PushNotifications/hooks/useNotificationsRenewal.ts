@@ -6,8 +6,8 @@ import { useAppDispatch, useAppSelector } from '@/store'
 import { selectNotifications, showNotification } from '@/store/notificationsSlice'
 import useWallet from '@/hooks/wallets/useWallet'
 import { NotificationsTokenVersion } from '@/services/push-notifications/preferences'
-import { useNotificationsTokenVersion } from './useNotificationsTokenVersion'
-import { NotifiableSafes } from '../logic'
+import { useIsNotificationsRenewalEnabled, useNotificationsTokenVersion } from './useNotificationsTokenVersion'
+import type { NotifiableSafes } from '../logic'
 import { flatten, isEmpty } from 'lodash'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 
@@ -28,6 +28,7 @@ export const useNotificationsRenewal = (shouldShowRenewalNotification = false) =
   const notifications = useAppSelector(selectNotifications)
   const { safeTokenVersion, allTokenVersions, setTokenVersion } = useNotificationsTokenVersion()
   const isWrongChain = useIsWrongChain()
+  const isNotificationsRenewalEnabled = useIsNotificationsRenewalEnabled()
 
   // Check if a renewal notification is already present
   const hasNotificationMessage = useMemo(
@@ -43,7 +44,8 @@ export const useNotificationsRenewal = (shouldShowRenewalNotification = false) =
       safeLoaded &&
       !isWrongChain &&
       !safeTokenVersion &&
-      !hasNotificationMessage
+      !hasNotificationMessage &&
+      isNotificationsRenewalEnabled
     ) {
       dispatch(
         showNotification({
@@ -71,6 +73,7 @@ export const useNotificationsRenewal = (shouldShowRenewalNotification = false) =
     hasNotificationMessage,
     wallet,
     setTokenVersion,
+    isNotificationsRenewalEnabled,
   ])
 
   /**
@@ -88,6 +91,11 @@ export const useNotificationsRenewal = (shouldShowRenewalNotification = false) =
   // Safes that need to be renewed based on the locally stored token version. If a Safe is loaded, only the relevant
   // Safes for the corresponding chain are returned. Otherwise, all Safes that need to be renewed are returned.
   const safesForRenewal = useMemo<NotifiableSafes | undefined>(() => {
+    if (!isNotificationsRenewalEnabled) {
+      // Notifications renewal feature flag is not enabled
+      return undefined
+    }
+
     if (safeLoaded) {
       // If the Safe is loaded, only the Safes for the corresponding chain are checked
       const chainPreferences = getChainPreferences(safe.chainId)
