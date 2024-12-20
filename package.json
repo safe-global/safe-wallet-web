@@ -10,8 +10,9 @@
   "scripts": {
     "lint": "yarn workspaces foreach --all -pt run lint",
     "test": "yarn workspaces foreach --all -pt run test",
-    "prettier:fix": "yarn workspaces foreach --all -pt run prettier:fix",
-    "eslint": "yarn workspaces foreach --all -pt run eslint"
+    "eslint": "yarn workspaces foreach --all -pt run eslint",
+    "prettier": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\""
   },
   "resolutions": {
     "@safe-global/safe-core-sdk-types/ethers": "6.13.4",
