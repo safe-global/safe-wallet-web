@@ -1,11 +1,11 @@
 import type { ReactElement, SyntheticEvent } from 'react'
-import { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import groupBy from 'lodash/groupBy'
 import { useAppDispatch, useAppSelector } from '@/store'
 import type { Notification } from '@/store/notificationsSlice'
 import { closeNotification, readNotification, selectNotifications } from '@/store/notificationsSlice'
 import type { AlertColor, SnackbarCloseReason } from '@mui/material'
-import { Alert, Link, Snackbar, Typography } from '@mui/material'
+import { Alert, Box, Link, Snackbar, Typography } from '@mui/material'
 import css from './styles.module.css'
 import NextLink from 'next/link'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
@@ -26,20 +26,39 @@ export const NotificationLink = ({
     return null
   }
 
+  const LinkWrapper = ({ children }: React.PropsWithChildren) =>
+    'href' in link ? (
+      <NextLink href={link.href} passHref legacyBehavior>
+        {children}
+      </NextLink>
+    ) : (
+      <Box display="flex">{children}</Box>
+    )
+
+  const handleClick = (event: SyntheticEvent) => {
+    if ('onClick' in link) {
+      link.onClick()
+    }
+    onClick(event)
+  }
+
   const isExternal =
-    typeof link.href === 'string' ? !isRelativeUrl(link.href) : !!(link.href.host || link.href.hostname)
+    'href' in link &&
+    (typeof link.href === 'string' ? !isRelativeUrl(link.href) : !!(link.href.host || link.href.hostname))
 
   return (
     <Track {...OVERVIEW_EVENTS.NOTIFICATION_INTERACTION} label={link.title} as="span">
-      <NextLink href={link.href} passHref legacyBehavior>
+      <LinkWrapper>
         <Link
           className={css.link}
-          onClick={onClick}
+          onClick={handleClick}
+          sx={{ cursor: 'pointer' }}
           {...(isExternal && { target: '_blank', rel: 'noopener noreferrer' })}
         >
-          {link.title} <ChevronRightIcon />
+          {link.title}
+          <ChevronRightIcon />
         </Link>
-      </NextLink>
+      </LinkWrapper>
     </Track>
   )
 }
