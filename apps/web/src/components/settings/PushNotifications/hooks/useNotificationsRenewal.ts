@@ -36,46 +36,6 @@ export const useNotificationsRenewal = (shouldShowRenewalNotification = false) =
     [notifications],
   )
 
-  useEffect(() => {
-    if (
-      shouldShowRenewalNotification &&
-      !!wallet &&
-      !!preferences &&
-      safeLoaded &&
-      !isWrongChain &&
-      !safeTokenVersion &&
-      !hasNotificationMessage &&
-      isNotificationsRenewalEnabled
-    ) {
-      dispatch(
-        showNotification({
-          message:
-            'We’ve upgraded your notification experience. Sign this message to keep receiving important updates seamlessly.',
-          variant: 'warning',
-          groupKey: 'renewal',
-          link: {
-            onClick: () => renewNotifications(),
-            title: 'Sign',
-          },
-        }),
-      )
-
-      // Set the token version to V1 to avoid showing the notification again
-      setTokenVersion(NotificationsTokenVersion.V1)
-    }
-  }, [
-    shouldShowRenewalNotification,
-    preferences,
-    safeLoaded,
-    safe,
-    safeTokenVersion,
-    isWrongChain,
-    hasNotificationMessage,
-    wallet,
-    setTokenVersion,
-    isNotificationsRenewalEnabled,
-  ])
-
   /**
    * Function to check if a renewal is needed for a specific Safe based on the locally stored token version
    * @param chainId the chainId of the Safe
@@ -126,7 +86,14 @@ export const useNotificationsRenewal = (shouldShowRenewalNotification = false) =
     )
 
     return isEmpty(safesForRenewal) ? undefined : safesForRenewal
-  }, [safeLoaded, safe.chainId, allPreferences, getChainPreferences])
+  }, [
+    safeLoaded,
+    safe.chainId,
+    allPreferences,
+    getChainPreferences,
+    checkIsRenewalNeeded,
+    isNotificationsRenewalEnabled,
+  ])
 
   // Number of Safes that need to be renewed for notifications
   const numberSafesForRenewal = useMemo(() => {
@@ -144,7 +111,7 @@ export const useNotificationsRenewal = (shouldShowRenewalNotification = false) =
       return safesForRenewal?.[safe.chainId]?.includes(safe.address.value) || false
     }
     return numberSafesForRenewal > 0
-  }, [numberSafesForRenewal])
+  }, [numberSafesForRenewal, safe.address.value, safe.chainId, safeLoaded, safesForRenewal])
 
   /**
    * Function to renew the notifications for the Safes that need it
@@ -155,6 +122,48 @@ export const useNotificationsRenewal = (shouldShowRenewalNotification = false) =
       return registerNotifications(safesForRenewal)
     }
   }, [safesForRenewal, registerNotifications])
+
+  useEffect(() => {
+    if (
+      shouldShowRenewalNotification &&
+      !!wallet &&
+      !!preferences &&
+      safeLoaded &&
+      !isWrongChain &&
+      !safeTokenVersion &&
+      !hasNotificationMessage &&
+      isNotificationsRenewalEnabled
+    ) {
+      dispatch(
+        showNotification({
+          message:
+            'We’ve upgraded your notification experience. Sign this message to keep receiving important updates seamlessly.',
+          variant: 'warning',
+          groupKey: 'renewal',
+          link: {
+            onClick: () => renewNotifications(),
+            title: 'Sign',
+          },
+        }),
+      )
+
+      // Set the token version to V1 to avoid showing the notification again
+      setTokenVersion(NotificationsTokenVersion.V1)
+    }
+  }, [
+    dispatch,
+    renewNotifications,
+    shouldShowRenewalNotification,
+    preferences,
+    safeLoaded,
+    safe,
+    safeTokenVersion,
+    isWrongChain,
+    hasNotificationMessage,
+    wallet,
+    setTokenVersion,
+    isNotificationsRenewalEnabled,
+  ])
 
   return { safesForRenewal, numberChainsForRenewal, numberSafesForRenewal, renewNotifications, needsRenewal }
 }
