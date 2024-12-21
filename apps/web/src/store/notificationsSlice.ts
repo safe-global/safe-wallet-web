@@ -13,7 +13,7 @@ export type Notification = {
   timestamp: number
   isDismissed?: boolean
   isRead?: boolean
-  link?: { href: LinkProps['href']; title: string }
+  link?: { href: LinkProps['href']; title: string } | { onClick: () => void; title: string }
   onClose?: () => void
 }
 

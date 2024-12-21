@@ -57,6 +57,7 @@ export const useNotificationPreferences = (): {
     [PushNotificationPrefsKey, PushNotificationPreferences[PushNotificationPrefsKey]][]
   >
   _deleteManyPreferenceKeys: (keysToDelete: PushNotificationPrefsKey[]) => void
+  getChainPreferences: (chainId: string) => PushNotificationPreferences[PushNotificationPrefsKey][]
 } => {
   // State
   const uuid = useUuid()
@@ -71,6 +72,14 @@ export const useNotificationPreferences = (): {
   const getAllPreferences = useCallback(() => {
     return preferences
   }, [preferences])
+
+  // Get list of preferences for specified chain
+  const getChainPreferences = useCallback(
+    (chainId: string) => {
+      return Object.values(preferences || {}).filter((pref) => chainId === pref.chainId)
+    },
+    [preferences],
+  )
 
   // idb-keyval stores
   const uuidStore = useMemo(() => {
@@ -253,5 +262,6 @@ export const useNotificationPreferences = (): {
     deleteAllChainPreferences,
     _getAllPreferenceEntries,
     _deleteManyPreferenceKeys,
+    getChainPreferences,
   }
 }

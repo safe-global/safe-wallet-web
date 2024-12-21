@@ -6,6 +6,13 @@ import type { WebhookType } from '@/service-workers/firebase-messaging/webhook-t
 
 export type PushNotificationPrefsKey = `${string}:${string}`
 
+export enum NotificationsTokenVersion {
+  // V1 is the initial version of the notifications token
+  V1 = 1,
+  // V2 is the version after the migration to the new notification service
+  V2 = 2,
+}
+
 export type PushNotificationPreferences = {
   [safeKey: PushNotificationPrefsKey]: {
     chainId: string
