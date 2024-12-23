@@ -13,6 +13,9 @@ import { PortalProvider } from '@tamagui/portal'
 import { SafeToastProvider } from '@/src/theme/provider/toastProvider'
 import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated'
 import { OnboardingHeader } from '@/src/features/Onboarding/components/OnboardingHeader'
+import { install } from 'react-native-quick-crypto'
+
+install()
 
 configureReanimatedLogger({
   level: ReanimatedLogLevel.warn,
