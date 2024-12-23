@@ -7,6 +7,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { useQueuedTxsLength } from '@/hooks/useTxQueue'
 import ExternalLink from '@/components/common/ExternalLink'
 import { maybePlural } from '@/utils/formatters'
+import madProps from '@/utils/mad-props'
 
 const QUEUE_WARNING_VERSION = '<1.3.0'
 
@@ -26,11 +27,15 @@ function BgBox({ children, light }: { children: ReactNode; light?: boolean }) {
   )
 }
 
-function UpdateSafe() {
-  const { safe } = useSafeInfo()
-  const chain = useCurrentChain()
-  const queueSize = useQueuedTxsLength()
-  const safeVersion = safe?.version || ''
+export function _UpdateSafe({
+  safeVersion,
+  queueSize,
+  chain,
+}: {
+  safeVersion: string
+  queueSize: string
+  chain: ReturnType<typeof useCurrentChain>
+}) {
   const showQueueWarning = queueSize && semverSatisfies(safeVersion, QUEUE_WARNING_VERSION)
   const latestSafeVersion = chain?.recommendedMasterCopyVersion || LATEST_SAFE_VERSION
 
@@ -61,5 +66,16 @@ function UpdateSafe() {
     </>
   )
 }
+
+function useSafeVersion() {
+  const { safe } = useSafeInfo()
+  return safe?.version || ''
+}
+
+const UpdateSafe = madProps(_UpdateSafe, {
+  chain: useCurrentChain,
+  safeVersion: useSafeVersion,
+  queueSize: useQueuedTxsLength,
+})
 
 export default UpdateSafe
