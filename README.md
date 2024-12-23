@@ -2,8 +2,7 @@
 
 # Safe{Wallet} monorepo
 
-- 🌐 [Safe{Wallet} web app](/apps/web/README.md)
-- 📱 [Safe{Wallet} mobile app](/apps/mobile/README.md)
+🌐 [Safe{Wallet} web app](/apps/web/README.md) ・ 📱 [Safe{Wallet} mobile app](/apps/mobile/README.md)
 
 ## Overview
 
