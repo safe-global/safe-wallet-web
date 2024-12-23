@@ -30,7 +30,7 @@ import { useNotificationPreferences } from './hooks/useNotificationPreferences'
 import { useNotificationRegistrations } from './hooks/useNotificationRegistrations'
 import { trackEvent } from '@/services/analytics'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
-import { requestNotificationPermission } from './logic'
+import { mergeNotifiableSafes, requestNotificationPermission } from './logic'
 import type { NotifiableSafes } from './logic'
 import type { PushNotificationPreferences } from '@/services/push-notifications/preferences'
 import CheckWallet from '@/components/common/CheckWallet'
@@ -40,6 +40,7 @@ import useAllOwnedSafes from '@/features/myAccounts/hooks/useAllOwnedSafes'
 import useWallet from '@/hooks/wallets/useWallet'
 import { selectAllAddedSafes, type AddedSafesState } from '@/store/addedSafesSlice'
 import { maybePlural } from '@/utils/formatters'
+import { useNotificationsRenewal } from './hooks/useNotificationsRenewal'
 
 // UI logic
 
@@ -268,6 +269,8 @@ export const GlobalPushNotifications = (): ReactElement | null => {
   const { unregisterDeviceNotifications, unregisterSafeNotifications, registerNotifications } =
     useNotificationRegistrations()
 
+  const { safesForRenewal } = useNotificationsRenewal()
+
   // Safes selected in the UI
   const [selectedSafes, setSelectedSafes] = useState<NotifiableSafes>({})
 
@@ -349,7 +352,11 @@ export const GlobalPushNotifications = (): ReactElement | null => {
 
     const registrationPromises: Array<Promise<unknown>> = []
 
-    const safesToRegister = _getSafesToRegister(selectedSafes, currentNotifiedSafes)
+    const newlySelectedSafes = _getSafesToRegister(selectedSafes, currentNotifiedSafes)
+
+    // Merge Safes that need to be registered with the ones for which notifications need to be renewed
+    const safesToRegister = mergeNotifiableSafes(newlySelectedSafes, safesForRenewal)
+
     if (safesToRegister) {
       registrationPromises.push(registerNotifications(safesToRegister))
     }
