@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react'
-import { H5, ScrollView, Text, View } from 'tamagui'
+import { GetThemeValueForKey, H5, ScrollView, Text, View } from 'tamagui'
 import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
-import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet'
+import { BottomSheetFooterProps, BottomSheetModal, BottomSheetModalProps, BottomSheetView } from '@gorhom/bottom-sheet'
 import { StyleSheet } from 'react-native'
 import { BackdropComponent, BackgroundComponent } from './sheetComponents'
 
@@ -11,9 +11,20 @@ interface DropdownProps<T> {
   children?: React.ReactNode
   dropdownTitle?: string
   items?: T[]
+  snapPoints?: BottomSheetModalProps['snapPoints']
+  labelProps?: {
+    fontSize?: '$4' | '$5' | GetThemeValueForKey<'fontSize'>
+    fontWeight: 400 | 500 | 600
+  }
+  footerComponent?: React.FC<BottomSheetFooterProps>
   renderItem?: React.FC<{ item: T; onClose: () => void }>
   keyExtractor?: ({ item, index }: { item: T; index: number }) => string
 }
+
+const defaultLabelProps = {
+  fontSize: '$4',
+  fontWeight: 400,
+} as const
 
 export function Dropdown<T>({
   label,
@@ -21,8 +32,11 @@ export function Dropdown<T>({
   children,
   dropdownTitle,
   items,
+  snapPoints = [600, '90%'],
   keyExtractor,
   renderItem: Render,
+  labelProps = defaultLabelProps,
+  footerComponent,
 }: DropdownProps<T>) {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null)
 
@@ -44,10 +58,11 @@ export function Dropdown<T>({
         onPress={handlePresentModalPress}
         flexDirection="row"
         marginBottom="$3"
+        columnGap="$2"
       >
         {leftNode}
 
-        <Text fontSize="$4" fontWeight={400}>
+        <Text fontSize={labelProps.fontSize} fontWeight={labelProps.fontWeight}>
           {label}
         </Text>
 
@@ -56,19 +71,20 @@ export function Dropdown<T>({
 
       <BottomSheetModal
         enableOverDrag={false}
-        snapPoints={[400, '90%']}
+        snapPoints={snapPoints}
         enableDynamicSizing={false}
         ref={bottomSheetModalRef}
         enablePanDownToClose
         overDragResistanceFactor={10}
         backgroundComponent={BackgroundComponent}
         backdropComponent={BackdropComponent}
+        footerComponent={footerComponent}
       >
         <BottomSheetView style={styles.contentContainer}>
           <ScrollView>
             <View minHeight={200} alignItems="center" paddingVertical="$3">
               {dropdownTitle && (
-                <H5 marginBottom="$4" fontWeight={600}>
+                <H5 marginBottom="$6" fontWeight={600}>
                   {dropdownTitle}
                 </H5>
               )}
@@ -95,6 +111,6 @@ export function Dropdown<T>({
 const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: 20,
-    flex: 1,
+    justifyContent: 'space-around',
   },
 })

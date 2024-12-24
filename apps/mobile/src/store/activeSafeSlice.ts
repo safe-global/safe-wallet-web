@@ -1,15 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Address } from '@/src/types/address'
 import { RootState } from '.'
-
-interface SafeInfo {
-  address: Address
-  chainId: string
-}
+import { mockedActiveAccount } from './constants'
+import { SafeInfo } from '../types/address'
 
 const initialState: SafeInfo = {
-  address: '0xA77DE01e157f9f57C7c4A326eeE9C4874D0598b6',
-  chainId: '1',
+  address: mockedActiveAccount.address,
+  chainId: mockedActiveAccount.chainId,
 }
 
 const activeSafeSlice = createSlice({

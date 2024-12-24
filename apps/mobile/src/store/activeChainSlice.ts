@@ -1,8 +1,9 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '.'
 import { selectChainById } from './chains'
+import { mockedActiveAccount } from './constants'
 
-const initialState = { id: '1' }
+const initialState = { id: mockedActiveAccount.chainId }
 
 const activeChainSlice = createSlice({
   name: 'activeChain',

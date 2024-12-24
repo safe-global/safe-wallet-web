@@ -26,10 +26,10 @@ function RootLayout() {
   store.dispatch(apiSliceWithChainsConfig.endpoints.getChainsConfig.initiate())
 
   return (
-    <PortalProvider shouldAddRootHost>
-      <GestureHandlerRootView>
-        <BottomSheetModalProvider>
-          <Provider store={store}>
+    <Provider store={store}>
+      <PortalProvider shouldAddRootHost>
+        <GestureHandlerRootView>
+          <BottomSheetModalProvider>
             <PersistGate loading={null} persistor={persistor}>
               <SafeThemeProvider>
                 <SafeToastProvider>
@@ -63,10 +63,10 @@ function RootLayout() {
                 </SafeToastProvider>
               </SafeThemeProvider>
             </PersistGate>
-          </Provider>
-        </BottomSheetModalProvider>
-      </GestureHandlerRootView>
-    </PortalProvider>
+          </BottomSheetModalProvider>
+        </GestureHandlerRootView>
+      </PortalProvider>
+    </Provider>
   )
 }
 

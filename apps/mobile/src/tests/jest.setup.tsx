@@ -115,6 +115,8 @@ jest.mock('@gorhom/bottom-sheet', () => {
   return {
     __esModule: true,
     default: View,
+    BottomSheetFooter: View,
+    BottomSheetFooterContainer: View,
     BottomSheetModal: MockBottomSheetComponent,
     BottomSheetModalProvider: View,
     BottomSheetView: View,
