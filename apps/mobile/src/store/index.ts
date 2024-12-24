@@ -4,6 +4,7 @@ import { reduxStorage } from './storage'
 import txHistory from './txHistorySlice'
 import activeChain from './activeChainSlice'
 import activeSafe from './activeSafeSlice'
+import safes from './safesSlice'
 import { cgwClient, setBaseUrl } from '@safe-global/store/gateway/cgwClient'
 import devToolsEnhancer from 'redux-devtools-expo-dev-plugin'
 import { GATEWAY_URL, isTestingEnv } from '../config/constants'
@@ -17,6 +18,7 @@ const persistConfig = {
 }
 export const rootReducer = combineReducers({
   txHistory,
+  safes,
   activeChain,
   activeSafe,
   [cgwClient.reducerPath]: cgwClient.reducer,
