@@ -95,7 +95,7 @@ export const prependSafeToL2Migration = (
   return __unsafe_createMultiSendTx(newTxs)
 }
 
-export const createUpdateMigration = (chain: ChainInfo): MetaTransactionData => {
+export const createUpdateMigration = (chain: ChainInfo, fallbackHandler?: string): MetaTransactionData => {
   const interfce = Safe_migration__factory.createInterface()
 
   const deployment = getSafeMigrationDeployment({
@@ -108,11 +108,19 @@ export const createUpdateMigration = (chain: ChainInfo): MetaTransactionData => 
     throw new Error('Migration deployment not found')
   }
 
+  const method = (
+    fallbackHandler
+      ? chain.l2
+        ? 'migrateL2Singleton'
+        : 'migrateSingleton'
+      : chain.l2
+        ? 'migrateL2WithFallbackHandler'
+        : 'migrateWithFallbackHandler'
+  ) as 'migrateSingleton' // apease typescript
+
   const tx: MetaTransactionData = {
-    operation: OperationType.DelegateCall, // DELEGATE CALL REQUIRED
-    data: chain.l2
-      ? interfce.encodeFunctionData('migrateL2WithFallbackHandler')
-      : interfce.encodeFunctionData('migrateWithFallbackHandler'),
+    operation: OperationType.DelegateCall, // delegate call required
+    data: interfce.encodeFunctionData(method),
     to: deployment.defaultAddress,
     value: '0',
   }
