@@ -102,14 +102,10 @@ const withMDX = createMDX({
   extension: /\.(md|mdx)?$/,
   jsx: true,
   options: {
-    remarkPlugins: [
-      remarkFrontmatter,
-      [remarkMdxFrontmatter, { name: 'metadata' }],
-      remarkHeadingId, remarkGfm],
+    remarkPlugins: [remarkFrontmatter, [remarkMdxFrontmatter, { name: 'metadata' }], remarkHeadingId, remarkGfm],
     rehypePlugins: [],
   },
 })
-
 
 export default withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',

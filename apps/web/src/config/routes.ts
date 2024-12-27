@@ -11,6 +11,7 @@ export const AppRoutes = {
   imprint: '/imprint',
   home: '/home',
   cookie: '/cookie',
+  bundle: '/bundle',
   bridge: '/bridge',
   addressBook: '/address-book',
   addOwner: '/addOwner',
@@ -57,6 +58,7 @@ export const AppRoutes = {
   },
   welcome: {
     index: '/welcome',
+    bundles: '/welcome/bundles',
     accounts: '/welcome/accounts',
   },
 }

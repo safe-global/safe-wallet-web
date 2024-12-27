@@ -55,6 +55,7 @@ const rootReducer = combineReducers({
   [ofacApi.reducerPath]: ofacApi.reducer,
   [safePassApi.reducerPath]: safePassApi.reducer,
   [slices.gatewayApi.reducerPath]: slices.gatewayApi.reducer,
+  [slices.bundleSlice.name]: slices.bundleSlice.reducer,
 })
 
 const persistedSlices: (keyof Partial<RootState>)[] = [
@@ -72,6 +73,7 @@ const persistedSlices: (keyof Partial<RootState>)[] = [
   slices.swapOrderSlice.name,
   slices.visitedSafesSlice.name,
   slices.orderByPreferenceSlice.name,
+  slices.bundleSlice.name,
 ]
 
 export const getPersistedState = () => {

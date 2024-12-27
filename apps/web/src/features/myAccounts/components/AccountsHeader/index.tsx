@@ -5,6 +5,7 @@ import CreateButton from '@/features/myAccounts/components/CreateButton'
 import css from '@/features/myAccounts/styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
 import AddIcon from '@/public/images/common/add.svg'
+import ViewQuiltIcon from '@mui/icons-material/ViewQuilt'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { Box, Button, Link, SvgIcon, Typography } from '@mui/material'
 import classNames from 'classnames'
@@ -22,7 +23,20 @@ const AccountsHeader = ({ isSidebar, onLinkClick }: { isSidebar: boolean; onLink
       <Typography variant="h1" fontWeight={700} className={css.title}>
         My accounts
       </Typography>
+
       <Box className={css.headerButtons}>
+        <Link href={AppRoutes.welcome.bundles}>
+          <Button
+            disableElevation
+            variant="outlined"
+            size="small"
+            startIcon={<SvgIcon component={ViewQuiltIcon} inheritViewBox fontSize="small" />}
+            sx={{ height: '36px', width: '100%', px: 2 }}
+          >
+            Bundles
+          </Button>
+        </Link>
+
         <Track {...OVERVIEW_EVENTS.ADD_TO_WATCHLIST} label={trackingLabel}>
           <Link href={AppRoutes.newSafe.load}>
             <Button
