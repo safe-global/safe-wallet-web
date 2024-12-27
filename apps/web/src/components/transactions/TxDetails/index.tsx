@@ -83,7 +83,9 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
     <>
       {/* /Details */}
       <div className={`${css.details} ${isUnsigned ? css.noSigners : ''}`}>
-        <TxNote txDetails={txDetails} />
+        <div className={css.txNote}>
+          <TxNote txDetails={txDetails} />
+        </div>
 
         <div className={css.shareLink}>
           <TxShareLink id={txSummary.id} />

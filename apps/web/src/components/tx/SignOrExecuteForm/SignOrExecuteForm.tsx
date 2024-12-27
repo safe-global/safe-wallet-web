@@ -34,6 +34,7 @@ import { SignerForm } from './SignerForm'
 import { useSigner } from '@/hooks/wallets/useWallet'
 import { trackTxEvents } from './tracking'
 import TxNoteForm from './TxNoteForm'
+import TxNote from '@/components/transactions/TxDetails/TxNote'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -110,10 +111,10 @@ export const SignOrExecuteForm = ({
         isRoleExecution,
         isProposerCreation,
         !!signer?.isSafe,
-        props.origin,
+        customOrigin,
       )
     },
-    [chainId, isCreation, onSubmit, trigger, signer?.isSafe, props.origin],
+    [chainId, isCreation, onSubmit, trigger, signer?.isSafe, customOrigin],
   )
 
   const onRoleExecutionSubmit = useCallback<typeof onFormSubmit>(
@@ -200,7 +201,7 @@ export const SignOrExecuteForm = ({
 
       {!isCounterfactualSafe && !props.isRejection && <TxChecks />}
 
-      {isCreation && <TxNoteForm onSubmit={onNoteSubmit} />}
+      <TxCard>{isCreation ? <TxNoteForm onSubmit={onNoteSubmit} /> : <TxNote txDetails={props.txDetails} />}</TxCard>
 
       <SignerForm willExecute={willExecute} />
 

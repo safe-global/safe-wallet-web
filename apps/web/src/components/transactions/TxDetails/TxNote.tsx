@@ -1,15 +1,16 @@
+import { Tooltip, Typography } from '@mui/material'
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import useAsync from '@/hooks/useAsync'
 import { useCurrentChain } from '@/hooks/useChains'
 import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
-import { Box, Divider, Typography } from '@mui/material'
-import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import InfoIcon from '@/public/images/notifications/info.svg'
 
-const TxNote = ({ txDetails }: { txDetails: TransactionDetails }) => {
+function useTxNote(txDetails: TransactionDetails | undefined): string | undefined {
   const currentChain = useCurrentChain()
   const txService = currentChain?.transactionService
 
   let safeTxHash = ''
-  if (isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo)) {
+  if (txDetails && isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo)) {
     safeTxHash = txDetails.detailedExecutionInfo?.safeTxHash
   }
 
@@ -18,29 +19,40 @@ const TxNote = ({ txDetails }: { txDetails: TransactionDetails }) => {
     return fetch(`${txService}/api/v1/multisig-transactions/${safeTxHash}`).then((res) => res.json())
   }, [safeTxHash, txService])
 
-  let note = ''
+  let note: string | undefined
   if (data) {
     try {
       const origin = JSON.parse(data.origin)
       const parsedName = JSON.parse(origin.name)
-      note = parsedName.note
+      if (typeof parsedName.note === 'string') {
+        note = parsedName.note
+      }
     } catch {
       // Ignore, no note
     }
   }
 
+  return note
+}
+
+const TxNote = ({ txDetails }: { txDetails: TransactionDetails | undefined }) => {
+  const note = useTxNote(txDetails)
+
   return note ? (
-    <>
-      <Box my={1} mx={2} py={1}>
-        <Typography variant="h5">Proposer note</Typography>
+    <div>
+      <Typography variant="h5" display="flex" alignItems="center" justifyItems="center">
+        Note
+        <Tooltip title="This note is left by the transaction creator." arrow>
+          <Typography color="text.secondary" component="span" height="1em">
+            <InfoIcon height="1em" />
+          </Typography>
+        </Tooltip>
+      </Typography>
 
-        <Typography p={2} mt={1} borderRadius={1} bgcolor="background.main">
-          {note}
-        </Typography>
-      </Box>
-
-      <Divider />
-    </>
+      <Typography p={2} mt={1} borderRadius={1} bgcolor="background.main">
+        {note}
+      </Typography>
+    </div>
   ) : null
 }
 

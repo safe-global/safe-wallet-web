@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react'
 import { InputAdornment, Stack, TextField, Typography } from '@mui/material'
-import TxCard from '@/components/tx-flow/common/TxCard'
 import InfoIcon from '@/public/images/notifications/info.svg'
 
 const MAX_NOTE_LENGTH = 120
@@ -20,7 +19,7 @@ const TxNoteForm = ({ onSubmit }: { onSubmit: (note: string) => void }) => {
   )
 
   return (
-    <TxCard>
+    <>
       <Stack direction="row" alignItems="center" gap={1}>
         <Typography variant="h5">What does this transaction do?</Typography>
         <Typography variant="body2" color="text.secondary">
@@ -30,7 +29,7 @@ const TxNoteForm = ({ onSubmit }: { onSubmit: (note: string) => void }) => {
 
       <TextField
         name="note"
-        label="Add description"
+        label="Add note"
         fullWidth
         slotProps={{
           htmlInput: { maxLength: MAX_NOTE_LENGTH },
@@ -50,9 +49,9 @@ const TxNoteForm = ({ onSubmit }: { onSubmit: (note: string) => void }) => {
 
       <Typography variant="caption" color="text.secondary" display="flex" alignItems="center">
         <InfoIcon height="1.2em" />
-        This description will be publicly visible and accessible to anyone.
+        This note will be publicly visible and accessible to anyone.
       </Typography>
-    </TxCard>
+    </>
   )
 }
 
