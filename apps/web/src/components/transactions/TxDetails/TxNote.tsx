@@ -1,8 +1,7 @@
-import { DataRow } from '@/components/common/Table/DataRow'
 import useAsync from '@/hooks/useAsync'
 import { useCurrentChain } from '@/hooks/useChains'
 import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
-import { Box, Divider } from '@mui/material'
+import { Box, Divider, Typography } from '@mui/material'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 
 const TxNote = ({ txDetails }: { txDetails: TransactionDetails }) => {
@@ -32,11 +31,15 @@ const TxNote = ({ txDetails }: { txDetails: TransactionDetails }) => {
 
   return note ? (
     <>
-      <Box m={2} py={1}>
-        <DataRow title="Proposer note:">{note}</DataRow>
+      <Box my={1} mx={2} py={1}>
+        <Typography variant="h5">Description</Typography>
+
+        <Typography p={2} mt={1} borderRadius={1} bgcolor="background.main">
+          {note}
+        </Typography>
       </Box>
 
-      <Divider sx={{ mb: 2 }} />
+      <Divider />
     </>
   ) : null
 }

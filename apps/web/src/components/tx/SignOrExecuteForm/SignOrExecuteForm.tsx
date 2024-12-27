@@ -139,6 +139,42 @@ export const SignOrExecuteForm = ({
     [setCustomOrigin, props.origin],
   )
 
+  const getForm = () => {
+    const commonProps = {
+      ...props,
+      safeTx,
+      isCreation,
+      origin: customOrigin,
+      onSubmit: onFormSubmit,
+    }
+    if (isCounterfactualSafe && !isProposing) {
+      return <CounterfactualForm {...commonProps} onlyExecute />
+    }
+
+    if (!isCounterfactualSafe && willExecute && !isProposing) {
+      return <ExecuteForm {...commonProps} />
+    }
+
+    if (!isCounterfactualSafe && willExecuteThroughRole) {
+      return (
+        <ExecuteThroughRoleForm
+          {...commonProps}
+          role={(allowingRole || mostLikelyRole)!}
+          safeTxError={safeTxError}
+          onSubmit={onRoleExecutionSubmit}
+        />
+      )
+    }
+
+    if (!isCounterfactualSafe && !willExecute && !willExecuteThroughRole && !isProposing) {
+      return <SignForm {...commonProps} isBatchable={isBatchable} />
+    }
+
+    if (isProposing) {
+      return <ProposerForm {...commonProps} onSubmit={onProposerFormSubmit} />
+    }
+  }
+
   return (
     <>
       <TxCard>
@@ -196,32 +232,7 @@ export const SignOrExecuteForm = ({
 
         <Blockaid />
 
-        {isCounterfactualSafe && !isProposing && (
-          <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />
-        )}
-        {!isCounterfactualSafe && willExecute && !isProposing && (
-          <ExecuteForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} />
-        )}
-        {!isCounterfactualSafe && willExecuteThroughRole && (
-          <ExecuteThroughRoleForm
-            {...props}
-            safeTx={safeTx}
-            safeTxError={safeTxError}
-            onSubmit={onRoleExecutionSubmit}
-            role={(allowingRole || mostLikelyRole)!}
-          />
-        )}
-        {!isCounterfactualSafe && !willExecute && !willExecuteThroughRole && !isProposing && (
-          <SignForm
-            {...props}
-            safeTx={safeTx}
-            isBatchable={isBatchable}
-            isCreation={isCreation}
-            onSubmit={onFormSubmit}
-          />
-        )}
-
-        {isProposing && <ProposerForm {...props} safeTx={safeTx} onSubmit={onProposerFormSubmit} />}
+        {getForm()}
       </TxCard>
     </>
   )

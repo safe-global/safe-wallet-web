@@ -12,9 +12,10 @@
 }
 
 .shareLink {
-  position: absolute;
-  right: 16px;
-  top: 16px;
+  display: flex;
+  justify-content: flex-end;
+  margin: var(--space-1);
+  margin-bottom: -40px;
 }
 
 .loading,
@@ -61,7 +62,7 @@
   margin-top: var(--space-2);
 }
 
-.buttons > * {
+.buttons>* {
   flex: 1;
 }
 
