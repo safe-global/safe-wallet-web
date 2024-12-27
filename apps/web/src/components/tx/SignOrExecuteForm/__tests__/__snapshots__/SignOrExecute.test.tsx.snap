@@ -98,64 +98,75 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
     <div
       class="MuiCardContent-root cardContent css-1lt5qva-MuiCardContent-root"
     >
-      <form>
-        <h6
-          class="MuiTypography-root MuiTypography-h6 css-v1yov6-MuiTypography-root"
+      <div
+        class="MuiStack-root css-1rlitzi-MuiStack-root"
+      >
+        <h5
+          class="MuiTypography-root MuiTypography-h5 css-1whrnku-MuiTypography-root"
         >
-          Add a note
-        </h6>
+          What does this transaction do?
+        </h5>
+        <p
+          class="MuiTypography-root MuiTypography-body2 css-1g6374z-MuiTypography-root"
+        >
+          Optional
+        </p>
+      </div>
+      <div
+        class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-cmpglg-MuiFormControl-root-MuiTextField-root"
+      >
+        <label
+          class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeMedium MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeMedium MuiInputLabel-outlined css-ll8nw6-MuiFormLabel-root-MuiInputLabel-root"
+          data-shrink="false"
+          for=":r1:"
+          id=":r1:-label"
+        >
+          Add description
+        </label>
         <div
-          class="MuiFormControl-root MuiFormControl-marginNormal MuiFormControl-fullWidth MuiTextField-root css-16bevx5-MuiFormControl-root-MuiTextField-root"
+          class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd css-1j6cp9h-MuiInputBase-root-MuiOutlinedInput-root"
         >
-          <label
-            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeMedium MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeMedium MuiInputLabel-outlined css-ll8nw6-MuiFormLabel-root-MuiInputLabel-root"
-            data-shrink="false"
-            for=":r1:"
-            id=":r1:-label"
-          >
-            Transaction description
-          </label>
+          <input
+            aria-invalid="false"
+            class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd css-f423sj-MuiInputBase-input-MuiOutlinedInput-input"
+            id=":r1:"
+            maxlength="120"
+            name="note"
+            type="text"
+          />
           <div
-            class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1pfp7cx-MuiInputBase-root-MuiOutlinedInput-root"
+            class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeMedium css-elo8k2-MuiInputAdornment-root"
           >
-            <input
-              aria-invalid="false"
-              class="MuiInputBase-input MuiOutlinedInput-input css-1eoo0u4-MuiInputBase-input-MuiOutlinedInput-input"
-              id=":r1:"
-              name="note"
-              type="text"
-            />
-            <fieldset
-              aria-hidden="true"
-              class="MuiOutlinedInput-notchedOutline css-1focg1t-MuiOutlinedInput-notchedOutline"
+            <span
+              class="MuiTypography-root MuiTypography-caption css-m9fk3h-MuiTypography-root"
             >
-              <legend
-                class="css-81qg8w"
-              >
-                <span>
-                  Transaction description
-                </span>
-              </legend>
-            </fieldset>
+              0
+              /
+              120
+            </span>
           </div>
-        </div>
-        <div
-          class="MuiStack-root css-mw1pf-MuiStack-root"
-        >
-          <span
-            class="MuiTypography-root MuiTypography-caption css-cmorml-MuiTypography-root"
+          <fieldset
+            aria-hidden="true"
+            class="MuiOutlinedInput-notchedOutline css-1focg1t-MuiOutlinedInput-notchedOutline"
           >
-            Attention: transaction notes are public
-          </span>
-          <button
-            class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary css-vi2kll-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="submit"
-          >
-            Add note
-          </button>
+            <legend
+              class="css-81qg8w"
+            >
+              <span>
+                Add description
+              </span>
+            </legend>
+          </fieldset>
         </div>
-      </form>
+      </div>
+      <span
+        class="MuiTypography-root MuiTypography-caption css-144rrio-MuiTypography-root"
+      >
+        <mock-icon
+          height="1.2em"
+        />
+        This description will be publicly visible and accessible to anyone.
+      </span>
     </div>
   </div>
   <div
@@ -500,64 +511,75 @@ exports[`SignOrExecute should display an error screen 1`] = `
     <div
       class="MuiCardContent-root cardContent css-1lt5qva-MuiCardContent-root"
     >
-      <form>
-        <h6
-          class="MuiTypography-root MuiTypography-h6 css-v1yov6-MuiTypography-root"
+      <div
+        class="MuiStack-root css-1rlitzi-MuiStack-root"
+      >
+        <h5
+          class="MuiTypography-root MuiTypography-h5 css-1whrnku-MuiTypography-root"
         >
-          Add a note
-        </h6>
+          What does this transaction do?
+        </h5>
+        <p
+          class="MuiTypography-root MuiTypography-body2 css-1g6374z-MuiTypography-root"
+        >
+          Optional
+        </p>
+      </div>
+      <div
+        class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-cmpglg-MuiFormControl-root-MuiTextField-root"
+      >
+        <label
+          class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeMedium MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeMedium MuiInputLabel-outlined css-ll8nw6-MuiFormLabel-root-MuiInputLabel-root"
+          data-shrink="false"
+          for=":r6:"
+          id=":r6:-label"
+        >
+          Add description
+        </label>
         <div
-          class="MuiFormControl-root MuiFormControl-marginNormal MuiFormControl-fullWidth MuiTextField-root css-16bevx5-MuiFormControl-root-MuiTextField-root"
+          class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd css-1j6cp9h-MuiInputBase-root-MuiOutlinedInput-root"
         >
-          <label
-            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeMedium MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeMedium MuiInputLabel-outlined css-ll8nw6-MuiFormLabel-root-MuiInputLabel-root"
-            data-shrink="false"
-            for=":r6:"
-            id=":r6:-label"
-          >
-            Transaction description
-          </label>
+          <input
+            aria-invalid="false"
+            class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd css-f423sj-MuiInputBase-input-MuiOutlinedInput-input"
+            id=":r6:"
+            maxlength="120"
+            name="note"
+            type="text"
+          />
           <div
-            class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1pfp7cx-MuiInputBase-root-MuiOutlinedInput-root"
+            class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeMedium css-elo8k2-MuiInputAdornment-root"
           >
-            <input
-              aria-invalid="false"
-              class="MuiInputBase-input MuiOutlinedInput-input css-1eoo0u4-MuiInputBase-input-MuiOutlinedInput-input"
-              id=":r6:"
-              name="note"
-              type="text"
-            />
-            <fieldset
-              aria-hidden="true"
-              class="MuiOutlinedInput-notchedOutline css-1focg1t-MuiOutlinedInput-notchedOutline"
+            <span
+              class="MuiTypography-root MuiTypography-caption css-m9fk3h-MuiTypography-root"
             >
-              <legend
-                class="css-81qg8w"
-              >
-                <span>
-                  Transaction description
-                </span>
-              </legend>
-            </fieldset>
+              0
+              /
+              120
+            </span>
           </div>
-        </div>
-        <div
-          class="MuiStack-root css-mw1pf-MuiStack-root"
-        >
-          <span
-            class="MuiTypography-root MuiTypography-caption css-cmorml-MuiTypography-root"
+          <fieldset
+            aria-hidden="true"
+            class="MuiOutlinedInput-notchedOutline css-1focg1t-MuiOutlinedInput-notchedOutline"
           >
-            Attention: transaction notes are public
-          </span>
-          <button
-            class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary css-vi2kll-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="submit"
-          >
-            Add note
-          </button>
+            <legend
+              class="css-81qg8w"
+            >
+              <span>
+                Add description
+              </span>
+            </legend>
+          </fieldset>
         </div>
-      </form>
+      </div>
+      <span
+        class="MuiTypography-root MuiTypography-caption css-144rrio-MuiTypography-root"
+      >
+        <mock-icon
+          height="1.2em"
+        />
+        This description will be publicly visible and accessible to anyone.
+      </span>
     </div>
   </div>
   <div

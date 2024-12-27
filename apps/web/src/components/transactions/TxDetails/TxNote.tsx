@@ -32,7 +32,7 @@ const TxNote = ({ txDetails }: { txDetails: TransactionDetails }) => {
   return note ? (
     <>
       <Box my={1} mx={2} py={1}>
-        <Typography variant="h5">Description</Typography>
+        <Typography variant="h5">Proposer note</Typography>
 
         <Typography p={2} mt={1} borderRadius={1} bgcolor="background.main">
           {note}
