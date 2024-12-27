@@ -121,7 +121,7 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
           for=":r1:"
           id=":r1:-label"
         >
-          Add description
+          Add note
         </label>
         <div
           class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd css-1j6cp9h-MuiInputBase-root-MuiOutlinedInput-root"
@@ -153,7 +153,7 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
               class="css-81qg8w"
             >
               <span>
-                Add description
+                Add note
               </span>
             </legend>
           </fieldset>
@@ -165,7 +165,7 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
         <mock-icon
           height="1.2em"
         />
-        This description will be publicly visible and accessible to anyone.
+        This note will be publicly visible and accessible to anyone.
       </span>
     </div>
   </div>
@@ -534,7 +534,7 @@ exports[`SignOrExecute should display an error screen 1`] = `
           for=":r6:"
           id=":r6:-label"
         >
-          Add description
+          Add note
         </label>
         <div
           class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd css-1j6cp9h-MuiInputBase-root-MuiOutlinedInput-root"
@@ -566,7 +566,7 @@ exports[`SignOrExecute should display an error screen 1`] = `
               class="css-81qg8w"
             >
               <span>
-                Add description
+                Add note
               </span>
             </legend>
           </fieldset>
@@ -578,7 +578,7 @@ exports[`SignOrExecute should display an error screen 1`] = `
         <mock-icon
           height="1.2em"
         />
-        This description will be publicly visible and accessible to anyone.
+        This note will be publicly visible and accessible to anyone.
       </span>
     </div>
   </div>
