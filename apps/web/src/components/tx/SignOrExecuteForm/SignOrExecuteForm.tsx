@@ -33,6 +33,7 @@ import ConfirmationView from '../confirmation-views'
 import { SignerForm } from './SignerForm'
 import { useSigner } from '@/hooks/wallets/useWallet'
 import { trackTxEvents } from './tracking'
+import TxNoteForm from './TxNoteForm'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -64,6 +65,7 @@ export const SignOrExecuteForm = ({
   isCreation?: boolean
   txDetails?: TransactionDetails
 }): ReactElement => {
+  const [customOrigin, setCustomOrigin] = useState<string | undefined>(props.origin)
   const { transactionExecution } = useAppSelector(selectSettings)
   const [shouldExecute, setShouldExecute] = useState<boolean>(transactionExecution)
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
@@ -124,6 +126,19 @@ export const SignOrExecuteForm = ({
     [onFormSubmit],
   )
 
+  const onNoteSubmit = useCallback(
+    (note: string) => {
+      const originalOrigin = props.origin ? JSON.parse(props.origin) : { url: location.origin }
+      setCustomOrigin(
+        JSON.stringify({
+          ...originalOrigin,
+          name: JSON.stringify({ note }),
+        }),
+      )
+    },
+    [setCustomOrigin, props.origin],
+  )
+
   return (
     <>
       <TxCard>
@@ -148,6 +163,8 @@ export const SignOrExecuteForm = ({
       </TxCard>
 
       {!isCounterfactualSafe && !props.isRejection && <TxChecks />}
+
+      {isCreation && <TxNoteForm onSubmit={onNoteSubmit} />}
 
       <SignerForm willExecute={willExecute} />
 
