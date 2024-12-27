@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, Spinner, View } from 'tamagui'
+import { Spinner, View } from 'tamagui'
 
 import { Alert } from '@/src/components/Alert'
 import { Dropdown } from '@/src/components/Dropdown'
@@ -8,6 +8,7 @@ import { SafeOverview } from '@safe-global/store/gateway/AUTO_GENERATED/safes'
 import { Chain } from '@safe-global/store/gateway/AUTO_GENERATED/chains'
 
 import { ChainItems } from './ChainItems'
+import { ChainsDisplay } from '@/src/components/ChainsDisplay'
 
 interface BalanceProps {
   activeChain: Chain
@@ -27,11 +28,7 @@ export function Balance({ activeChain, data, chains, isLoading, onChainChange }:
           <Dropdown<SafeOverview>
             label={activeChain?.chainName}
             dropdownTitle="Select network:"
-            leftNode={
-              activeChain?.chainLogoUri && (
-                <Image marginRight="$2" width="24" height="24" source={{ uri: activeChain?.chainLogoUri }} />
-              )
-            }
+            leftNode={<ChainsDisplay activeChainId={activeChain.chainId} chains={chains} max={1} />}
             items={data}
             keyExtractor={({ item }) => item.chainId}
             renderItem={({ item, onClose }) => (
