@@ -36,7 +36,7 @@ export const bundleSlice = createSlice({
   },
 })
 
-export const { addBundle } = bundleSlice.actions
+export const { addBundle, removeBundle } = bundleSlice.actions
 
 export const selectAllBundles = (state: RootState): BundleState => {
   return state[bundleSlice.name]

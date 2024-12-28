@@ -1,17 +1,26 @@
+import { useAppDispatch } from '@/store'
+import type { MouseEvent } from 'react'
+import Link from 'next/link'
 import Identicon from '@/components/common/Identicon'
-import type { Bundle } from '@/features/bundle/bundleSlice'
+import { type Bundle, removeBundle } from '@/features/bundle/bundleSlice'
 import { createBundleLink } from '@/features/bundle/utils'
 import css from '@/features/myAccounts/components/AccountItems/styles.module.css'
-import { Box, Stack, Typography } from '@mui/material'
+import DeleteIcon from '@/public/images/common/delete.svg'
+import { Box, IconButton, Stack, SvgIcon, Typography } from '@mui/material'
 import ListItemButton from '@mui/material/ListItemButton'
-import Link from 'next/link'
 
 const BundleItem = ({ bundle }: { bundle: Bundle }) => {
+  const dispatch = useAppDispatch()
   const MAX_NUM_VISIBLE_SAFES = 4
   const visibleSafes = bundle.safes.slice(0, MAX_NUM_VISIBLE_SAFES)
 
+  const deleteBundle = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    dispatch(removeBundle(bundle))
+  }
+
   return (
-    <ListItemButton className={css.listItem}>
+    <ListItemButton className={css.listItem} disableRipple>
       <Link href={createBundleLink(bundle)} passHref>
         <Stack direction="row" px={2} py={2} alignItems="center">
           <Stack direction="row" flexWrap="wrap" maxWidth="52px" mr={2}>
@@ -23,10 +32,15 @@ const BundleItem = ({ bundle }: { bundle: Bundle }) => {
               )
             })}
           </Stack>
+
           <Box>
             <Typography fontWeight="bold">{bundle.name}</Typography>
             <Typography>{bundle.safes.length} Safe Accounts</Typography>
           </Box>
+
+          <IconButton onClick={deleteBundle} title="Remove bundle" sx={{ ml: 'auto' }}>
+            <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />
+          </IconButton>
         </Stack>
       </Link>
     </ListItemButton>
