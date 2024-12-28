@@ -1,7 +1,5 @@
 import type { BaseSyntheticEvent, Dispatch, SetStateAction } from 'react'
 import AddSafeInput from '@/features/bundle/AddSafeInput'
-import { createBundleLink } from '@/features/bundle/utils'
-import { useRouter } from 'next/router'
 import ModalDialog from '@/components/common/ModalDialog'
 import NameInput from '@/components/common/NameInput'
 import { addBundle, type Bundle } from '@/features/bundle/bundleSlice'
@@ -19,11 +17,11 @@ const CreateBundle = ({
   bundle?: Bundle
 }) => {
   const dispatch = useAppDispatch()
-  const router = useRouter()
 
   const methods = useForm<Bundle>({
     mode: 'onChange',
     defaultValues: {
+      id: bundle?.id,
       name: bundle?.name,
       safes: bundle?.safes,
     },
@@ -32,10 +30,10 @@ const CreateBundle = ({
   const { handleSubmit, reset } = methods
 
   const submitCallback = handleSubmit((data: Bundle) => {
-    dispatch(addBundle({ name: data.name, safes: data.safes }))
+    const id = data.id || crypto.randomUUID()
+    dispatch(addBundle({ id, name: data.name, safes: data.safes }))
     reset()
     setOpen(false)
-    router.push(createBundleLink(data))
   })
 
   const onSubmit = (e: BaseSyntheticEvent) => {

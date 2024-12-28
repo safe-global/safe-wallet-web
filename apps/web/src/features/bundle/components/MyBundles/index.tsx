@@ -31,12 +31,14 @@ const MyBundles = () => {
           </Box>
         </Stack>
 
-        <Paper sx={{ padding: 0 }}>
-          <Paper className={css.safeList}>
-            {bundlesArray.map((bundle) => (
-              <BundleItem key={bundle.name} bundle={bundle} />
-            ))}
-          </Paper>
+        <Paper className={css.safeList}>
+          {bundlesArray.length > 0 ? (
+            bundlesArray.map((bundle) => <BundleItem key={bundle.name} bundle={bundle} />)
+          ) : (
+            <Typography textAlign="center" py={2}>
+              You don&apos;t have any bundles yet.
+            </Typography>
+          )}
         </Paper>
       </Box>
     </Box>

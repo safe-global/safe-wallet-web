@@ -7,12 +7,13 @@ export type SafeEntry = {
 }
 
 export type Bundle = {
+  id: string
   name: string
   safes: SafeEntry[]
 }
 
 export type BundleState = {
-  [name: string]: Bundle
+  [id: string]: Bundle
 }
 
 const initialState: BundleState = {}
@@ -25,17 +26,18 @@ export const bundleSlice = createSlice({
       return action.payload
     },
     addBundle: (state, { payload }: PayloadAction<Bundle>) => {
-      const { name, safes } = payload
+      const { id, name, safes } = payload
 
-      state[name] = {
+      state[id] = {
+        id,
         name,
         safes,
       }
     },
     removeBundle: (state, { payload }: PayloadAction<Bundle>) => {
-      const { name } = payload
+      const { id } = payload
 
-      delete state[name]
+      delete state[id]
     },
   },
 })
