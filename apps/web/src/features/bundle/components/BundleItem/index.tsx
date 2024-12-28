@@ -1,5 +1,7 @@
+import CreateBundle from '@/features/bundle/components/CreateBundle'
+import EditIcon from '@/public/images/common/edit.svg'
 import { useAppDispatch } from '@/store'
-import type { MouseEvent } from 'react'
+import React, { MouseEvent, useState } from 'react'
 import Link from 'next/link'
 import Identicon from '@/components/common/Identicon'
 import { type Bundle, removeBundle } from '@/features/bundle/bundleSlice'
@@ -10,6 +12,7 @@ import { Box, IconButton, Stack, SvgIcon, Typography } from '@mui/material'
 import ListItemButton from '@mui/material/ListItemButton'
 
 const BundleItem = ({ bundle }: { bundle: Bundle }) => {
+  const [open, setOpen] = useState(false)
   const dispatch = useAppDispatch()
   const MAX_NUM_VISIBLE_SAFES = 4
   const visibleSafes = bundle.safes.slice(0, MAX_NUM_VISIBLE_SAFES)
@@ -17,6 +20,11 @@ const BundleItem = ({ bundle }: { bundle: Bundle }) => {
   const deleteBundle = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     dispatch(removeBundle(bundle))
+  }
+
+  const editBundle = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    setOpen(true)
   }
 
   return (
@@ -38,11 +46,16 @@ const BundleItem = ({ bundle }: { bundle: Bundle }) => {
             <Typography>{bundle.safes.length} Safe Accounts</Typography>
           </Box>
 
-          <IconButton onClick={deleteBundle} title="Remove bundle" sx={{ ml: 'auto' }}>
+          <IconButton onClick={editBundle} sx={{ ml: 'auto' }}>
+            <SvgIcon component={EditIcon} inheritViewBox fontSize="small" />
+          </IconButton>
+
+          <IconButton onClick={deleteBundle} title="Remove bundle">
             <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />
           </IconButton>
         </Stack>
       </Link>
+      <CreateBundle open={open} setOpen={setOpen} bundle={bundle} />
     </ListItemButton>
   )
 }

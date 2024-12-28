@@ -1,6 +1,10 @@
-import type { SafeEntry } from '@/features/bundle/CreateBundle'
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '@/store'
+
+export type SafeEntry = {
+  address: string
+  chainId: string
+}
 
 export type Bundle = {
   name: string

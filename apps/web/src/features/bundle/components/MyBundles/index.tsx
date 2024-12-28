@@ -6,7 +6,7 @@ import css from '@/features/myAccounts/styles.module.css'
 import Button from '@mui/material/Button'
 import Link from 'next/link'
 import { useSelector } from 'react-redux'
-import CreateBundle from 'src/features/bundle/CreateBundle'
+import CreateBundleButton from 'src/features/bundle/CreateBundleButton'
 
 const MyBundles = () => {
   const bundles = useSelector(selectAllBundles)
@@ -27,7 +27,7 @@ const MyBundles = () => {
               </Button>
             </Link>
 
-            <CreateBundle />
+            <CreateBundleButton />
           </Box>
         </Stack>
 
