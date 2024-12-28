@@ -1,13 +1,17 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import FiatValue from '@/components/common/FiatValue'
 import Identicon from '@/components/common/Identicon'
+import PaginatedTxns from '@/components/common/PaginatedTxns'
 import { TxModalContext } from '@/components/tx-flow'
 import TokenTransferFlow from '@/components/tx-flow/flows/TokenTransfer'
 import { AppRoutes } from '@/config/routes'
 import type { SafeItem } from '@/features/myAccounts/hooks/useAllSafes'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import useTxQueue from '@/hooks/useTxQueue'
 import useWallet from '@/hooks/wallets/useWallet'
+import { useAppSelector } from '@/store'
 import { useGetMultipleSafeOverviewsQuery } from '@/store/api/gateway'
+import { selectCurrency } from '@/store/settingsSlice'
 import { parsePrefixedAddress, sameAddress } from '@/utils/addresses'
 import {
   Box,
@@ -28,8 +32,6 @@ import {
 import Button from '@mui/material/Button'
 import ListItemButton from '@mui/material/ListItemButton'
 import { networks } from '@safe-global/protocol-kit/dist/src/utils/eip-3770/config'
-import { type SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
-import classNames from 'classnames'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useContext, useState } from 'react'
@@ -38,30 +40,14 @@ import IosShareIcon from '@mui/icons-material/IosShare'
 
 type Chains = Record<string, string>
 
-type OwnerCount = {
-  address: string
-  safeCount: number
-}
-
-function getOwnersWithMultipleSafes(safes?: SafeOverview[]): OwnerCount[] {
-  if (!safes) return []
-
-  // Count occurrences of each owner across all safes
-  const ownerCounts = safes.reduce((acc: Record<string, number>, safe) => {
-    safe.owners.forEach((owner) => {
-      acc[owner.value] = (acc[owner.value] || 0) + 1
-    })
-    return acc
-  }, {})
-
-  // Filter owners who are part of at least two safes and format the result
-  return Object.entries(ownerCounts)
-    .map(([owner, count]) => ({ address: owner, safeCount: count }))
-    .sort((a, b) => b.safeCount - a.safeCount)
-}
+const chains = networks.reduce<Chains>((result, { shortName, chainId }) => {
+  result[chainId.toString()] = shortName.toString()
+  return result
+}, {})
 
 const Bundle = () => {
   const [tooltipText, setTooltipText] = useState<string>('Share Safe Bundle')
+  const currency = useAppSelector(selectCurrency)
   const { setTxFlow, setFullWidth } = useContext(TxModalContext)
   const { safe: safeInfo } = useSafeInfo()
 
@@ -88,18 +74,12 @@ const Bundle = () => {
   const { address: selectedSafe } = parsePrefixedAddress(selectedSafeAddress)
 
   const { data: safeOverviews } = useGetMultipleSafeOverviewsQuery({
-    currency: 'usd',
+    currency,
     walletAddress: wallet?.address,
     safes: parsedSafes,
   })
 
-  const chains = networks.reduce<Chains>((result, { shortName, chainId }) => {
-    result[chainId.toString()] = shortName.toString()
-    return result
-  }, {})
-
   const totalBalance = safeOverviews?.reduce((prev, current) => prev + Number(current.fiatTotal), Number(0))
-  const sharedOwners = getOwnersWithMultipleSafes(safeOverviews)
 
   const onNewTxClick = async () => {
     setFullWidth(true)
@@ -139,6 +119,7 @@ const Bundle = () => {
       <Link href={AppRoutes.welcome.bundles} passHref>
         <Button sx={{ mb: 2 }}>{'< Back to Bundles'}</Button>
       </Link>
+
       <Grid container spacing={3}>
         <Grid item xs={12} lg={6}>
           <Card sx={{ p: 3 }}>
@@ -206,31 +187,33 @@ const Bundle = () => {
           </Card>
         </Grid>
 
-        {sharedOwners.length > 0 && (
-          <Grid item xs={12} lg={6}>
-            <Card sx={{ p: 3 }} elevation={2}>
-              <Typography fontWeight="bold" mb={2}>
-                Signers
-              </Typography>
+        <Grid item xs={12} lg={6}>
+          <Card sx={{ p: 3 }}>
+            <Typography fontWeight="bold" mb={2}>
+              Queue
+            </Typography>
 
+            <PaginatedTxns useTxns={useTxQueue} />
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} lg={6}>
+          <Card sx={{ p: 3 }}>
+            <Typography fontWeight="bold" mb={2}>
+              Signers
+            </Typography>
+
+            {currentSafeOwners.length > 0 ? (
               <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="Table of signers">
                   <TableBody>
-                    {sharedOwners?.map((owner) => {
+                    {currentSafeOwners.map((owner) => {
                       return (
-                        <TableRow
-                          key={owner.address}
-                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                          className={classNames({
-                            [css.currentOwner]: currentSafeOwners.find((currentOwner) =>
-                              sameAddress(currentOwner.value, owner.address),
-                            ),
-                          })}
-                        >
+                        <TableRow key={owner.value} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                           <TableCell>
                             <EthHashInfo
-                              key={owner.address}
-                              address={owner.address}
+                              key={owner.value}
+                              address={owner.value}
                               showPrefix={false}
                               shortAddress={false}
                               showName={false}
@@ -242,9 +225,11 @@ const Bundle = () => {
                   </TableBody>
                 </Table>
               </TableContainer>
-            </Card>
-          </Grid>
-        )}
+            ) : (
+              <Typography>Select a Safe to see the signers</Typography>
+            )}
+          </Card>
+        </Grid>
       </Grid>
     </>
   )
