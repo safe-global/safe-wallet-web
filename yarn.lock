@@ -7289,7 +7289,7 @@ __metadata:
     "@tamagui/animations-moti": "npm:^1.117.1"
     "@tamagui/babel-plugin": "npm:^1.120.2"
     "@tamagui/config": "npm:^1.117.1"
-    "@tamagui/font-dm-sans": "npm:^1.117.1"
+    "@tamagui/font-dm-sans": "npm:^1.121.3"
     "@tamagui/toast": "npm:^1.117.1"
     "@testing-library/react-native": "npm:^12.7.2"
     "@types/eslint__js": "npm:^8.42.3"
@@ -10216,10 +10216,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tamagui/font-dm-sans@npm:^1.117.1":
-  version: 1.119.0
-  resolution: "@tamagui/font-dm-sans@npm:1.119.0"
-  checksum: 10/2f7266688b96abbfa93097bb3c8cacbc240a0c38ac9f59c7843d340467c03a01cb10fe18c0471ba5016dc4955f4964262bdc51cf8cbb0c914a8330bf34fc21f9
+"@tamagui/font-dm-sans@npm:^1.121.3":
+  version: 1.121.3
+  resolution: "@tamagui/font-dm-sans@npm:1.121.3"
+  checksum: 10/90187a62c0cd668ef6bcd3810ae47b889a85dda316d023a3ada6cc959beae920ddf0f9a0a849b59d87eb7a5e7e065a1d305daeef44f7bb382c5909e16ff1ae9d
   languageName: node
   linkType: hard
 
