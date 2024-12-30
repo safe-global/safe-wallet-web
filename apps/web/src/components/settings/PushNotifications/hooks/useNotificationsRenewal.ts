@@ -1,15 +1,13 @@
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useNotificationPreferences } from './useNotificationPreferences'
 import { useNotificationRegistrations } from './useNotificationRegistrations'
-import { useCallback, useEffect, useMemo } from 'react'
-import { useAppDispatch, useAppSelector } from '@/store'
-import { selectNotifications, showNotification } from '@/store/notificationsSlice'
-import useWallet from '@/hooks/wallets/useWallet'
+import { useCallback, useMemo } from 'react'
 import { NotificationsTokenVersion } from '@/services/push-notifications/preferences'
 import { useIsNotificationsRenewalEnabled, useNotificationsTokenVersion } from './useNotificationsTokenVersion'
 import type { NotifiableSafes } from '../logic'
 import { flatten, isEmpty } from 'lodash'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
+import { useAppDispatch } from '@/store'
+import { showNotification } from '@/store/notificationsSlice'
 import { RENEWAL_NOTIFICATION_KEY } from '../constants'
 
 /**
@@ -18,24 +16,13 @@ import { RENEWAL_NOTIFICATION_KEY } from '../constants'
  * @returns an object containing the safes for renewal, the number of chains for renewal, the number of safes for renewal,
  * the renewNotifications function and a boolean indicating if a renewal is needed
  */
-export const useNotificationsRenewal = (shouldShowRenewalNotification = false) => {
-  const wallet = useWallet()
-  const dispatch = useAppDispatch()
+export const useNotificationsRenewal = () => {
   const { safe, safeLoaded } = useSafeInfo()
   const { registerNotifications } = useNotificationRegistrations()
-  const { getPreferences, getAllPreferences, getChainPreferences } = useNotificationPreferences()
-  const preferences = getPreferences(safe.chainId, safe.address.value)
-  const allPreferences = getAllPreferences()
-  const notifications = useAppSelector(selectNotifications)
-  const { safeTokenVersion, allTokenVersions, setTokenVersion } = useNotificationsTokenVersion()
-  const isWrongChain = useIsWrongChain()
+  const { getAllPreferences, getChainPreferences } = useNotificationPreferences()
+  const { allTokenVersions } = useNotificationsTokenVersion()
   const isNotificationsRenewalEnabled = useIsNotificationsRenewalEnabled()
-
-  // Check if a renewal notification is already present
-  const hasNotificationMessage = useMemo(
-    () => notifications.some((notification) => notification.groupKey === 'renewal'),
-    [notifications],
-  )
+  const dispatch = useAppDispatch()
 
   /**
    * Function to check if a renewal is needed for a specific Safe based on the locally stored token version
@@ -73,6 +60,8 @@ export const useNotificationsRenewal = (shouldShowRenewalNotification = false) =
       return { [safe.chainId]: safeAddressesForRenewal }
     }
 
+    const allPreferences = getAllPreferences()
+
     if (!allPreferences) {
       return undefined
     }
@@ -90,7 +79,7 @@ export const useNotificationsRenewal = (shouldShowRenewalNotification = false) =
   }, [
     safeLoaded,
     safe.chainId,
-    allPreferences,
+    getAllPreferences,
     getChainPreferences,
     checkIsRenewalNeeded,
     isNotificationsRenewalEnabled,
@@ -132,48 +121,6 @@ export const useNotificationsRenewal = (shouldShowRenewalNotification = false) =
       })
     }
   }, [safesForRenewal, registerNotifications])
-
-  useEffect(() => {
-    if (
-      shouldShowRenewalNotification &&
-      !!wallet &&
-      !!preferences &&
-      safeLoaded &&
-      !isWrongChain &&
-      !safeTokenVersion &&
-      !hasNotificationMessage &&
-      isNotificationsRenewalEnabled
-    ) {
-      dispatch(
-        showNotification({
-          message:
-            'We’ve upgraded your notification experience. Sign this message to keep receiving important updates seamlessly.',
-          variant: 'warning',
-          groupKey: 'renewal',
-          link: {
-            onClick: () => renewNotifications(),
-            title: 'Sign',
-          },
-        }),
-      )
-
-      // Set the token version to V1 to avoid showing the notification again
-      setTokenVersion(NotificationsTokenVersion.V1)
-    }
-  }, [
-    dispatch,
-    renewNotifications,
-    shouldShowRenewalNotification,
-    preferences,
-    safeLoaded,
-    safe,
-    safeTokenVersion,
-    isWrongChain,
-    hasNotificationMessage,
-    wallet,
-    setTokenVersion,
-    isNotificationsRenewalEnabled,
-  ])
 
   return { safesForRenewal, numberChainsForRenewal, numberSafesForRenewal, renewNotifications, needsRenewal }
 }
