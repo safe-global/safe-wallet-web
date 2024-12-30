@@ -27,13 +27,7 @@ const NotificationRenewal = (): ReactElement => {
   return (
     <>
       <Alert severity="warning">
-        <Typography
-          variant="body2"
-          sx={{
-            fontWeight: 700,
-            mb: 1,
-          }}
-        >
+        <Typography variant="body2" fontWeight={700} mb={1}>
           Signature needed
         </Typography>
         <Typography variant="body2">{message}</Typography>
