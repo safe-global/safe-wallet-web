@@ -46,7 +46,7 @@
     "@react-native-menu/menu": "^1.1.6",
     "@react-native/babel-preset": "^0.76.2",
     "@react-navigation/material-top-tabs": "^7.0.1",
-    "@react-navigation/native": "^7.0.0",
+    "@react-navigation/native": "^7.0.14",
     "@reduxjs/toolkit": "^2.4.0",
     "@safe-global/store": "workspace:^",
     "@storybook/addon-react-native-web": "^0.0.26",
