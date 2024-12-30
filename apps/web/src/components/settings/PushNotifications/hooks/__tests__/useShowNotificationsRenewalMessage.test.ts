@@ -59,7 +59,7 @@ describe('useShowNotificationsRenewalMessage', () => {
   beforeEach(() => {
     useSafeInfoSpy.mockReturnValue({
       safe: {
-        chainId: chainId,
+        chainId,
         address: { value: safeAddress1 },
       },
       safeLoaded: true,
