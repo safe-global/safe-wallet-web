@@ -5,7 +5,7 @@ import type { NotifiableSafes } from '../logic'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 
-const NOTIFICATIONS_TOKEN_VERSION_KEY = 'notificationsTokenVersion'
+export const NOTIFICATIONS_TOKEN_VERSION_KEY = 'notificationsTokenVersion'
 
 type TokenVersionStore = {
   [chainId: string]: {
