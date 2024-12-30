@@ -187,6 +187,71 @@ describe('useNotificationPreferences', () => {
       })
     })
 
+    describe('getChainPreferences', () => {
+      const chainId1 = '1'
+      const safeAddress1 = toBeHex('0x1', 20)
+      const safeAddress2 = toBeHex('0x2', 20)
+
+      const chainId2 = '2'
+
+      const preferences = {
+        [`${chainId1}:${safeAddress1}`]: {
+          chainId: chainId1,
+          safeAddress: safeAddress1,
+          preferences: DEFAULT_NOTIFICATION_PREFERENCES,
+        },
+        [`${chainId1}:${safeAddress2}`]: {
+          chainId: chainId1,
+          safeAddress: safeAddress2,
+          preferences: DEFAULT_NOTIFICATION_PREFERENCES,
+        },
+        [`${chainId2}:${safeAddress1}`]: {
+          chainId: chainId2,
+          safeAddress: safeAddress1,
+          preferences: DEFAULT_NOTIFICATION_PREFERENCES,
+        },
+      }
+
+      it('should return existing chain preferences', async () => {
+        await setMany(Object.entries(preferences), createPushNotificationPrefsIndexedDb())
+
+        const { result } = renderHook(() => useNotificationPreferences())
+
+        await waitFor(() => {
+          expect(result.current.getChainPreferences(chainId1)).toEqual([
+            {
+              chainId: chainId1,
+              safeAddress: safeAddress1,
+              preferences: DEFAULT_NOTIFICATION_PREFERENCES,
+            },
+            {
+              chainId: chainId1,
+              safeAddress: safeAddress2,
+              preferences: DEFAULT_NOTIFICATION_PREFERENCES,
+            },
+          ])
+        })
+      })
+
+      it('should return an empty array if no preferences exist for the chain', async () => {
+        await setMany(Object.entries(preferences), createPushNotificationPrefsIndexedDb())
+
+        const { result } = renderHook(() => useNotificationPreferences())
+
+        await waitFor(() => {
+          expect(result.current.getChainPreferences('3')).toEqual([])
+        })
+      })
+
+      it('should return an empty array if no preferences exist', async () => {
+        const { result } = renderHook(() => useNotificationPreferences())
+
+        await waitFor(() => {
+          expect(result.current.getChainPreferences('1')).toEqual([])
+        })
+      })
+    })
+
     describe('createPreferences', () => {
       it('should create preferences, then hydrate the preferences state', async () => {
         const { result } = renderHook(() => useNotificationPreferences())
