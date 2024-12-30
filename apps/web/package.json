@@ -36,7 +36,7 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@cowprotocol/widget-react": "^0.10.0",
+    "@cowprotocol/widget-react": "^0.13.0",
     "@ducanh2912/next-pwa": "^10.2.9",
     "@emotion/cache": "^11.13.5",
     "@emotion/react": "^11.13.5",
@@ -47,7 +47,7 @@
     "@ledgerhq/device-management-kit": "^0.5.1",
     "@ledgerhq/device-signer-kit-ethereum": "^1.1.0",
     "@mui/icons-material": "^6.1.6",
-    "@mui/material": "^6.1.6",
+    "@mui/material": "^6.3.0",
     "@mui/x-date-pickers": "^7.22.1",
     "@reduxjs/toolkit": "^2.5.0",
     "@reown/walletkit": "^1.1.1",
