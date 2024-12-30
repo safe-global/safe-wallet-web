@@ -246,7 +246,9 @@ export const encodeTxNote = (note: string, origin?: string): string => {
   if (origin) {
     try {
       originalOrigin = JSON.parse(origin)
-    } catch {}
+    } catch (e) {
+      logError(Errors._817, e)
+    }
   }
   if (!originalOrigin.url) {
     originalOrigin.url = location.origin
