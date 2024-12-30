@@ -1,42 +1,9 @@
 import { Tooltip, Typography } from '@mui/material'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import useAsync from '@/hooks/useAsync'
-import { useCurrentChain } from '@/hooks/useChains'
-import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 import InfoIcon from '@/public/images/notifications/info.svg'
 
-function useTxNote(txDetails: TransactionDetails | undefined): string | undefined {
-  const currentChain = useCurrentChain()
-  const txService = currentChain?.transactionService
-
-  let safeTxHash = ''
-  if (txDetails && isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo)) {
-    safeTxHash = txDetails.detailedExecutionInfo?.safeTxHash
-  }
-
-  const [data] = useAsync(() => {
-    if (!safeTxHash || !txService) return
-    return fetch(`${txService}/api/v1/multisig-transactions/${safeTxHash}`).then((res) => res.json())
-  }, [safeTxHash, txService])
-
-  let note: string | undefined
-  if (data) {
-    try {
-      const origin = JSON.parse(data.origin)
-      const parsedName = JSON.parse(origin.name)
-      if (typeof parsedName.note === 'string') {
-        note = parsedName.note
-      }
-    } catch {
-      // Ignore, no note
-    }
-  }
-
-  return note
-}
-
 const TxNote = ({ txDetails }: { txDetails: TransactionDetails | undefined }) => {
-  const note = useTxNote(txDetails)
+  const note = (txDetails as TransactionDetails & { note: string | null })?.note
 
   return note ? (
     <div>
