@@ -120,7 +120,7 @@ export const useNotificationsRenewal = () => {
         )
       })
     }
-  }, [safesForRenewal, registerNotifications])
+  }, [safesForRenewal, dispatch, registerNotifications])
 
   return { safesForRenewal, numberChainsForRenewal, numberSafesForRenewal, renewNotifications, needsRenewal }
 }
