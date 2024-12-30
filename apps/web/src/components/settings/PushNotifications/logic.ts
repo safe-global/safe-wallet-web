@@ -87,25 +87,6 @@ const getSafeRegistrationSignature = async ({
 
 export type NotifiableSafes = { [chainId: string]: Array<string> }
 
-// Merges two NotifiableSafes objects, keeping only unique safe addresses
-export const mergeNotifiableSafes = (
-  existingSafes: NotifiableSafes = {},
-  newSafes: NotifiableSafes = {},
-): NotifiableSafes | undefined => {
-  const mergedSafes = { ...existingSafes }
-
-  for (const [chainId, safeAddresses] of Object.entries(newSafes)) {
-    if (!mergedSafes[chainId]) {
-      mergedSafes[chainId] = safeAddresses
-      continue
-    }
-
-    mergedSafes[chainId] = [...new Set([...mergedSafes[chainId], ...safeAddresses])]
-  }
-
-  return isEmpty(mergedSafes) ? undefined : mergedSafes
-}
-
 export const getRegisterDevicePayload = async ({
   safesToRegister,
   uuid,
