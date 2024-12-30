@@ -10,6 +10,7 @@ import { useIsNotificationsRenewalEnabled, useNotificationsTokenVersion } from '
 import type { NotifiableSafes } from '../logic'
 import { flatten, isEmpty } from 'lodash'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
+import { RENEWAL_NOTIFICATION_KEY } from '../constants'
 
 /**
  * Hook to manage the renewal of notifications
@@ -119,7 +120,16 @@ export const useNotificationsRenewal = (shouldShowRenewalNotification = false) =
    */
   const renewNotifications = useCallback(async () => {
     if (safesForRenewal) {
-      return registerNotifications(safesForRenewal)
+      return registerNotifications(safesForRenewal).catch((err) => {
+        dispatch(
+          showNotification({
+            message: 'Failed to renew notifications',
+            variant: 'error',
+            detailedMessage: err.message,
+            groupKey: RENEWAL_NOTIFICATION_KEY,
+          }),
+        )
+      })
     }
   }, [safesForRenewal, registerNotifications])
 
