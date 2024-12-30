@@ -54,7 +54,7 @@
     "@tamagui/animations-moti": "^1.117.1",
     "@tamagui/babel-plugin": "^1.120.2",
     "@tamagui/config": "^1.117.1",
-    "@tamagui/font-dm-sans": "^1.117.1",
+    "@tamagui/font-dm-sans": "^1.121.3",
     "@tamagui/toast": "^1.117.1",
     "babel-plugin-react-native-web": "^0.19.13",
     "blo": "^1.2.0",
