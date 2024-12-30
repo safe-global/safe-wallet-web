@@ -12,7 +12,6 @@ import { checksumAddress } from '@/utils/addresses'
 import { isLedger } from '@/utils/wallets'
 import { createWeb3 } from '@/hooks/wallets/web3'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import { isEmpty } from 'lodash'
 
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
