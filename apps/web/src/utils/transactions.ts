@@ -240,3 +240,19 @@ export const getSafeTransaction = async (safeTxHash: string, chainId: string, sa
     return undefined
   }
 }
+
+export const encodeTxNote = (note: string, origin?: string): string => {
+  let originalOrigin = { url: '' }
+  if (origin) {
+    try {
+      originalOrigin = JSON.parse(origin)
+    } catch {}
+  }
+  if (!originalOrigin.url) {
+    originalOrigin.url = location.origin
+  }
+  return JSON.stringify({
+    ...originalOrigin,
+    name: JSON.stringify({ note }),
+  })
+}

@@ -130,7 +130,7 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
             aria-invalid="false"
             class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd css-f423sj-MuiInputBase-input-MuiOutlinedInput-input"
             id=":r1:"
-            maxlength="120"
+            maxlength="100"
             name="note"
             type="text"
           />
@@ -142,7 +142,7 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
             >
               0
               /
-              120
+              100
             </span>
           </div>
           <fieldset
@@ -543,7 +543,7 @@ exports[`SignOrExecute should display an error screen 1`] = `
             aria-invalid="false"
             class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd css-f423sj-MuiInputBase-input-MuiOutlinedInput-input"
             id=":r6:"
-            maxlength="120"
+            maxlength="100"
             name="note"
             type="text"
           />
@@ -555,7 +555,7 @@ exports[`SignOrExecute should display an error screen 1`] = `
             >
               0
               /
-              120
+              100
             </span>
           </div>
           <fieldset

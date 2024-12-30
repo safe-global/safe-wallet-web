@@ -35,6 +35,7 @@ import { useSigner } from '@/hooks/wallets/useWallet'
 import { trackTxEvents } from './tracking'
 import TxNoteForm from './TxNoteForm'
 import TxNote from '@/components/transactions/TxDetails/TxNote'
+import { encodeTxNote } from '@/utils/transactions'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -129,13 +130,7 @@ export const SignOrExecuteForm = ({
 
   const onNoteSubmit = useCallback(
     (note: string) => {
-      const originalOrigin = props.origin ? JSON.parse(props.origin) : { url: location.origin }
-      setCustomOrigin(
-        JSON.stringify({
-          ...originalOrigin,
-          name: JSON.stringify({ note }),
-        }),
-      )
+      setCustomOrigin(encodeTxNote(note, props.origin))
     },
     [setCustomOrigin, props.origin],
   )

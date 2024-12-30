@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 import { InputAdornment, Stack, TextField, Typography } from '@mui/material'
 import InfoIcon from '@/public/images/notifications/info.svg'
 
-const MAX_NOTE_LENGTH = 120
+const MAX_NOTE_LENGTH = 100
 
 const TxNoteForm = ({ onSubmit }: { onSubmit: (note: string) => void }) => {
   const [note, setNote] = useState('')
