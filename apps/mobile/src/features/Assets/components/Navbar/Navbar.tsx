@@ -10,10 +10,10 @@ import { StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Address } from '@/src/types/address'
 import { Dropdown } from '@/src/components/Dropdown'
-import { MyAccountsContainer, MyAccountsFooter } from '../MyAccounts'
 import { SafesSliceItem } from '@/src/store/safesSlice'
 import { selectMyAccountsMode, toggleMode } from '@/src/store/myAccountsSlice'
-import { useEditMyAccounts } from '../MyAccounts/hooks/useEditMyAccounts'
+import { MyAccountsContainer, MyAccountsFooter } from '../MyAccounts'
+import { useMyAccountsSortable } from '../MyAccounts/hooks/useMyAccountsSortable'
 
 const dropdownLabelProps = {
   fontSize: '$5',
@@ -24,7 +24,7 @@ export const Navbar = () => {
   const dispatch = useDispatch()
   const isEdit = useSelector(selectMyAccountsMode)
   const activeSafe = useSelector(selectActiveSafe)
-  const { safes, onDragEnd } = useEditMyAccounts()
+  const { safes, onDragEnd } = useMyAccountsSortable()
 
   const toggleEditMode = () => {
     dispatch(toggleMode())

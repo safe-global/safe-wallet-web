@@ -8,9 +8,7 @@ import { Address } from '@/src/types/address'
 import { SafeOverview } from '@safe-global/store/gateway/AUTO_GENERATED/safes'
 import { shortenAddress } from '@/src/utils/formatters'
 import { RenderItemParams } from 'react-native-draggable-flatlist'
-import { useSelector } from 'react-redux'
-import { selectMyAccountsMode } from '@/src/store/myAccountsSlice'
-import { useEditMyAccounts } from '../MyAccounts/hooks/useEditMyAccounts'
+import { useEditAccountItem } from './hooks/useEditAccountItem'
 
 interface AccountItemProps {
   chains: Chain[]
@@ -30,9 +28,8 @@ const getRightNodeLayout = (isEdit: boolean, isActive: boolean) => {
 }
 
 export function AccountItem({ account, drag, chains, isDragging, activeAccount, onSelect }: AccountItemProps) {
+  const { isEdit, onSafeDeleted } = useEditAccountItem()
   const isActive = activeAccount === account.address.value
-  const isEdit = useSelector(selectMyAccountsMode)
-  const { onSafeDeleted } = useEditMyAccounts()
 
   const handleChainSelect = () => {
     onSelect(account.address.value)

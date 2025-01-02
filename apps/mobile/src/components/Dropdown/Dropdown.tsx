@@ -47,7 +47,6 @@ export function Dropdown<T>({
   onDragEnd,
 }: DropdownProps<T>) {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null)
-
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present()
   }, [])
@@ -123,7 +122,6 @@ export function Dropdown<T>({
           {isSortable ? (
             <DraggableFlatList<T>
               data={items}
-              extraData={items}
               containerStyle={{ height: '100%' }}
               ListHeaderComponent={dropdownTitle ? renderDropdownHeader : undefined}
               onDragEnd={onDragEnd}
@@ -158,7 +156,3 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
 })
-
-// export const Dropdown = React.memo(DropdownComponent, (prevProps, nextProps) => {
-//   return JSON.stringify(prevProps.items || []) === JSON.stringify(nextProps.items || [])
-// })
