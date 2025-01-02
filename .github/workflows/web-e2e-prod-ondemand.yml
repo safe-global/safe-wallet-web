@@ -42,7 +42,7 @@ jobs:
       - name: Merge JUnit reports for TestRail
         if: always()
         run: |
-          junitparser merge --suite-name "Root Suite" --glob "reports/junit-*" "reports/junit-report.xml"
+          junitparser merge --suite-name "Root Suite" --glob "apps/web/reports/junit-*" "apps/web/reports/junit-report.xml"
 
       - name: TestRail CLI upload results
         if: always()
