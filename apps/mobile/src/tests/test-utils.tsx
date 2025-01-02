@@ -1,13 +1,22 @@
 import { render as nativeRender, renderHook } from '@testing-library/react-native'
 import { SafeThemeProvider } from '@/src/theme/provider/safeTheme'
 import { Provider } from 'react-redux'
-import { makeStore } from '../store'
+import { makeStore, rootReducer } from '../store'
 import { PortalProvider } from 'tamagui'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
+import { configureStore } from '@reduxjs/toolkit'
 
-const getProviders: () => React.FC<{ children: React.ReactElement }> = () =>
+export type RootState = ReturnType<typeof rootReducer>
+type getProvidersArgs = (initialStoreState?: Partial<RootState>) => React.FC<{ children: React.ReactElement }>
+
+const getProviders: getProvidersArgs = (initialStoreState) =>
   function ProviderComponent({ children }: { children: React.ReactNode }) {
-    const store = makeStore()
+    const store = initialStoreState
+      ? configureStore({
+          reducer: rootReducer,
+          preloadedState: initialStoreState,
+        })
+      : makeStore()
 
     return (
       <BottomSheetModalProvider>
@@ -20,8 +29,8 @@ const getProviders: () => React.FC<{ children: React.ReactElement }> = () =>
     )
   }
 
-const customRender = (ui: React.ReactElement) => {
-  const wrapper = getProviders()
+const customRender = (ui: React.ReactElement, { initialStore }: { initialStore?: Partial<RootState> } = {}) => {
+  const wrapper = getProviders(initialStore)
 
   return nativeRender(ui, { wrapper })
 }

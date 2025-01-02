@@ -37,6 +37,7 @@ const getTokenDetails = (txInfo: TransferTransactionInfo): tokenDetails => {
   const transfer = txInfo.transferInfo
   const unnamedToken = 'Unnamed token'
   const activeSafe = useSelector(selectActiveSafe)
+
   const { nativeCurrency } = useSelector((state: RootState) => selectChainById(state, activeSafe.chainId))
 
   if (isNativeTokenTransfer(transfer)) {
