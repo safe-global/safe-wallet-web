@@ -17,9 +17,11 @@ export const useMyAccountsSortable = (): useMyAccountsSortableReturn => {
 
   useEffect(() => {
     const newSafes = Object.values(safes)
+    const shouldGoToListMode = newSafes.length <= 1 && isEdit
+
     setSortableSafes(newSafes)
 
-    if (newSafes.length <= 1 && isEdit) {
+    if (shouldGoToListMode) {
       dispatch(toggleMode())
     }
   }, [safes, isEdit])
