@@ -67,7 +67,7 @@ export function UpsertRecoveryFlowSettings({
 
   const delay = getDelay(customDelay, selectedDelay)
 
-  // RHF's dirty check is tempermental with our address input dropdown
+  // RHF's dirty check is temperamental with our address input dropdown
   const isDirty = delayModifier
     ? // Updating settings
       !sameAddress(recoverer, delayModifier.recoverers[0]) ||
