@@ -1613,7 +1613,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-typescript@npm:^7.13.0, @babel/preset-typescript@npm:^7.16.7, @babel/preset-typescript@npm:^7.21.0, @babel/preset-typescript@npm:^7.23.0, @babel/preset-typescript@npm:^7.24.1, @babel/preset-typescript@npm:^7.24.7":
+"@babel/preset-typescript@npm:^7.13.0, @babel/preset-typescript@npm:^7.16.7, @babel/preset-typescript@npm:^7.17.12, @babel/preset-typescript@npm:^7.21.0, @babel/preset-typescript@npm:^7.23.0, @babel/preset-typescript@npm:^7.24.1, @babel/preset-typescript@npm:^7.24.7":
   version: 7.26.0
   resolution: "@babel/preset-typescript@npm:7.26.0"
   dependencies:
@@ -7341,6 +7341,7 @@ __metadata:
     expo-constants: "npm:~17.0.2"
     expo-dev-client: "npm:~5.0.5"
     expo-font: "npm:~13.0.1"
+    expo-haptics: "npm:~14.0.0"
     expo-image: "npm:~2.0.3"
     expo-linear-gradient: "npm:^14.0.1"
     expo-linking: "npm:~7.0.3"
@@ -7360,6 +7361,7 @@ __metadata:
     react-native-collapsible-tab-view: "npm:^8.0.0"
     react-native-device-crypto: "npm:^0.1.7"
     react-native-device-info: "npm:^14.0.1"
+    react-native-draggable-flatlist: "npm:^4.0.1"
     react-native-gesture-handler: "npm:~2.20.2"
     react-native-keychain: "npm:^9.2.2"
     react-native-mmkv: "npm:^3.1.0"
@@ -19019,6 +19021,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-haptics@npm:~14.0.0":
+  version: 14.0.0
+  resolution: "expo-haptics@npm:14.0.0"
+  peerDependencies:
+    expo: "*"
+  checksum: 10/da25773a8f59410fe2066d21404a2cb2a7a93e55b433d21e103dc1cb7ac437926860655672f8f6dfba88d3124c53f911a6b4ef4e935b9f34d2e04c7d4b13d24e
+  languageName: node
+  linkType: hard
+
 "expo-image@npm:~2.0.3":
   version: 2.0.3
   resolution: "expo-image@npm:2.0.3"
@@ -27644,6 +27655,19 @@ __metadata:
   peerDependencies:
     react-native: "*"
   checksum: 10/7d08a2bc77e397dd88fbcb9e2a983dab94d2e076ba3a2f2c2b65c9721b0c1a8496b25fcc0c5c58d54c31e980c3395126c1d9cd361acd69a2358700cfaf11ca6d
+  languageName: node
+  linkType: hard
+
+"react-native-draggable-flatlist@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "react-native-draggable-flatlist@npm:4.0.1"
+  dependencies:
+    "@babel/preset-typescript": "npm:^7.17.12"
+  peerDependencies:
+    react-native: ">=0.64.0"
+    react-native-gesture-handler: ">=2.0.0"
+    react-native-reanimated: ">=2.8.0"
+  checksum: 10/4d9c8bfef6185ab51ebef8d00a0a06f8fd57c96a5a9e60cb6e7cd56ec6222d37643c53fc998cc93efcb8be88d32c2e5e43788f1816d8cded4eb2b60076001749
   languageName: node
   linkType: hard
 
