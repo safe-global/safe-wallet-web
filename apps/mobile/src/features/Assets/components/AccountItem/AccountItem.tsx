@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { View } from 'tamagui'
 import { SafeFontIcon } from '@/src/components/SafeFontIcon'
@@ -7,38 +7,66 @@ import { Chain } from '@safe-global/store/gateway/AUTO_GENERATED/chains'
 import { Address } from '@/src/types/address'
 import { SafeOverview } from '@safe-global/store/gateway/AUTO_GENERATED/safes'
 import { shortenAddress } from '@/src/utils/formatters'
+import { RenderItemParams } from 'react-native-draggable-flatlist'
+import { useSelector } from 'react-redux'
+import { selectMyAccountsMode } from '@/src/store/myAccountsSlice'
+import { useEditMyAccounts } from '../MyAccounts/hooks/useEditMyAccounts'
 
 interface AccountItemProps {
   chains: Chain[]
   account: SafeOverview
+  drag?: RenderItemParams<SafeOverview>['drag']
+  isDragging?: boolean
   activeAccount: Address
   onSelect: (accountAddress: string) => void
 }
 
-// TODO: These props needs to come from the AccountItem.container component
-// remove this comment once it is done
-export function AccountItem({ account, chains, activeAccount, onSelect }: AccountItemProps) {
+const getRightNodeLayout = (isEdit: boolean, isActive: boolean) => {
+  if (isEdit) {
+    return <SafeFontIcon name="rows" color="$backgroundPress" />
+  }
+
+  return isActive ? <SafeFontIcon name="check" color="$color" /> : null
+}
+
+export function AccountItem({ account, drag, chains, isDragging, activeAccount, onSelect }: AccountItemProps) {
   const isActive = activeAccount === account.address.value
+  const isEdit = useSelector(selectMyAccountsMode)
+  const { onSafeDeleted } = useEditMyAccounts()
 
   const handleChainSelect = () => {
     onSelect(account.address.value)
   }
 
+  const rightNode = useMemo(() => getRightNodeLayout(isEdit, isActive), [isEdit, isActive])
+
   return (
-    <TouchableOpacity style={{ width: '100%' }} onPress={handleChainSelect}>
+    <TouchableOpacity
+      style={{ width: '100%' }}
+      disabled={isDragging}
+      onLongPress={drag}
+      onPress={isEdit ? undefined : handleChainSelect}
+    >
       <View
         testID="account-item-wrapper"
-        backgroundColor={isActive ? '$borderLight' : '$backgroundTransparent'}
+        backgroundColor={isActive && !isEdit ? '$borderLight' : '$backgroundTransparent'}
         borderRadius="$4"
       >
         <AccountCard
+          leftNode={
+            isEdit && (
+              <TouchableOpacity onPress={onSafeDeleted(account.address.value as Address)}>
+                <SafeFontIcon name="close-filled" color="$error" />
+              </TouchableOpacity>
+            )
+          }
           threshold={account.threshold}
           owners={account.owners.length}
           name={account.address.name || shortenAddress(account.address.value)}
           address={account.address.value as Address}
           balance={account.fiatTotal}
-          chains={chains}
-          rightNode={isActive && <SafeFontIcon name="check" color="$color" />}
+          chains={isEdit ? undefined : chains}
+          rightNode={rightNode}
         />
       </View>
     </TouchableOpacity>

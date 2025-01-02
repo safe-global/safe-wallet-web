@@ -2,7 +2,7 @@ import { selectActiveSafe, setActiveSafe } from '@/src/store/activeSafeSlice'
 import { toggleMode } from '@/src/store/myAccountsSlice'
 import { removeSafe, SafesSliceItem, selectAllSafes, setSafes } from '@/src/store/safesSlice'
 import { Address } from '@/src/types/address'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { DragEndParams } from 'react-native-draggable-flatlist'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -19,9 +19,10 @@ export const useEditMyAccounts = (): useEditMyAccountsReturn => {
   const [sortableSafes, setSortableSafes] = useState(() => Object.values(safes))
 
   const onDragEnd = useCallback(({ data }: DragEndParams<SafesSliceItem>) => {
-    setSortableSafes([...data]) // Update local state immediately
+    setSortableSafes([...data])
 
-    // Defer Redux update
+    // Defer Redux update due to incompatibility issues between
+    // react-native-draggable-flatlist and new architecture.
     setTimeout(() => {
       const safes = data.reduce((acc, item) => ({ ...acc, [item.SafeInfo.address.value]: item }), {})
       dispatch(setSafes(safes))

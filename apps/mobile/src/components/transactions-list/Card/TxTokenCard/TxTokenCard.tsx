@@ -10,10 +10,12 @@ import {
 } from '@/src/utils/transaction-guards'
 import { ellipsis, formatValue } from '@/src/utils/formatters'
 import { useSelector } from 'react-redux'
-import { selectNativeCurrency } from '@/src/store/activeChainSlice'
 import { TransferDirection } from '@safe-global/store/gateway/types'
 import { TransferTransactionInfo, Transaction } from '@safe-global/store/gateway/AUTO_GENERATED/transactions'
 import { Logo } from '@/src/components/Logo'
+import { selectActiveSafe } from '@/src/store/activeSafeSlice'
+import { RootState } from '@/src/store'
+import { selectChainById } from '@/src/store/chains'
 
 interface TxTokenCardProps {
   bordered?: boolean
@@ -34,7 +36,8 @@ interface tokenDetails {
 const getTokenDetails = (txInfo: TransferTransactionInfo): tokenDetails => {
   const transfer = txInfo.transferInfo
   const unnamedToken = 'Unnamed token'
-  const nativeCurrency = useSelector(selectNativeCurrency)
+  const activeSafe = useSelector(selectActiveSafe)
+  const { nativeCurrency } = useSelector((state: RootState) => selectChainById(state, activeSafe.chainId))
 
   if (isNativeTokenTransfer(transfer)) {
     return {
