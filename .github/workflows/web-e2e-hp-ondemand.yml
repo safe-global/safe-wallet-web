@@ -57,4 +57,4 @@ jobs:
           parse_junit \
           --title "Happy Path Automated Tests, branch: ${GITHUB_REF_NAME}" \
           --run-description ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} \
-          -f "reports/junit-report.xml"
+          -f "apps/web/reports/junit-report.xml"

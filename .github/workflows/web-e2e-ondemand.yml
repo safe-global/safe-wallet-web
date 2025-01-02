@@ -57,6 +57,6 @@ jobs:
           parse_junit \
           --title "Regression Automated Tests, branch: ${GITHUB_REF_NAME}" \
           --run-description ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} \
-          -f "reports/junit-report.xml"; then
+          -f "apps/web/reports/junit-report.xml"; then
             echo -e "\e[41;32mTestRail upload failed. Pipeline will continue, please check the upload process.\e[0m"
           fi
