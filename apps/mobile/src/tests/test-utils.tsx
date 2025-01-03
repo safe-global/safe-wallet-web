@@ -7,7 +7,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { configureStore } from '@reduxjs/toolkit'
 
 export type RootState = ReturnType<typeof rootReducer>
-type getProvidersArgs = (initialStoreState?: Partial<RootState>) => React.FC<{ children: React.ReactElement }>
+type getProvidersArgs = (initialStoreState?: Partial<RootState>) => React.FC<{ children: React.ReactNode }>
 
 const getProviders: getProvidersArgs = (initialStoreState) =>
   function ProviderComponent({ children }: { children: React.ReactNode }) {
@@ -29,10 +29,23 @@ const getProviders: getProvidersArgs = (initialStoreState) =>
     )
   }
 
-const customRender = (ui: React.ReactElement, { initialStore }: { initialStore?: Partial<RootState> } = {}) => {
-  const wrapper = getProviders(initialStore)
+const customRender = (
+  ui: React.ReactElement,
+  {
+    initialStore,
+    wrapper: CustomWrapper,
+  }: {
+    initialStore?: Partial<RootState>
+    wrapper?: React.ComponentType<{ children: React.ReactNode }>
+  } = {},
+) => {
+  const Wrapper = getProviders(initialStore)
 
-  return nativeRender(ui, { wrapper })
+  function WrapperWithCustom({ children }: { children: React.ReactNode }) {
+    return <Wrapper>{CustomWrapper ? <CustomWrapper>{children}</CustomWrapper> : children}</Wrapper>
+  }
+
+  return nativeRender(ui, { wrapper: WrapperWithCustom })
 }
 
 function customRenderHook<Result, Props>(render: (initialProps: Props) => Result) {
