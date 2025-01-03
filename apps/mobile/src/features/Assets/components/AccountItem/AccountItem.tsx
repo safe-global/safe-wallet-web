@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import { View } from 'tamagui'
 import { SafeFontIcon } from '@/src/components/SafeFontIcon'
 import { AccountCard } from '@/src/components/transactions-list/Card/AccountCard'
@@ -39,7 +39,7 @@ export function AccountItem({ account, drag, chains, isDragging, activeAccount, 
 
   return (
     <TouchableOpacity
-      style={{ width: '100%' }}
+      style={styles.container}
       disabled={isDragging}
       onLongPress={drag}
       onPress={isEdit ? undefined : handleChainSelect}
@@ -69,5 +69,11 @@ export function AccountItem({ account, drag, chains, isDragging, activeAccount, 
     </TouchableOpacity>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+  },
+})
 
 export default AccountItem

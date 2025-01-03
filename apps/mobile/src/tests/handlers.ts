@@ -1,5 +1,4 @@
 import { http, HttpResponse } from 'msw'
-import { GATEWAY_URL } from '@/src/config/constants'
 
 export const mockBalanceData = {
   items: [
