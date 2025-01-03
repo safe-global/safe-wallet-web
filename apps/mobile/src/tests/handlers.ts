@@ -1,22 +1,12 @@
 import { http, HttpResponse } from 'msw'
-
-export const mockBalanceData = {
-  items: [
-    {
-      tokenInfo: {
-        name: 'Ethereum',
-        symbol: 'ETH',
-        decimals: 18,
-        logoUri: 'https://safe-transaction-assets.safe.global/chains/1/chain_logo.png',
-      },
-      balance: '1000000000000000000',
-      fiatBalance: '2000',
-    },
-  ],
-}
+import { mockBalanceData, mockNFTData } from './mocks'
+import { GATEWAY_URL } from '../config/constants'
 
 export const handlers = [
-  http.get('https://safe-client.safe.global//v1/chains/1/safes/0x123/balances/USD', () => {
+  http.get(`${GATEWAY_URL}//v1/chains/1/safes/0x123/balances/USD`, () => {
     return HttpResponse.json(mockBalanceData)
+  }),
+  http.get(`${GATEWAY_URL}//v2/chains/:chainId/safes/:safeAddress/collectibles`, () => {
+    return HttpResponse.json(mockNFTData)
   }),
 ]
