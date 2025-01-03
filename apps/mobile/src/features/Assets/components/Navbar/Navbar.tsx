@@ -1,4 +1,3 @@
-import { useDispatch, useSelector } from 'react-redux'
 import { selectActiveSafe } from '@/src/store/activeSafeSlice'
 import { View, H6 } from 'tamagui'
 import { BlurredIdenticonBackground } from '@/src/components/BlurredIdenticonBackground'
@@ -14,6 +13,7 @@ import { SafesSliceItem } from '@/src/store/safesSlice'
 import { selectMyAccountsMode, toggleMode } from '@/src/store/myAccountsSlice'
 import { MyAccountsContainer, MyAccountsFooter } from '../MyAccounts'
 import { useMyAccountsSortable } from '../MyAccounts/hooks/useMyAccountsSortable'
+import { useAppDispatch, useAppSelector } from '@/src/store/hooks'
 
 const dropdownLabelProps = {
   fontSize: '$5',
@@ -21,9 +21,9 @@ const dropdownLabelProps = {
 } as const
 
 export const Navbar = () => {
-  const dispatch = useDispatch()
-  const isEdit = useSelector(selectMyAccountsMode)
-  const activeSafe = useSelector(selectActiveSafe)
+  const dispatch = useAppDispatch()
+  const isEdit = useAppSelector(selectMyAccountsMode)
+  const activeSafe = useAppSelector(selectActiveSafe)
   const { safes, onDragEnd } = useMyAccountsSortable()
 
   const toggleEditMode = () => {
