@@ -27,6 +27,7 @@ import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 import SvgIcon from '@mui/icons-material/ExpandLess'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
+import { useShowNotificationsRenewalMessage } from '@/components/settings/PushNotifications/hooks/useShowNotificationsRenewalMessage'
 
 const NOTIFICATION_CENTER_LIMIT = 4
 
@@ -37,6 +38,9 @@ const NotificationCenter = (): ReactElement => {
   const open = Boolean(anchorEl)
   const hasPushNotifications = useHasFeature(FEATURES.PUSH_NOTIFICATIONS)
   const dispatch = useAppDispatch()
+
+  // This hook is used to show the notification renewal message when the app is opened
+  useShowNotificationsRenewalMessage()
 
   const notifications = useAppSelector(selectNotifications)
   const chronologicalNotifications = useMemo(() => {

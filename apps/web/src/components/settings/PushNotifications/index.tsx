@@ -33,6 +33,7 @@ import ExternalLink from '@/components/common/ExternalLink'
 
 import css from './styles.module.css'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
+import NotificationRenewal from '@/components/notification-center/NotificationRenewal'
 
 export const PushNotifications = (): ReactElement => {
   const { safe, safeLoaded } = useSafeInfo()
@@ -108,6 +109,8 @@ export const PushNotifications = (): ReactElement => {
                 flexDirection: 'column',
               }}
             >
+              <NotificationRenewal />
+
               <Typography>
                 Enable push notifications for {safeLoaded ? 'this Safe Account' : 'your Safe Accounts'} in your browser
                 with your signature. You will need to enable them again if you clear your browser cache. Learn more

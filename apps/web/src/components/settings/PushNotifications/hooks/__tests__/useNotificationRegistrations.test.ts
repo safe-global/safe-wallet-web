@@ -8,13 +8,16 @@ import * as web3 from '@/hooks/wallets/web3'
 import * as wallet from '@/hooks/wallets/useWallet'
 import * as logic from '../../logic'
 import * as preferences from '../useNotificationPreferences'
+import * as tokenVersion from '../useNotificationsTokenVersion'
 import * as notificationsSlice from '@/store/notificationsSlice'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { MockEip1193Provider } from '@/tests/mocks/providers'
+import { NotificationsTokenVersion } from '@/services/push-notifications/preferences'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk')
 
 jest.mock('../useNotificationPreferences')
+jest.mock('../useNotificationsTokenVersion')
 
 Object.defineProperty(globalThis, 'crypto', {
   value: {
@@ -28,9 +31,19 @@ describe('useNotificationRegistrations', () => {
   })
 
   describe('registerNotifications', () => {
+    const setTokenVersionMock = jest.fn()
+
     beforeEach(() => {
       const mockProvider = new BrowserProvider(MockEip1193Provider)
       jest.spyOn(web3, 'createWeb3').mockImplementation(() => mockProvider)
+      jest
+        .spyOn(tokenVersion, 'useNotificationsTokenVersion')
+        .mockImplementation(
+          () =>
+            ({ setTokenVersion: setTokenVersionMock }) as unknown as ReturnType<
+              typeof tokenVersion.useNotificationsTokenVersion
+            >,
+        )
       jest.spyOn(wallet, 'default').mockImplementation(
         () =>
           ({
@@ -83,6 +96,7 @@ describe('useNotificationRegistrations', () => {
       await result.current.registerNotifications({})
 
       expect(registerDeviceSpy).not.toHaveBeenCalled()
+      expect(setTokenVersionMock).not.toHaveBeenCalled()
     })
 
     it('does not create preferences/notify if registration does not succeed', async () => {
@@ -115,6 +129,7 @@ describe('useNotificationRegistrations', () => {
       expect(registerDeviceSpy).toHaveBeenCalledWith(payload)
 
       expect(createPreferencesMock).not.toHaveBeenCalled()
+      expect(setTokenVersionMock).not.toHaveBeenCalled()
     })
 
     it('does not create preferences/notify if registration throws', async () => {
@@ -147,6 +162,7 @@ describe('useNotificationRegistrations', () => {
       expect(registerDeviceSpy).toHaveBeenCalledWith(payload)
 
       expect(createPreferencesMock).not.toHaveBeenCalledWith()
+      expect(setTokenVersionMock).not.toHaveBeenCalledWith()
     })
 
     it('creates preferences/notifies if registration succeeded', async () => {
@@ -180,6 +196,9 @@ describe('useNotificationRegistrations', () => {
       expect(registerDeviceSpy).toHaveBeenCalledWith(payload)
 
       expect(createPreferencesMock).toHaveBeenCalled()
+
+      expect(setTokenVersionMock).toHaveBeenCalledTimes(1)
+      expect(setTokenVersionMock).toHaveBeenCalledWith(NotificationsTokenVersion.V2, safesToRegister)
 
       expect(showNotificationSpy).toHaveBeenCalledWith({
         groupKey: 'notifications',

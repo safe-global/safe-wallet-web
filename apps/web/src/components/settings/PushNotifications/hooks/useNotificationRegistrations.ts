@@ -11,6 +11,8 @@ import { logError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import useWallet from '@/hooks/wallets/useWallet'
 import type { NotifiableSafes } from '../logic'
+import { NotificationsTokenVersion } from '@/services/push-notifications/preferences'
+import { useNotificationsTokenVersion } from './useNotificationsTokenVersion'
 
 const registrationFlow = async (registrationFn: Promise<unknown>, callback: () => void): Promise<boolean> => {
   let success = false
@@ -40,6 +42,7 @@ export const useNotificationRegistrations = (): {
   const dispatch = useAppDispatch()
   const wallet = useWallet()
 
+  const { setTokenVersion } = useNotificationsTokenVersion()
   const { uuid, createPreferences, deletePreferences, deleteAllChainPreferences } = useNotificationPreferences()
 
   const registerNotifications = async (safesToRegister: NotifiableSafes) => {
@@ -64,6 +67,9 @@ export const useNotificationRegistrations = (): {
         (acc, safeAddresses) => acc + safeAddresses.length,
         0,
       )
+
+      // Set the token version to V2 to indicate that the user has registered their token for the new notification service
+      setTokenVersion(NotificationsTokenVersion.V2, safesToRegister)
 
       trackEvent({
         ...PUSH_NOTIFICATION_EVENTS.REGISTER_SAFES,
