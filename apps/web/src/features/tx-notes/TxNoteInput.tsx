@@ -2,9 +2,9 @@ import { useCallback, useState } from 'react'
 import { InputAdornment, Stack, TextField, Typography } from '@mui/material'
 import InfoIcon from '@/public/images/notifications/info.svg'
 
-const MAX_NOTE_LENGTH = 100
+const MAX_NOTE_LENGTH = 120
 
-const TxNoteForm = ({ onSubmit }: { onSubmit: (note: string) => void }) => {
+export const TxNoteInput = ({ onSubmit }: { onSubmit: (note: string) => void }) => {
   const [note, setNote] = useState('')
 
   const onInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,7 +20,7 @@ const TxNoteForm = ({ onSubmit }: { onSubmit: (note: string) => void }) => {
 
   return (
     <>
-      <Stack direction="row" alignItems="center" gap={1}>
+      <Stack direction="row" alignItems="flex-end" gap={1}>
         <Typography variant="h5">What does this transaction do?</Typography>
         <Typography variant="body2" color="text.secondary">
           Optional
@@ -54,5 +54,3 @@ const TxNoteForm = ({ onSubmit }: { onSubmit: (note: string) => void }) => {
     </>
   )
 }
-
-export default TxNoteForm

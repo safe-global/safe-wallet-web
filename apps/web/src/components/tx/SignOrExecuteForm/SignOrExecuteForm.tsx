@@ -33,9 +33,7 @@ import ConfirmationView from '../confirmation-views'
 import { SignerForm } from './SignerForm'
 import { useSigner } from '@/hooks/wallets/useWallet'
 import { trackTxEvents } from './tracking'
-import TxNoteForm from './TxNoteForm'
-import TxNote from '@/components/transactions/TxDetails/TxNote'
-import { encodeTxNote } from '@/utils/transactions'
+import { TxNoteForm, encodeTxNote } from '@/features/tx-notes'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -196,7 +194,7 @@ export const SignOrExecuteForm = ({
 
       {!isCounterfactualSafe && !props.isRejection && <TxChecks />}
 
-      <TxCard>{isCreation ? <TxNoteForm onSubmit={onNoteSubmit} /> : <TxNote txDetails={props.txDetails} />}</TxCard>
+      <TxNoteForm isCreation onSubmit={onNoteSubmit} txDetails={props.txDetails} />
 
       <SignerForm willExecute={willExecute} />
 

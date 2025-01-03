@@ -39,6 +39,7 @@ export enum FEATURES {
   PROPOSERS = 'PROPOSERS',
   TARGETED_SURVEY = 'TARGETED_SURVEY',
   BRIDGE = 'BRIDGE',
+  TX_NOTES = 'TX_NOTES',
 }
 
 export const FeatureRoutes = {

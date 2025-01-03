@@ -2,7 +2,7 @@ import { Tooltip, Typography } from '@mui/material'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import InfoIcon from '@/public/images/notifications/info.svg'
 
-const TxNote = ({ txDetails }: { txDetails: TransactionDetails | undefined }) => {
+export function TxNote({ txDetails }: { txDetails: TransactionDetails | undefined }) {
   const note = (txDetails as TransactionDetails & { note: string | null })?.note
 
   if (!note) return null
@@ -24,5 +24,3 @@ const TxNote = ({ txDetails }: { txDetails: TransactionDetails | undefined }) =>
     </div>
   )
 }
-
-export default TxNote
