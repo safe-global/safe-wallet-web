@@ -3,6 +3,7 @@ import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sd
 import InfoIcon from '@/public/images/notifications/info.svg'
 
 export function TxNote({ txDetails }: { txDetails: TransactionDetails | undefined }) {
+  // @FIXME: update CGW types to include note
   const note = (txDetails as TransactionDetails & { note: string | null })?.note
 
   if (!note) return null

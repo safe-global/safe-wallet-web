@@ -10,8 +10,12 @@ export function encodeTxNote(note: string, origin?: string): string {
   if (!originalOrigin.url) {
     originalOrigin.url = location.origin
   }
-  return JSON.stringify({
-    ...originalOrigin,
-    name: JSON.stringify({ note }),
-  })
+  return JSON.stringify(
+    {
+      ...originalOrigin,
+      note,
+    },
+    null,
+    0,
+  )
 }
