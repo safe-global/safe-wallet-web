@@ -1,6 +1,7 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@/src/tests/test-utils'
 import { AccountItem } from './AccountItem'
+import { Chain } from '@safe-global/store/gateway/AUTO_GENERATED/chains'
 
 const mockAccount = {
   address: { value: '0x123' as `0x${string}`, name: 'Test Account' },
@@ -45,7 +46,14 @@ describe('AccountItem', () => {
   })
 
   it('renders account details correctly', () => {
-    render(<AccountItem account={mockAccount} chains={mockChains} activeAccount="0x789" onSelect={mockOnSelect} />)
+    render(
+      <AccountItem
+        account={mockAccount}
+        chains={mockChains as unknown as Chain[]}
+        activeAccount="0x789"
+        onSelect={mockOnSelect}
+      />,
+    )
 
     expect(screen.getByText('Test Account')).toBeTruthy()
     expect(screen.getByText('1/1')).toBeTruthy()
@@ -56,7 +64,7 @@ describe('AccountItem', () => {
     render(
       <AccountItem
         account={mockAccount}
-        chains={mockChains}
+        chains={mockChains as unknown as Chain[]}
         activeAccount={mockAccount.address.value}
         onSelect={mockOnSelect}
       />,
@@ -67,7 +75,14 @@ describe('AccountItem', () => {
   })
 
   it('calls onSelect when pressed', () => {
-    render(<AccountItem account={mockAccount} chains={mockChains} activeAccount="0x789" onSelect={mockOnSelect} />)
+    render(
+      <AccountItem
+        account={mockAccount}
+        chains={mockChains as unknown as Chain[]}
+        activeAccount="0x789"
+        onSelect={mockOnSelect}
+      />,
+    )
 
     fireEvent.press(screen.getByTestId('account-item-wrapper'))
     expect(mockOnSelect).toHaveBeenCalledWith(mockAccount.address.value)
@@ -77,7 +92,7 @@ describe('AccountItem', () => {
     render(
       <AccountItem
         account={mockAccount}
-        chains={mockChains}
+        chains={mockChains as unknown as Chain[]}
         activeAccount="0x789"
         onSelect={mockOnSelect}
         drag={mockDrag}
@@ -92,7 +107,7 @@ describe('AccountItem', () => {
     render(
       <AccountItem
         account={mockAccount}
-        chains={mockChains}
+        chains={mockChains as unknown as Chain[]}
         activeAccount="0x789"
         onSelect={mockOnSelect}
         isDragging={true}
