@@ -4,7 +4,6 @@ import { TokensContainer } from './Tokens.container'
 import { server } from '@/src/tests/server'
 import { http, HttpResponse } from 'msw'
 import { GATEWAY_URL } from '@/src/config/constants'
-import { mockBalanceData } from '@/src/tests/handlers'
 
 // Mock active safe selector with memoized object
 const mockActiveSafe = { chainId: '1', address: '0x123' }
@@ -41,26 +40,10 @@ describe('TokensContainer', () => {
 
   it('renders token list when data is available', async () => {
     // Setup response spy
-    let resolveRequest: (value: unknown) => void
-    const waitForRequest = new Promise((resolve) => {
-      resolveRequest = resolve
-    })
-
-    server.use(
-      http.get('https://safe-client.safe.global//v1/chains/:chainId/safes/:safeAddress/balances/USD', async () => {
-        const response = HttpResponse.json(mockBalanceData)
-        resolveRequest(true)
-        return response
-      }),
-    )
-
     render(<TokensContainer />)
 
     // First verify we see the loading state
     expect(screen.getByTestId('fallback')).toBeTruthy()
-
-    // Wait for the request to complete
-    await waitForRequest
 
     // Then check for content
     const ethText = await screen.findByText('Ethereum')

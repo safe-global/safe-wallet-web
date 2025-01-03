@@ -17,10 +17,6 @@ export const mockBalanceData = {
 }
 
 export const handlers = [
-  http.get(`${GATEWAY_URL.replace(/\/+$/, '')}/v1/chains/:chainId/safes/:safeAddress/balances/USD`, ({ request }) => {
-    console.log('Actual request URL:', request.url)
-    return HttpResponse.json(mockBalanceData)
-  }),
   http.get('https://safe-client.safe.global//v1/chains/1/safes/0x123/balances/USD', () => {
     return HttpResponse.json(mockBalanceData)
   }),
