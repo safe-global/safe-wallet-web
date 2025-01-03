@@ -1,9 +1,8 @@
-import { memo, type ReactElement } from 'react'
+import { useMemo, type ReactElement } from 'react'
 import ImageFallback from '../ImageFallback'
 import css from './styles.module.css'
 
 const FALLBACK_ICON = '/images/common/token-placeholder.svg'
-const COINGECKO_URL = 'https://assets.coingecko.com/'
 const COINGECKO_THUMB = '/thumb/'
 const COINGECKO_SMALL = '/small/'
 
@@ -18,13 +17,9 @@ const TokenIcon = ({
   size?: number
   fallbackSrc?: string
 }): ReactElement => {
-  let crossOrigin = false
-  let src = logoUri
-
-  if (logoUri?.startsWith(COINGECKO_URL)) {
-    src = logoUri?.replace(COINGECKO_THUMB, COINGECKO_SMALL)
-    crossOrigin = true
-  }
+  const src = useMemo(() => {
+    return logoUri?.replace(COINGECKO_THUMB, COINGECKO_SMALL)
+  }, [])
 
   return (
     <ImageFallback
@@ -33,11 +28,10 @@ const TokenIcon = ({
       fallbackSrc={fallbackSrc || FALLBACK_ICON}
       height={size}
       className={css.image}
+      referrerPolicy="no-referrer"
       loading="lazy"
-      referrerPolicy={crossOrigin ? 'no-referrer' : undefined}
-      crossOrigin={crossOrigin ? 'anonymous' : undefined}
     />
   )
 }
 
-export default memo(TokenIcon)
+export default TokenIcon
